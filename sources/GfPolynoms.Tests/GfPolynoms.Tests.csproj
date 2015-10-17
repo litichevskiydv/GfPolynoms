@@ -45,7 +45,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GaluaFields\PrimeOrderFieldTests.cs" />
-    <Compile Include="PolynomUnderPrimeOrderFieldTest.cs" />
+    <Compile Include="GaluaFields\PrimePowerOrderFieldTests.cs" />
+    <Compile Include="PolynomialUnderPrimeOrderFieldTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

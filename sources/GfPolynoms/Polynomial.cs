@@ -8,14 +8,14 @@
     /// <summary>
     /// Класс многочленов над некоторым конечным полемя
     /// </summary>
-    public class Polynom
+    public class Polynomial
     {
         /// <summary>
         /// Коэффициенты многочлена
         /// </summary>
         private List<int> _coefficients;
 
-        private bool Equals(Polynom other)
+        private bool Equals(Polynomial other)
         {
             return _coefficients.SequenceEqual(other._coefficients) && Equals(Field, other.Field);
         }
@@ -24,7 +24,7 @@
         ///     Конструктор, создающий нулевой многочлен над некоторым полем
         /// </summary>
         /// <param name="field">Поле, к которому принадлежат коэффициенты</param>
-        public Polynom(IGaluaField field)
+        public Polynomial(IGaluaField field)
         {
             if (field == null)
                 throw new ArgumentException("field");
@@ -38,7 +38,7 @@
         /// </summary>
         /// <param name="field">Поле, к которому принадлежат коэффициенты</param>
         /// <param name="coefficients">Коэффициенты создаваемого многочлена</param>
-        public Polynom(IGaluaField field, IEnumerable<int> coefficients)
+        public Polynomial(IGaluaField field, IEnumerable<int> coefficients)
         {
             if (field == null)
                 throw new ArgumentException("field");
@@ -57,11 +57,11 @@
         /// <summary>
         ///     Создает копию переданного многочлена
         /// </summary>
-        /// <param name="polynom">Копируемый многочлен</param>
-        public Polynom(Polynom polynom)
+        /// <param name="polynomial">Копируемый многочлен</param>
+        public Polynomial(Polynomial polynomial)
         {
-            Field = polynom.Field;
-            _coefficients = polynom._coefficients.ToList();
+            Field = polynomial.Field;
+            _coefficients = polynomial._coefficients.ToList();
         }
 
         public IGaluaField Field { get; }
@@ -76,14 +76,14 @@
         {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
-            return obj.GetType() == this.GetType() && Equals((Polynom)obj);
+            return obj.GetType() == this.GetType() && Equals((Polynomial)obj);
         }
 
         public override int GetHashCode()
         {
             unchecked
             {
-                return (_coefficients.GetHashCode() * 397) ^ Field.GetHashCode();
+                return (_coefficients.Aggregate(0, (hash, x) => hash*31 ^ x)*397) ^ Field.GetHashCode();
             }
         }
 
@@ -111,7 +111,7 @@
         /// Операция усечения ведущих нулей коэфициентов многочлена
         /// </summary>
         /// <returns>Текущий многочлен без нулевых ведущих коэфициентов</returns>
-        public Polynom Truncate()
+        public Polynomial Truncate()
         {
             int i;
             for (i = Degree; i >= 0 && _coefficients[i] == 0; i--) ;
@@ -126,7 +126,7 @@
         ///     Увеличивет степень многочлена до заданной, заполняя список коэффициентов нулями
         /// </summary>
         /// <param name="newDegree">Новая степень многочлена</param>
-        public Polynom Enlarge(int newDegree)
+        public Polynomial Enlarge(int newDegree)
         {
             if (Degree < newDegree)
                 _coefficients.AddRange(Enumerable.Repeat(0, newDegree - Degree));
@@ -137,7 +137,7 @@
         /// Добавляет переданный многочлен к текущему
         /// </summary>
         /// <param name="b">Добавляемый многочлен</param>
-        public Polynom Add(Polynom b)
+        public Polynomial Add(Polynomial b)
         {
             if (Field.Equals(b.Field) == false)
                 throw new ArgumentException("b");
@@ -152,7 +152,7 @@
         /// Вычетает переданный многочлен из текущего
         /// </summary>
         /// <param name="b">Вычетаемый многочлен</param>
-        public Polynom Subtract(Polynom b)
+        public Polynomial Subtract(Polynomial b)
         {
             if (Field.Equals(b.Field) == false)
                 throw new ArgumentException("b");
@@ -167,12 +167,12 @@
         /// Умножает переданный многочлен на число
         /// </summary>
         /// <param name="b">Коэффициент для домножения</param>
-        public Polynom Multiply(int b)
+        public Polynomial Multiply(int b)
         {
             if(Field.IsFieldElement(b) == false)
                 throw new ArgumentException("b");
 
-            if (Degree == 0 && _coefficients[0] == 0)
+            if (Degree == 0 && _coefficients[0] == 0 || b == 0)
             {
                 _coefficients = new List<int> { 0 };
                 return this;
@@ -187,7 +187,7 @@
         /// Умножает текущий многочлен на переданный
         /// </summary>
         /// <param name="b">Многочлен для домножения</param>
-        public Polynom Multiply(Polynom b)
+        public Polynomial Multiply(Polynomial b)
         {
             if (Field.Equals(b.Field) == false)
                 throw new ArgumentException("b");
@@ -210,7 +210,7 @@
         /// Вычисляет текущий многочлен по модулю переданного
         /// </summary>
         /// <param name="b">Многочлен, по модулю которого берется текущий</param>
-        public Polynom Modulo(Polynom b)
+        public Polynomial Modulo(Polynomial b)
         {
             if (Field.Equals(b.Field) == false)
                 throw new ArgumentException("b");
@@ -235,7 +235,7 @@
         /// Сдвиг текущего многочлена на указанное количество разрядов вправо
         /// </summary>
         /// <param name="degreeDelta">Количество разрядов, на которые сдвигается многочлен</param>
-        public Polynom RightShift(int degreeDelta)
+        public Polynomial RightShift(int degreeDelta)
         {
             if (degreeDelta < 0)
                 throw new ArgumentException("degreeDelta");
@@ -255,78 +255,78 @@
             return this;
         }
 
-        public static Polynom Add(Polynom a, Polynom b)
+        public static Polynomial Add(Polynomial a, Polynomial b)
         {
-            var c = new Polynom(a);
+            var c = new Polynomial(a);
             return c.Add(b);
         }
 
-        public static Polynom Subtract(Polynom a, Polynom b)
+        public static Polynomial Subtract(Polynomial a, Polynomial b)
         {
-            var c = new Polynom(a);
+            var c = new Polynomial(a);
             return c.Subtract(b);
         }
 
-        public static Polynom Multiply(Polynom a, int b)
+        public static Polynomial Multiply(Polynomial a, int b)
         {
-            var c = new Polynom(a);
+            var c = new Polynomial(a);
             return c.Multiply(b);
         }
 
-        public static Polynom Multiply(int a, Polynom b)
+        public static Polynomial Multiply(int a, Polynomial b)
         {
             return Multiply(b, a);
         }
 
-        public static Polynom Multiply(Polynom a, Polynom b)
+        public static Polynomial Multiply(Polynomial a, Polynomial b)
         {
-            var c = new Polynom(a);
+            var c = new Polynomial(a);
             return c.Multiply(b);
         }
 
-        public static Polynom Modulo(Polynom a, Polynom b)
+        public static Polynomial Modulo(Polynomial a, Polynomial b)
         {
-            var c = new Polynom(a);
+            var c = new Polynomial(a);
             return c.Modulo(b);
         }
 
-        public static Polynom RightShift(Polynom a, int degreeDelta)
+        public static Polynomial RightShift(Polynomial a, int degreeDelta)
         {
-            var c = new Polynom(a);
+            var c = new Polynomial(a);
             return c.RightShift(degreeDelta);
         }
 
-        public static Polynom operator +(Polynom a, Polynom b)
+        public static Polynomial operator +(Polynomial a, Polynomial b)
         {
             return Add(a, b);
         }
 
-        public static Polynom operator -(Polynom a, Polynom b)
+        public static Polynomial operator -(Polynomial a, Polynomial b)
         {
             return Subtract(a, b);
         }
 
-        public static Polynom operator *(Polynom a, Polynom b)
+        public static Polynomial operator *(Polynomial a, Polynomial b)
         {
             return Multiply(a, b);
         }
 
-        public static Polynom operator *(Polynom a, int b)
+        public static Polynomial operator *(Polynomial a, int b)
         {
             return Multiply(a, b);
         }
 
-        public static Polynom operator *(int a, Polynom b)
+        public static Polynomial operator *(int a, Polynomial b)
         {
             return Multiply(a, b);
         }
 
-        public static Polynom operator %(Polynom a, Polynom b)
+        public static Polynomial operator %(Polynomial a, Polynomial b)
         {
             return Modulo(a, b);
         }
 
-        public static Polynom operator >>(Polynom a, int degreeDelta)
+        public static Polynomial operator >>(Polynomial a, int degreeDelta)
         {
             return RightShift(a, degreeDelta);
         }

@@ -6,26 +6,12 @@
     [TestFixture]
     public class PrimeOrderFieldTests
     {
+        private PrimeOrderField _field;
+
         [SetUp]
         public void Init()
         {
             _field = new PrimeOrderField(5);
-        }
-
-        private PrimeOrderField _field;
-
-        [Test]
-        public void ShouldAddTwoFieldElements()
-        {
-            // Given
-            const int a = 3;
-            const int b = 4;
-
-            // When
-            var c = _field.Add(a, b);
-
-            // Then
-            Assert.AreEqual(2, c);
         }
 
         [Test]
@@ -42,6 +28,33 @@
         }
 
         [Test]
+        public void ShouldNotApproveFieldMember()
+        {
+            // Given
+            const int a = 6;
+
+            // When
+            var isFiledMember = _field.IsFieldElement(a);
+
+            // Then
+            Assert.AreEqual(false, isFiledMember);
+        }
+
+        [Test]
+        public void ShouldAddTwoFieldElements()
+        {
+            // Given
+            const int a = 3;
+            const int b = 4;
+
+            // When
+            var c = _field.Add(a, b);
+
+            // Then
+            Assert.AreEqual(2, c);
+        }
+
+        [Test]
         public void ShouldMultiplyTwoFieldElements()
         {
             // Given
@@ -53,19 +66,6 @@
 
             // Then
             Assert.AreEqual(3, c);
-        }
-
-        [Test]
-        public void ShouldNotApproveFieldMember()
-        {
-            // Given
-            const int a = 6;
-
-            // When
-            var isFiledMember = _field.IsFieldElement(a);
-
-            // Then
-            Assert.AreEqual(false, isFiledMember);
         }
 
         [Test]

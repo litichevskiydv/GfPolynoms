@@ -42,7 +42,8 @@
   <ItemGroup>
     <Compile Include="GaluaFields\IGaluaField.cs" />
     <Compile Include="GaluaFields\PrimeOrderField.cs" />
-    <Compile Include="Polynom.cs" />
+    <Compile Include="GaluaFields\PrimePowerOrderField.cs" />
+    <Compile Include="Polynomial.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

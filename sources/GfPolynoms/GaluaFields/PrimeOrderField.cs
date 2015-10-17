@@ -52,7 +52,7 @@
         }
 
         public int Order { get; }
-        public int Characteristic => 1;
+        public int Characteristic => Order;
 
         public bool IsFieldElement(int a)
         {
