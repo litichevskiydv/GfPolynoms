@@ -1,18 +1,18 @@
-﻿using GfPolynoms.GaluaFields;
-using NUnit.Framework;
-
-namespace GfPolynoms.Tests.GaluaFields
+﻿namespace GfPolynoms.Tests.GaluaFields
 {
+    using GfPolynoms.GaluaFields;
+    using NUnit.Framework;
+
     [TestFixture]
     public class PrimeOrderFieldTests
     {
-        private PrimeOrderField _field;
-
         [SetUp]
         public void Init()
         {
             _field = new PrimeOrderField(5);
         }
+
+        private PrimeOrderField _field;
 
         [Test]
         public void ShouldAddTwoFieldElements()
@@ -29,17 +29,16 @@ namespace GfPolynoms.Tests.GaluaFields
         }
 
         [Test]
-        public void ShouldSubtractTwoFieldElements()
+        public void ShouldApproveFieldMember()
         {
             // Given
-            const int a = 1;
-            const int b = 4;
+            const int a = 2;
 
             // When
-            var c = _field.Subtract(a, b);
+            var isFiledMember = _field.IsFieldElement(a);
 
             // Then
-            Assert.AreEqual(2, c);
+            Assert.AreEqual(true, isFiledMember);
         }
 
         [Test]
@@ -57,19 +56,6 @@ namespace GfPolynoms.Tests.GaluaFields
         }
 
         [Test]
-        public void ShouldApproveFieldMember()
-        {
-            // Given
-            const int a = 2;
-
-            // When
-            var isFiledMember = _field.IsFieldElement(a);
-
-            // Then
-            Assert.AreEqual(true, isFiledMember);
-        }
-
-        [Test]
         public void ShouldNotApproveFieldMember()
         {
             // Given
@@ -80,6 +66,34 @@ namespace GfPolynoms.Tests.GaluaFields
 
             // Then
             Assert.AreEqual(false, isFiledMember);
+        }
+
+        [Test]
+        public void ShouldSubtractTwoFieldElements()
+        {
+            // Given
+            const int a = 1;
+            const int b = 4;
+
+            // When
+            var c = _field.Subtract(a, b);
+
+            // Then
+            Assert.AreEqual(2, c);
+        }
+
+        [Test]
+        public void ShouldDivideTwoFieldElements()
+        {
+            // Given
+            const int a = 4;
+            const int b = 3;
+
+            // When
+            var c = _field.Divide(a, b);
+
+            // Then
+            Assert.AreEqual(3, c);
         }
     }
 }
