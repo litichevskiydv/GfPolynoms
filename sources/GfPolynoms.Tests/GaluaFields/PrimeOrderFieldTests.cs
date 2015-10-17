@@ -95,5 +95,19 @@
             // Then
             Assert.AreEqual(3, c);
         }
+
+        [Test]
+        public void ShouldDivideZero()
+        {
+            // Given
+            const int a = 0;
+            const int b = 3;
+
+            // When
+            var c = _field.Divide(a, b);
+
+            // Then
+            Assert.AreEqual(0, c);
+        }
     }
 }

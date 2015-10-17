@@ -86,6 +86,9 @@
             if (b == 0)
                 throw new ArgumentException("b");
 
+            if (a == 0)
+                return 0;
+
             int inverseElement;
             lock (this)
             {
