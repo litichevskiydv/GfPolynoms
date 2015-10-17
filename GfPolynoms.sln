@@ -7,7 +7,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Utils", "Utils", "{ACA2BD00
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GfPolynoms", "sources\GfPolynoms\GfPolynoms.csproj", "{BF056AEA-80BD-4FAE-B617-CCF0F34B72C5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GfPolynoms.Tests", "GfPolynoms.Tests\GfPolynoms.Tests.csproj", "{B74C13DA-61CC-4072-A90A-C637C8F678B5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GfPolynoms.Tests", "sources\GfPolynoms.Tests\GfPolynoms.Tests.csproj", "{B8B14175-7BC6-4966-9098-E02BEF6E9B04}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,10 +19,10 @@ Global
 		{BF056AEA-80BD-4FAE-B617-CCF0F34B72C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BF056AEA-80BD-4FAE-B617-CCF0F34B72C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BF056AEA-80BD-4FAE-B617-CCF0F34B72C5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B74C13DA-61CC-4072-A90A-C637C8F678B5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B74C13DA-61CC-4072-A90A-C637C8F678B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B74C13DA-61CC-4072-A90A-C637C8F678B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B74C13DA-61CC-4072-A90A-C637C8F678B5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B8B14175-7BC6-4966-9098-E02BEF6E9B04}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B8B14175-7BC6-4966-9098-E02BEF6E9B04}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B8B14175-7BC6-4966-9098-E02BEF6E9B04}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B8B14175-7BC6-4966-9098-E02BEF6E9B04}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
