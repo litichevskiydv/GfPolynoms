@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Globalization;
     using System.Linq;
     using GaluaFields;
 
@@ -69,7 +70,25 @@
 
         public override string ToString()
         {
-            return "[" + string.Join(",", _coefficients) + "]";
+            var monomials = _coefficients
+                .Select((x, i) => new Tuple<int, int>(x, i))
+                .Where(x => x.Item1 != 0)
+                .Reverse()
+                .Select(x =>
+                        {
+                            var template = "{0}x^{1}";
+                            if (x.Item2 == 0)
+                                template = "{0}";
+                            else
+                            {
+                                if (x.Item1 == 1)
+                                    template = template.Replace("{0}", "");
+                                if (x.Item2 == 1)
+                                    template = template.Replace("^{1}", "");
+                            }
+                            return string.Format(template, x.Item1, x.Item2);
+                        });
+            return string.Join("+", monomials);
         }
 
         public override bool Equals(object obj)
@@ -225,7 +244,7 @@
 
                 var quotient = Field.Divide(_coefficients[Degree - i], b[b.Degree]);
                 for (var j = 0; j <= b.Degree; j++)
-                    _coefficients[Degree - i - j] = Field.Add(_coefficients[Degree - i - j],
+                    _coefficients[Degree - i - j] = Field.Subtract(_coefficients[Degree - i - j],
                         Field.Multiply(b[b.Degree - j], quotient));
             }
             return Truncate();

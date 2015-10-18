@@ -273,5 +273,20 @@
             // Then
             Assert.AreEqual(new Polynomial(_field, new[] { 1 }), c);
         }
+
+        [Test]
+        public void ShouldCalculateModulo8()
+        {
+            // Given
+            var field = new PrimeOrderField(3);
+            var a = new Polynomial(field, new[] {1}).RightShift(3);
+            var b = new Polynomial(field, new[] {1, 1});
+
+            // When
+            var c = a % b;
+
+            // Then
+            Assert.AreEqual(new Polynomial(field, new[] { 2 }), c);
+        }
     }
 }
