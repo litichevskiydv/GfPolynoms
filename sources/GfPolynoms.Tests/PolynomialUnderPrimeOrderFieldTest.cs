@@ -288,5 +288,33 @@
             // Then
             Assert.AreEqual(new Polynomial(field, new[] { 2 }), c);
         }
+
+        [Test]
+        public void ShouldRaiseVariableDegre1()
+        {
+            // Given
+            var field = new PrimeOrderField(3);
+            var a = new Polynomial(field, new[] {1, 1, 1});
+
+            // When
+           a.RaiseVariableDegre(2);
+
+            // Then
+            Assert.AreEqual(new Polynomial(field, new[] { 1, 0, 1, 0, 1 }), a);
+        }
+
+        [Test]
+        public void ShouldRaiseVariableDegre2()
+        {
+            // Given
+            var field = new PrimeOrderField(3);
+            var a = new Polynomial(field, new[] { 1, 1, 1 });
+
+            // When
+            a.RaiseVariableDegre(1);
+
+            // Then
+            Assert.AreEqual(new Polynomial(field, new[] { 1, 1, 1}), a);
+        }
     }
 }
