@@ -316,5 +316,33 @@
             // Then
             Assert.AreEqual(new Polynomial(field, new[] { 1, 1, 1}), a);
         }
+
+        [Test]
+        public void ShouldEvaluateValue1()
+        {
+            // Given
+            var field = new PrimeOrderField(3);
+            var a = new Polynomial(field, new[] { 1, 2, 1 });
+
+            // When
+            var value = a.Evaluate(2);
+
+            // Then
+            Assert.AreEqual(0, value);
+        }
+
+        [Test]
+        public void ShouldEvaluateValue2()
+        {
+            // Given
+            var field = new PrimeOrderField(3);
+            var a = new Polynomial(field, new[] { 1, 2, 2 });
+
+            // When
+            var value = a.Evaluate(2);
+
+            // Then
+            Assert.AreEqual(1, value);
+        }
     }
 }

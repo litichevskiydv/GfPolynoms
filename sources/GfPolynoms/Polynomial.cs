@@ -295,6 +295,27 @@
             return this;
         }
 
+        /// <summary>
+        /// Вычисляет значение многочлена для заданного значения переменной
+        /// </summary>
+        /// <param name="variableValue">Значение переменной</param>
+        /// <returns>Значение многочлена</returns>
+        public int Evaluate(int variableValue)
+        {
+            if(Field.IsFieldElement(variableValue) == false)
+                throw new ArgumentException("variableValue");
+
+            var result = _coefficients[0];
+            var power = 1;
+            for (var i = 1; i <= Degree; i++)
+            {
+                power = Field.Multiply(power, variableValue);
+                if (_coefficients[i] != 0)
+                    result = Field.Add(result, Field.Multiply(_coefficients[i], power));
+            }
+            return result;
+        }
+
         public static Polynomial Add(Polynomial a, Polynomial b)
         {
             var c = new Polynomial(a);
