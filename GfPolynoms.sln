@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GfPolynoms", "sources\GfPol
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GfPolynoms.Tests", "sources\GfPolynoms.Tests\GfPolynoms.Tests.csproj", "{B8B14175-7BC6-4966-9098-E02BEF6E9B04}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpectrumAnalyzer", "sources\Utils\SpectrumAnalyzer\SpectrumAnalyzer.csproj", "{EE7AFDE3-6226-44AB-BAB4-E12C2E78025E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,8 +25,15 @@ Global
 		{B8B14175-7BC6-4966-9098-E02BEF6E9B04}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B8B14175-7BC6-4966-9098-E02BEF6E9B04}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B8B14175-7BC6-4966-9098-E02BEF6E9B04}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EE7AFDE3-6226-44AB-BAB4-E12C2E78025E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EE7AFDE3-6226-44AB-BAB4-E12C2E78025E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EE7AFDE3-6226-44AB-BAB4-E12C2E78025E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EE7AFDE3-6226-44AB-BAB4-E12C2E78025E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{EE7AFDE3-6226-44AB-BAB4-E12C2E78025E} = {ACA2BD00-9DE8-4309-8645-BB57EF1DA856}
 	EndGlobalSection
 EndGlobal
