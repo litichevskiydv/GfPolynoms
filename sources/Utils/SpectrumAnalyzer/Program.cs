@@ -26,8 +26,8 @@
                         var c = (informationPolynomial.RaiseVariableDegre(2)*f)%m;
 
                         var codeWord = new int[field.Order - 1];
-                        for (var l = 1; l < field.Order; l++)
-                            codeWord[l - 1] = c.Evaluate(l);
+                        for (var l = 0; l <= c.Degree; l++)
+                            codeWord[l] = c[l];
                         codeWords.Add(codeWord);
                     }
 
