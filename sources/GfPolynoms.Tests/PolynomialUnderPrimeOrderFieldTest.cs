@@ -166,14 +166,13 @@
         public void ShouldPerformEnlarge()
         {
             // Given
-            var a = new Polynomial(_field);
+            var a = new Polynomial(_field, 1);
 
             // When
-            var c = a.Enlarge(4);
-            c[4] = 1;
+            a.RightShift(4);
 
             // Then
-            Assert.AreEqual(new Polynomial(_field, 0, 0, 0, 0, 1), c);
+            Assert.AreEqual(new Polynomial(_field, 0, 0, 0, 0, 1), a);
         }
 
         [Test]

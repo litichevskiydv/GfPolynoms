@@ -129,7 +129,7 @@
         /// Операция усечения ведущих нулей коэфициентов многочлена
         /// </summary>
         /// <returns>Текущий многочлен без нулевых ведущих коэфициентов</returns>
-        public Polynomial Truncate()
+        private Polynomial Truncate()
         {
             int i;
             for (i = Degree; i >= 0 && _coefficients[i] == 0; i--) ;
@@ -144,11 +144,10 @@
         ///     Увеличивет степень многочлена до заданной, заполняя список коэффициентов нулями
         /// </summary>
         /// <param name="newDegree">Новая степень многочлена</param>
-        public Polynomial Enlarge(int newDegree)
+        private void Enlarge(int newDegree)
         {
             if (Degree < newDegree)
                 _coefficients.AddRange(Enumerable.Repeat(0, newDegree - Degree));
-            return this;
         }
 
         /// <summary>
