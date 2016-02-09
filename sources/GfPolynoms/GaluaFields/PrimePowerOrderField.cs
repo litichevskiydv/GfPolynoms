@@ -48,7 +48,7 @@
             }
         }
 
-        public PrimePowerOrderField( int order, int characteristic, IEnumerable<int> irreduciblePolynomial)
+        public PrimePowerOrderField(int order, int characteristic, int[] irreduciblePolynomial)
         {
             if(order < 2)
                 throw new ArgumentException("order");

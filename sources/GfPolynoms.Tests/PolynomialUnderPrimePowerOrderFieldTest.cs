@@ -18,7 +18,7 @@
         public void ShouldEvaluateValue1()
         {
             // Given
-            var a = new Polynomial(_field, new[] { 2, 2, 2 });
+            var a = new Polynomial(_field, 2, 2, 2);
 
             // When
             var value = a.Evaluate(1);
@@ -31,7 +31,7 @@
         public void ShouldEvaluateValue2()
         {
             // Given
-            var a = new Polynomial(_field, new[] { 2, 2, 2 });
+            var a = new Polynomial(_field, 2, 2, 2);
 
             // When
             var value = a.Evaluate(2);
@@ -44,7 +44,7 @@
         public void ShouldEvaluateValue3()
         {
             // Given
-            var a = new Polynomial(_field, new[] { 2, 2, 2 });
+            var a = new Polynomial(_field, 2, 2, 2);
 
             // When
             var value = a.Evaluate(3);
@@ -57,7 +57,7 @@
         public void ShouldEvaluateValue4()
         {
             // Given
-            var a = new Polynomial(_field, new[] { 2, 2, 2 });
+            var a = new Polynomial(_field, 2, 2, 2);
 
             // When
             var value = a.Evaluate(4);
@@ -70,7 +70,7 @@
         public void ShouldEvaluateValue5()
         {
             // Given
-            var a = new Polynomial(_field, new[] { 2, 2, 2 });
+            var a = new Polynomial(_field, 2, 2, 2);
 
             // When
             var value = a.Evaluate(5);
@@ -83,7 +83,7 @@
         public void ShouldEvaluateValue6()
         {
             // Given
-            var a = new Polynomial(_field, new[] { 2, 2, 2 });
+            var a = new Polynomial(_field, 2, 2, 2);
 
             // When
             var value = a.Evaluate(6);
@@ -96,7 +96,7 @@
         public void ShouldEvaluateValue7()
         {
             // Given
-            var a = new Polynomial(_field, new[] { 2, 2, 2 });
+            var a = new Polynomial(_field, 2, 2, 2);
 
             // When
             var value = a.Evaluate(7);

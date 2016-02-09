@@ -38,7 +38,7 @@
         /// </summary>
         /// <param name="field">Поле, к которому принадлежат коэффициенты</param>
         /// <param name="coefficients">Коэффициенты создаваемого многочлена</param>
-        public Polynomial(IGaluaField field, IEnumerable<int> coefficients)
+        public Polynomial(IGaluaField field, params int[] coefficients)
         {
             if (field == null)
                 throw new ArgumentException("field");
