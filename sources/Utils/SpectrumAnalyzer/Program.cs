@@ -10,78 +10,72 @@
 
     static class Program
     {
-        private static IEnumerable<int[]> GenerateCodeWords()
+        private static void CalculateCodeWords(int fieldOrder, int[] informationWord, int informationWordPosition, Func<int[], int[]> codeWordCalculator, ICollection<int[]> codeWords)
         {
-            var field = new PrimePowerOrderField(8, 2, new[] { 1, 1, 0, 1 });
-            var m = new Polynomial(field, new[] {1}).RightShift(7);
-            m[0] = 1;
-            var f = new Polynomial(field, new[] {0, 4, 2, 0, 3, 2, 6});
+            if (informationWordPosition == informationWord.Length)
+                codeWords.Add(codeWordCalculator(informationWord).ToArray());
+            else
+                for (var i = 0; i < fieldOrder; i++)
+                {
+                    informationWord[informationWordPosition] = i;
+                    CalculateCodeWords(fieldOrder, informationWord, informationWordPosition + 1, codeWordCalculator, codeWords);
+                }
+        }
 
+        private static IEnumerable<int[]> GenerateCodeWords(int fieldOrder, int informationWordLength, Func<int[], int[]> codeWordCalculator)
+        {
+            var informationWord = new int[informationWordLength];
             var codeWords = new List<int[]>();
-            for (var i = 0; i < field.Order; i++)
-                for (var j = 0; j < field.Order; j++)
-                    for (var k = 0; k < field.Order; k++)
-                    {
-                        var informationPolynomial = new Polynomial(field, new[] {k, j, i});
-                        var c = (informationPolynomial.RaiseVariableDegre(2)*f)%m;
 
-                        var codeWord = new int[field.Order - 1];
-                        for (var l = 0; l <= c.Degree; l++)
-                            codeWord[l] = c[l];
-                        codeWords.Add(codeWord);
-                    }
-
+            CalculateCodeWords(fieldOrder, informationWord, 0, codeWordCalculator, codeWords);
             return codeWords;
         }
 
-        private static void CheckVector(int[] vector, int[][] codeWords, Dictionary<int, int> spectrum)
+        private static void UpdateTaskSpectrum(IReadOnlyList<int> vector, IEnumerable<int[]> codeWords, IDictionary<int, int> spectrum)
         {
-            var localResult = Enumerable.Range(0, vector.Length + 1).ToDictionary(x => x, x => 0);
+            var localResult = Enumerable.Range(0, vector.Count + 1).ToDictionary(x => x, x => 0);
             foreach (var codeWord in codeWords)
             {
                 var differencesCount = 0;
-                for (var i = 0; i < vector.Length; i++)
+                for (var i = 0; i < vector.Count; i++)
                     if (vector[i] != codeWord[i])
                         differencesCount++;
                 localResult[differencesCount]++;
             }
-            for (var i = 0; i <= vector.Length; i++)
+            for (var i = 0; i <= vector.Count; i++)
                 if (spectrum[i] < localResult[i])
                     spectrum[i] = localResult[i];
         }
 
-        private static void CheckVectors(int[] vector, int position, int[][] codeWords, Dictionary<int, int> spectrum)
+        private static void CheckVectors(int fieldOrder, int[] vector, int position, int[][] codeWords, IDictionary<int, int> spectrum)
         {
             if (position == vector.Length)
-            {
-                CheckVector(vector, codeWords, spectrum);
-                return;
-            }
-
-            for (var  i = 0; i < 8; i++)
-            {
-                vector[position] = i;
-                CheckVectors(vector, position + 1, codeWords, spectrum);
-            }
+                UpdateTaskSpectrum(vector, codeWords, spectrum);
+            else
+                for (var i = 0; i < fieldOrder; i++)
+                {
+                    vector[position] = i;
+                    CheckVectors(fieldOrder, vector, position + 1, codeWords, spectrum);
+                }
         }
 
-        static void Main()
+        private static void CalculateSpectrum(int fieldOrder, int informationWordLength, int codeWordLength, Func<int[], int[]> codeWordCalculator)
         {
             Console.WriteLine("Start code words generation");
             var generationTimer = Stopwatch.StartNew();
-            var codeWords = GenerateCodeWords().ToArray();
+            var codeWords = GenerateCodeWords(fieldOrder, informationWordLength, codeWordCalculator).ToArray();
             generationTimer.Stop();
             Console.WriteLine("Code words generated in {0} seconds", generationTimer.Elapsed.TotalSeconds);
 
             Console.WriteLine("Start scectrum calculation");
             var calculationTimer = Stopwatch.StartNew();
-            var masks = Enumerable.Range(0, 8)
-                .Select(x => Enumerable.Repeat(x, 7).ToArray())
+            var masks = Enumerable.Range(0, fieldOrder)
+                .Select(x => Enumerable.Repeat(x, codeWordLength).ToArray())
                 .ToArray();
-            var results = Enumerable.Range(0, 8)
-                .ToDictionary(x => x, x => Enumerable.Range(0, 8).ToDictionary(y => y, y => 0));
-            Parallel.ForEach(masks, new ParallelOptions {MaxDegreeOfParallelism = 12},
-                x => CheckVectors(x, 1, codeWords, results[x[0]]));
+            var results = Enumerable.Range(0, fieldOrder)
+                .ToDictionary(x => x, x => Enumerable.Range(0, codeWordLength + 1).ToDictionary(y => y, y => 0));
+            Parallel.ForEach(masks, new ParallelOptions { MaxDegreeOfParallelism = (int)(Environment.ProcessorCount * 1.5d) },
+                x => CheckVectors(fieldOrder, x, 1, codeWords, results[x[0]]));
             var result = results
                 .SelectMany(x => x.Value)
                 .GroupBy(x => x.Key)
@@ -92,6 +86,34 @@
 
             foreach (var pair in result)
                 Console.WriteLine("Errors count {0} code words {1}", pair.Item1, pair.Item2);
+        }
+
+        private static void CalculateSpectrumForWavelet37Code()
+        {
+            const int informationWordLength = 3;
+            const int codeWordLength = 7;
+
+            var field = new PrimePowerOrderField(8, 2, new[] { 1, 1, 0, 1 });
+            var m = new Polynomial(field, 1).RightShift(7);
+            m[0] = 1;
+            var f = new Polynomial(field, 0, 4, 2, 0, 3, 2, 6);
+
+            CalculateSpectrum(field.Order, informationWordLength, codeWordLength,
+                informatonWord =>
+                {
+                    var informationPolynomial = new Polynomial(field, informatonWord);
+                    var c = (informationPolynomial.RaiseVariableDegre(2)*f)%m;
+
+                    var codeWord = new int[field.Order - 1];
+                    for (var i = 0; i <= c.Degree; i++)
+                        codeWord[i] = c[i];
+                    return codeWord;
+                });
+        }
+
+        static void Main()
+        {
+            CalculateSpectrumForWavelet37Code();
             Console.ReadKey();
         }
     }
