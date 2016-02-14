@@ -102,7 +102,7 @@
                 informatonWord =>
                 {
                     var informationPolynomial = new Polynomial(field, informatonWord);
-                    var c = (informationPolynomial.RaiseVariableDegre(2)*f)%m;
+                    var c = (informationPolynomial.RaiseVariableDegree(2)*f)%m;
 
                     var codeWord = new int[field.Order - 1];
                     for (var i = 0; i <= c.Degree; i++)

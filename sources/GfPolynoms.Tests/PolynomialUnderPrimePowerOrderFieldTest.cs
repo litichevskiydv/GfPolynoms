@@ -6,103 +6,30 @@
     [TestFixture]
     public class PolynomialUnderPrimePowerOrderFieldTest
     {
-        private PrimePowerOrderField _field;
+        private readonly PrimePowerOrderField _field;
 
-        [SetUp]
-        public void Init()
+        public PolynomialUnderPrimePowerOrderFieldTest()
         {
             _field = new PrimePowerOrderField(8, 2, new[] {1, 1, 0, 1});
         }
 
-        [Test]
-        public void ShouldEvaluateValue1()
+        [TestCase(new[] {2, 2, 2}, 1, Result = 2)]
+        [TestCase(new[] {2, 2, 2}, 2, Result = 7)]
+        [TestCase(new[] {2, 2, 2}, 3, Result = 5)]
+        [TestCase(new[] {2, 2, 2}, 4, Result = 7)]
+        [TestCase(new[] {2, 2, 2}, 5, Result = 1)]
+        [TestCase(new[] {2, 2, 2}, 6, Result = 1)]
+        [TestCase(new[] {2, 2, 2}, 7, Result = 5)]
+        public int ShouldEvaluateValue(int[] coefficients, int parameterValue)
         {
             // Given
-            var a = new Polynomial(_field, 2, 2, 2);
+            var a = new Polynomial(_field, coefficients);
 
             // When
-            var value = a.Evaluate(1);
+            var value = a.Evaluate(parameterValue);
 
             // Then
-            Assert.AreEqual(2, value);
-        }
-
-        [Test]
-        public void ShouldEvaluateValue2()
-        {
-            // Given
-            var a = new Polynomial(_field, 2, 2, 2);
-
-            // When
-            var value = a.Evaluate(2);
-
-            // Then
-            Assert.AreEqual(7, value);
-        }
-
-        [Test]
-        public void ShouldEvaluateValue3()
-        {
-            // Given
-            var a = new Polynomial(_field, 2, 2, 2);
-
-            // When
-            var value = a.Evaluate(3);
-
-            // Then
-            Assert.AreEqual(5, value);
-        }
-
-        [Test]
-        public void ShouldEvaluateValue4()
-        {
-            // Given
-            var a = new Polynomial(_field, 2, 2, 2);
-
-            // When
-            var value = a.Evaluate(4);
-
-            // Then
-            Assert.AreEqual(7, value);
-        }
-
-        [Test]
-        public void ShouldEvaluateValue5()
-        {
-            // Given
-            var a = new Polynomial(_field, 2, 2, 2);
-
-            // When
-            var value = a.Evaluate(5);
-
-            // Then
-            Assert.AreEqual(1, value);
-        }
-
-        [Test]
-        public void ShouldEvaluateValue6()
-        {
-            // Given
-            var a = new Polynomial(_field, 2, 2, 2);
-
-            // When
-            var value = a.Evaluate(6);
-
-            // Then
-            Assert.AreEqual(1, value);
-        }
-
-        [Test]
-        public void ShouldEvaluateValue7()
-        {
-            // Given
-            var a = new Polynomial(_field, 2, 2, 2);
-
-            // When
-            var value = a.Evaluate(7);
-
-            // Then
-            Assert.AreEqual(5, value);
+            return value;
         }
     }
 }

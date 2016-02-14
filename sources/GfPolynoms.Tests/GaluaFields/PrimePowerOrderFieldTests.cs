@@ -6,220 +6,55 @@
     [TestFixture]
     public class PrimePowerOrderFieldTests
     {
-        private PrimePowerOrderField _field;
+        private readonly PrimePowerOrderField _field;
 
-        [SetUp]
-        public void Init()
+        public PrimePowerOrderFieldTests()
         {
             _field = new PrimePowerOrderField(8, 2, new[] { 1, 1, 0, 1 });
         }
 
-        [Test]
-        public void ShouldApproveFieldMember()
+        [TestCase(2, Result = true)]
+        [TestCase(8, Result = false)]
+        public bool ShouldApproveFieldMember(int element)
         {
-            // Given
-            const int a = 2;
-
-            // When
-            var isFiledMember = _field.IsFieldElement(a);
-
-            // Then
-            Assert.AreEqual(true, isFiledMember);
+            return _field.IsFieldElement(element);
         }
 
-        [Test]
-        public void ShouldNotApproveFieldMember()
+        [TestCase(3, 4, Result = 6)]
+        [TestCase(5, 6, Result = 1)]
+        [TestCase(5, 5, Result = 0)]
+        public int ShouldSumTwoFieldElements(int firstItem, int secondItem)
         {
-            // Given
-            const int a = 8;
-
-            // When
-            var isFiledMember = _field.IsFieldElement(a);
-
-            // Then
-            Assert.AreEqual(false, isFiledMember);
+            return _field.Add(firstItem, secondItem);
         }
 
-        [Test]
-        public void ShouldAddTwoFieldElements1()
+        [TestCase(1, 4, Result = 2)]
+        [TestCase(3, 5, Result = 2)]
+        [TestCase(5, 7, Result = 4)]
+        public int ShouldSubtractTwoFieldElements(int minuend, int subtrahend)
         {
-            // Given
-            const int a = 3;
-            const int b = 4;
-
-            // When
-            var c = _field.Add(a, b);
-
-            // Then
-            Assert.AreEqual(6, c);
+            return _field.Subtract(minuend, subtrahend);
         }
 
-        [Test]
-        public void ShouldAddTwoFieldElements2()
+        [TestCase(2, 4, Result = 5)]
+        [TestCase(6, 7, Result = 5)]
+        [TestCase(2, 7, Result = 1)]
+        public int ShouldMultiplyTwoFieldElements(int firstMultiplied, int secondMultiplied)
         {
-            // Given
-            const int a = 5;
-            const int b = 6;
-
-            // When
-            var c = _field.Add(a, b);
-
-            // Then
-            Assert.AreEqual(1, c);
+            return _field.Multiply(firstMultiplied, secondMultiplied);
         }
 
-        [Test]
-        public void ShouldAddTwoFieldElements3()
+        [TestCase(0, 3)]
+        [TestCase(4, 3)]
+        [TestCase(7, 2)]
+        [TestCase(2, 7)]
+        public void ShouldDivideTwoFieldElements(int dividend, int divisor)
         {
-            // Given
-            const int a = 5;
-            const int b = 5;
-
             // When
-            var c = _field.Add(a, b);
+            var c = _field.Divide(dividend, divisor);
 
             // Then
-            Assert.AreEqual(0, c);
-        }
-
-        [Test]
-        public void ShouldSubtractTwoFieldElements1()
-        {
-            // Given
-            const int a = 1;
-            const int b = 4;
-
-            // When
-            var c = _field.Subtract(a, b);
-
-            // Then
-            Assert.AreEqual(2, c);
-        }
-
-        [Test]
-        public void ShouldSubtractTwoFieldElements2()
-        {
-            // Given
-            const int a = 3;
-            const int b = 5;
-
-            // When
-            var c = _field.Subtract(a, b);
-
-            // Then
-            Assert.AreEqual(2, c);
-        }
-
-        [Test]
-        public void ShouldSubtractTwoFieldElements3()
-        {
-            // Given
-            const int a = 5;
-            const int b = 7;
-
-            // When
-            var c = _field.Subtract(a, b);
-
-            // Then
-            Assert.AreEqual(4, c);
-        }
-
-        [Test]
-        public void ShouldMultiplyTwoFieldElements1()
-        {
-            // Given
-            const int a = 2;
-            const int b = 4;
-
-            // When
-            var c = _field.Multiply(a, b);
-
-            // Then
-            Assert.AreEqual(5, c);
-        }
-
-        [Test]
-        public void ShouldMultiplyTwoFieldElements2()
-        {
-            // Given
-            const int a = 6;
-            const int b = 7;
-
-            // When
-            var c = _field.Multiply(a, b);
-
-            // Then
-            Assert.AreEqual(5, c);
-        }
-
-        [Test]
-        public void ShouldMultiplyTwoFieldElements3()
-        {
-            // Given
-            const int a = 2;
-            const int b = 7;
-
-            // When
-            var c = _field.Multiply(a, b);
-
-            // Then
-            Assert.AreEqual(1, c);
-        }
-
-        [Test]
-        public void ShouldDivideZero()
-        {
-            // Given
-            const int a = 0;
-            const int b = 3;
-
-            // When
-            var c = _field.Divide(a, b);
-
-            // Then
-            Assert.AreEqual(0, c);
-        }
-
-        [Test]
-        public void ShouldDivideTwoFieldElements1()
-        {
-            // Given
-            const int a = 4;
-            const int b = 3;
-
-            // When
-            var c = _field.Divide(a, b);
-
-            // Then
-            Assert.AreEqual(_field[a], (_field[b]*_field[c])%_field.IrreduciblePolynomial);
-        }
-
-        [Test]
-        public void ShouldDivideTwoFieldElements2()
-        {
-            // Given
-            const int a = 7;
-            const int b = 2;
-
-            // When
-            var c = _field.Divide(a, b);
-
-            // Then
-            Assert.AreEqual(_field[a], (_field[b] * _field[c]) % _field.IrreduciblePolynomial);
-        }
-
-        [Test]
-        public void ShouldDivideTwoFieldElements3()
-        {
-            // Given
-            const int a = 2;
-            const int b = 7;
-
-            // When
-            var c = _field.Divide(a, b);
-
-            // Then
-            Assert.AreEqual(_field[a], (_field[b] * _field[c]) % _field.IrreduciblePolynomial);
+            Assert.AreEqual(_field[dividend], (_field[divisor]*_field[c])%_field.IrreduciblePolynomial);
         }
     }
 }

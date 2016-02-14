@@ -276,7 +276,7 @@
         /// </summary>
         /// <param name="degree">Степень новой переменной</param>
         /// <returns>Многочлен после изменений</returns>
-        public Polynomial RaiseVariableDegre(int degree)
+        public Polynomial RaiseVariableDegree(int degree)
         {
             if(degree < 1)
                 throw new ArgumentException("degree");

@@ -6,108 +6,43 @@
     [TestFixture]
     public class PrimeOrderFieldTests
     {
-        private PrimeOrderField _field;
+        private readonly PrimeOrderField _field;
 
-        [SetUp]
-        public void Init()
+        public PrimeOrderFieldTests()
         {
             _field = new PrimeOrderField(5);
         }
 
-        [Test]
-        public void ShouldApproveFieldMember()
+        [TestCase(2, Result = true)]
+        [TestCase(6, Result = false)]
+        public bool ShouldApproveFieldMember(int element)
         {
-            // Given
-            const int a = 2;
-
-            // When
-            var isFiledMember = _field.IsFieldElement(a);
-
-            // Then
-            Assert.AreEqual(true, isFiledMember);
+            return _field.IsFieldElement(element);
         }
 
-        [Test]
-        public void ShouldNotApproveFieldMember()
+        [TestCase(3, 4, Result = 2)]
+        public int ShouldSumTwoFieldElements(int firstItem, int secondItem)
         {
-            // Given
-            const int a = 6;
-
-            // When
-            var isFiledMember = _field.IsFieldElement(a);
-
-            // Then
-            Assert.AreEqual(false, isFiledMember);
+            return _field.Add(firstItem, secondItem);
         }
 
-        [Test]
-        public void ShouldAddTwoFieldElements()
+        [TestCase(1, 4, Result = 2)]
+        public int ShouldSubtractTwoFieldElements(int minuend, int subtrahend)
         {
-            // Given
-            const int a = 3;
-            const int b = 4;
-
-            // When
-            var c = _field.Add(a, b);
-
-            // Then
-            Assert.AreEqual(2, c);
+            return _field.Subtract(minuend, subtrahend);
         }
 
-        [Test]
-        public void ShouldMultiplyTwoFieldElements()
+        [TestCase(2, 4, Result = 3)]
+        public int ShouldMultiplyTwoFieldElements(int firstMultiplied, int secondMultiplied)
         {
-            // Given
-            const int a = 2;
-            const int b = 4;
-
-            // When
-            var c = _field.Multiply(a, b);
-
-            // Then
-            Assert.AreEqual(3, c);
+            return _field.Multiply(firstMultiplied, secondMultiplied);
         }
 
-        [Test]
-        public void ShouldSubtractTwoFieldElements()
+        [TestCase(0, 3, Result = 0)]
+        [TestCase(4, 3, Result = 3)]
+        public int ShouldDivideTwoFieldElements(int dividend, int divisor)
         {
-            // Given
-            const int a = 1;
-            const int b = 4;
-
-            // When
-            var c = _field.Subtract(a, b);
-
-            // Then
-            Assert.AreEqual(2, c);
-        }
-
-        [Test]
-        public void ShouldDivideTwoFieldElements()
-        {
-            // Given
-            const int a = 4;
-            const int b = 3;
-
-            // When
-            var c = _field.Divide(a, b);
-
-            // Then
-            Assert.AreEqual(3, c);
-        }
-
-        [Test]
-        public void ShouldDivideZero()
-        {
-            // Given
-            const int a = 0;
-            const int b = 3;
-
-            // When
-            var c = _field.Divide(a, b);
-
-            // Then
-            Assert.AreEqual(0, c);
+            return _field.Divide(dividend, divisor);
         }
     }
 }
