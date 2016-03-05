@@ -15,6 +15,31 @@
         /// </summary>
         private List<int> _coefficients;
 
+        /// <summary>
+        /// Операция усечения ведущих нулей коэфициентов многочлена
+        /// </summary>
+        /// <returns>Текущий многочлен без нулевых ведущих коэфициентов</returns>
+        private Polynomial Truncate()
+        {
+            int i;
+            for (i = Degree; i >= 0 && _coefficients[i] == 0; i--) ;
+            _coefficients = _coefficients.Take(i + 1).ToList();
+
+            if (_coefficients.Count == 0)
+                _coefficients.Add(0);
+            return this;
+        }
+
+        /// <summary>
+        ///     Увеличивет степень многочлена до заданной, заполняя список коэффициентов нулями
+        /// </summary>
+        /// <param name="newDegree">Новая степень многочлена</param>
+        private void Enlarge(int newDegree)
+        {
+            if (Degree < newDegree)
+                _coefficients.AddRange(Enumerable.Repeat(0, newDegree - Degree));
+        }
+
         private bool Equals(Polynomial other)
         {
             return _coefficients.SequenceEqual(other._coefficients) && Equals(Field, other.Field);
@@ -94,7 +119,7 @@
         {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
-            return obj.GetType() == this.GetType() && Equals((Polynomial)obj);
+            return obj.GetType() == GetType() && Equals((Polynomial)obj);
         }
 
         public override int GetHashCode()
@@ -104,6 +129,11 @@
                 return (_coefficients.Aggregate(0, (hash, x) => hash*31 ^ x)*397) ^ Field.GetHashCode();
             }
         }
+
+        /// <summary>
+        /// Checks is polynomial zero
+        /// </summary>
+        public bool IsZero => Degree == 0 && _coefficients[0] == 0;
 
         public int this[int index]
         {
@@ -123,31 +153,6 @@
 
                 _coefficients[index] = value;
             }
-        }
-
-        /// <summary>
-        /// Операция усечения ведущих нулей коэфициентов многочлена
-        /// </summary>
-        /// <returns>Текущий многочлен без нулевых ведущих коэфициентов</returns>
-        private Polynomial Truncate()
-        {
-            int i;
-            for (i = Degree; i >= 0 && _coefficients[i] == 0; i--) ;
-            _coefficients = _coefficients.Take(i + 1).ToList();
-
-            if (_coefficients.Count == 0)
-                _coefficients.Add(0);
-            return this;
-        }
-
-        /// <summary>
-        ///     Увеличивет степень многочлена до заданной, заполняя список коэффициентов нулями
-        /// </summary>
-        /// <param name="newDegree">Новая степень многочлена</param>
-        private void Enlarge(int newDegree)
-        {
-            if (Degree < newDegree)
-                _coefficients.AddRange(Enumerable.Repeat(0, newDegree - Degree));
         }
 
         /// <summary>
@@ -189,7 +194,7 @@
             if(Field.IsFieldElement(b) == false)
                 throw new ArgumentException("b");
 
-            if (Degree == 0 && _coefficients[0] == 0 || b == 0)
+            if (IsZero || b == 0)
             {
                 _coefficients = new List<int> { 0 };
                 return this;
@@ -224,28 +229,80 @@
         }
 
         /// <summary>
+        /// Делит текущий многочлен на элемент поля
+        /// </summary>
+        /// <param name="b">Делитель</param>
+        public Polynomial Divide(int b)
+        {
+            if (Field.IsFieldElement(b) == false || b == 0)
+                throw new ArgumentException("b");
+
+            if (IsZero)
+            {
+                _coefficients = new List<int> { 0 };
+                return this;
+            }
+
+            for (var i = 0; i <= Degree; i++)
+                _coefficients[i] = Field.Divide(_coefficients[i], b);
+            return Truncate();
+        }
+
+        /// <summary>
+        /// Вычисление результата деления текущего многочлена на заданный
+        /// </summary>
+        /// <param name="b">Делитель</param>
+        /// <returns>Пара (частное, остаток)</returns>
+        public Tuple<Polynomial, Polynomial> DivideEx(Polynomial b)
+        {
+            if (Field.Equals(b.Field) == false)
+                throw new ArgumentException("b");
+
+            var result = new Tuple<Polynomial, Polynomial>(new Polynomial(Field), new Polynomial(this));
+            var quotientPolynomial = result.Item1;
+            var remainderPolynomial = result.Item2;
+
+            if (Degree < b.Degree)
+                return result;
+            quotientPolynomial.Enlarge(Degree - b.Degree);
+
+            for (var i = 0; i <= Degree - b.Degree; i++)
+            {
+                if (remainderPolynomial[Degree - i] == 0)
+                    continue;
+
+                var quotient = Field.Divide(remainderPolynomial[Degree - i], b[b.Degree]);
+                quotientPolynomial[quotientPolynomial.Degree - i] = quotient;
+
+                for (var j = 0; j <= b.Degree; j++)
+                    remainderPolynomial[Degree - i - j] = Field.Subtract(remainderPolynomial[Degree - i - j],
+                        Field.Multiply(b[b.Degree - j], quotient));
+            }
+
+            remainderPolynomial.Truncate();
+            return result;
+        }
+
+        /// <summary>
+        /// Делит текущий многочлен на заданный
+        /// </summary>
+        /// <param name="b">Делитель</param>
+        public Polynomial Divide(Polynomial b)
+        {
+            var divisionResult = DivideEx(b);
+            _coefficients = divisionResult.Item1._coefficients;
+            return this;
+        }
+
+        /// <summary>
         /// Вычисляет текущий многочлен по модулю переданного
         /// </summary>
         /// <param name="b">Многочлен, по модулю которого берется текущий</param>
         public Polynomial Modulo(Polynomial b)
         {
-            if (Field.Equals(b.Field) == false)
-                throw new ArgumentException("b");
-
-            if (Degree < b.Degree)
-                return this;
-
-            for (var i = 0; i <= Degree - b.Degree; i++)
-            {
-                if(_coefficients[Degree - i] == 0)
-                    continue;
-
-                var quotient = Field.Divide(_coefficients[Degree - i], b[b.Degree]);
-                for (var j = 0; j <= b.Degree; j++)
-                    _coefficients[Degree - i - j] = Field.Subtract(_coefficients[Degree - i - j],
-                        Field.Multiply(b[b.Degree - j], quotient));
-            }
-            return Truncate();
+            var divisionResult = DivideEx(b);
+            _coefficients = divisionResult.Item2._coefficients;
+            return this;
         }
 
         /// <summary>
@@ -304,14 +361,9 @@
             if(Field.IsFieldElement(variableValue) == false)
                 throw new ArgumentException("variableValue");
 
-            var result = _coefficients[0];
-            var power = 1;
-            for (var i = 1; i <= Degree; i++)
-            {
-                power = Field.Multiply(power, variableValue);
-                if (_coefficients[i] != 0)
-                    result = Field.Add(result, Field.Multiply(_coefficients[i], power));
-            }
+            var result = 0;
+            for (var i = _coefficients.Count - 1; i >= 0; i--)
+                result = Field.Add(_coefficients[i], Field.Multiply(result, variableValue));
             return result;
         }
 
@@ -350,6 +402,23 @@
             return c.Modulo(b);
         }
 
+        public static Polynomial Divide(Polynomial a, Polynomial b)
+        {
+            var c = new Polynomial(a);
+            return c.Divide(b);
+        }
+
+        public static Polynomial Divide(Polynomial a, int b)
+        {
+            var c = new Polynomial(a);
+            return c.Divide(b);
+        }
+
+        public static Polynomial Divide(int a, Polynomial b)
+        {
+            return Divide(b, a);
+        }
+
         public static Polynomial RightShift(Polynomial a, int degreeDelta)
         {
             var c = new Polynomial(a);
@@ -379,6 +448,21 @@
         public static Polynomial operator *(int a, Polynomial b)
         {
             return Multiply(a, b);
+        }
+
+        public static Polynomial operator /(Polynomial a, Polynomial b)
+        {
+            return Divide(a, b);
+        }
+
+        public static Polynomial operator /(Polynomial a, int b)
+        {
+            return Divide(a, b);
+        }
+
+        public static Polynomial operator /(int a, Polynomial b)
+        {
+            return Divide(a, b);
         }
 
         public static Polynomial operator %(Polynomial a, Polynomial b)

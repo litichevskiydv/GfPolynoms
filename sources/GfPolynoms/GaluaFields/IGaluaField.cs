@@ -48,5 +48,19 @@
         /// <param name="b">Делитель</param>
         /// <returns>Частное</returns>
         int Divide(int a, int b);
+
+        /// <summary>
+        /// Inverts field element
+        /// </summary>
+        /// <param name="a">Invetible element</param>
+        /// <returns>Inverse osite element</returns>
+        int InverseForAddition(int a);
+
+        /// <summary>
+        /// Inverts field element
+        /// </summary>
+        /// <param name="a">Invetible element</param>
+        /// <returns>Inverse osite element</returns>
+        int InverseForMultiplication(int a);
     }
 }

@@ -96,7 +96,7 @@
             var field = new PrimePowerOrderField(8, 2, new[] { 1, 1, 0, 1 });
             var m = new Polynomial(field, 1).RightShift(7);
             m[0] = 1;
-            var f = new Polynomial(field, 0, 4, 2, 0, 3, 2, 6);
+            var f = new Polynomial(field, 0, 3, 2, 0, 4, 2, 7);
 
             CalculateSpectrum(field.Order, informationWordLength, codeWordLength,
                 informatonWord =>

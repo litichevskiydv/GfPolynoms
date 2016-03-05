@@ -6,20 +6,20 @@
     [TestFixture]
     public class PolynomialUnderPrimeOrderFieldTest
     {
-        private readonly PrimeOrderField _fieldOrder2;
-        private readonly PrimeOrderField _fieldOrder3;
+        private readonly PrimeOrderField _gf2;
+        private readonly PrimeOrderField _gf3;
 
         public PolynomialUnderPrimeOrderFieldTest()
         {
-            _fieldOrder2 = new PrimeOrderField(2);
-            _fieldOrder3 = new PrimeOrderField(3);
+            _gf2 = new PrimeOrderField(2);
+            _gf3 = new PrimeOrderField(3);
         }
 
         [Test]
         public void ShouldCreatePolynomFromArray1()
         {
             // Given
-            var a = new Polynomial(_fieldOrder2, 0, 1, 1, 0);
+            var a = new Polynomial(_gf2, 0, 1, 1, 0);
 
             //Then
             Assert.AreEqual(2, a.Degree);
@@ -32,7 +32,7 @@
         public void ShouldCreatePolynomFromArray2()
         {
             // Given
-            var a = new Polynomial(_fieldOrder2, 0, 0, 0, 0);
+            var a = new Polynomial(_gf2, 0, 0, 0, 0);
 
             //Then
             Assert.AreEqual(0, a.Degree);
@@ -40,50 +40,50 @@
 
         [TestCase(new[] {1, 1}, new[] {0, 1, 1}, new[] {1, 0, 1})]
         [TestCase(new[] {1, 1, 1}, new[] {1, 0, 1}, new[] {0, 1})]
-        public void ShouldSumTwoPolynomsUnderFieldOrder2(int[] firstItemCoefficients, int[] secondItemCoefficients, int[] sumCoefficients)
+        public void ShouldSumTwoPolynomsUnderGf2(int[] firstItemCoefficients, int[] secondItemCoefficients, int[] sumCoefficients)
         {
             // Given
-            var a = new Polynomial(_fieldOrder2, firstItemCoefficients);
-            var b = new Polynomial(_fieldOrder2, secondItemCoefficients);
+            var a = new Polynomial(_gf2, firstItemCoefficients);
+            var b = new Polynomial(_gf2, secondItemCoefficients);
 
             // When
             var c = a + b;
 
             // Then
-            Assert.AreEqual(new Polynomial(_fieldOrder2, sumCoefficients), c);
+            Assert.AreEqual(new Polynomial(_gf2, sumCoefficients), c);
         }
 
         [TestCase(new[] {0, 1, 1}, new[] {1, 0, 1}, new[] {1, 1})]
         [TestCase(new[] {0, 0, 1}, new[] {1, 1}, new[] {1, 1, 1})]
         [TestCase(new[] {1, 1}, new[] {1, 1}, new[] {0})]
-        public void ShouldSubtractTwoPolynomsUnderFieldOrder2(int[] minuendCoefficients, int[] subtrahendCoefficients, int[] differenceCoefficients)
+        public void ShouldSubtractTwoPolynomsUnderGf2(int[] minuendCoefficients, int[] subtrahendCoefficients, int[] differenceCoefficients)
         {
             // Given
-            var a = new Polynomial(_fieldOrder2, minuendCoefficients);
-            var b = new Polynomial(_fieldOrder2, subtrahendCoefficients);
+            var a = new Polynomial(_gf2, minuendCoefficients);
+            var b = new Polynomial(_gf2, subtrahendCoefficients);
 
             // When
             var c = a - b;
 
             // Then
-            Assert.AreEqual(new Polynomial(_fieldOrder2, differenceCoefficients), c);
+            Assert.AreEqual(new Polynomial(_gf2, differenceCoefficients), c);
         }
 
         [TestCase(new[] {1, 1}, new[] {1, 1}, new[] {1, 0, 1})]
         [TestCase(new[] {0, 1}, new[] {1, 1}, new[] {0, 1, 1})]
         [TestCase(new[] {0, 1, 1}, new[] {1, 1}, new[] {0, 1, 0, 1})]
-        public void ShouldMultiplyTwoPolynomsUnderFieldOrder2(int[] firstMultipliedCoefficients, int[] secondMultipliedCoefficients,
+        public void ShouldMultiplyTwoPolynomsUnderGf2(int[] firstMultipliedCoefficients, int[] secondMultipliedCoefficients,
             int[] productCoefficients)
         {
             // Given
-            var a = new Polynomial(_fieldOrder2, firstMultipliedCoefficients);
-            var b = new Polynomial(_fieldOrder2, secondMultipliedCoefficients);
+            var a = new Polynomial(_gf2, firstMultipliedCoefficients);
+            var b = new Polynomial(_gf2, secondMultipliedCoefficients);
 
             // When
             var c = a*b;
 
             // Then
-            Assert.AreEqual(new Polynomial(_fieldOrder2, productCoefficients), c);
+            Assert.AreEqual(new Polynomial(_gf2, productCoefficients), c);
         }
 
         [TestCase(new[] {1}, new[] {1, 1, 0, 1}, new[] {1})]
@@ -93,31 +93,31 @@
         [TestCase(new[] {0, 0, 0, 0, 0, 1}, new[] {1, 1, 0, 1}, new[] {1, 1, 1})]
         [TestCase(new[] {0, 0, 0, 0, 0, 0, 1}, new[] {1, 1, 0, 1}, new[] {1, 0, 1})]
         [TestCase(new[] {0, 0, 0, 0, 0, 0, 0, 1}, new[] {1, 1, 0, 1}, new[] {1})]
-        public void ShouldCalculateModuloUnderFieldOrder2(int[] dividendCoefficients, int[] divisorCoefficients, int[] remainderCoefficients)
+        public void ShouldCalculateModuloUnderGf2(int[] dividendCoefficients, int[] divisorCoefficients, int[] remainderCoefficients)
         {
             // Given
-            var a = new Polynomial(_fieldOrder2, dividendCoefficients);
-            var b = new Polynomial(_fieldOrder2, divisorCoefficients);
+            var a = new Polynomial(_gf2, dividendCoefficients);
+            var b = new Polynomial(_gf2, divisorCoefficients);
 
             // When
             var c = a%b;
 
             // Then
-            Assert.AreEqual(new Polynomial(_fieldOrder2, remainderCoefficients), c);
+            Assert.AreEqual(new Polynomial(_gf2, remainderCoefficients), c);
         }
 
         [TestCase(new[] {0, 0, 0, 1}, new[] {1, 1}, new[] {2})]
-        public void ShouldCalculateModuloUnderFieldOrder3(int[] dividendCoefficients, int[] divisorCoefficients, int[] remainderCoefficients)
+        public void ShouldCalculateModuloUnderGf3(int[] dividendCoefficients, int[] divisorCoefficients, int[] remainderCoefficients)
         {
             // Given
-            var a = new Polynomial(_fieldOrder3, dividendCoefficients);
-            var b = new Polynomial(_fieldOrder3, divisorCoefficients);
+            var a = new Polynomial(_gf3, dividendCoefficients);
+            var b = new Polynomial(_gf3, divisorCoefficients);
 
             // When
             var c = a%b;
 
             // Then
-            Assert.AreEqual(new Polynomial(_fieldOrder3, remainderCoefficients), c);
+            Assert.AreEqual(new Polynomial(_gf3, remainderCoefficients), c);
         }
 
 
@@ -126,13 +126,13 @@
         public void ShouldPerformRightShift(int[] initialCoefficients, int shift, int[] resultCoefficients)
         {
             // Given
-            var a = new Polynomial(_fieldOrder2, initialCoefficients);
+            var a = new Polynomial(_gf2, initialCoefficients);
 
             // When
             var c = a >> shift;
 
             // Then
-            Assert.AreEqual(new Polynomial(_fieldOrder2, resultCoefficients), c);
+            Assert.AreEqual(new Polynomial(_gf2, resultCoefficients), c);
         }
 
         [TestCase(new[] {1, 1, 1}, 2, new[] {1, 0, 1, 0, 1})]
@@ -140,21 +140,21 @@
         public void ShouldRaiseVariableDegre(int[] initialCoefficients, int newDegree, int[] resultCoefficients)
         {
             // Given
-            var a = new Polynomial(_fieldOrder3, initialCoefficients);
+            var a = new Polynomial(_gf3, initialCoefficients);
 
             // When
             a.RaiseVariableDegree(newDegree);
 
             // Then
-            Assert.AreEqual(new Polynomial(_fieldOrder3, resultCoefficients), a);
+            Assert.AreEqual(new Polynomial(_gf3, resultCoefficients), a);
         }
 
         [TestCase(new[] {1, 2, 1}, 2, Result = 0)]
         [TestCase(new[] { 1, 2, 2 }, 2, Result = 1)]
-        public int ShouldEvaluateValueUnderFieldOrder3(int[] coefficients, int parameterValue)
+        public int ShouldEvaluateValueUnderGf3(int[] coefficients, int parameterValue)
         {
             // Given
-            var a = new Polynomial(_fieldOrder3, coefficients);
+            var a = new Polynomial(_gf3, coefficients);
 
             // When
             var value = a.Evaluate(parameterValue);
