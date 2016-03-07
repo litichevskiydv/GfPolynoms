@@ -1,0 +1,35 @@
+{
+  "version": "1.0.0-*",
+  "description": "SpectrumAnalyzer Console Application",
+  "authors": [ "Дмитрий" ],
+  "tags": [ "" ],
+  "projectUrl": "",
+  "licenseUrl": "",
+
+  "compilationOptions": {
+    "emitEntryPoint": true
+  },
+
+  "dependencies": {
+    "GfPolynoms": "1.0.0-*",
+    "JetBrains.Annotations": "10.1.2-eap",
+    "System.Threading.Tasks.Parallel": "4.0.1-beta-23516"
+  },
+
+  "commands": {
+    "SpectrumAnalyzer": "SpectrumAnalyzer"
+  },
+
+  "frameworks": {
+    "dnx451": { },
+    "dnxcore50": {
+      "dependencies": {
+        "Microsoft.CSharp": "4.0.1-beta-23516",
+        "System.Collections": "4.0.11-beta-23516",
+        "System.Console": "4.0.0-beta-23516",
+        "System.Linq": "4.0.1-beta-23516",
+        "System.Threading": "4.0.11-beta-23516"
+      }
+    }
+  }
+}

@@ -11,7 +11,7 @@ Debug
 Release
 UpgradeLog.*
 _UpgradeReport_Files/
-packages/
+artifacts/
 _UpgradeReport*
 *.dbmdl
 *.ncrunchproject

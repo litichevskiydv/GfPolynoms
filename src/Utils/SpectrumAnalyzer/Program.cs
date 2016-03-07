@@ -2,13 +2,15 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Diagnostics;
     using System.Linq;
     using System.Threading.Tasks;
+    using System.Diagnostics;
     using GfPolynoms;
     using GfPolynoms.GaluaFields;
+    using JetBrains.Annotations;
 
-    static class Program
+    [UsedImplicitly]
+    public static class Program
     {
         private static void CalculateCodeWords(int fieldOrder, int[] informationWord, int informationWordPosition, Func<int[], int[]> codeWordCalculator, ICollection<int[]> codeWords)
         {
@@ -102,7 +104,7 @@
                 informatonWord =>
                 {
                     var informationPolynomial = new Polynomial(field, informatonWord);
-                    var c = (informationPolynomial.RaiseVariableDegree(2)*f)%m;
+                    var c = (informationPolynomial.RaiseVariableDegree(2) * f) % m;
 
                     var codeWord = new int[field.Order - 1];
                     for (var i = 0; i <= c.Degree; i++)
@@ -111,10 +113,12 @@
                 });
         }
 
-        static void Main()
+        [UsedImplicitly]
+        public static void Main()
         {
             CalculateSpectrumForWavelet37Code();
             Console.ReadKey();
         }
     }
+
 }

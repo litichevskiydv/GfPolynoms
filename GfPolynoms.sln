@@ -1,15 +1,22 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.23107.0
+VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Utils", "Utils", "{ACA2BD00-9DE8-4309-8645-BB57EF1DA856}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{7BFEEFE9-65A4-453B-9F52-28997CA70C48}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GfPolynoms", "sources\GfPolynoms\GfPolynoms.csproj", "{BF056AEA-80BD-4FAE-B617-CCF0F34B72C5}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{BB075B71-8C9C-4D22-B14A-9E3B0EB50771}"
+	ProjectSection(SolutionItems) = preProject
+		global.json = global.json
+	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GfPolynoms.Tests", "sources\GfPolynoms.Tests\GfPolynoms.Tests.csproj", "{B8B14175-7BC6-4966-9098-E02BEF6E9B04}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "GfPolynoms", "src\GfPolynoms\GfPolynoms.xproj", "{3548CA32-3718-431B-8ED8-854522411EC4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpectrumAnalyzer", "sources\Utils\SpectrumAnalyzer\SpectrumAnalyzer.csproj", "{EE7AFDE3-6226-44AB-BAB4-E12C2E78025E}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "GfPolynoms.Tests", "src\GfPolynoms.Tests\GfPolynoms.Tests.xproj", "{3F48CEAD-FFD1-4524-B251-09CEB737E28A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Utils", "Utils", "{64C4A487-D92F-45CA-81B0-E6996A80812E}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "SpectrumAnalyzer", "src\Utils\SpectrumAnalyzer\SpectrumAnalyzer.xproj", "{D6A15C90-AAAB-4C19-8A29-CF7B68B83AC0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,23 +24,25 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{BF056AEA-80BD-4FAE-B617-CCF0F34B72C5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BF056AEA-80BD-4FAE-B617-CCF0F34B72C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BF056AEA-80BD-4FAE-B617-CCF0F34B72C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BF056AEA-80BD-4FAE-B617-CCF0F34B72C5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B8B14175-7BC6-4966-9098-E02BEF6E9B04}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B8B14175-7BC6-4966-9098-E02BEF6E9B04}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B8B14175-7BC6-4966-9098-E02BEF6E9B04}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B8B14175-7BC6-4966-9098-E02BEF6E9B04}.Release|Any CPU.Build.0 = Release|Any CPU
-		{EE7AFDE3-6226-44AB-BAB4-E12C2E78025E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EE7AFDE3-6226-44AB-BAB4-E12C2E78025E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{EE7AFDE3-6226-44AB-BAB4-E12C2E78025E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EE7AFDE3-6226-44AB-BAB4-E12C2E78025E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3548CA32-3718-431B-8ED8-854522411EC4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3548CA32-3718-431B-8ED8-854522411EC4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3548CA32-3718-431B-8ED8-854522411EC4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3548CA32-3718-431B-8ED8-854522411EC4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3F48CEAD-FFD1-4524-B251-09CEB737E28A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3F48CEAD-FFD1-4524-B251-09CEB737E28A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3F48CEAD-FFD1-4524-B251-09CEB737E28A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3F48CEAD-FFD1-4524-B251-09CEB737E28A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D6A15C90-AAAB-4C19-8A29-CF7B68B83AC0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D6A15C90-AAAB-4C19-8A29-CF7B68B83AC0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D6A15C90-AAAB-4C19-8A29-CF7B68B83AC0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D6A15C90-AAAB-4C19-8A29-CF7B68B83AC0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{EE7AFDE3-6226-44AB-BAB4-E12C2E78025E} = {ACA2BD00-9DE8-4309-8645-BB57EF1DA856}
+		{3548CA32-3718-431B-8ED8-854522411EC4} = {7BFEEFE9-65A4-453B-9F52-28997CA70C48}
+		{3F48CEAD-FFD1-4524-B251-09CEB737E28A} = {7BFEEFE9-65A4-453B-9F52-28997CA70C48}
+		{D6A15C90-AAAB-4C19-8A29-CF7B68B83AC0} = {64C4A487-D92F-45CA-81B0-E6996A80812E}
 	EndGlobalSection
 EndGlobal
