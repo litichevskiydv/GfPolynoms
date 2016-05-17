@@ -2,22 +2,19 @@
   "version": "1.0.0-*",
   "description": "GfPolynoms Class Library",
   "authors": [ "Дмитрий" ],
-  "tags": [ "" ],
-  "projectUrl": "",
-  "licenseUrl": "",
+
   "frameworks": {
-    "net451": { },
-    "dotnet5.4": {
-      "dependencies": {
-        "Microsoft.CSharp": "4.0.1-beta-23516",
-        "System.Collections": "4.0.11-beta-23516",
-        "System.Linq": "4.0.1-beta-23516",
-        "System.Runtime": "4.0.21-beta-23516",
-        "System.Threading": "4.0.11-beta-23516"
-      }
+        "netcoreapp1.0": {
+            "dependencies": {
+                "Microsoft.NETCore.App": {
+                    "type": "platform",
+                    "version": "1.0.0-rc2-3002702"
+                }
+            },
+            "imports": [
+                "dnxcore50",
+                "portable-net45+win8"
+            ]
+        }
     }
-  },
-  "dependencies": {
-    "System.Collections.Concurrent": "4.0.11-beta-23516"
-  }
 }
