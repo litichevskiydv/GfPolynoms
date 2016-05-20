@@ -17,3 +17,4 @@ _UpgradeReport*
 *.ncrunchproject
 *.ncrunchsolution
 /.vs/
+project.lock.json

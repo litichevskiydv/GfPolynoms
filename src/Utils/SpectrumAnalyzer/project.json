@@ -4,7 +4,8 @@
   "authors": [ "Дмитрий" ],
 
   "buildOptions": {
-    "emitEntryPoint": true
+    "emitEntryPoint": true,
+    "debugType": "portable"
   },
 
   "frameworks": {

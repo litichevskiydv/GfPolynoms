@@ -1,0 +1,21 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": ".NET Core Launch",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceRoot}/src/Utils/SpectrumAnalyzer/bin/Debug/netcoreapp1.0/SpectrumAnalyzer.dll",
+            "args": [],
+            "cwd": "${workspaceRoot}/src/Utils/SpectrumAnalyzer/",
+            "stopAtEntry": false
+        },
+        {
+            "name": ".NET Core Attach",
+            "type": "coreclr",
+            "request": "attach",
+            "processName": "<example>"
+        }
+    ]
+}

@@ -1,0 +1,18 @@
+{
+    "version": "0.1.0",
+    "command": "dotnet",
+    "isShellCommand": true,
+    "args": [],
+    "options":  {
+        "cwd": "${workspaceRoot}/src/Utils/SpectrumAnalyzer/"
+    },
+    "tasks": [
+        {
+            "taskName": "build",
+            "suppressTaskName": true,
+            "args": ["build" ],
+            "isBuildCommand": true,
+            "problemMatcher": "$msCompile"
+        }
+    ]
+}
