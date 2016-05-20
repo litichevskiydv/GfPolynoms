@@ -8,9 +8,12 @@
     },
     "tasks": [
         {
+            "taskName": "restore",
+            "showOutput": "always",
+            "problemMatcher": "$msCompile"
+        },
+        {
             "taskName": "build",
-            "suppressTaskName": true,
-            "args": ["build" ],
             "isBuildCommand": true,
             "problemMatcher": "$msCompile"
         }
