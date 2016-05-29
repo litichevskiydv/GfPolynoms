@@ -1,5 +1,6 @@
 ﻿namespace GfPolynoms.Tests
 {
+    using System;
     using System.Collections.Generic;
     using GfPolynoms.GaluaFields;
     using JetBrains.Annotations;
@@ -11,6 +12,8 @@
         private static readonly PrimeOrderField Gf3;
 
         [UsedImplicitly]
+        public static readonly IEnumerable<object[]> DevideTestsData;
+        [UsedImplicitly]
         public static readonly IEnumerable<object[]> ModuloTestsData;
 
         static PolynomialUnderPrimeOrderFieldTest()
@@ -18,6 +21,18 @@
             Gf2 = new PrimeOrderField(2);
             Gf3 = new PrimeOrderField(3);
 
+
+            DevideTestsData = new[]
+                               {
+                                   new object[] {Gf2, new[] {1}, new[] {1, 1, 0, 1}, new[] {0}},
+                                   new object[] {Gf2, new[] {0, 1}, new[] {1, 1, 0, 1}, new[] {0}},
+                                   new object[] {Gf2, new[] {0, 0, 0, 1}, new[] {1, 1, 0, 1}, new[] {1}},
+                                   new object[] {Gf2, new[] {0, 0, 0, 0, 1}, new[] {1, 1, 0, 1}, new[] {0, 1}},
+                                   new object[] {Gf2, new[] {0, 0, 0, 0, 0, 1}, new[] {1, 1, 0, 1}, new[] {1, 0, 1}},
+                                   new object[] {Gf2, new[] {0, 0, 0, 0, 0, 0, 1}, new[] {1, 1, 0, 1}, new[] {1, 1, 0, 1}},
+                                   new object[] {Gf2, new[] {0, 0, 0, 0, 0, 0, 0, 1}, new[] {1, 1, 0, 1}, new[] {1, 1, 1, 0, 1 } },
+                                   new object[] {Gf3, new[] {0, 0, 0, 1}, new[] {1, 1}, new[] {1, 2, 1}}
+                               };
             ModuloTestsData = new[]
                                {
                                    new object[] {Gf2, new[] {1}, new[] {1, 1, 0, 1}, new[] {1}},
@@ -104,6 +119,32 @@
 
             // Then
             Assert.Equal(new Polynomial(Gf2, productCoefficients), c);
+        }
+
+        [Fact]
+        public void ShouldThrowArgumentExceptionWhenDevideByZero()
+        {
+            // Given
+            var a = new Polynomial(Gf2, 1);
+            var b = new Polynomial(Gf2);
+
+            // Then
+            Assert.Throws<ArgumentException>(() => a/b);
+        }
+
+        [Theory]
+        [MemberData(nameof(DevideTestsData))]
+        public void ShouldDevide(PrimeOrderField field, int[] dividendCoefficients, int[] divisorCoefficients, int[] quotientCoefficients)
+        {
+            // Given
+            var a = new Polynomial(field, dividendCoefficients);
+            var b = new Polynomial(field, divisorCoefficients);
+
+            // When
+            var c = a/b;
+
+            // Then
+            Assert.Equal(new Polynomial(field, quotientCoefficients), c);
         }
 
         [Theory]

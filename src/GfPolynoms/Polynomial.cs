@@ -255,7 +255,7 @@
         /// <returns>Пара (частное, остаток)</returns>
         public Tuple<Polynomial, Polynomial> DivideEx(Polynomial b)
         {
-            if (Field.Equals(b.Field) == false)
+            if (Field.Equals(b.Field) == false || b.IsZero)
                 throw new ArgumentException("b");
 
             var result = new Tuple<Polynomial, Polynomial>(new Polynomial(Field), new Polynomial(this));
