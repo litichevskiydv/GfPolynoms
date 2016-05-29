@@ -1,0 +1,21 @@
+﻿{
+  "version": "1.0.0-*",
+  "authors": [ "Дмитрий" ],
+  "frameworks": {
+    "netcoreapp1.0": {
+      "dependencies": {
+        "Microsoft.NETCore.App": {
+          "type": "platform",
+          "version": "1.0.0-rc2-3002702"
+        }
+      },
+      "imports": [
+        "dnxcore50",
+        "portable-net45+win8"
+      ]
+    }
+  },
+  "dependencies": {
+    "GfPolynoms": "1.0.0-*"
+  }
+}
