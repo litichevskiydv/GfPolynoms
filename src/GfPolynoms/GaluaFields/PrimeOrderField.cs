@@ -1,25 +1,31 @@
 ﻿namespace GfPolynoms.GaluaFields
 {
     using System;
-    using System.Collections.Concurrent;
+    using System.Collections.Generic;
+    using System.Linq;
 
     public class PrimeOrderField : IGaluaField
     {
-        private class GcdSearchResult
-        {
-            public int Gcd { get; }
-            public int X { get; set; }
-            public int Y { get; set; }
+        private Dictionary<int, int> _elementsByPowers;
+        private readonly Dictionary<int, int> _powersByElements;
 
-            public GcdSearchResult(int gcd, int x, int y)
+        private void BuildMultiplicativeGroup()
+        {
+            for (var i = 1; i < Order; i++)
             {
-                Gcd = gcd;
-                X = x;
-                Y = y;
+                for (int newElement = 1, power = 0;
+                    !_powersByElements.ContainsKey(newElement);
+                    newElement = (newElement*i)%Order, power++)
+                    _powersByElements[newElement] = power;
+
+                if (_powersByElements.Count == Order - 1)
+                {
+                    _elementsByPowers = _powersByElements.ToDictionary(x => x.Value, x => x.Key);
+                    break;
+                }
+                _powersByElements.Clear();
             }
         }
-
-        private readonly ConcurrentDictionary<int, int> _inverseElementsByMultiply;
 
         private void ValidateArguments(int a, int b)
         {
@@ -27,30 +33,6 @@
                 throw new ArgumentException($"Element {a} is not field member");
             if (IsFieldElement(b) == false)
                 throw new ArgumentException($"Element {b} is not field member");
-        }
-
-        /// <summary>
-        /// Find x and y such that a*x + b*y = gcd(a,b) 
-        /// </summary>
-        private static GcdSearchResult ExtendedGrandCommonDivisor(int a, int b)
-        {
-            if (a == 0)
-                return new GcdSearchResult(b, 0, 1);
-
-            var result = ExtendedGrandCommonDivisor(b%a, a);
-            var xOld = result.X;
-            result.X = result.Y - (b/a)*xOld;
-            result.Y = xOld;
-
-            return result;
-        }
-
-        private int CalculateInverseElementByMultiply(int element)
-        {
-            var gcdSearchResult = ExtendedGrandCommonDivisor(element, Order);
-            if (gcdSearchResult.Gcd != 1)
-                throw new InvalidOperationException($"Field order {Order} is not prime");
-            return (gcdSearchResult.X + Order)%Order;
         }
 
         private bool Equals(PrimeOrderField other)
@@ -65,7 +47,10 @@
         public PrimeOrderField(int order)
         {
             Order = order;
-            _inverseElementsByMultiply = new ConcurrentDictionary<int, int>();
+
+            _elementsByPowers = new Dictionary<int, int>();
+            _powersByElements = new Dictionary<int, int>();
+            BuildMultiplicativeGroup();
         }
 
         public override bool Equals(object obj)
@@ -134,10 +119,14 @@
             if(a == 0)
                 throw new ArgumentException("Can't inverse zero");
 
-            var inverseElement = _inverseElementsByMultiply.GetOrAdd(a, CalculateInverseElementByMultiply);
-            _inverseElementsByMultiply.TryAdd(inverseElement, a);
+            return _elementsByPowers[(Order - 1 - _powersByElements[a])%(Order - 1)];
+        }
 
-            return inverseElement;
+        public int GetGeneratingElementPower(int power)
+        {
+            return power >= 0
+                ? _elementsByPowers[power%(Order - 1)]
+                : InverseForMultiplication(_elementsByPowers[(-power) % (Order - 1)]);
         }
     }
 }

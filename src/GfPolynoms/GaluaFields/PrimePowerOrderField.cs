@@ -1,29 +1,15 @@
 ﻿namespace GfPolynoms.GaluaFields
 {
     using System;
-    using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Linq;
 
     public class PrimePowerOrderField : IGaluaField
     {
-        private class GcdSearchResult
-        {
-            public Polynomial Gcd { get; }
-            public Polynomial X { get; set; }
-            public Polynomial Y { get; set; }
-
-            public GcdSearchResult(Polynomial gcd, Polynomial x, Polynomial y)
-            {
-                Gcd = gcd;
-                X = x;
-                Y = y;
-            }
-        }
-
+        private Dictionary<int, int> _elementsByPowers;
+        private readonly Dictionary<int, int> _powersByElements;
         private readonly Dictionary<int, Polynomial> _polynomialByRepresentation;
         private readonly Dictionary<Polynomial, int> _representationByPolynomial;
-        private readonly ConcurrentDictionary<int, int> _inverseElementsByMultiply;
 
         private static int CalculateElementRepresentation(int characteristic, IEnumerable<int> coefficients)
         {
@@ -48,29 +34,22 @@
             }
         }
 
-        /// <summary>
-        /// Find x and y such that a*x + b*y = gcd(a,b) 
-        /// </summary>
-        private static GcdSearchResult ExtendedGrandCommonDivisor(Polynomial a, Polynomial b)
+        private void BuildMultiplicativeGroup()
         {
-            if (a.IsZero)
-                return new GcdSearchResult(b, new Polynomial(a.Field), new Polynomial(a.Field, 1));
+            for (var i = 2; i < Order; i++)
+            {
+                for (int newElement = 1, power = 0;
+                    !_powersByElements.ContainsKey(newElement);
+                    newElement = _representationByPolynomial[(_polynomialByRepresentation[newElement]*_polynomialByRepresentation[i])%IrreduciblePolynomial], power++)
+                    _powersByElements[newElement] = power;
 
-            var divisionResult = b.DivideEx(a);
-            var result = ExtendedGrandCommonDivisor(divisionResult.Item2, a);
-            var xOld = result.X;
-            result.X = result.Y - divisionResult.Item1 * xOld;
-            result.Y = xOld;
-
-            return result;
-        }
-
-        private int CalculateInverseElementByMultiply(int element)
-        {
-            var gcdSearchResult = ExtendedGrandCommonDivisor(_polynomialByRepresentation[element], IrreduciblePolynomial);
-            if (gcdSearchResult.Gcd.Degree != 0)
-                throw new InvalidOperationException($"Polynomial {IrreduciblePolynomial} isn't irreducible");
-            return _representationByPolynomial[gcdSearchResult.X/gcdSearchResult.Gcd];
+                if (_powersByElements.Count == Order - 1)
+                {
+                    _elementsByPowers = _powersByElements.ToDictionary(x => x.Value, x => x.Key);
+                    break;
+                }
+                _powersByElements.Clear();
+            }
         }
 
         private void ValidateArguments(int a, int b)
@@ -98,11 +77,14 @@
             Order = order;
             Characteristic = characteristic;
             IrreduciblePolynomial = new Polynomial(new PrimeOrderField(characteristic), irreduciblePolynomial);
-            _inverseElementsByMultiply = new ConcurrentDictionary<int, int>();
 
             _representationByPolynomial = new Dictionary<Polynomial, int>();
             _polynomialByRepresentation = new Dictionary<int, Polynomial>();
             GenerateFieldElements(characteristic, new int[IrreduciblePolynomial.Degree], IrreduciblePolynomial.Degree - 1);
+
+            _elementsByPowers = new Dictionary<int, int>();
+            _powersByElements = new Dictionary<int, int>();
+            BuildMultiplicativeGroup();
         }
 
         public override bool Equals(object obj)
@@ -162,7 +144,7 @@
             if (a == 0 || b == 0)
                 return 0;
 
-            return _representationByPolynomial[(_polynomialByRepresentation[a]*_polynomialByRepresentation[b])%IrreduciblePolynomial];
+            return _elementsByPowers[(_powersByElements[a] + _powersByElements[b])%(Order - 1)];
         }
 
         public int Divide(int a, int b)
@@ -171,7 +153,9 @@
             if (b == 0)
                 throw new ArgumentException("b");
 
-            return a == 0 ? 0 : Multiply(a, InverseForMultiplication(b));
+            return a == 0
+                ? 0
+                : _elementsByPowers[(_powersByElements[a] - _powersByElements[b] + Order - 1)%(Order - 1)];
         }
 
         public int InverseForAddition(int a)
@@ -189,10 +173,14 @@
             if (a == 0)
                 throw new ArgumentException("Can't inverse zero");
 
-            var inverseElement = _inverseElementsByMultiply.GetOrAdd(a, CalculateInverseElementByMultiply);
-            _inverseElementsByMultiply.TryAdd(inverseElement, a);
+            return _elementsByPowers[(Order - 1 - _powersByElements[a])%(Order - 1)];
+        }
 
-            return inverseElement;
+        public int GetGeneratingElementPower(int power)
+        {
+            return power >= 0
+                ? _elementsByPowers[power % (Order - 1)]
+                : InverseForMultiplication(_elementsByPowers[(-power) % (Order - 1)]);
         }
     }
 }

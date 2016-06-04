@@ -211,5 +211,46 @@
             // Then
             Assert.Equal(expected, actual);
         }
+
+        [Theory]
+        [InlineData(0)]
+        [InlineData(1)]
+        [InlineData(2)]
+        [InlineData(3)]
+        [InlineData(4)]
+        [InlineData(5)]
+        [InlineData(6)]
+        [InlineData(7)]
+        [InlineData(8)]
+        [InlineData(9)]
+        [InlineData(10)]
+        [InlineData(11)]
+        [InlineData(12)]
+        [InlineData(13)]
+        [InlineData(14)]
+        [InlineData(15)]
+        [InlineData(16)]
+        [InlineData(17)]
+        [InlineData(18)]
+        [InlineData(19)]
+        [InlineData(20)]
+        [InlineData(21)]
+        [InlineData(22)]
+        [InlineData(23)]
+        [InlineData(24)]
+        [InlineData(25)]
+        [InlineData(26)]
+        [InlineData(63)]
+        [InlineData(-63)]
+        public void ShouldGetGeneratingElementPowerGet(int power)
+        {
+            // When
+            var element = Gf27.GetGeneratingElementPower(power);
+            var invertedElement = Gf27.GetGeneratingElementPower(-power);
+            var one = new Polynomial(Gf27.IrreduciblePolynomial.Field, 1);
+
+            // Then
+            Assert.Equal(one, (Gf27[element] * Gf27[invertedElement])%Gf27.IrreduciblePolynomial);
+        }
     }
 }

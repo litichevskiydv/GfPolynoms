@@ -112,5 +112,23 @@
             // Then
             Assert.Equal(expected, actual);
         }
+
+        [Theory]
+        [InlineData(0)]
+        [InlineData(1)]
+        [InlineData(2)]
+        [InlineData(3)]
+        [InlineData(4)]
+        [InlineData(63)]
+        [InlineData(-63)]
+        public void ShouldGetGeneratingElementPowerGet(int power)
+        {
+            // When
+            var element = _gf5.GetGeneratingElementPower(power);
+            var invertedElement = _gf5.GetGeneratingElementPower(-power);
+
+            // Then
+            Assert.Equal(1, (element*invertedElement)%_gf5.Order);
+        }
     }
 }

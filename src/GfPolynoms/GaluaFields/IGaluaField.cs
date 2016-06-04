@@ -62,5 +62,12 @@
         /// <param name="a">Invetible element</param>
         /// <returns>Inverse osite element</returns>
         int InverseForMultiplication(int a);
+
+        /// <summary>
+        /// Exponentiation of the generation element to the specified power
+        /// </summary>
+        /// <param name="power">Power for exponentiation</param>
+        /// <returns>Exponentiation result</returns>
+        int GetGeneratingElementPower(int power);
     }
 }
