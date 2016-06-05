@@ -9,6 +9,9 @@
         private Dictionary<int, int> _elementsByPowers;
         private readonly Dictionary<int, int> _powersByElements;
 
+        public int Order { get; }
+        public int Characteristic => Order;
+
         private void BuildMultiplicativeGroup()
         {
             for (var i = 1; i < Order; i++)
@@ -66,9 +69,6 @@
             return Order;
         }
 
-        public int Order { get; }
-        public int Characteristic => Order;
-
         public bool IsFieldElement(int a)
         {
             return a >= 0 && a < Order;
@@ -99,7 +99,7 @@
         {
             ValidateArguments(a, b);
             if (b == 0)
-                throw new ArgumentException("b");
+                throw new ArgumentException(nameof(b));
 
             return a == 0 ? 0 : Multiply(a, InverseForMultiplication(b));
         }

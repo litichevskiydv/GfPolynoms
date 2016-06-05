@@ -11,6 +11,10 @@
         private readonly Dictionary<int, Polynomial> _polynomialByRepresentation;
         private readonly Dictionary<Polynomial, int> _representationByPolynomial;
 
+        public int Order { get; }
+        public int Characteristic { get; }
+        public Polynomial IrreduciblePolynomial { get; }
+
         private static int CalculateElementRepresentation(int characteristic, IEnumerable<int> coefficients)
         {
             return coefficients.Aggregate(0, (current, coefficient) => current*characteristic + coefficient);
@@ -68,11 +72,11 @@
         public PrimePowerOrderField(int order, int characteristic, int[] irreduciblePolynomial)
         {
             if (order < 2)
-                throw new ArgumentException("order");
+                throw new ArgumentException(nameof(order));
             if (characteristic < 2)
-                throw new ArgumentException("characteristic");
+                throw new ArgumentException(nameof(characteristic));
             if (irreduciblePolynomial == null)
-                throw new ArgumentException("irreduciblePolynomial");
+                throw new ArgumentNullException(nameof(irreduciblePolynomial));
 
             Order = order;
             Characteristic = characteristic;
@@ -114,10 +118,6 @@
             }
         }
 
-        public int Order { get; }
-        public int Characteristic { get; }
-        public Polynomial IrreduciblePolynomial { get; }
-
         public bool IsFieldElement(int a)
         {
             return a >= 0 && a < Order;
@@ -151,7 +151,7 @@
         {
             ValidateArguments(a, b);
             if (b == 0)
-                throw new ArgumentException("b");
+                throw new ArgumentException(nameof(b));
 
             return a == 0
                 ? 0
