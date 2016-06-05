@@ -51,9 +51,24 @@
             IReadOnlyList<int> rowsForVariables)
         {
             var solution = Enumerable.Repeat(new FieldElement(b[0].Field, 0), rowsForVariables.Count).ToArray();
-            for (var j = 0; j < solution.Length; ++j)
-                if (rowsForVariables[j] != -1)
-                    solution[j] = b[rowsForVariables[j]]/a[rowsForVariables[j], j];
+            int? freeVariableIndex = null;
+            for (var i = 0; i < solution.Length; i++)
+                if (rowsForVariables[i] == -1)
+                {
+                    solution[i] = new FieldElement(b[0].Field, 1);
+                    freeVariableIndex = i;
+                    break;
+                }
+
+            for (var i = 0; i < solution.Length; ++i)
+                if (rowsForVariables[i] != -1)
+                {
+                    var remaider = b[rowsForVariables[i]];
+                    if (freeVariableIndex.HasValue)
+                        remaider -= a[rowsForVariables[i], freeVariableIndex.Value]*solution[freeVariableIndex.Value];
+                    solution[i] = remaider / a[rowsForVariables[i], i];
+                }
+                    
             return solution;
         }
 
