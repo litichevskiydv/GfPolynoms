@@ -14,6 +14,10 @@
         /// Коэффициенты многочлена
         /// </summary>
         private List<int> _coefficients;
+        /// <summary>
+        /// Поле, над которым построен многочлен
+        /// </summary>
+        public IGaluaField Field { get; }
 
         /// <summary>
         /// Операция усечения ведущих нулей коэфициентов многочлена
@@ -22,7 +26,9 @@
         private Polynomial Truncate()
         {
             int i;
-            for (i = Degree; i >= 0 && _coefficients[i] == 0; i--) ;
+            for (i = Degree; i >= 0 && _coefficients[i] == 0; i--)
+            {
+            }
             _coefficients = _coefficients.Take(i + 1).ToList();
 
             if (_coefficients.Count == 0)
@@ -52,7 +58,7 @@
         public Polynomial(IGaluaField field)
         {
             if (field == null)
-                throw new ArgumentException("field");
+                throw new ArgumentNullException(nameof(field));
 
             Field = field;
             _coefficients = new List<int> {0};
@@ -66,15 +72,15 @@
         public Polynomial(IGaluaField field, params int[] coefficients)
         {
             if (field == null)
-                throw new ArgumentException("field");
+                throw new ArgumentNullException(nameof(field));
             if (coefficients == null)
-                throw new ArgumentException("coefficients");
+                throw new ArgumentNullException(nameof(coefficients));
 
             Field = field;
 
             _coefficients = coefficients.ToList();
             if (_coefficients.Any(x => Field.IsFieldElement(x) == false))
-                throw new ArgumentException("coefficients");
+                throw new ArgumentException(nameof(coefficients));
 
             Truncate();
         }
@@ -89,7 +95,6 @@
             _coefficients = polynomial._coefficients.ToList();
         }
 
-        public IGaluaField Field { get; }
         public int Degree => _coefficients.Count - 1;
 
         public override string ToString()
@@ -149,7 +154,7 @@
                 if (index < 0 || index > Degree)
                     throw new IndexOutOfRangeException();
                 if (Field.IsFieldElement(value) == false)
-                    throw new ArgumentException("value");
+                    throw new ArgumentException(nameof(value));
 
                 _coefficients[index] = value;
             }
@@ -162,7 +167,7 @@
         public Polynomial Add(Polynomial b)
         {
             if (Field.Equals(b.Field) == false)
-                throw new ArgumentException("b");
+                throw new ArgumentException(nameof(b));
 
             Enlarge(b.Degree);
             for (var i = 0; i <= b.Degree; i++)
@@ -177,7 +182,7 @@
         public Polynomial Subtract(Polynomial b)
         {
             if (Field.Equals(b.Field) == false)
-                throw new ArgumentException("b");
+                throw new ArgumentException(nameof(b));
 
             Enlarge(b.Degree);
             for (var i = 0; i <= b.Degree; i++)
@@ -192,7 +197,7 @@
         public Polynomial Multiply(int b)
         {
             if(Field.IsFieldElement(b) == false)
-                throw new ArgumentException("b");
+                throw new ArgumentException(nameof(b));
 
             if (IsZero || b == 0)
             {
@@ -212,7 +217,7 @@
         public Polynomial Multiply(Polynomial b)
         {
             if (Field.Equals(b.Field) == false)
-                throw new ArgumentException("b");
+                throw new ArgumentException(nameof(b));
 
             if (Degree == 0 && _coefficients[0] == 0 || b.Degree == 0 && b[0] == 0)
             {
@@ -235,7 +240,7 @@
         public Polynomial Divide(int b)
         {
             if (Field.IsFieldElement(b) == false || b == 0)
-                throw new ArgumentException("b");
+                throw new ArgumentException(nameof(b));
 
             if (IsZero)
             {
@@ -256,7 +261,7 @@
         public Tuple<Polynomial, Polynomial> DivideEx(Polynomial b)
         {
             if (Field.Equals(b.Field) == false || b.IsZero)
-                throw new ArgumentException("b");
+                throw new ArgumentException(nameof(b));
 
             var result = new Tuple<Polynomial, Polynomial>(new Polynomial(Field), new Polynomial(this));
             var quotientPolynomial = result.Item1;
@@ -312,7 +317,7 @@
         public Polynomial RightShift(int degreeDelta)
         {
             if (degreeDelta < 0)
-                throw new ArgumentException("degreeDelta");
+                throw new ArgumentException(nameof(degreeDelta));
             if (degreeDelta == 0 || Degree == 0 && _coefficients[0] == 0)
                 return this;
 
@@ -336,7 +341,7 @@
         public Polynomial RaiseVariableDegree(int degree)
         {
             if(degree < 1)
-                throw new ArgumentException("degree");
+                throw new ArgumentException(nameof(degree));
             if (degree == 1)
                 return this;
 
@@ -359,7 +364,7 @@
         public int Evaluate(int variableValue)
         {
             if(Field.IsFieldElement(variableValue) == false)
-                throw new ArgumentException("variableValue");
+                throw new ArgumentException(nameof(variableValue));
 
             var result = 0;
             for (var i = _coefficients.Count - 1; i >= 0; i--)
