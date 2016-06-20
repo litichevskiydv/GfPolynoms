@@ -17,7 +17,7 @@
         /// <summary>
         /// Поле, над которым построен многочлен
         /// </summary>
-        public IGaluaField Field { get; }
+        public GaluaField Field { get; }
 
         /// <summary>
         /// Операция усечения ведущих нулей коэфициентов многочлена
@@ -55,7 +55,7 @@
         ///     Конструктор, создающий нулевой многочлен над некоторым полем
         /// </summary>
         /// <param name="field">Поле, к которому принадлежат коэффициенты</param>
-        public Polynomial(IGaluaField field)
+        public Polynomial(GaluaField field)
         {
             if (field == null)
                 throw new ArgumentNullException(nameof(field));
@@ -69,7 +69,7 @@
         /// </summary>
         /// <param name="field">Поле, к которому принадлежат коэффициенты</param>
         /// <param name="coefficients">Коэффициенты создаваемого многочлена</param>
-        public Polynomial(IGaluaField field, params int[] coefficients)
+        public Polynomial(GaluaField field, params int[] coefficients)
         {
             if (field == null)
                 throw new ArgumentNullException(nameof(field));

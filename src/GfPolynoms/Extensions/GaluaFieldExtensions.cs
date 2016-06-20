@@ -7,7 +7,7 @@
         /// <summary>
         /// Return zero element for specified field
         /// </summary>
-        public static FieldElement Zero(this IGaluaField field)
+        public static FieldElement Zero(this GaluaField field)
         {
             return new FieldElement(field, 0);
         }
@@ -15,7 +15,7 @@
         /// <summary>
         /// Return zero element for specified field
         /// </summary>
-        public static FieldElement One(this IGaluaField field)
+        public static FieldElement One(this GaluaField field)
         {
             return new FieldElement(field, 1);
         }

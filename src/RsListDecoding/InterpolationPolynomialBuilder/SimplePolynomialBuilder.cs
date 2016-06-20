@@ -28,7 +28,7 @@
             return variableIndex;
         }
 
-        private static FieldElement GetCombinationsCount(IGaluaField field, IDictionary<Tuple<int, int>, FieldElement> combinationsCache,
+        private static FieldElement GetCombinationsCount(GaluaField field, IDictionary<Tuple<int, int>, FieldElement> combinationsCache,
             int n, int k)
         {
             var key = new Tuple<int, int>(n, k);
@@ -55,7 +55,7 @@
         private static List<List<Tuple<int, FieldElement>>> BuildEquationsSystem(
             IDictionary<Tuple<int, int>, int> variableIndexByMonomial,
             IDictionary<int, Tuple<int, int>> monomialByVariableIndex,
-            IGaluaField field, Tuple<int, int> degreeWeight, int maxWeightedDegree, int maxXDegree,
+            GaluaField field, Tuple<int, int> degreeWeight, int maxWeightedDegree, int maxXDegree,
             IEnumerable<Tuple<FieldElement, FieldElement>> roots, int rootsMultiplicity)
         {
             var equations = new List<List<Tuple<int, FieldElement>>>();
@@ -84,7 +84,7 @@
             return equations;
         }
 
-        private SystemSolution SolveEquationsSystem(IGaluaField field,
+        private SystemSolution SolveEquationsSystem(GaluaField field,
             int variablesCount, IReadOnlyList<List<Tuple<int, FieldElement>>> equationsSystem)
         {
             var linearSystemMatrix = new FieldElement[equationsSystem.Count, variablesCount];

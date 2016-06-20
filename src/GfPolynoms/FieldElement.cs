@@ -10,10 +10,10 @@
             return Equals(Field, other.Field) && Representation == other.Representation;
         }
 
-        public IGaluaField Field { get; }
+        public GaluaField Field { get; }
         public int Representation { get; private set; }
 
-        public FieldElement(IGaluaField field, int representation)
+        public FieldElement(GaluaField field, int representation)
         {
             if (field == null)
                 throw new ArgumentException("field");

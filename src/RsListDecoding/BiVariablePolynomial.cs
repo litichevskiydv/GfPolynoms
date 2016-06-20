@@ -12,7 +12,7 @@
         /// <summary>
         /// Поле, над которым построен многочлен
         /// </summary>
-        public IGaluaField Field { get; }
+        public GaluaField Field { get; }
         /// <summary>
         /// Коэффициенты многочлена
         /// </summary>
@@ -56,7 +56,7 @@
             return monomial.Item1 + monomial.Item2 * (MaxXDegree + 1);
         }
 
-        public BiVariablePolynomial(IGaluaField field, Tuple<int, int> degreeWeight, int maxWeightedDegree)
+        public BiVariablePolynomial(GaluaField field, Tuple<int, int> degreeWeight, int maxWeightedDegree)
         {
             if(degreeWeight == null)
                 throw new ArgumentNullException(nameof(degreeWeight));
