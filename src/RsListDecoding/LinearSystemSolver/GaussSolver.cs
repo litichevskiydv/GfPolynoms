@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using GfPolynoms;
+    using GfPolynoms.Extensions;
 
     public class GaussSolver : ILinearSystemSolver
     {
@@ -50,12 +51,14 @@
         private static FieldElement[] CalculateSolution(FieldElement[,] a, IReadOnlyList<FieldElement> b,
             IReadOnlyList<int> rowsForVariables)
         {
-            var solution = Enumerable.Repeat(new FieldElement(b[0].Field, 0), rowsForVariables.Count).ToArray();
+            var field = b[0].Field;
+            var solution = Enumerable.Repeat(field.Zero(), rowsForVariables.Count).ToArray();
             int? freeVariableIndex = null;
+
             for (var i = 0; i < solution.Length; i++)
                 if (rowsForVariables[i] == -1)
                 {
-                    solution[i] = new FieldElement(b[0].Field, 1);
+                    solution[i] = field.One();
                     freeVariableIndex = i;
                     break;
                 }
@@ -75,12 +78,13 @@
         private static SystemSolution CheckSolution(FieldElement[,] a, IReadOnlyList<FieldElement> b,
             IReadOnlyList<int> rowsForVariables, FieldElement[] solution)
         {
+            var field = b[0].Field;
             var equationsCount = a.GetLength(0);
             var variablesCount = solution.Length;
 
             for (var i = 0; i < equationsCount; ++i)
             {
-                var sum = new FieldElement(b[0].Field, 0);
+                var sum = field.Zero();
                 for (var j = 0; j < variablesCount; ++j)
                     sum += solution[j] * a[i, j];
                 if ((sum - b[i]).Representation != 0)

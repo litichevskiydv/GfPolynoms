@@ -122,11 +122,19 @@
             return _elementsByPowers[(Order - 1 - _powersByElements[a])%(Order - 1)];
         }
 
-        public int GetGeneratingElementPower(int power)
+        public int GetGeneratingElementPower(int degree)
         {
-            return power >= 0
-                ? _elementsByPowers[power%(Order - 1)]
-                : InverseForMultiplication(_elementsByPowers[(-power) % (Order - 1)]);
+            return degree >= 0
+                ? _elementsByPowers[degree%(Order - 1)]
+                : InverseForMultiplication(_elementsByPowers[(-degree) % (Order - 1)]);
+        }
+
+        public int Pow(int element, int degree)
+        {
+            if (IsFieldElement(element) == false)
+                throw new ArgumentException($"Element {element} is not field member");
+
+            return element == 0 ? 0 : GetGeneratingElementPower(_powersByElements[element]*degree);
         }
     }
 }

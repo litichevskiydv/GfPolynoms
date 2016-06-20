@@ -130,5 +130,20 @@
             // Then
             Assert.Equal(1, (element*invertedElement)%_gf5.Order);
         }
+
+        [Theory]
+        [InlineData(0, 1, 0)]
+        [InlineData(1, 15, 1)]
+        [InlineData(1, -2, 1)]
+        [InlineData(3, 3, 2)]
+        [InlineData(3, -3, 3)]
+        public void ShouldPowerElementToSpecifiedDegree(int element, int power, int expected)
+        {
+            // When
+            var actual = _gf5.Pow(element, power);
+
+            // Then
+            Assert.Equal(expected, actual);
+        }
     }
 }

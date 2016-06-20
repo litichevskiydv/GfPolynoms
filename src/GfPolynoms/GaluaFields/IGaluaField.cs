@@ -64,10 +64,17 @@
         int InverseForMultiplication(int a);
 
         /// <summary>
-        /// Exponentiation of the generation element to the specified power
+        /// Exponentiation of the generation element to the specified degree
         /// </summary>
-        /// <param name="power">Power for exponentiation</param>
+        /// <param name="degree">Power for exponentiation</param>
         /// <returns>Exponentiation result</returns>
-        int GetGeneratingElementPower(int power);
+        int GetGeneratingElementPower(int degree);
+
+        /// <summary>
+        /// Exponentiation of given element to the specified degree
+        /// </summary>
+        /// <param name="element">Element for exponentiation</param>
+        /// <param name="degree">Power for exponentiation</param>
+        int Pow(int element, int degree);
     }
 }

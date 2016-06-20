@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using GfPolynoms;
+    using GfPolynoms.Extensions;
     using GfPolynoms.GaluaFields;
 
     public class BiVariablePolynomial
@@ -81,22 +82,22 @@
                 ValidateMonomial(monomial.Item1, monomial.Item2);
 
                 FieldElement coefficient;
-                if (!_coefficients.TryGetValue(monomial, out coefficient))
-                {
-                    coefficient = new FieldElement(Field, 0);
-                    _coefficients[monomial] = coefficient;
-                }
+                if (_coefficients.TryGetValue(monomial, out coefficient) == false)
+                    coefficient = Field.Zero();
                 return coefficient;
             }
             set
             {
                 ValidateMonomial(monomial.Item1, monomial.Item2);
-                if (!Field.Equals(value.Field))
+                if (Field.Equals(value.Field) == false)
                     throw new ArgumentException("Incorrect field");
 
-                _coefficients[monomial] = value;
+                if (value.Representation != 0)
+                    _coefficients[monomial] = value;
             }
         }
+
+        public bool IsZero => _coefficients.Count == 0;
 
         public override string ToString()
         {

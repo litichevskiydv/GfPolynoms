@@ -85,6 +85,12 @@
             return this;
         }
 
+        public FieldElement Pow(int degree)
+        {
+            Representation = Field.Pow(Representation, degree);
+            return this;
+        }
+
         public static FieldElement Add(FieldElement a, FieldElement b)
         {
             var c = new FieldElement(a);
@@ -107,6 +113,12 @@
         {
             var c = new FieldElement(a);
             return c.Divide(b);
+        }
+
+        public static FieldElement Pow(FieldElement a, int degree)
+        {
+            var c = new FieldElement(a);
+            return c.Pow(degree);
         }
 
         public static FieldElement operator +(FieldElement a, FieldElement b)

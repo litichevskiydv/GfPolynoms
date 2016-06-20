@@ -252,5 +252,20 @@
             // Then
             Assert.Equal(one, (Gf27[element] * Gf27[invertedElement])%Gf27.IrreduciblePolynomial);
         }
+
+        [Theory]
+        [InlineData(0, 1, 0)]
+        [InlineData(1, 15, 1)]
+        [InlineData(1, -2, 1)]
+        [InlineData(3, 3, 4)]
+        [InlineData(3, -3, 15)]
+        public void ShouldPowerElementToSpecifiedDegree(int element, int power, int expected)
+        {
+            // When
+            var actual = Gf27.Pow(element, power);
+
+            // Then
+            Assert.Equal(expected, actual);
+        }
     }
 }
