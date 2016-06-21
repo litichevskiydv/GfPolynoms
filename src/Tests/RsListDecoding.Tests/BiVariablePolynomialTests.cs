@@ -16,7 +16,7 @@
         static BiVariablePolynomialTests()
         {
             var gf5 = new PrimeOrderField(5);
-            var polynomial = new BiVariablePolynomial(gf5, new Tuple<int, int>(1, 2), 3)
+            var polynomial = new BiVariablePolynomial(gf5)
                              {
                                  [new Tuple<int, int>(1, 1)] = new FieldElement(gf5, 2),
                                  [new Tuple<int, int>(0, 1)] = new FieldElement(gf5, 1),

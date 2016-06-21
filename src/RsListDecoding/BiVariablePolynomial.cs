@@ -17,70 +17,21 @@
         /// Коэффициенты многочлена
         /// </summary>
         private readonly Dictionary<Tuple<int, int>, FieldElement> _coefficients;
-        /// <summary>
-        /// Веса взвешенной степени
-        /// </summary>
-        private Tuple<int, int> DegreeWeight { get; }
-        /// <summary>
-        /// Максимальная взвешенная степень многочлена с весами <see cref="DegreeWeight"/>
-        /// </summary>
-        private int MaxWeightedDegree { get; }
 
-        /// <summary>
-        /// Максимальная степень переменной x для максимальной взвешенной степени <see cref="MaxWeightedDegree"/> с весами <see cref="DegreeWeight"/>
-        /// </summary>
-        public int MaxXDegree { get; }
-
-        /// <summary>
-        /// Максимальная степень переменной y для максимальной взвешенной степени <see cref="MaxWeightedDegree"/> с весами <see cref="DegreeWeight"/>
-        /// </summary>
-        public int MaxYDegree { get; }
-
-        /// <summary>
-        /// Метод для проверки, существуют ли в полиноме указанные степени
-        /// </summary>
-        /// <param name="xDegree">Степень переменной X</param>
-        /// <param name="yDegree">Степень переменной Y</param>
-        private void ValidateMonomial(int xDegree, int yDegree)
+        public BiVariablePolynomial(GaluaField field)
         {
-            if (xDegree < 0 || xDegree > MaxXDegree)
-                throw new ArgumentException(nameof(xDegree));
-            if (yDegree < 0 || yDegree > MaxYDegree)
-                throw new ArgumentException(nameof(yDegree));
-            if (xDegree * DegreeWeight.Item1 + yDegree * DegreeWeight.Item2 > MaxWeightedDegree)
-                throw new ArgumentException("Such monomial doesn't exist");
-        }
-
-        private int GetMonomialPlainIndex(Tuple<int, int> monomial)
-        {
-            return monomial.Item1 + monomial.Item2 * (MaxXDegree + 1);
-        }
-
-        public BiVariablePolynomial(GaluaField field, Tuple<int, int> degreeWeight, int maxWeightedDegree)
-        {
-            if(degreeWeight == null)
-                throw new ArgumentNullException(nameof(degreeWeight));
-            if (degreeWeight.Item1 < 0 || degreeWeight.Item2 < 0
-                || degreeWeight.Item1 == 0 && degreeWeight.Item2 == 0)
-                throw new ArgumentException(nameof(degreeWeight));
-            if (maxWeightedDegree <= 0)
-                throw new ArgumentException(nameof(maxWeightedDegree));
+            if (field == null)
+                throw new ArgumentNullException(nameof(field));
 
             Field = field;
-            DegreeWeight = degreeWeight;
-            MaxWeightedDegree = maxWeightedDegree;
 
             _coefficients = new Dictionary<Tuple<int, int>, FieldElement>();
-            MaxXDegree =  MaxWeightedDegree/DegreeWeight.Item1;
-            MaxYDegree = MaxWeightedDegree/DegreeWeight.Item2;
         }
 
         public FieldElement this[Tuple<int, int> monomial]
         {
             get
             {
-                ValidateMonomial(monomial.Item1, monomial.Item2);
-
                 FieldElement coefficient;
                 if (_coefficients.TryGetValue(monomial, out coefficient) == false)
                     coefficient = Field.Zero();
@@ -88,7 +39,6 @@
             }
             set
             {
-                ValidateMonomial(monomial.Item1, monomial.Item2);
                 if (Field.Equals(value.Field) == false)
                     throw new ArgumentException("Incorrect field");
 
@@ -103,7 +53,8 @@
         {
             var monomials = _coefficients
                 .Where(x => x.Value.Representation != 0)
-                .OrderByDescending(x => GetMonomialPlainIndex(x.Key))
+                .OrderBy(x => x.Key.Item2)
+                .ThenBy(x => x.Key.Item1)
                 .Select(x =>
                         {
                             var template = "{0}x^{1}y^{2}";

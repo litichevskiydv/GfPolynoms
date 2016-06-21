@@ -124,13 +124,13 @@
                 throw new ArgumentException($"{nameof(roots)} is empty");
 
             var field = roots[0].Item1.Field;
-            var resultPolynomial = new BiVariablePolynomial(field, degreeWeight, maxWeightedDegree);
+            var resultPolynomial = new BiVariablePolynomial(field);
 
             var variableIndexByMonomial = new Dictionary<Tuple<int, int>, int>();
             var monomialByVariableIndex = new Dictionary<int, Tuple<int, int>>();
 
             var equationsSystem = BuildEquationsSystem(variableIndexByMonomial, monomialByVariableIndex,
-                field, degreeWeight, maxWeightedDegree, resultPolynomial.MaxXDegree,
+                field, degreeWeight, maxWeightedDegree, maxWeightedDegree/degreeWeight.Item1,
                 roots, rootsMultiplicity);
 
             var systemSolution = SolveEquationsSystem(field, variableIndexByMonomial.Count, equationsSystem);
