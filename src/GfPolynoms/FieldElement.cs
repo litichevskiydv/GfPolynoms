@@ -17,6 +17,8 @@
         {
             if (field == null)
                 throw new ArgumentException("field");
+            if(field.IsFieldElement(representation) == false)
+                throw new ArgumentException($"{representation} is not an element of {field}");
 
             Field = field;
             Representation = representation;
