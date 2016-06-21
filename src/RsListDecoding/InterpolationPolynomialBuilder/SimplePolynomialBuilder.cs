@@ -105,13 +105,11 @@
         private static BiVariablePolynomial ConstructInterpolationPolynomial(BiVariablePolynomial blankPolynomial,
             SystemSolution systemSolution, IReadOnlyDictionary<int, Tuple<int, int>> monomialByVariableIndex)
         {
-            if (systemSolution.IsEmpty)
-                throw new InvalidOperationException("Such polynomial doesn't exist");
             for (var i = 0; i < systemSolution.Solution.Length; i++)
                 blankPolynomial[monomialByVariableIndex[i]] = systemSolution.Solution[i];
 
             if (blankPolynomial.IsZero)
-                throw new InvalidOperationException("Interpolation polynomial is zero");
+                throw new NonTrivialPolynomialNotFoundException();
             return blankPolynomial;
         }
 

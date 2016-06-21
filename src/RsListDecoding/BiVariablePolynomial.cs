@@ -130,5 +130,16 @@
                         });
             return string.Join("+", monomials);
         }
+
+        public FieldElement Evaluate(FieldElement xValue, FieldElement yValue)
+        {
+            var result = Field.Zero();
+            foreach (var coefficient in _coefficients)
+                result += coefficient.Value
+                          *FieldElement.Pow(xValue, coefficient.Key.Item1)
+                          *FieldElement.Pow(yValue, coefficient.Key.Item2);
+
+            return result;
+        }
     }
 }
