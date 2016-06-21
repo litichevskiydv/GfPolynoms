@@ -126,7 +126,7 @@
             var coeficientsArray = _coefficients.ToArray();
             _coefficients.Clear();
 
-            if (b._coefficients.Count == 0)
+            if (b.IsZero)
                 return this;
 
             foreach (var coefficient in coeficientsArray)
@@ -145,6 +145,20 @@
                 }
 
             return RemoveZeroCoefficients();
+        }
+
+        public BiVariablePolynomial Multiply(FieldElement b)
+        {
+            if (Field.Equals(b.Field) == false)
+                throw new ArgumentException(nameof(b));
+
+            if (b.Representation == 0)
+                _coefficients.Clear();
+            else
+                foreach (var coefficient in _coefficients.Values)
+                    coefficient.Multiply(b);
+
+            return this;
         }
 
         private bool Equals(BiVariablePolynomial other)
@@ -181,12 +195,34 @@
             return c.Multiply(b);
         }
 
+        public static BiVariablePolynomial Multiply(BiVariablePolynomial a, FieldElement b)
+        {
+            var c = new BiVariablePolynomial(a);
+            return c.Multiply(b);
+        }
+
+        public static BiVariablePolynomial Multiply(FieldElement a, BiVariablePolynomial b)
+        {
+            var c = new BiVariablePolynomial(b);
+            return c.Multiply(a);
+        }
+
         public static BiVariablePolynomial operator +(BiVariablePolynomial a, BiVariablePolynomial b)
         {
             return Add(a, b);
         }
 
         public static BiVariablePolynomial operator *(BiVariablePolynomial a, BiVariablePolynomial b)
+        {
+            return Multiply(a, b);
+        }
+
+        public static BiVariablePolynomial operator *(BiVariablePolynomial a, FieldElement b)
+        {
+            return Multiply(a, b);
+        }
+
+        public static BiVariablePolynomial operator *(FieldElement a, BiVariablePolynomial b)
         {
             return Multiply(a, b);
         }
