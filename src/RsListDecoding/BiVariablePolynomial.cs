@@ -28,12 +28,6 @@
             return this;
         }
 
-        private bool Equals(BiVariablePolynomial other)
-        {
-            return _coefficients.OrderBy(x => x.Key).SequenceEqual(other._coefficients.OrderBy(x => x.Key))
-                   && Field.Equals(other.Field);
-        }
-
         public BiVariablePolynomial(GaluaField field)
         {
             if (field == null)
@@ -127,6 +121,38 @@
             return RemoveZeroCoefficients();
         }
 
+        public BiVariablePolynomial Multiply(BiVariablePolynomial b)
+        {
+            var coeficientsArray = _coefficients.ToArray();
+            _coefficients.Clear();
+
+            if (b._coefficients.Count == 0)
+                return this;
+
+            foreach (var coefficient in coeficientsArray)
+                foreach (var otherCoefficient in b._coefficients)
+                {
+                    FieldElement coeficientValue;
+                    var monomial = new Tuple<int, int>(coefficient.Key.Item1 + otherCoefficient.Key.Item1,
+                        coefficient.Key.Item2 + otherCoefficient.Key.Item2);
+                    
+                    if (_coefficients.TryGetValue(monomial, out coeficientValue) == false)
+                    {
+                        coeficientValue = Field.Zero();
+                        _coefficients[monomial] = coeficientValue;
+                    }
+                    coeficientValue.Add(coefficient.Value*otherCoefficient.Value);
+                }
+
+            return RemoveZeroCoefficients();
+        }
+
+        private bool Equals(BiVariablePolynomial other)
+        {
+            return _coefficients.OrderBy(x => x.Key).SequenceEqual(other._coefficients.OrderBy(x => x.Key))
+                   && Field.Equals(other.Field);
+        }
+
         public override bool Equals(object obj)
         {
             if (ReferenceEquals(null, obj)) return false;
@@ -149,9 +175,20 @@
             return c.Add(b);
         }
 
+        public static BiVariablePolynomial Multiply(BiVariablePolynomial a, BiVariablePolynomial b)
+        {
+            var c = new BiVariablePolynomial(a);
+            return c.Multiply(b);
+        }
+
         public static BiVariablePolynomial operator +(BiVariablePolynomial a, BiVariablePolynomial b)
         {
             return Add(a, b);
+        }
+
+        public static BiVariablePolynomial operator *(BiVariablePolynomial a, BiVariablePolynomial b)
+        {
+            return Multiply(a, b);
         }
     }
 }
