@@ -42,7 +42,7 @@
         {
             unchecked
             {
-                return ((Field?.GetHashCode() ?? 0)*397) ^ Representation;
+                return (Field.GetHashCode()*397) ^ Representation;
             }
         }
 

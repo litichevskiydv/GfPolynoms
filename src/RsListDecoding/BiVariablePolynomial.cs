@@ -18,6 +18,22 @@
         /// </summary>
         private readonly Dictionary<Tuple<int, int>, FieldElement> _coefficients;
 
+        private BiVariablePolynomial RemoveZeroCoefficients()
+        {
+            var coefficientsArray = _coefficients.ToArray();
+            foreach (var coefficient in coefficientsArray)
+                if (coefficient.Value.Representation == 0)
+                    _coefficients.Remove(coefficient.Key);
+
+            return this;
+        }
+
+        private bool Equals(BiVariablePolynomial other)
+        {
+            return _coefficients.OrderBy(x => x.Key).SequenceEqual(other._coefficients.OrderBy(x => x.Key))
+                   && Field.Equals(other.Field);
+        }
+
         public BiVariablePolynomial(GaluaField field)
         {
             if (field == null)
@@ -26,6 +42,12 @@
             Field = field;
 
             _coefficients = new Dictionary<Tuple<int, int>, FieldElement>();
+        }
+
+        public BiVariablePolynomial(BiVariablePolynomial polynomial)
+        {
+            Field = polynomial.Field;
+            _coefficients = polynomial._coefficients.ToDictionary(x => x.Key, x => x.Value);
         }
 
         public FieldElement this[Tuple<int, int> monomial]
@@ -91,6 +113,45 @@
                           *FieldElement.Pow(yValue, coefficient.Key.Item2);
 
             return result;
+        }
+
+        public BiVariablePolynomial Add(BiVariablePolynomial b)
+        {
+            FieldElement coeficientValue;
+            foreach (var otherCoefficient in b._coefficients)
+                if (_coefficients.TryGetValue(otherCoefficient.Key, out coeficientValue))
+                    coeficientValue.Add(otherCoefficient.Value);
+                else
+                    _coefficients[otherCoefficient.Key] = otherCoefficient.Value;
+
+            return RemoveZeroCoefficients();
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != GetType()) return false;
+            return Equals((BiVariablePolynomial) obj);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                return (_coefficients.Aggregate(0, (hash, x) => hash*31 ^ x.GetHashCode())*397) ^ Field.GetHashCode();
+            }
+        }
+
+        public static BiVariablePolynomial Add(BiVariablePolynomial a, BiVariablePolynomial b)
+        {
+            var c = new BiVariablePolynomial(a);
+            return c.Add(b);
+        }
+
+        public static BiVariablePolynomial operator +(BiVariablePolynomial a, BiVariablePolynomial b)
+        {
+            return Add(a, b);
         }
     }
 }
