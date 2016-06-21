@@ -1,13 +1,14 @@
 ﻿namespace RsListDecoding
 {
     using System;
+    using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
     using GfPolynoms;
     using GfPolynoms.Extensions;
     using GfPolynoms.GaluaFields;
 
-    public class BiVariablePolynomial
+    public class BiVariablePolynomial : IEnumerable<KeyValuePair<Tuple<int, int>, FieldElement>>
     {
         /// <summary>
         /// Поле, над которым построен многочлен
@@ -28,6 +29,11 @@
             return this;
         }
 
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
         public BiVariablePolynomial(GaluaField field)
         {
             if (field == null)
@@ -41,7 +47,7 @@
         public BiVariablePolynomial(BiVariablePolynomial polynomial)
         {
             Field = polynomial.Field;
-            _coefficients = polynomial._coefficients.ToDictionary(x => x.Key, x => x.Value);
+            _coefficients = polynomial._coefficients.ToDictionary(x => x.Key, x => new FieldElement(x.Value));
         }
 
         public FieldElement this[Tuple<int, int> monomial]
@@ -181,6 +187,11 @@
             {
                 return (_coefficients.Aggregate(0, (hash, x) => hash*31 ^ x.GetHashCode())*397) ^ Field.GetHashCode();
             }
+        }
+
+        public IEnumerator<KeyValuePair<Tuple<int, int>, FieldElement>> GetEnumerator()
+        {
+            return _coefficients.GetEnumerator();
         }
 
         public static BiVariablePolynomial Add(BiVariablePolynomial a, BiVariablePolynomial b)
