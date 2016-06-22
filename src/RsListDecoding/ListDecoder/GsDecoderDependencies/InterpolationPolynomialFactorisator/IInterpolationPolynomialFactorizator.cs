@@ -1,6 +1,5 @@
-﻿namespace RsListDecoding.InterpolationPolynomialFactorisator
+﻿namespace RsListDecoding.ListDecoder.GsDecoderDependencies.InterpolationPolynomialFactorisator
 {
-    using System.Collections.Generic;
     using GfPolynoms;
 
     public interface IInterpolationPolynomialFactorizator

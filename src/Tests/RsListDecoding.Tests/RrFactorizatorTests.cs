@@ -5,8 +5,8 @@
     using System.Linq;
     using GfPolynoms;
     using GfPolynoms.GaloisFields;
-    using InterpolationPolynomialFactorisator;
     using JetBrains.Annotations;
+    using ListDecoder.GsDecoderDependencies.InterpolationPolynomialFactorisator;
     using Xunit;
 
     public class RrFactorizatorTests

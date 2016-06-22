@@ -5,8 +5,8 @@
     using GfAlgorithms.LinearSystemSolver;
     using GfPolynoms;
     using GfPolynoms.GaloisFields;
-    using InterpolationPolynomialBuilder;
     using JetBrains.Annotations;
+    using ListDecoder.GsDecoderDependencies.InterpolationPolynomialBuilder;
     using Xunit;
 
     public class SimplePolynomialBuilderTests
