@@ -334,29 +334,6 @@
         }
 
         /// <summary>
-        /// Выполняет замену переменной x в многочлене на x^degree
-        /// </summary>
-        /// <param name="degree">Степень новой переменной</param>
-        /// <returns>Многочлен после изменений</returns>
-        public Polynomial RaiseVariableDegree(int degree)
-        {
-            if(degree < 1)
-                throw new ArgumentException(nameof(degree));
-            if (degree == 1)
-                return this;
-
-            var oldPolynomialDegree = Degree;
-            Enlarge(oldPolynomialDegree*degree);
-
-            for (var i = oldPolynomialDegree; i > 0; i--)
-            {
-                _coefficients[i*degree] = _coefficients[i];
-                _coefficients[i] = 0;
-            }
-            return this;
-        }
-
-        /// <summary>
         /// Вычисляет значение многочлена для заданного значения переменной
         /// </summary>
         /// <param name="variableValue">Значение переменной</param>

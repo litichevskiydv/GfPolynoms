@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using Extensions;
     using GfPolynoms.GaluaFields;
     using JetBrains.Annotations;
     using Xunit;
@@ -178,7 +179,7 @@
         }
 
         [Theory]
-        [InlineData(new[] {1, 1, 1}, 2, new[] {1, 0, 1, 0, 1})]
+        [InlineData(new[] {1, 2, 1}, 2, new[] {1, 0, 2, 0, 1})]
         [InlineData(new[] {1, 1, 1}, 1, new[] { 1, 1, 1 })]
         public void ShouldRaiseVariableDegre(int[] initialCoefficients, int newDegree, int[] resultCoefficients)
         {
@@ -186,10 +187,10 @@
             var a = new Polynomial(Gf3, initialCoefficients);
 
             // When
-            a.RaiseVariableDegree(newDegree);
+            var c = a.RaiseVariableDegree(newDegree);
 
             // Then
-            Assert.Equal(new Polynomial(Gf3, resultCoefficients), a);
+            Assert.Equal(new Polynomial(Gf3, resultCoefficients), c);
         }
 
         [Theory]
