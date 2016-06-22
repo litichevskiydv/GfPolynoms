@@ -82,5 +82,22 @@
 
             return new Polynomial(polynomial.Field, resultCoefficients);
         }
+
+        public static Polynomial EvaluateY(this BiVariablePolynomial polynomial, FieldElement yValue)
+        {
+            if (polynomial == null)
+                throw new ArgumentNullException(nameof(polynomial));
+            if (yValue == null)
+                throw new ArgumentNullException(nameof(yValue));
+            if (polynomial.Field.Equals(yValue.Field) == false)
+                throw new AggregateException(nameof(yValue));
+
+            var resultCoefficients = new int[polynomial.MaxXDegree + 1];
+            foreach (var coefficient in polynomial)
+                resultCoefficients[coefficient.Key.Item1] = polynomial.Field.Add(resultCoefficients[coefficient.Key.Item1],
+                    (coefficient.Value * FieldElement.Pow(yValue, coefficient.Key.Item2)).Representation);
+
+            return new Polynomial(polynomial.Field, resultCoefficients);
+        }
     }
 }

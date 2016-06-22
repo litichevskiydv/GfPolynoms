@@ -73,6 +73,7 @@
         }
 
         public bool IsZero => _coefficients.Count == 0;
+        public int MaxXDegree => IsZero ? 0 : _coefficients.Keys.Max(x => x.Item1);
         public int MaxYDegree => IsZero ? 0 : _coefficients.Keys.Max(x => x.Item2);
 
         public override string ToString()
