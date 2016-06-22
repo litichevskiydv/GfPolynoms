@@ -16,6 +16,8 @@
         [UsedImplicitly]
         public static readonly IEnumerable<object[]> AddTestsData;
         [UsedImplicitly]
+        public static readonly IEnumerable<object[]> SubtractTestsData;
+        [UsedImplicitly]
         public static readonly IEnumerable<object[]> MultiplyPolynomialsTestsData;
         [UsedImplicitly]
         public static readonly IEnumerable<object[]> MultiplyByFieldElementTestsData;
@@ -87,6 +89,50 @@
                                    }
                                }
                            };
+
+            SubtractTestsData = new[]
+                                {
+                                    new object[]
+                                    {
+                                        new BiVariablePolynomial(gf5)
+                                        {
+                                            [new Tuple<int, int>(0, 0)] = new FieldElement(gf5, 2),
+                                            [new Tuple<int, int>(1, 0)] = new FieldElement(gf5, 3)
+                                        },
+                                        new BiVariablePolynomial(gf5)
+                                        {
+                                            [new Tuple<int, int>(0, 0)] = new FieldElement(gf5, 3),
+                                            [new Tuple<int, int>(0, 1)] = new FieldElement(gf5, 4)
+                                        },
+                                        new BiVariablePolynomial(gf5)
+                                        {
+                                            [new Tuple<int, int>(0, 0)] = new FieldElement(gf5, 4),
+                                            [new Tuple<int, int>(1, 0)] = new FieldElement(gf5, 3),
+                                            [new Tuple<int, int>(0, 1)] = new FieldElement(gf5, 1)
+                                        }
+                                    },
+                                    new object[]
+                                    {
+                                        new BiVariablePolynomial(gf5)
+                                        {
+                                            [new Tuple<int, int>(0, 0)] = new FieldElement(gf5, 2),
+                                            [new Tuple<int, int>(1, 0)] = new FieldElement(gf5, 3),
+                                            [new Tuple<int, int>(0, 1)] = new FieldElement(gf5, 4)
+                                        },
+                                        new BiVariablePolynomial(gf5)
+                                        {
+                                            [new Tuple<int, int>(0, 0)] = new FieldElement(gf5, 4),
+                                            [new Tuple<int, int>(1, 0)] = new FieldElement(gf5, 4),
+                                            [new Tuple<int, int>(0, 1)] = new FieldElement(gf5, 4)
+
+                                        },
+                                        new BiVariablePolynomial(gf5)
+                                        {
+                                            [new Tuple<int, int>(0, 0)] = new FieldElement(gf5, 3),
+                                            [new Tuple<int, int>(1, 0)] = new FieldElement(gf5, 4)
+                                        }
+                                    }
+                                };
 
             MultiplyPolynomialsTestsData = new[]
                                            {
@@ -292,6 +338,13 @@
         public void ShouldAddTwoPolynomials(BiVariablePolynomial a, BiVariablePolynomial b, BiVariablePolynomial expectedResult)
         {
             Assert.Equal(expectedResult, a + b, EqualityComparer<BiVariablePolynomial>.Default);
+        }
+
+        [Theory]
+        [MemberData(nameof(SubtractTestsData))]
+        public void ShouldSubtractTwoPolynomials(BiVariablePolynomial a, BiVariablePolynomial b, BiVariablePolynomial expectedResult)
+        {
+            Assert.Equal(expectedResult, a - b, EqualityComparer<BiVariablePolynomial>.Default);
         }
 
         [Theory]

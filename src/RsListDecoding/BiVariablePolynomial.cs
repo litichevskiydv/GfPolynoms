@@ -46,6 +46,9 @@
 
         public BiVariablePolynomial(BiVariablePolynomial polynomial)
         {
+            if (polynomial == null)
+                throw new ArgumentNullException(nameof(polynomial));
+
             Field = polynomial.Field;
             _coefficients = polynomial._coefficients.ToDictionary(x => x.Key, x => new FieldElement(x.Value));
         }
@@ -117,12 +120,30 @@
 
         public BiVariablePolynomial Add(BiVariablePolynomial b)
         {
-            FieldElement coeficientValue;
             foreach (var otherCoefficient in b._coefficients)
+            {
+                FieldElement coeficientValue;
                 if (_coefficients.TryGetValue(otherCoefficient.Key, out coeficientValue))
                     coeficientValue.Add(otherCoefficient.Value);
                 else
                     _coefficients[otherCoefficient.Key] = otherCoefficient.Value;
+            }
+
+            return RemoveZeroCoefficients();
+        }
+
+        public BiVariablePolynomial Subtract(BiVariablePolynomial b)
+        {
+            foreach (var otherCoefficient in b._coefficients)
+            {
+                FieldElement coeficientValue;
+                if (_coefficients.TryGetValue(otherCoefficient.Key, out coeficientValue) == false)
+                {
+                    coeficientValue = Field.Zero();
+                    _coefficients[otherCoefficient.Key] = coeficientValue;
+                }
+                coeficientValue.Subtract(otherCoefficient.Value);
+            }
 
             return RemoveZeroCoefficients();
         }
@@ -200,6 +221,12 @@
             return c.Add(b);
         }
 
+        public static BiVariablePolynomial Subtract(BiVariablePolynomial a, BiVariablePolynomial b)
+        {
+            var c = new BiVariablePolynomial(a);
+            return c.Subtract(b);
+        }
+
         public static BiVariablePolynomial Multiply(BiVariablePolynomial a, BiVariablePolynomial b)
         {
             var c = new BiVariablePolynomial(a);
@@ -221,6 +248,11 @@
         public static BiVariablePolynomial operator +(BiVariablePolynomial a, BiVariablePolynomial b)
         {
             return Add(a, b);
+        }
+
+        public static BiVariablePolynomial operator -(BiVariablePolynomial a, BiVariablePolynomial b)
+        {
+            return Subtract(a, b);
         }
 
         public static BiVariablePolynomial operator *(BiVariablePolynomial a, BiVariablePolynomial b)
