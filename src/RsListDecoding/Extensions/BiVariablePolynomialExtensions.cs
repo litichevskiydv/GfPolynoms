@@ -25,6 +25,12 @@
         public static BiVariablePolynomial PerformVariablesSubstitution(this BiVariablePolynomial polynomial,
             BiVariablePolynomial xSubstitution, BiVariablePolynomial ySubstitution)
         {
+            if (polynomial == null)
+                throw new ArgumentNullException(nameof(polynomial));
+            if (xSubstitution == null)
+                throw new ArgumentNullException(nameof(xSubstitution));
+            if (ySubstitution == null)
+                throw new ArgumentNullException(nameof(ySubstitution));
             if(polynomial.Field.Equals(xSubstitution.Field) == false)
                 throw new ArithmeticException(nameof(xSubstitution));
             if (polynomial.Field.Equals(ySubstitution.Field) == false)
