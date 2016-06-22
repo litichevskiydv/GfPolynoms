@@ -2,6 +2,8 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
+    using GfPolynoms;
     using GfPolynoms.Extensions;
 
     public static class BiVariablePolynomialExtensions
@@ -44,6 +46,22 @@
                 result += coefficient.Value
                           *Pow(xCache, xSubstitution, coefficient.Key.Item1)
                           *Pow(yCache, ySubstitution, coefficient.Key.Item2);
+
+            return result;
+        }
+
+        public static BiVariablePolynomial DivideByMaxPossibleXDegree(this BiVariablePolynomial polynomial)
+        {
+            if (polynomial == null)
+                throw new ArgumentNullException(nameof(polynomial));
+
+            var result = new BiVariablePolynomial(polynomial.Field);
+            if (polynomial.IsZero)
+                return result;
+
+            var minXDegree = polynomial.Min(x => x.Key.Item1);
+            foreach (var coefficient in polynomial)
+                result[new Tuple<int, int>(coefficient.Key.Item1 - minXDegree, coefficient.Key.Item2)] = new FieldElement(coefficient.Value);
 
             return result;
         }

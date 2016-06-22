@@ -21,6 +21,8 @@
         public static readonly IEnumerable<object[]> MultiplyByFieldElementTestsData;
         [UsedImplicitly]
         public static readonly IEnumerable<object[]> SubstitutionTestsData;
+        [UsedImplicitly]
+        public static readonly IEnumerable<object[]> DivideByXDegreeTestsData;
 
         static BiVariablePolynomialTests()
         {
@@ -237,6 +239,45 @@
                                             }
                                         }
                                     };
+
+            DivideByXDegreeTestsData = new[]
+                                       {
+                                           new object[]
+                                           {
+                                               new BiVariablePolynomial(gf5)
+                                               {
+                                                   [new Tuple<int, int>(1, 0)] = new FieldElement(gf5, 2),
+                                                   [new Tuple<int, int>(2, 0)] = new FieldElement(gf5, 1),
+                                                   [new Tuple<int, int>(1, 1)] = new FieldElement(gf5, 3)
+                                               },
+                                               new BiVariablePolynomial(gf5)
+                                               {
+                                                   [new Tuple<int, int>(0, 0)] = new FieldElement(gf5, 2),
+                                                   [new Tuple<int, int>(1, 0)] = new FieldElement(gf5, 1),
+                                                   [new Tuple<int, int>(0, 1)] = new FieldElement(gf5, 3)
+                                               }
+                                           },
+                                           new object[]
+                                           {
+                                               new BiVariablePolynomial(gf5)
+                                               {
+                                                   [new Tuple<int, int>(1, 0)] = new FieldElement(gf5, 2),
+                                                   [new Tuple<int, int>(2, 0)] = new FieldElement(gf5, 1),
+                                                   [new Tuple<int, int>(0, 1)] = new FieldElement(gf5, 3)
+                                               },
+                                               new BiVariablePolynomial(gf5)
+                                               {
+                                                   [new Tuple<int, int>(1, 0)] = new FieldElement(gf5, 2),
+                                                   [new Tuple<int, int>(2, 0)] = new FieldElement(gf5, 1),
+                                                   [new Tuple<int, int>(0, 1)] = new FieldElement(gf5, 3)
+                                               }
+                                           },
+                                           new object[]
+                                           {
+                                               new BiVariablePolynomial(gf5),
+                                               new BiVariablePolynomial(gf5) 
+                                           } 
+                                       };
         }
 
         [Theory]
@@ -274,6 +315,13 @@
             BiVariablePolynomial expectedResult)
         {
             Assert.Equal(expectedResult, polynomial.PerformVariablesSubstitution(xSubstitution, ySubstitution), EqualityComparer<BiVariablePolynomial>.Default);
+        }
+
+        [Theory]
+        [MemberData(nameof(DivideByXDegreeTestsData))]
+        public void ShouldDivideByMaxPossibleXDegree(BiVariablePolynomial polynomial, BiVariablePolynomial expectedResult)
+        {
+            Assert.Equal(expectedResult, polynomial.DivideByMaxPossibleXDegree(), EqualityComparer<BiVariablePolynomial>.Default);
         }
     }
 }
