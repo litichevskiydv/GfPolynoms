@@ -6,14 +6,14 @@
     using System.Linq;
     using GfPolynoms;
     using GfPolynoms.Extensions;
-    using GfPolynoms.GaluaFields;
+    using GfPolynoms.GaloisFields;
 
     public class BiVariablePolynomial : IEnumerable<KeyValuePair<Tuple<int, int>, FieldElement>>
     {
         /// <summary>
         /// Поле, над которым построен многочлен
         /// </summary>
-        public GaluaField Field { get; }
+        public GaloisField Field { get; }
         /// <summary>
         /// Коэффициенты многочлена
         /// </summary>
@@ -34,7 +34,7 @@
             return GetEnumerator();
         }
 
-        public BiVariablePolynomial(GaluaField field)
+        public BiVariablePolynomial(GaloisField field)
         {
             if (field == null)
                 throw new ArgumentNullException(nameof(field));

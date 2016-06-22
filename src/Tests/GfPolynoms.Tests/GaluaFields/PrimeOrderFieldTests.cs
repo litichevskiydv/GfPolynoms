@@ -1,6 +1,6 @@
 ﻿namespace GfPolynoms.Tests.GaluaFields
 {
-    using GfPolynoms.GaluaFields;
+    using GaloisFields;
     using Xunit;
 
     public class PrimeOrderFieldTests

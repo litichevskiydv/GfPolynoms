@@ -1,6 +1,6 @@
 ﻿namespace GfPolynoms.Tests
 {
-    using GfPolynoms.GaluaFields;
+    using GaloisFields;
     using Xunit;
 
     public class PolynomialUnderPrimePowerOrderFieldTest

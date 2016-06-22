@@ -1,5 +1,6 @@
 {
   "version": "1.0.0-*",
+  "description": "Common algorithms under finite fields",
   "authors": [ "Дмитрий" ],
   "frameworks": {
     "netcoreapp1.0": {
@@ -16,7 +17,6 @@
     }
   },
   "dependencies": {
-    "GfAlgorithms": "1.0.0-*",
     "GfPolynoms": "1.0.0-*"
   }
 }

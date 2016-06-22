@@ -1,10 +1,10 @@
-﻿namespace GfPolynoms.GaluaFields
+﻿namespace GfPolynoms.GaloisFields
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
 
-    public class PrimePowerOrderField : GaluaField
+    public class PrimePowerOrderField : GaloisField
     {
         private readonly Dictionary<int, Polynomial> _polynomialByRepresentation;
         private readonly Dictionary<Polynomial, int> _representationByPolynomial;

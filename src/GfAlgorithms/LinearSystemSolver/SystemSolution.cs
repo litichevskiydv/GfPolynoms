@@ -1,4 +1,4 @@
-﻿namespace RsListDecoding.LinearSystemSolver
+﻿namespace GfAlgorithms.LinearSystemSolver
 {
     using System;
     using System.Linq;

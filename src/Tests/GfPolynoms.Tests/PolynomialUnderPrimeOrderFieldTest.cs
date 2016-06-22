@@ -3,7 +3,7 @@
     using System;
     using System.Collections.Generic;
     using Extensions;
-    using GfPolynoms.GaluaFields;
+    using GaloisFields;
     using JetBrains.Annotations;
     using Xunit;
 

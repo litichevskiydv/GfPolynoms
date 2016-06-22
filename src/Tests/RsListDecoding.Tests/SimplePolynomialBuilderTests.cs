@@ -2,11 +2,11 @@
 {
     using System;
     using System.Collections.Generic;
+    using GfAlgorithms.LinearSystemSolver;
     using GfPolynoms;
-    using GfPolynoms.GaluaFields;
+    using GfPolynoms.GaloisFields;
     using InterpolationPolynomialBuilder;
     using JetBrains.Annotations;
-    using LinearSystemSolver;
     using Xunit;
 
     public class SimplePolynomialBuilderTests

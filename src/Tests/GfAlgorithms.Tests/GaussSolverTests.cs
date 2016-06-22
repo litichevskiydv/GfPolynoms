@@ -1,9 +1,9 @@
-﻿namespace RsListDecoding.Tests
+﻿namespace GfAlgorithms.Tests
 {
     using System.Collections.Generic;
     using System.Linq;
     using GfPolynoms;
-    using GfPolynoms.GaluaFields;
+    using GfPolynoms.GaloisFields;
     using JetBrains.Annotations;
     using LinearSystemSolver;
     using Xunit;
@@ -19,24 +19,24 @@
         [UsedImplicitly]
         public static readonly IEnumerable<object[]> InfiniteSolutionTestsData;
 
-        private static object[] PrepareTestCaseForEmptySolution(GaluaField field, int[,] a, IEnumerable<int> b)
+        private static object[] PrepareTestCaseForEmptySolution(GaloisField field, int[,] a, IEnumerable<int> b)
         {
             return PrepareTestCase(field, a, b, SystemSolution.EmptySolution());
         }
 
-        private static object[] PrepareTestCaseForOneSolution(GaluaField field, int[,] a, IEnumerable<int> b, IEnumerable<int> variablesValues)
+        private static object[] PrepareTestCaseForOneSolution(GaloisField field, int[,] a, IEnumerable<int> b, IEnumerable<int> variablesValues)
         {
             return PrepareTestCase(field, a, b,
                 SystemSolution.OneSolution(variablesValues.Select(x => new FieldElement(field, x)).ToArray()));
         }
 
-        private static object[] PrepareTestCaseForInfiniteSolution(GaluaField field, int[,] a, IEnumerable<int> b, IEnumerable<int> variablesValues)
+        private static object[] PrepareTestCaseForInfiniteSolution(GaloisField field, int[,] a, IEnumerable<int> b, IEnumerable<int> variablesValues)
         {
             return PrepareTestCase(field, a, b,
                 SystemSolution.InfiniteSolution(variablesValues.Select(x => new FieldElement(field, x)).ToArray()));
         }
 
-        private static object[] PrepareTestCase(GaluaField field, int[,] a, IEnumerable<int> b, SystemSolution expectedSolution)
+        private static object[] PrepareTestCase(GaloisField field, int[,] a, IEnumerable<int> b, SystemSolution expectedSolution)
         {
             var matrix = new FieldElement[a.GetLength(0), a.GetLength(1)];
             for (var i = 0; i < a.GetLength(0); i++)

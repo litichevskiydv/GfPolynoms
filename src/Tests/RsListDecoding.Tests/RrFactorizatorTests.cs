@@ -4,7 +4,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using GfPolynoms;
-    using GfPolynoms.GaluaFields;
+    using GfPolynoms.GaloisFields;
     using InterpolationPolynomialFactorisator;
     using JetBrains.Annotations;
     using Xunit;

@@ -1,7 +1,7 @@
 ﻿namespace GfPolynoms
 {
     using System;
-    using GaluaFields;
+    using GaloisFields;
 
     public class FieldElement
     {
@@ -10,10 +10,10 @@
             return Equals(Field, other.Field) && Representation == other.Representation;
         }
 
-        public GaluaField Field { get; }
+        public GaloisField Field { get; }
         public int Representation { get; private set; }
 
-        public FieldElement(GaluaField field, int representation)
+        public FieldElement(GaloisField field, int representation)
         {
             if (field == null)
                 throw new ArgumentException("field");

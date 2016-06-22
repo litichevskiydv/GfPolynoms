@@ -1,9 +1,9 @@
-﻿namespace GfPolynoms.GaluaFields
+﻿namespace GfPolynoms.GaloisFields
 {
     using System;
     using System.Linq;
 
-    public class PrimeOrderField : GaluaField
+    public class PrimeOrderField : GaloisField
     {
         private void BuildMultiplicativeGroup()
         {

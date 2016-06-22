@@ -5,7 +5,7 @@
     using Extensions;
     using GfPolynoms;
     using GfPolynoms.Extensions;
-    using GfPolynoms.GaluaFields;
+    using GfPolynoms.GaloisFields;
     using JetBrains.Annotations;
     using Xunit;
 

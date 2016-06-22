@@ -1,9 +1,9 @@
-﻿namespace GfPolynoms.GaluaFields
+﻿namespace GfPolynoms.GaloisFields
 {
     using System;
     using System.Collections.Generic;
 
-    public abstract class GaluaField
+    public abstract class GaloisField
     {
         /// <summary>
         /// Представление элементов по соответствующим им степеням порождающего элемента
@@ -35,7 +35,7 @@
                 throw new ArgumentException($"Element {b} is not field member");
         }
 
-        protected GaluaField(int order, int characteristic)
+        protected GaloisField(int order, int characteristic)
         {
             if (order < 2)
                 throw new ArgumentException(nameof(order));

@@ -7,7 +7,7 @@
     using System.Diagnostics;
     using GfPolynoms;
     using GfPolynoms.Extensions;
-    using GfPolynoms.GaluaFields;
+    using GfPolynoms.GaloisFields;
     using JetBrains.Annotations;
 
     [UsedImplicitly]
