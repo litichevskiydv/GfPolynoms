@@ -65,5 +65,22 @@
 
             return result;
         }
+
+        public static Polynomial EvaluateX(this BiVariablePolynomial polynomial, FieldElement xValue)
+        {
+            if(polynomial == null)
+                throw new ArgumentNullException(nameof(polynomial));
+            if(xValue == null)
+                throw new ArgumentNullException(nameof(xValue));
+            if (polynomial.Field.Equals(xValue.Field) == false)
+                throw new AggregateException(nameof(xValue));
+
+            var resultCoefficients = new int[polynomial.MaxYDegree + 1];
+            foreach (var coefficient in polynomial)
+                resultCoefficients[coefficient.Key.Item2] = polynomial.Field.Add(resultCoefficients[coefficient.Key.Item2],
+                    (coefficient.Value*FieldElement.Pow(xValue, coefficient.Key.Item1)).Representation);
+
+            return new Polynomial(polynomial.Field, resultCoefficients);
+        }
     }
 }

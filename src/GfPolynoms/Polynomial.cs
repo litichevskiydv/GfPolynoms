@@ -102,7 +102,6 @@
             var monomials = _coefficients
                 .Select((x, i) => new Tuple<int, int>(x, i))
                 .Where(x => x.Item1 != 0)
-                .Reverse()
                 .Select(x =>
                         {
                             var template = "{0}x^{1}";

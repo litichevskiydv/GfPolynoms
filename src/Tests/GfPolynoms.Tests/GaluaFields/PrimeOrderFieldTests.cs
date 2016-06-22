@@ -133,6 +133,7 @@
 
         [Theory]
         [InlineData(0, 1, 0)]
+        [InlineData(0, 0, 1)]
         [InlineData(1, 15, 1)]
         [InlineData(1, -2, 1)]
         [InlineData(3, 3, 2)]

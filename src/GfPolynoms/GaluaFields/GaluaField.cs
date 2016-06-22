@@ -148,7 +148,9 @@
             if (IsFieldElement(element) == false)
                 throw new ArgumentException($"Element {element} is not field member");
 
-            return element == 0 ? 0 : GetGeneratingElementPower(PowersByElements[element] * degree);
+            if (degree == 0)
+                return 1;
+            return element == 0 ? 0 : GetGeneratingElementPower(PowersByElements[element]*degree);
         }
 
         public override string ToString()
