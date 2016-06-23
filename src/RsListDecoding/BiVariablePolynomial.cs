@@ -69,6 +69,8 @@
 
                 if (value.Representation != 0)
                     _coefficients[monomial] = value;
+                else
+                    _coefficients.Remove(monomial);
             }
         }
 

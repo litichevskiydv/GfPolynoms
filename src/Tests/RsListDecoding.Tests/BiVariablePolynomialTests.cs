@@ -11,6 +11,8 @@
 
     public class BiVariablePolynomialTests
     {
+        private static readonly GaloisField Gf5;
+
         [UsedImplicitly]
         public static readonly IEnumerable<object[]> EvaluateTestsData;
         [UsedImplicitly]
@@ -32,64 +34,64 @@
 
         static BiVariablePolynomialTests()
         {
-            var gf5 = new PrimeOrderField(5);
+            Gf5 = new PrimeOrderField(5);
 
-            var polynomialForEvoluation = new BiVariablePolynomial(gf5)
+            var polynomialForEvoluation = new BiVariablePolynomial(Gf5)
                              {
-                                 [new Tuple<int, int>(1, 1)] = new FieldElement(gf5, 2),
-                                 [new Tuple<int, int>(0, 1)] = new FieldElement(gf5, 1),
-                                 [new Tuple<int, int>(2, 0)] = new FieldElement(gf5, 1),
-                                 [new Tuple<int, int>(1, 0)] = new FieldElement(gf5, 1),
-                                 [new Tuple<int, int>(0, 0)] = new FieldElement(gf5, 4)
+                                 [new Tuple<int, int>(1, 1)] = new FieldElement(Gf5, 2),
+                                 [new Tuple<int, int>(0, 1)] = new FieldElement(Gf5, 1),
+                                 [new Tuple<int, int>(2, 0)] = new FieldElement(Gf5, 1),
+                                 [new Tuple<int, int>(1, 0)] = new FieldElement(Gf5, 1),
+                                 [new Tuple<int, int>(0, 0)] = new FieldElement(Gf5, 4)
                              };
             EvaluateTestsData = new[]
                                 {
-                                    new object[] {polynomialForEvoluation, new FieldElement(gf5, 1), new FieldElement(gf5, 3), gf5.Zero()},
-                                    new object[] {polynomialForEvoluation, new FieldElement(gf5, 2), new FieldElement(gf5, 4), gf5.Zero()},
-                                    new object[] {polynomialForEvoluation, new FieldElement(gf5, 3), new FieldElement(gf5, 2), gf5.Zero()},
-                                    new object[] {polynomialForEvoluation, new FieldElement(gf5, 2), new FieldElement(gf5, 3), gf5.Zero()},
+                                    new object[] {polynomialForEvoluation, new FieldElement(Gf5, 1), new FieldElement(Gf5, 3), Gf5.Zero()},
+                                    new object[] {polynomialForEvoluation, new FieldElement(Gf5, 2), new FieldElement(Gf5, 4), Gf5.Zero()},
+                                    new object[] {polynomialForEvoluation, new FieldElement(Gf5, 3), new FieldElement(Gf5, 2), Gf5.Zero()},
+                                    new object[] {polynomialForEvoluation, new FieldElement(Gf5, 2), new FieldElement(Gf5, 3), Gf5.Zero()},
                                 };
 
             AddTestsData = new[]
                            {
                                new object[]
                                {
-                                   new BiVariablePolynomial(gf5)
+                                   new BiVariablePolynomial(Gf5)
                                    {
-                                       [new Tuple<int, int>(0, 0)] = new FieldElement(gf5, 2),
-                                       [new Tuple<int, int>(1, 0)] = new FieldElement(gf5, 3)
+                                       [new Tuple<int, int>(0, 0)] = new FieldElement(Gf5, 2),
+                                       [new Tuple<int, int>(1, 0)] = new FieldElement(Gf5, 3)
                                    },
-                                   new BiVariablePolynomial(gf5)
+                                   new BiVariablePolynomial(Gf5)
                                    {
-                                       [new Tuple<int, int>(0, 0)] = new FieldElement(gf5, 3),
-                                       [new Tuple<int, int>(0, 1)] = new FieldElement(gf5, 4)
+                                       [new Tuple<int, int>(0, 0)] = new FieldElement(Gf5, 3),
+                                       [new Tuple<int, int>(0, 1)] = new FieldElement(Gf5, 4)
                                    },
-                                   new BiVariablePolynomial(gf5)
+                                   new BiVariablePolynomial(Gf5)
                                    {
-                                       [new Tuple<int, int>(1, 0)] = new FieldElement(gf5, 3),
-                                       [new Tuple<int, int>(0, 1)] = new FieldElement(gf5, 4)
+                                       [new Tuple<int, int>(1, 0)] = new FieldElement(Gf5, 3),
+                                       [new Tuple<int, int>(0, 1)] = new FieldElement(Gf5, 4)
                                    }
                                },
                                new object[]
                                {
-                                   new BiVariablePolynomial(gf5)
+                                   new BiVariablePolynomial(Gf5)
                                    {
-                                       [new Tuple<int, int>(0, 0)] = new FieldElement(gf5, 2),
-                                       [new Tuple<int, int>(1, 0)] = new FieldElement(gf5, 3),
-                                       [new Tuple<int, int>(0, 1)] = new FieldElement(gf5, 4)
+                                       [new Tuple<int, int>(0, 0)] = new FieldElement(Gf5, 2),
+                                       [new Tuple<int, int>(1, 0)] = new FieldElement(Gf5, 3),
+                                       [new Tuple<int, int>(0, 1)] = new FieldElement(Gf5, 4)
                                    },
-                                   new BiVariablePolynomial(gf5)
+                                   new BiVariablePolynomial(Gf5)
                                    {
-                                       [new Tuple<int, int>(0, 1)] = new FieldElement(gf5, 4),
-                                       [new Tuple<int, int>(0, 0)] = new FieldElement(gf5, 4),
-                                       [new Tuple<int, int>(1, 0)] = new FieldElement(gf5, 4)
+                                       [new Tuple<int, int>(0, 1)] = new FieldElement(Gf5, 4),
+                                       [new Tuple<int, int>(0, 0)] = new FieldElement(Gf5, 4),
+                                       [new Tuple<int, int>(1, 0)] = new FieldElement(Gf5, 4)
 
                                    },
-                                   new BiVariablePolynomial(gf5)
+                                   new BiVariablePolynomial(Gf5)
                                    {
-                                       [new Tuple<int, int>(1, 0)] = new FieldElement(gf5, 2),
-                                       [new Tuple<int, int>(0, 1)] = new FieldElement(gf5, 3),
-                                       [new Tuple<int, int>(0, 0)] = new FieldElement(gf5, 1)
+                                       [new Tuple<int, int>(1, 0)] = new FieldElement(Gf5, 2),
+                                       [new Tuple<int, int>(0, 1)] = new FieldElement(Gf5, 3),
+                                       [new Tuple<int, int>(0, 0)] = new FieldElement(Gf5, 1)
                                    }
                                }
                            };
@@ -98,42 +100,42 @@
                                 {
                                     new object[]
                                     {
-                                        new BiVariablePolynomial(gf5)
+                                        new BiVariablePolynomial(Gf5)
                                         {
-                                            [new Tuple<int, int>(0, 0)] = new FieldElement(gf5, 2),
-                                            [new Tuple<int, int>(1, 0)] = new FieldElement(gf5, 3)
+                                            [new Tuple<int, int>(0, 0)] = new FieldElement(Gf5, 2),
+                                            [new Tuple<int, int>(1, 0)] = new FieldElement(Gf5, 3)
                                         },
-                                        new BiVariablePolynomial(gf5)
+                                        new BiVariablePolynomial(Gf5)
                                         {
-                                            [new Tuple<int, int>(0, 0)] = new FieldElement(gf5, 3),
-                                            [new Tuple<int, int>(0, 1)] = new FieldElement(gf5, 4)
+                                            [new Tuple<int, int>(0, 0)] = new FieldElement(Gf5, 3),
+                                            [new Tuple<int, int>(0, 1)] = new FieldElement(Gf5, 4)
                                         },
-                                        new BiVariablePolynomial(gf5)
+                                        new BiVariablePolynomial(Gf5)
                                         {
-                                            [new Tuple<int, int>(0, 0)] = new FieldElement(gf5, 4),
-                                            [new Tuple<int, int>(1, 0)] = new FieldElement(gf5, 3),
-                                            [new Tuple<int, int>(0, 1)] = new FieldElement(gf5, 1)
+                                            [new Tuple<int, int>(0, 0)] = new FieldElement(Gf5, 4),
+                                            [new Tuple<int, int>(1, 0)] = new FieldElement(Gf5, 3),
+                                            [new Tuple<int, int>(0, 1)] = new FieldElement(Gf5, 1)
                                         }
                                     },
                                     new object[]
                                     {
-                                        new BiVariablePolynomial(gf5)
+                                        new BiVariablePolynomial(Gf5)
                                         {
-                                            [new Tuple<int, int>(0, 0)] = new FieldElement(gf5, 2),
-                                            [new Tuple<int, int>(1, 0)] = new FieldElement(gf5, 3),
-                                            [new Tuple<int, int>(0, 1)] = new FieldElement(gf5, 4)
+                                            [new Tuple<int, int>(0, 0)] = new FieldElement(Gf5, 2),
+                                            [new Tuple<int, int>(1, 0)] = new FieldElement(Gf5, 3),
+                                            [new Tuple<int, int>(0, 1)] = new FieldElement(Gf5, 4)
                                         },
-                                        new BiVariablePolynomial(gf5)
+                                        new BiVariablePolynomial(Gf5)
                                         {
-                                            [new Tuple<int, int>(0, 0)] = new FieldElement(gf5, 4),
-                                            [new Tuple<int, int>(1, 0)] = new FieldElement(gf5, 4),
-                                            [new Tuple<int, int>(0, 1)] = new FieldElement(gf5, 4)
+                                            [new Tuple<int, int>(0, 0)] = new FieldElement(Gf5, 4),
+                                            [new Tuple<int, int>(1, 0)] = new FieldElement(Gf5, 4),
+                                            [new Tuple<int, int>(0, 1)] = new FieldElement(Gf5, 4)
 
                                         },
-                                        new BiVariablePolynomial(gf5)
+                                        new BiVariablePolynomial(Gf5)
                                         {
-                                            [new Tuple<int, int>(0, 0)] = new FieldElement(gf5, 3),
-                                            [new Tuple<int, int>(1, 0)] = new FieldElement(gf5, 4)
+                                            [new Tuple<int, int>(0, 0)] = new FieldElement(Gf5, 3),
+                                            [new Tuple<int, int>(1, 0)] = new FieldElement(Gf5, 4)
                                         }
                                     }
                                 };
@@ -142,78 +144,78 @@
                                            {
                                                new object[]
                                                {
-                                                   new BiVariablePolynomial(gf5)
+                                                   new BiVariablePolynomial(Gf5)
                                                    {
-                                                       [new Tuple<int, int>(0, 0)] = new FieldElement(gf5, 2),
-                                                       [new Tuple<int, int>(1, 0)] = new FieldElement(gf5, 3)
+                                                       [new Tuple<int, int>(0, 0)] = new FieldElement(Gf5, 2),
+                                                       [new Tuple<int, int>(1, 0)] = new FieldElement(Gf5, 3)
                                                    },
-                                                   new BiVariablePolynomial(gf5)
+                                                   new BiVariablePolynomial(Gf5)
                                                    {
-                                                       [new Tuple<int, int>(0, 0)] = new FieldElement(gf5, 3),
-                                                       [new Tuple<int, int>(0, 1)] = new FieldElement(gf5, 4)
+                                                       [new Tuple<int, int>(0, 0)] = new FieldElement(Gf5, 3),
+                                                       [new Tuple<int, int>(0, 1)] = new FieldElement(Gf5, 4)
                                                    },
-                                                   new BiVariablePolynomial(gf5)
+                                                   new BiVariablePolynomial(Gf5)
                                                    {
-                                                       [new Tuple<int, int>(0, 0)] = new FieldElement(gf5, 1),
-                                                       [new Tuple<int, int>(1, 0)] = new FieldElement(gf5, 4),
-                                                       [new Tuple<int, int>(0, 1)] = new FieldElement(gf5, 3),
-                                                       [new Tuple<int, int>(1, 1)] = new FieldElement(gf5, 2)
+                                                       [new Tuple<int, int>(0, 0)] = new FieldElement(Gf5, 1),
+                                                       [new Tuple<int, int>(1, 0)] = new FieldElement(Gf5, 4),
+                                                       [new Tuple<int, int>(0, 1)] = new FieldElement(Gf5, 3),
+                                                       [new Tuple<int, int>(1, 1)] = new FieldElement(Gf5, 2)
                                                    }
                                                },
                                                new object[]
                                                {
-                                                   new BiVariablePolynomial(gf5)
+                                                   new BiVariablePolynomial(Gf5)
                                                    {
-                                                       [new Tuple<int, int>(0, 0)] = new FieldElement(gf5, 2),
-                                                       [new Tuple<int, int>(1, 0)] = new FieldElement(gf5, 3),
-                                                       [new Tuple<int, int>(0, 1)] = new FieldElement(gf5, 4)
+                                                       [new Tuple<int, int>(0, 0)] = new FieldElement(Gf5, 2),
+                                                       [new Tuple<int, int>(1, 0)] = new FieldElement(Gf5, 3),
+                                                       [new Tuple<int, int>(0, 1)] = new FieldElement(Gf5, 4)
                                                    },
-                                                   new BiVariablePolynomial(gf5)
+                                                   new BiVariablePolynomial(Gf5)
                                                    {
-                                                       [new Tuple<int, int>(0, 0)] = new FieldElement(gf5, 4),
-                                                       [new Tuple<int, int>(1, 0)] = new FieldElement(gf5, 1),
-                                                       [new Tuple<int, int>(0, 1)] = new FieldElement(gf5, 2)
+                                                       [new Tuple<int, int>(0, 0)] = new FieldElement(Gf5, 4),
+                                                       [new Tuple<int, int>(1, 0)] = new FieldElement(Gf5, 1),
+                                                       [new Tuple<int, int>(0, 1)] = new FieldElement(Gf5, 2)
                                                    },
-                                                   new BiVariablePolynomial(gf5)
+                                                   new BiVariablePolynomial(Gf5)
                                                    {
-                                                       [new Tuple<int, int>(0, 0)] = new FieldElement(gf5, 3),
-                                                       [new Tuple<int, int>(1, 0)] = new FieldElement(gf5, 4),
-                                                       [new Tuple<int, int>(2, 0)] = new FieldElement(gf5, 3),
-                                                       [new Tuple<int, int>(0, 2)] = new FieldElement(gf5, 3)
+                                                       [new Tuple<int, int>(0, 0)] = new FieldElement(Gf5, 3),
+                                                       [new Tuple<int, int>(1, 0)] = new FieldElement(Gf5, 4),
+                                                       [new Tuple<int, int>(2, 0)] = new FieldElement(Gf5, 3),
+                                                       [new Tuple<int, int>(0, 2)] = new FieldElement(Gf5, 3)
                                                    }
                                                },
                                                new object[]
                                                {
-                                                   new BiVariablePolynomial(gf5)
+                                                   new BiVariablePolynomial(Gf5)
                                                    {
-                                                       [new Tuple<int, int>(0, 0)] = new FieldElement(gf5, 2),
-                                                       [new Tuple<int, int>(1, 0)] = new FieldElement(gf5, 3),
-                                                       [new Tuple<int, int>(0, 1)] = new FieldElement(gf5, 4)
+                                                       [new Tuple<int, int>(0, 0)] = new FieldElement(Gf5, 2),
+                                                       [new Tuple<int, int>(1, 0)] = new FieldElement(Gf5, 3),
+                                                       [new Tuple<int, int>(0, 1)] = new FieldElement(Gf5, 4)
                                                    },
-                                                   new BiVariablePolynomial(gf5),
-                                                   new BiVariablePolynomial(gf5)
+                                                   new BiVariablePolynomial(Gf5),
+                                                   new BiVariablePolynomial(Gf5)
                                                }
                                            };
 
-            var polynomialForMultiplication = new BiVariablePolynomial(gf5)
+            var polynomialForMultiplication = new BiVariablePolynomial(Gf5)
                                               {
-                                                  [new Tuple<int, int>(0, 0)] = new FieldElement(gf5, 3),
-                                                  [new Tuple<int, int>(1, 0)] = new FieldElement(gf5, 2),
-                                                  [new Tuple<int, int>(0, 1)] = new FieldElement(gf5, 4),
-                                                  [new Tuple<int, int>(1, 1)] = new FieldElement(gf5, 1)
+                                                  [new Tuple<int, int>(0, 0)] = new FieldElement(Gf5, 3),
+                                                  [new Tuple<int, int>(1, 0)] = new FieldElement(Gf5, 2),
+                                                  [new Tuple<int, int>(0, 1)] = new FieldElement(Gf5, 4),
+                                                  [new Tuple<int, int>(1, 1)] = new FieldElement(Gf5, 1)
                                               };
             MultiplyByFieldElementTestsData = new[]
                                               {
-                                                  new object[] {polynomialForMultiplication, gf5.Zero(), new BiVariablePolynomial(gf5)},
+                                                  new object[] {polynomialForMultiplication, Gf5.Zero(), new BiVariablePolynomial(Gf5)},
                                                   new object[]
                                                   {
-                                                      polynomialForMultiplication, new FieldElement(gf5, 2),
-                                                      new BiVariablePolynomial(gf5)
+                                                      polynomialForMultiplication, new FieldElement(Gf5, 2),
+                                                      new BiVariablePolynomial(Gf5)
                                                       {
-                                                          [new Tuple<int, int>(0, 0)] = new FieldElement(gf5, 1),
-                                                          [new Tuple<int, int>(1, 0)] = new FieldElement(gf5, 4),
-                                                          [new Tuple<int, int>(0, 1)] = new FieldElement(gf5, 3),
-                                                          [new Tuple<int, int>(1, 1)] = new FieldElement(gf5, 2)
+                                                          [new Tuple<int, int>(0, 0)] = new FieldElement(Gf5, 1),
+                                                          [new Tuple<int, int>(1, 0)] = new FieldElement(Gf5, 4),
+                                                          [new Tuple<int, int>(0, 1)] = new FieldElement(Gf5, 3),
+                                                          [new Tuple<int, int>(1, 1)] = new FieldElement(Gf5, 2)
                                                       }
                                                   }
                                               };
@@ -222,70 +224,70 @@
                                     {
                                         new object[]
                                         {
-                                            new BiVariablePolynomial(gf5)
+                                            new BiVariablePolynomial(Gf5)
                                             {
-                                                [new Tuple<int, int>(0, 0)] = new FieldElement(gf5, 1),
-                                                [new Tuple<int, int>(1, 0)] = new FieldElement(gf5, 3),
-                                                [new Tuple<int, int>(0, 1)] = new FieldElement(gf5, 2)
+                                                [new Tuple<int, int>(0, 0)] = new FieldElement(Gf5, 1),
+                                                [new Tuple<int, int>(1, 0)] = new FieldElement(Gf5, 3),
+                                                [new Tuple<int, int>(0, 1)] = new FieldElement(Gf5, 2)
                                             },
-                                            new BiVariablePolynomial(gf5)
+                                            new BiVariablePolynomial(Gf5)
                                             {
-                                                [new Tuple<int, int>(1, 0)] = new FieldElement(gf5, 1)
+                                                [new Tuple<int, int>(1, 0)] = new FieldElement(Gf5, 1)
                                             },
-                                            new BiVariablePolynomial(gf5)
+                                            new BiVariablePolynomial(Gf5)
                                             {
-                                                [new Tuple<int, int>(0, 0)] = new FieldElement(gf5, 3),
-                                                [new Tuple<int, int>(1, 1)] = new FieldElement(gf5, 1)
+                                                [new Tuple<int, int>(0, 0)] = new FieldElement(Gf5, 3),
+                                                [new Tuple<int, int>(1, 1)] = new FieldElement(Gf5, 1)
                                             },
-                                            new BiVariablePolynomial(gf5)
+                                            new BiVariablePolynomial(Gf5)
                                             {
-                                                [new Tuple<int, int>(0, 0)] = new FieldElement(gf5, 2),
-                                                [new Tuple<int, int>(1, 0)] = new FieldElement(gf5, 3),
-                                                [new Tuple<int, int>(1, 1)] = new FieldElement(gf5, 2)
+                                                [new Tuple<int, int>(0, 0)] = new FieldElement(Gf5, 2),
+                                                [new Tuple<int, int>(1, 0)] = new FieldElement(Gf5, 3),
+                                                [new Tuple<int, int>(1, 1)] = new FieldElement(Gf5, 2)
                                             }
                                         },
                                         new object[]
                                         {
-                                            new BiVariablePolynomial(gf5)
+                                            new BiVariablePolynomial(Gf5)
                                             {
-                                                [new Tuple<int, int>(0, 0)] = new FieldElement(gf5, 1),
-                                                [new Tuple<int, int>(1, 0)] = new FieldElement(gf5, 2),
-                                                [new Tuple<int, int>(2, 0)] = new FieldElement(gf5, 1),
-                                                [new Tuple<int, int>(0, 1)] = new FieldElement(gf5, 3),
-                                                [new Tuple<int, int>(1, 1)] = new FieldElement(gf5, 1)
+                                                [new Tuple<int, int>(0, 0)] = new FieldElement(Gf5, 1),
+                                                [new Tuple<int, int>(1, 0)] = new FieldElement(Gf5, 2),
+                                                [new Tuple<int, int>(2, 0)] = new FieldElement(Gf5, 1),
+                                                [new Tuple<int, int>(0, 1)] = new FieldElement(Gf5, 3),
+                                                [new Tuple<int, int>(1, 1)] = new FieldElement(Gf5, 1)
                                             },
-                                            new BiVariablePolynomial(gf5)
+                                            new BiVariablePolynomial(Gf5)
                                             {
-                                                [new Tuple<int, int>(0, 0)] = new FieldElement(gf5, 1),
-                                                [new Tuple<int, int>(1, 0)] = new FieldElement(gf5, 1)
+                                                [new Tuple<int, int>(0, 0)] = new FieldElement(Gf5, 1),
+                                                [new Tuple<int, int>(1, 0)] = new FieldElement(Gf5, 1)
                                             },
-                                            new BiVariablePolynomial(gf5)
+                                            new BiVariablePolynomial(Gf5)
                                             {
-                                                [new Tuple<int, int>(0, 0)] = new FieldElement(gf5, 2),
-                                                [new Tuple<int, int>(1, 1)] = new FieldElement(gf5, 1)
+                                                [new Tuple<int, int>(0, 0)] = new FieldElement(Gf5, 2),
+                                                [new Tuple<int, int>(1, 1)] = new FieldElement(Gf5, 1)
                                             },
-                                            new BiVariablePolynomial(gf5)
+                                            new BiVariablePolynomial(Gf5)
                                             {
-                                                [new Tuple<int, int>(0, 0)] = new FieldElement(gf5, 2),
-                                                [new Tuple<int, int>(1, 0)] = new FieldElement(gf5, 1),
-                                                [new Tuple<int, int>(2, 0)] = new FieldElement(gf5, 1),
-                                                [new Tuple<int, int>(1, 1)] = new FieldElement(gf5, 4),
-                                                [new Tuple<int, int>(2, 1)] = new FieldElement(gf5, 1)
+                                                [new Tuple<int, int>(0, 0)] = new FieldElement(Gf5, 2),
+                                                [new Tuple<int, int>(1, 0)] = new FieldElement(Gf5, 1),
+                                                [new Tuple<int, int>(2, 0)] = new FieldElement(Gf5, 1),
+                                                [new Tuple<int, int>(1, 1)] = new FieldElement(Gf5, 4),
+                                                [new Tuple<int, int>(2, 1)] = new FieldElement(Gf5, 1)
                                             }
                                         },
                                         new object[]
                                         {
-                                            new BiVariablePolynomial(gf5)
+                                            new BiVariablePolynomial(Gf5)
                                             {
-                                                [new Tuple<int, int>(0, 0)] = new FieldElement(gf5, 1),
-                                                [new Tuple<int, int>(1, 0)] = new FieldElement(gf5, 3),
-                                                [new Tuple<int, int>(0, 1)] = new FieldElement(gf5, 2)
+                                                [new Tuple<int, int>(0, 0)] = new FieldElement(Gf5, 1),
+                                                [new Tuple<int, int>(1, 0)] = new FieldElement(Gf5, 3),
+                                                [new Tuple<int, int>(0, 1)] = new FieldElement(Gf5, 2)
                                             },
-                                            new BiVariablePolynomial(gf5),
-                                            new BiVariablePolynomial(gf5),
-                                            new BiVariablePolynomial(gf5)
+                                            new BiVariablePolynomial(Gf5),
+                                            new BiVariablePolynomial(Gf5),
+                                            new BiVariablePolynomial(Gf5)
                                             {
-                                                [new Tuple<int, int>(0, 0)] = new FieldElement(gf5, 1)
+                                                [new Tuple<int, int>(0, 0)] = new FieldElement(Gf5, 1)
                                             }
                                         }
                                     };
@@ -294,38 +296,38 @@
                                        {
                                            new object[]
                                            {
-                                               new BiVariablePolynomial(gf5)
+                                               new BiVariablePolynomial(Gf5)
                                                {
-                                                   [new Tuple<int, int>(1, 0)] = new FieldElement(gf5, 2),
-                                                   [new Tuple<int, int>(2, 0)] = new FieldElement(gf5, 1),
-                                                   [new Tuple<int, int>(1, 1)] = new FieldElement(gf5, 3)
+                                                   [new Tuple<int, int>(1, 0)] = new FieldElement(Gf5, 2),
+                                                   [new Tuple<int, int>(2, 0)] = new FieldElement(Gf5, 1),
+                                                   [new Tuple<int, int>(1, 1)] = new FieldElement(Gf5, 3)
                                                },
-                                               new BiVariablePolynomial(gf5)
+                                               new BiVariablePolynomial(Gf5)
                                                {
-                                                   [new Tuple<int, int>(0, 0)] = new FieldElement(gf5, 2),
-                                                   [new Tuple<int, int>(1, 0)] = new FieldElement(gf5, 1),
-                                                   [new Tuple<int, int>(0, 1)] = new FieldElement(gf5, 3)
+                                                   [new Tuple<int, int>(0, 0)] = new FieldElement(Gf5, 2),
+                                                   [new Tuple<int, int>(1, 0)] = new FieldElement(Gf5, 1),
+                                                   [new Tuple<int, int>(0, 1)] = new FieldElement(Gf5, 3)
                                                }
                                            },
                                            new object[]
                                            {
-                                               new BiVariablePolynomial(gf5)
+                                               new BiVariablePolynomial(Gf5)
                                                {
-                                                   [new Tuple<int, int>(1, 0)] = new FieldElement(gf5, 2),
-                                                   [new Tuple<int, int>(2, 0)] = new FieldElement(gf5, 1),
-                                                   [new Tuple<int, int>(0, 1)] = new FieldElement(gf5, 3)
+                                                   [new Tuple<int, int>(1, 0)] = new FieldElement(Gf5, 2),
+                                                   [new Tuple<int, int>(2, 0)] = new FieldElement(Gf5, 1),
+                                                   [new Tuple<int, int>(0, 1)] = new FieldElement(Gf5, 3)
                                                },
-                                               new BiVariablePolynomial(gf5)
+                                               new BiVariablePolynomial(Gf5)
                                                {
-                                                   [new Tuple<int, int>(1, 0)] = new FieldElement(gf5, 2),
-                                                   [new Tuple<int, int>(2, 0)] = new FieldElement(gf5, 1),
-                                                   [new Tuple<int, int>(0, 1)] = new FieldElement(gf5, 3)
+                                                   [new Tuple<int, int>(1, 0)] = new FieldElement(Gf5, 2),
+                                                   [new Tuple<int, int>(2, 0)] = new FieldElement(Gf5, 1),
+                                                   [new Tuple<int, int>(0, 1)] = new FieldElement(Gf5, 3)
                                                }
                                            },
                                            new object[]
                                            {
-                                               new BiVariablePolynomial(gf5),
-                                               new BiVariablePolynomial(gf5) 
+                                               new BiVariablePolynomial(Gf5),
+                                               new BiVariablePolynomial(Gf5) 
                                            } 
                                        };
 
@@ -333,39 +335,39 @@
                                  {
                                      new object[]
                                      {
-                                         new BiVariablePolynomial(gf5)
+                                         new BiVariablePolynomial(Gf5)
                                          {
-                                             [new Tuple<int, int>(0, 0)] = new FieldElement(gf5, 3),
-                                             [new Tuple<int, int>(1, 0)] = new FieldElement(gf5, 2),
-                                             [new Tuple<int, int>(0, 1)] = new FieldElement(gf5, 1)
+                                             [new Tuple<int, int>(0, 0)] = new FieldElement(Gf5, 3),
+                                             [new Tuple<int, int>(1, 0)] = new FieldElement(Gf5, 2),
+                                             [new Tuple<int, int>(0, 1)] = new FieldElement(Gf5, 1)
                                          },
-                                         new FieldElement(gf5, 1),
-                                         new Polynomial(gf5, 0, 1)
+                                         new FieldElement(Gf5, 1),
+                                         new Polynomial(Gf5, 0, 1)
                                      },
                                      new object[]
                                      {
-                                         new BiVariablePolynomial(gf5)
+                                         new BiVariablePolynomial(Gf5)
                                          {
-                                             [new Tuple<int, int>(0, 0)] = new FieldElement(gf5, 3),
-                                             [new Tuple<int, int>(1, 0)] = new FieldElement(gf5, 2),
-                                             [new Tuple<int, int>(1, 1)] = new FieldElement(gf5, 1)
+                                             [new Tuple<int, int>(0, 0)] = new FieldElement(Gf5, 3),
+                                             [new Tuple<int, int>(1, 0)] = new FieldElement(Gf5, 2),
+                                             [new Tuple<int, int>(1, 1)] = new FieldElement(Gf5, 1)
                                          },
-                                         gf5.Zero(),
-                                         new Polynomial(gf5, 3)
+                                         Gf5.Zero(),
+                                         new Polynomial(Gf5, 3)
                                      },
                                      new object[]
                                      {
-                                         new BiVariablePolynomial(gf5)
+                                         new BiVariablePolynomial(Gf5)
                                          {
-                                             [new Tuple<int, int>(0, 0)] = new FieldElement(gf5, 2),
-                                             [new Tuple<int, int>(1, 0)] = new FieldElement(gf5, 3),
-                                             [new Tuple<int, int>(2, 0)] = new FieldElement(gf5, 2),
-                                             [new Tuple<int, int>(0, 1)] = new FieldElement(gf5, 1),
-                                             [new Tuple<int, int>(1, 1)] = new FieldElement(gf5, 1),
-                                             [new Tuple<int, int>(0, 2)] = new FieldElement(gf5, 1)
+                                             [new Tuple<int, int>(0, 0)] = new FieldElement(Gf5, 2),
+                                             [new Tuple<int, int>(1, 0)] = new FieldElement(Gf5, 3),
+                                             [new Tuple<int, int>(2, 0)] = new FieldElement(Gf5, 2),
+                                             [new Tuple<int, int>(0, 1)] = new FieldElement(Gf5, 1),
+                                             [new Tuple<int, int>(1, 1)] = new FieldElement(Gf5, 1),
+                                             [new Tuple<int, int>(0, 2)] = new FieldElement(Gf5, 1)
                                          },
-                                         new FieldElement(gf5, 3),
-                                         new Polynomial(gf5, 4, 4, 1)
+                                         new FieldElement(Gf5, 3),
+                                         new Polynomial(Gf5, 4, 4, 1)
                                      }
                                  };
 
@@ -373,41 +375,75 @@
                                  {
                                      new object[]
                                      {
-                                         new BiVariablePolynomial(gf5)
+                                         new BiVariablePolynomial(Gf5)
                                          {
-                                             [new Tuple<int, int>(0, 0)] = new FieldElement(gf5, 3),
-                                             [new Tuple<int, int>(1, 0)] = new FieldElement(gf5, 1),
-                                             [new Tuple<int, int>(0, 1)] = new FieldElement(gf5, 2)
+                                             [new Tuple<int, int>(0, 0)] = new FieldElement(Gf5, 3),
+                                             [new Tuple<int, int>(1, 0)] = new FieldElement(Gf5, 1),
+                                             [new Tuple<int, int>(0, 1)] = new FieldElement(Gf5, 2)
                                          },
-                                         new FieldElement(gf5, 1),
-                                         new Polynomial(gf5, 0, 1)
+                                         new FieldElement(Gf5, 1),
+                                         new Polynomial(Gf5, 0, 1)
                                      },
                                      new object[]
                                      {
-                                         new BiVariablePolynomial(gf5)
+                                         new BiVariablePolynomial(Gf5)
                                          {
-                                             [new Tuple<int, int>(0, 0)] = new FieldElement(gf5, 3),
-                                             [new Tuple<int, int>(0, 1)] = new FieldElement(gf5, 2),
-                                             [new Tuple<int, int>(1, 1)] = new FieldElement(gf5, 1)
+                                             [new Tuple<int, int>(0, 0)] = new FieldElement(Gf5, 3),
+                                             [new Tuple<int, int>(0, 1)] = new FieldElement(Gf5, 2),
+                                             [new Tuple<int, int>(1, 1)] = new FieldElement(Gf5, 1)
                                          },
-                                         gf5.Zero(),
-                                         new Polynomial(gf5, 3)
+                                         Gf5.Zero(),
+                                         new Polynomial(Gf5, 3)
                                      },
                                      new object[]
                                      {
-                                         new BiVariablePolynomial(gf5)
+                                         new BiVariablePolynomial(Gf5)
                                          {
-                                             [new Tuple<int, int>(0, 0)] = new FieldElement(gf5, 2),
-                                             [new Tuple<int, int>(1, 0)] = new FieldElement(gf5, 3),
-                                             [new Tuple<int, int>(2, 0)] = new FieldElement(gf5, 2),
-                                             [new Tuple<int, int>(0, 1)] = new FieldElement(gf5, 1),
-                                             [new Tuple<int, int>(1, 1)] = new FieldElement(gf5, 1),
-                                             [new Tuple<int, int>(0, 2)] = new FieldElement(gf5, 1)
+                                             [new Tuple<int, int>(0, 0)] = new FieldElement(Gf5, 2),
+                                             [new Tuple<int, int>(1, 0)] = new FieldElement(Gf5, 3),
+                                             [new Tuple<int, int>(2, 0)] = new FieldElement(Gf5, 2),
+                                             [new Tuple<int, int>(0, 1)] = new FieldElement(Gf5, 1),
+                                             [new Tuple<int, int>(1, 1)] = new FieldElement(Gf5, 1),
+                                             [new Tuple<int, int>(0, 2)] = new FieldElement(Gf5, 1)
                                          },
-                                         new FieldElement(gf5, 2),
-                                         new Polynomial(gf5, 3, 0, 2)
+                                         new FieldElement(Gf5, 2),
+                                         new Polynomial(Gf5, 3, 0, 2)
                                      }
                                  };
+        }
+
+        [Theory]
+        [InlineData(1)]
+        [InlineData(0)]
+        public void ShouldSetCoefficients(int coefficientValueRepresentation)
+        {
+            // Given
+            var polynomial = new BiVariablePolynomial(Gf5);
+            var monomial = new Tuple<int, int>(1, 1);
+            var coefficientValue = new FieldElement(Gf5, coefficientValueRepresentation);
+
+            // When
+            polynomial[monomial] = coefficientValue;
+
+            // Then
+            Assert.Equal(coefficientValue, polynomial[monomial]);
+        }
+
+        [Theory]
+        [InlineData(2)]
+        [InlineData(0)]
+        public void ShouldChangeCoefficients(int coefficientValueRepresentation)
+        {
+            // Given
+            var monomial = new Tuple<int, int>(1, 1);
+            var polynomial = new BiVariablePolynomial(Gf5) {[monomial] = Gf5.One()};
+            var coefficientValue = new FieldElement(Gf5, coefficientValueRepresentation);
+
+            // When
+            polynomial[monomial] = coefficientValue;
+
+            // Then
+            Assert.Equal(coefficientValue, polynomial[monomial]);
         }
 
         [Theory]

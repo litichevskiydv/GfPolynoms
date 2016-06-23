@@ -21,29 +21,27 @@
             return roots;
         }
 
-        private void Factorize(BiVariablePolynomial polynomial, int maxFactorDegree, 
+        private void Factorize(BiVariablePolynomial polynomial, int maxFactorDegree,
             BiVariablePolynomial xSubstitution, BiVariablePolynomial ySubstitution,
-            ICollection<Polynomial> factors, Stack<int> currentFactorCoefficients)
+            ISet<Polynomial> factors, Stack<int> currentFactorCoefficients)
         {
             if (polynomial.EvaluateY(polynomial.Field.Zero()).IsZero)
                 factors.Add(new Polynomial(polynomial.Field, currentFactorCoefficients.Reverse().ToArray()));
-            else
-            {
-                if(currentFactorCoefficients.Count > maxFactorDegree)
-                    return;
-                var roots = FindPolynomialRoots(polynomial.EvaluateX(polynomial.Field.Zero()));
-                foreach (var root in roots)
-                {
-                    currentFactorCoefficients.Push(root.Representation);
-                    ySubstitution[_zeroMonomial] = root;
-                    Factorize(polynomial
-                        .PerformVariablesSubstitution(xSubstitution, ySubstitution)
-                        .DivideByMaxPossibleXDegree(), maxFactorDegree,
-                        xSubstitution, ySubstitution,
-                        factors, currentFactorCoefficients);
 
-                    currentFactorCoefficients.Pop();
-                }
+            if (currentFactorCoefficients.Count > maxFactorDegree)
+                return;
+            var roots = FindPolynomialRoots(polynomial.EvaluateX(polynomial.Field.Zero()));
+            foreach (var root in roots)
+            {
+                currentFactorCoefficients.Push(root.Representation);
+                ySubstitution[_zeroMonomial] = root;
+                Factorize(polynomial
+                    .PerformVariablesSubstitution(xSubstitution, ySubstitution)
+                    .DivideByMaxPossibleXDegree(), maxFactorDegree,
+                    xSubstitution, ySubstitution,
+                    factors, currentFactorCoefficients);
+
+                currentFactorCoefficients.Pop();
             }
         }
 
@@ -59,7 +57,7 @@
                                     [new Tuple<int, int>(1, 1)] = interpolationPolynomial.Field.One()
                                 };
 
-            var factors = new List<Polynomial>();
+            var factors = new HashSet<Polynomial>();
             var currentFactorCoefficients = new Stack<int>();
 
             Factorize(interpolationPolynomial, maxFactorDegree,

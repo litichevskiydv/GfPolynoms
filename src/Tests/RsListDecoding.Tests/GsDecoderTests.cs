@@ -31,7 +31,7 @@
             return codeword;
         }
 
-        private static Tuple<FieldElement, FieldElement>[] AddNoise(Tuple<FieldElement, FieldElement>[] codeword, int errorsCount)
+        private static Tuple<FieldElement, FieldElement>[] AddRandomNoise(Tuple<FieldElement, FieldElement>[] codeword, int errorsCount)
         {
             var random = new Random();
             var errorsPositions = new HashSet<int>();
@@ -45,26 +45,55 @@
             return codeword;
         }
 
+        private static Tuple<FieldElement, FieldElement>[] AddNoise(Tuple<FieldElement, FieldElement>[] codeword, params int[] errorsPositions)
+        {
+            var one = codeword[0].Item1.Field.One();
+            foreach (var errorPosition in errorsPositions)
+                codeword[errorPosition].Item2.Add(one);
+
+            return codeword;
+        }
+
         static GsDecoderTests()
         {
             var gf8 = new PrimePowerOrderField(8, 2, new[] { 1, 1, 0, 1 });
 
             var inrormationPolynomial1 = new Polynomial(gf8, 1, 2, 3);
             var inrormationPolynomial2 = new Polynomial(gf8, 7, 4, 1);
+            var inrormationPolynomial3 = new Polynomial(gf8, 0, 2);
+            var inrormationPolynomial4 = new Polynomial(gf8, 0, 0, 3);
 
             DecoderTestsData = new[]
                                {
                                    new object[]
                                    {
                                        7, 3, 4,
-                                       AddNoise(GenerateCodeword(inrormationPolynomial1), 3),
+                                       AddNoise(GenerateCodeword(inrormationPolynomial1), 2, 3, 6),
                                        inrormationPolynomial1
                                    },
                                    new object[]
                                    {
                                        7, 3, 4,
-                                       AddNoise(GenerateCodeword(inrormationPolynomial2), 3),
+                                       AddRandomNoise(GenerateCodeword(inrormationPolynomial1), 3),
+                                       inrormationPolynomial1
+                                   },
+                                   new object[]
+                                   {
+                                       7, 3, 4,
+                                       AddRandomNoise(GenerateCodeword(inrormationPolynomial2), 3),
                                        inrormationPolynomial2
+                                   },
+                                   new object[]
+                                   {
+                                       7, 3, 4,
+                                       AddRandomNoise(GenerateCodeword(inrormationPolynomial3), 3),
+                                       inrormationPolynomial3
+                                   },
+                                   new object[]
+                                   {
+                                       7, 3, 4,
+                                       AddRandomNoise(GenerateCodeword(inrormationPolynomial4), 3),
+                                       inrormationPolynomial4
                                    }
                                };
         }

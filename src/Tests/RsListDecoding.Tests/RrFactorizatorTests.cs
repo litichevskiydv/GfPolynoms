@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using GfPolynoms;
+    using GfPolynoms.Extensions;
     using GfPolynoms.GaloisFields;
     using JetBrains.Annotations;
     using ListDecoder.GsDecoderDependencies.InterpolationPolynomialFactorisator;
@@ -19,6 +20,7 @@
         static RrFactorizatorTests()
         {
             var gf19 = new PrimeOrderField(19);
+            var gf8 = new PrimePowerOrderField(8, 2, new[] { 1, 1, 0, 1 });
 
             FactorizationTestsData = new[]
                                      {
@@ -51,6 +53,34 @@
                                                  new Polynomial(gf19, 18, 14),
                                                  new Polynomial(gf19, 14, 16),
                                                  new Polynomial(gf19, 8, 8)
+                                             }
+                                         },
+                                         new object[]
+                                         {
+                                             new BiVariablePolynomial(gf8)
+                                             {
+                                                 [new Tuple<int, int>(1, 1)] = gf8.One(),
+                                                 [new Tuple<int, int>(0, 2)] = gf8.One()
+                                             }, 
+                                             1,
+                                             new []
+                                             {
+                                                 new Polynomial(gf8),
+                                                 new Polynomial(gf8, 0, 1) 
+                                             }
+                                         },
+                                         new object[]
+                                         {
+                                             new BiVariablePolynomial(gf8)
+                                             {
+                                                 [new Tuple<int, int>(2, 1)] = gf8.One(),
+                                                 [new Tuple<int, int>(0, 2)] = gf8.One()
+                                             },
+                                             2,
+                                             new []
+                                             {
+                                                 new Polynomial(gf8),
+                                                 new Polynomial(gf8, 0, 0, 1)
                                              }
                                          }
                                      };
