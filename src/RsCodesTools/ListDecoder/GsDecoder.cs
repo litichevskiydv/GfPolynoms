@@ -12,7 +12,7 @@
         private readonly IInterpolationPolynomialFactorizator _interpolationPolynomialFactorizator;
 
         private static Polynomial[] SelectCorrectInformationPolynomials(IEnumerable<Polynomial> possiblePolynomials,
-            int minCorrectValuesCount, IReadOnlyList<Tuple<FieldElement, FieldElement>> decodedCodeword)
+            IReadOnlyList<Tuple<FieldElement, FieldElement>> decodedCodeword, int minCorrectValuesCount)
         {
             var correctPolynomials = new List<Polynomial>();
 
@@ -30,7 +30,7 @@
             return correctPolynomials.ToArray();
         }
 
-        public Polynomial[] Decode(int n, int k, int minCorrectValuesCount, Tuple<FieldElement, FieldElement>[] decodedCodeword)
+        public Polynomial[] Decode(int n, int k, Tuple<FieldElement, FieldElement>[] decodedCodeword, int minCorrectValuesCount)
         {
             if (n <= 0)
                 throw new ArgumentException(nameof(n));
@@ -53,7 +53,7 @@
 
             var possibleInformationPolynomials = _interpolationPolynomialFactorizator.Factorize(interpolationPolynomial, decrementedK);
 
-            return SelectCorrectInformationPolynomials(possibleInformationPolynomials, minCorrectValuesCount, decodedCodeword);
+            return SelectCorrectInformationPolynomials(possibleInformationPolynomials, decodedCodeword, minCorrectValuesCount);
         }
 
         public GsDecoder(IInterpolationPolynomialBuilder interpolationPolynomialBuilder, IInterpolationPolynomialFactorizator interpolationPolynomialFactorizator)

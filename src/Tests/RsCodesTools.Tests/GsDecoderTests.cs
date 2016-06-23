@@ -108,7 +108,7 @@
         public void ShouldFindOriginalInformationWordAmongPossibleVariants(int n, int k, int minCorrectValuesCount, Tuple<FieldElement, FieldElement>[] decodedCodeword, Polynomial expectedInformationPolynomial)
         {
             // When
-            var possibleVariants = _decoder.Decode(n, k, minCorrectValuesCount, decodedCodeword);
+            var possibleVariants = _decoder.Decode(n, k, decodedCodeword, minCorrectValuesCount);
 
             // Then
             Assert.True(possibleVariants.Contains(expectedInformationPolynomial));
