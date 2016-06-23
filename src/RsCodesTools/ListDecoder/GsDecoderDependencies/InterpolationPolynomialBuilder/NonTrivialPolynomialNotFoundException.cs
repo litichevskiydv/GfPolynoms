@@ -1,4 +1,4 @@
-﻿namespace RsListDecoding.ListDecoder.GsDecoderDependencies.InterpolationPolynomialBuilder
+﻿namespace RsCodesTools.ListDecoder.GsDecoderDependencies.InterpolationPolynomialBuilder
 {
     using System;
 

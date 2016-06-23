@@ -1,4 +1,4 @@
-﻿namespace RsListDecoding.ListDecoder
+﻿namespace RsCodesTools.ListDecoder
 {
     using System;
     using System.Collections.Generic;

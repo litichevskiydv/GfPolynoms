@@ -1,4 +1,4 @@
-﻿namespace RsListDecoding.ListDecoder.GsDecoderDependencies.InterpolationPolynomialFactorisator
+﻿namespace RsCodesTools.ListDecoder.GsDecoderDependencies.InterpolationPolynomialFactorisator
 {
     using System;
     using System.Collections.Generic;

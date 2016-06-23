@@ -1,4 +1,4 @@
-﻿namespace RsListDecoding.Tests
+﻿namespace RsCodesTools.Tests
 {
     using System;
     using System.Collections.Generic;

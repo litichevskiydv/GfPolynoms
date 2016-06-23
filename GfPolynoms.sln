@@ -20,9 +20,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{AD028079
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "GfPolynoms.Tests", "src\Tests\GfPolynoms.Tests\GfPolynoms.Tests.xproj", "{3F48CEAD-FFD1-4524-B251-09CEB737E28A}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "RsListDecoding", "src\RsListDecoding\RsListDecoding.xproj", "{8BB985B6-43BD-4EF4-8E39-D920DD8FACD2}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "RsCodesTools", "src\RsCodesTools\RsCodesTools.xproj", "{8BB985B6-43BD-4EF4-8E39-D920DD8FACD2}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "RsListDecoding.Tests", "src\Tests\RsListDecoding.Tests\RsListDecoding.Tests.xproj", "{2370FDB6-32E6-43CB-A8F5-2D4649954119}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "RsCodesTools.Tests", "src\Tests\RsCodesTools.Tests\RsCodesTools.Tests.xproj", "{2370FDB6-32E6-43CB-A8F5-2D4649954119}"
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "GfAlgorithms", "src\GfAlgorithms\GfAlgorithms.xproj", "{1E450C27-7B5F-4087-9423-557B07A6B161}"
 EndProject

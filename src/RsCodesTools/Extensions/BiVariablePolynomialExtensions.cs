@@ -1,4 +1,4 @@
-﻿namespace RsListDecoding.Extensions
+﻿namespace RsCodesTools.Extensions
 {
     using System;
     using System.Collections.Generic;

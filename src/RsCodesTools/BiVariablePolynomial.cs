@@ -1,4 +1,4 @@
-﻿namespace RsListDecoding
+﻿namespace RsCodesTools
 {
     using System;
     using System.Collections;
