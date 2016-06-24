@@ -58,42 +58,42 @@
         {
             var gf8 = new PrimePowerOrderField(8, 2, new[] { 1, 1, 0, 1 });
 
-            var inrormationPolynomial1 = new Polynomial(gf8, 1, 2, 3);
-            var inrormationPolynomial2 = new Polynomial(gf8, 7, 4, 1);
-            var inrormationPolynomial3 = new Polynomial(gf8, 0, 2);
-            var inrormationPolynomial4 = new Polynomial(gf8, 0, 0, 3);
+            var informationPolynomial1 = new Polynomial(gf8, 1, 2, 3);
+            var informationPolynomial2 = new Polynomial(gf8, 7, 4, 1);
+            var informationPolynomial3 = new Polynomial(gf8, 0, 2);
+            var informationPolynomial4 = new Polynomial(gf8, 0, 0, 3);
 
             DecoderTestsData = new[]
                                {
                                    new object[]
                                    {
                                        7, 3, 4,
-                                       AddNoise(GenerateCodeword(inrormationPolynomial1), 2, 3, 6),
-                                       inrormationPolynomial1
+                                       AddNoise(GenerateCodeword(informationPolynomial1), 2, 3, 6),
+                                       informationPolynomial1
                                    },
                                    new object[]
                                    {
                                        7, 3, 4,
-                                       AddRandomNoise(GenerateCodeword(inrormationPolynomial1), 3),
-                                       inrormationPolynomial1
+                                       AddRandomNoise(GenerateCodeword(informationPolynomial1), 3),
+                                       informationPolynomial1
                                    },
                                    new object[]
                                    {
                                        7, 3, 4,
-                                       AddRandomNoise(GenerateCodeword(inrormationPolynomial2), 3),
-                                       inrormationPolynomial2
+                                       AddRandomNoise(GenerateCodeword(informationPolynomial2), 3),
+                                       informationPolynomial2
                                    },
                                    new object[]
                                    {
                                        7, 3, 4,
-                                       AddRandomNoise(GenerateCodeword(inrormationPolynomial3), 3),
-                                       inrormationPolynomial3
+                                       AddRandomNoise(GenerateCodeword(informationPolynomial3), 3),
+                                       informationPolynomial3
                                    },
                                    new object[]
                                    {
                                        7, 3, 4,
-                                       AddRandomNoise(GenerateCodeword(inrormationPolynomial4), 3),
-                                       inrormationPolynomial4
+                                       AddRandomNoise(GenerateCodeword(informationPolynomial4), 3),
+                                       informationPolynomial4
                                    }
                                };
         }

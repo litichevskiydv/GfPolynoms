@@ -62,16 +62,42 @@
                                         + new Polynomial(gf7, 1, 2, 1, 5, 2, 1).RightShift(2);
 
             var informationPolynomial1 = new Polynomial(gf7, 4, 0, 2);
+            var informationPolynomial2 = new Polynomial(gf7, 1, 2, 3);
+            var informationPolynomial3 = new Polynomial(gf7, 6, 4, 1);
+            var informationPolynomial4 = new Polynomial(gf7, 0, 2);
+            var informationPolynomial5 = new Polynomial(gf7, 0, 0, 3);
 
             DecoderTestsData = new[]
                                {
                                    new object[]
                                    {
                                        6, 3, 3, generationPolynomial,
-                                       AddRandomNoise(
-                                           GenerateCodeword(6, generationElement, generationPolynomial, informationPolynomial1), 1),
-                                       5,
+                                       AddRandomNoise(GenerateCodeword(6, generationElement, generationPolynomial, informationPolynomial1), 1), 5,
                                        informationPolynomial1
+                                   },
+                                   new object[]
+                                   {
+                                       6, 3, 3, generationPolynomial,
+                                       AddRandomNoise(GenerateCodeword(6, generationElement, generationPolynomial, informationPolynomial2), 1), 5,
+                                       informationPolynomial2
+                                   },
+                                   new object[]
+                                   {
+                                       6, 3, 3, generationPolynomial,
+                                       AddRandomNoise(GenerateCodeword(6, generationElement, generationPolynomial, informationPolynomial3), 1), 5,
+                                       informationPolynomial3
+                                   },
+                                   new object[]
+                                   {
+                                       6, 3, 3, generationPolynomial,
+                                       AddRandomNoise(GenerateCodeword(6, generationElement, generationPolynomial, informationPolynomial4), 1), 5,
+                                       informationPolynomial4
+                                   },
+                                   new object[]
+                                   {
+                                       6, 3, 3, generationPolynomial,
+                                       AddRandomNoise(GenerateCodeword(6, generationElement, generationPolynomial, informationPolynomial5), 1), 5,
+                                       informationPolynomial5
                                    }
                                };
         }
