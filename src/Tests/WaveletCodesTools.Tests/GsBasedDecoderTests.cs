@@ -21,7 +21,7 @@
         [UsedImplicitly]
         public static readonly IEnumerable<object[]> DecoderTestsData;
 
-        private static Tuple<FieldElement, FieldElement>[] GenerateCodeword(int n, FieldElement generationElement, Polynomial generationPolynomial, Polynomial informationPolynomial)
+        private static Tuple<FieldElement, FieldElement>[] GenerateCodeword(int n, Polynomial generationPolynomial, Polynomial informationPolynomial)
         {
             var field = informationPolynomial.Field;
 
@@ -30,12 +30,13 @@
             var c = (informationPolynomial.RaiseVariableDegree(2) * generationPolynomial) % m;
 
             var i = 0;
-            var generationElementPower = field.One();
             var codeword = new Tuple<FieldElement, FieldElement>[n];
-            for (; i <= c.Degree; i++, generationElementPower *= generationElement)
-                codeword[i] = new Tuple<FieldElement, FieldElement>(generationElementPower, new FieldElement(field, c[i]));
-            for (; i < n; i++, generationElementPower *= generationElement)
-                codeword[i] = new Tuple<FieldElement, FieldElement>(generationElementPower, field.Zero());
+            for (; i <= c.Degree; i++)
+                codeword[i] = new Tuple<FieldElement, FieldElement>(new FieldElement(field, field.GetGeneratingElementPower(i)),
+                    new FieldElement(field, c[i]));
+            for (; i < n; i++)
+                codeword[i] = new Tuple<FieldElement, FieldElement>(new FieldElement(field, field.GetGeneratingElementPower(i)),
+                    field.Zero());
 
             return codeword;
         }
@@ -54,10 +55,19 @@
             return codeword;
         }
 
+        private static object[] PrepareTestData(int n, int k, int d, Polynomial generationPolynomial, Polynomial informationPolynomial, int randomErrorsCount)
+        {
+            return new object[]
+                   {
+                       n, k, d, generationPolynomial,
+                       AddRandomNoise(GenerateCodeword(n, generationPolynomial, informationPolynomial), randomErrorsCount), n - randomErrorsCount,
+                       informationPolynomial
+                   };
+        }
+
         static GsBasedDecoderTests()
         {
             var gf7 = new PrimeOrderField(7);
-            var generationElement = new FieldElement(gf7, 3);
             var generationPolynomial = new Polynomial(gf7, 4, 2, 6, 4, 3, 4)
                                         + new Polynomial(gf7, 1, 2, 1, 5, 2, 1).RightShift(2);
 
@@ -69,36 +79,11 @@
 
             DecoderTestsData = new[]
                                {
-                                   new object[]
-                                   {
-                                       6, 3, 3, generationPolynomial,
-                                       AddRandomNoise(GenerateCodeword(6, generationElement, generationPolynomial, informationPolynomial1), 1), 5,
-                                       informationPolynomial1
-                                   },
-                                   new object[]
-                                   {
-                                       6, 3, 3, generationPolynomial,
-                                       AddRandomNoise(GenerateCodeword(6, generationElement, generationPolynomial, informationPolynomial2), 1), 5,
-                                       informationPolynomial2
-                                   },
-                                   new object[]
-                                   {
-                                       6, 3, 3, generationPolynomial,
-                                       AddRandomNoise(GenerateCodeword(6, generationElement, generationPolynomial, informationPolynomial3), 1), 5,
-                                       informationPolynomial3
-                                   },
-                                   new object[]
-                                   {
-                                       6, 3, 3, generationPolynomial,
-                                       AddRandomNoise(GenerateCodeword(6, generationElement, generationPolynomial, informationPolynomial4), 1), 5,
-                                       informationPolynomial4
-                                   },
-                                   new object[]
-                                   {
-                                       6, 3, 3, generationPolynomial,
-                                       AddRandomNoise(GenerateCodeword(6, generationElement, generationPolynomial, informationPolynomial5), 1), 5,
-                                       informationPolynomial5
-                                   }
+                                   PrepareTestData(6, 3, 3, generationPolynomial, informationPolynomial1, 1),
+                                   PrepareTestData(6, 3, 3, generationPolynomial, informationPolynomial2, 1),
+                                   PrepareTestData(6, 3, 3, generationPolynomial, informationPolynomial3, 1),
+                                   PrepareTestData(6, 3, 3, generationPolynomial, informationPolynomial4, 1),
+                                   PrepareTestData(6, 3, 3, generationPolynomial, informationPolynomial5, 1)
                                };
         }
 

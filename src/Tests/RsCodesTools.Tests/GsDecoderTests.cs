@@ -54,47 +54,37 @@
             return codeword;
         }
 
+        private static object[] PrepareTestsData(int n, int k, Polynomial informationPolynomial, int randomErrorsCount)
+        {
+            return new object[]
+                   {
+                       n, k,
+                       AddRandomNoise(GenerateCodeword(informationPolynomial), randomErrorsCount), n - randomErrorsCount,
+                       informationPolynomial
+                   };
+        }
+
+        private static object[] PrepareTestsData(int n, int k, Polynomial informationPolynomial, params int[] errorsPositions)
+        {
+            return new object[]
+                   {
+                       n, k,
+                       AddNoise(GenerateCodeword(informationPolynomial), errorsPositions), n - errorsPositions.Length,
+                       informationPolynomial
+                   };
+        }
+
         static GsDecoderTests()
         {
             var gf8 = new PrimePowerOrderField(8, 2, new[] { 1, 1, 0, 1 });
 
-            var informationPolynomial1 = new Polynomial(gf8, 1, 2, 3);
-            var informationPolynomial2 = new Polynomial(gf8, 7, 4, 1);
-            var informationPolynomial3 = new Polynomial(gf8, 0, 2);
-            var informationPolynomial4 = new Polynomial(gf8, 0, 0, 3);
-
             DecoderTestsData = new[]
                                {
-                                   new object[]
-                                   {
-                                       7, 3, 4,
-                                       AddNoise(GenerateCodeword(informationPolynomial1), 2, 3, 6),
-                                       informationPolynomial1
-                                   },
-                                   new object[]
-                                   {
-                                       7, 3, 4,
-                                       AddRandomNoise(GenerateCodeword(informationPolynomial1), 3),
-                                       informationPolynomial1
-                                   },
-                                   new object[]
-                                   {
-                                       7, 3, 4,
-                                       AddRandomNoise(GenerateCodeword(informationPolynomial2), 3),
-                                       informationPolynomial2
-                                   },
-                                   new object[]
-                                   {
-                                       7, 3, 4,
-                                       AddRandomNoise(GenerateCodeword(informationPolynomial3), 3),
-                                       informationPolynomial3
-                                   },
-                                   new object[]
-                                   {
-                                       7, 3, 4,
-                                       AddRandomNoise(GenerateCodeword(informationPolynomial4), 3),
-                                       informationPolynomial4
-                                   }
+                                   PrepareTestsData(7, 3, new Polynomial(gf8, 1, 2, 3), 2, 3, 6),
+                                   PrepareTestsData(7, 3, new Polynomial(gf8, 1, 2, 3), 3),
+                                   PrepareTestsData(7, 3, new Polynomial(gf8, 7, 4, 1), 3),
+                                   PrepareTestsData(7, 3, new Polynomial(gf8, 0, 2), 3),
+                                   PrepareTestsData(7, 3, new Polynomial(gf8, 0, 0, 3), 3)
                                };
         }
 
@@ -105,7 +95,7 @@
 
         [Theory]
         [MemberData(nameof(DecoderTestsData))]
-        public void ShouldFindOriginalInformationWordAmongPossibleVariants(int n, int k, int minCorrectValuesCount, Tuple<FieldElement, FieldElement>[] decodedCodeword, Polynomial expectedInformationPolynomial)
+        public void ShouldFindOriginalInformationWordAmongPossibleVariants(int n, int k, Tuple<FieldElement, FieldElement>[] decodedCodeword, int minCorrectValuesCount, Polynomial expectedInformationPolynomial)
         {
             // When
             var possibleVariants = _decoder.Decode(n, k, decodedCodeword, minCorrectValuesCount);
