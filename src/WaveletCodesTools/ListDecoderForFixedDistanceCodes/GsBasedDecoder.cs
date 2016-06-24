@@ -12,7 +12,19 @@
         private readonly RsCodesTools.ListDecoder.IListDecoder _rsListDecoder;
         private readonly ILinearSystemSolver _linearSystemSolver;
 
-        private IEnumerable<Polynomial> GetFrequencyDecodingResults(int n, int d,
+        private static int CalculateGeneratingPolynomialLeadZeroValuesCount(Polynomial generatingPolynomial,
+            IReadOnlyList<Tuple<FieldElement, FieldElement>> decodedCodeword)
+        {
+            var count = 0;
+            for (;
+                count < decodedCodeword.Count && generatingPolynomial.Evaluate(decodedCodeword[count].Item1.Representation) == 0;
+                count++)
+            {
+            }
+            return count;
+        }
+
+        private IEnumerable<Polynomial> GetFrequencyDecodingResults(int n, int d, int generationPolynomialLeadZeroValuesCount,
             IReadOnlyList<Tuple<FieldElement, FieldElement>> decodedCodeword, int minCorrectValuesCount)
         {
             var field = decodedCodeword[0].Item1.Field;
@@ -23,12 +35,12 @@
             {
                 var inversedSample = new FieldElement(field, field.InverseForMultiplication(decodedCodeword[i].Item1.Representation));
                 preparedCodeword[i] = new Tuple<FieldElement, FieldElement>(inversedSample,
-                    decodedCodeword[i].Item2*correction*FieldElement.Pow(decodedCodeword[i].Item1, d - 1));
+                    decodedCodeword[i].Item2*correction*FieldElement.Pow(decodedCodeword[i].Item1, generationPolynomialLeadZeroValuesCount));
             }
             return _rsListDecoder.Decode(n, n - d + 1, preparedCodeword, minCorrectValuesCount);
         }
 
-        private Polynomial[] SelectCorrectInformationPolynomials(int n, int k, int d, Polynomial generatingPolynomial,
+        private Polynomial[] SelectCorrectInformationPolynomials(int n, int k, int d, Polynomial generatingPolynomial, int generationPolynomialLeadZeroValuesCount,
             IReadOnlyList<Tuple<FieldElement, FieldElement>> decodedCodeword, IEnumerable<Polynomial> frequencyDecodingResults)
         {
             var correctPolynomials = new List<Polynomial>();
@@ -36,12 +48,13 @@
             var field = generatingPolynomial.Field;
             foreach (var frequencyDecodingResult in frequencyDecodingResults)
             {
-                var linearSystemMatrix = new FieldElement[n, k];
-                for (var i = 0; i < n; i++)
+                var linearSystemMatrix = new FieldElement[n - d + 1, k];
+                for (var i = 0; i < n - d + 1; i++)
                 {
-                    var correction = new FieldElement(field, generatingPolynomial.Evaluate(decodedCodeword[i].Item1.Representation));
+                    var smaple = decodedCodeword[i + generationPolynomialLeadZeroValuesCount].Item1;
+                    var sampleSqr = smaple*smaple;
                     var samplePower = field.One();
-                    var sampleSqr = decodedCodeword[i].Item1*decodedCodeword[i].Item1;
+                    var correction = new FieldElement(field, generatingPolynomial.Evaluate(smaple.Representation));
                     for (var j = 0; j < k; j++)
                     {
                         linearSystemMatrix[i, j] = samplePower*correction;
@@ -49,11 +62,11 @@
                     }
                 }
 
-                var valuesVector = new FieldElement[n];
-                for (var i = 0; i < n; i++)
+                var valuesVector = new FieldElement[n - d + 1];
+                for (var i = 0; i <= frequencyDecodingResult.Degree; i++)
+                    valuesVector[i] = new FieldElement(field, frequencyDecodingResult[i]);
+                for (var i = frequencyDecodingResult.Degree + 1; i < n - d + 1; i++)
                     valuesVector[i] = field.Zero();
-                for (int i = d - 1, j = 0; i < n && j <= frequencyDecodingResult.Degree; i++,j++)
-                    valuesVector[i] = new FieldElement(field, frequencyDecodingResult[j]);
 
                 var systemSolution = _linearSystemSolver.Solve(linearSystemMatrix, valuesVector);
                 if (systemSolution.IsEmpty == false)
@@ -77,9 +90,11 @@
             if (decodedCodeword.Length != n)
                 throw new AggregateException(nameof(decodedCodeword));
 
-            var frequencyDecodingResults = GetFrequencyDecodingResults(n, d, decodedCodeword, minCorrectValuesCount);
+            var leadZerosCount = CalculateGeneratingPolynomialLeadZeroValuesCount(generatingPolynomial, decodedCodeword);
 
-            return SelectCorrectInformationPolynomials(n, k, d, generatingPolynomial, decodedCodeword, frequencyDecodingResults);
+            var frequencyDecodingResults = GetFrequencyDecodingResults(n, d, leadZerosCount, decodedCodeword, minCorrectValuesCount);
+
+            return SelectCorrectInformationPolynomials(n, k, d, generatingPolynomial, leadZerosCount, decodedCodeword, frequencyDecodingResults);
         }
 
         public GsBasedDecoder(RsCodesTools.ListDecoder.IListDecoder rsListDecoder, ILinearSystemSolver linearSystemSolver)
