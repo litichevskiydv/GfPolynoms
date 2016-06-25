@@ -10,6 +10,24 @@
     /// </summary>
     public class Polynomial
     {
+        public class DevisionResult
+        {
+            public Polynomial Quotient { get; }
+
+            public Polynomial Remainder { get; }
+
+            public DevisionResult(Polynomial quotient, Polynomial remainder)
+            {
+                if (quotient == null)
+                    throw new ArgumentNullException(nameof(quotient));
+                if (remainder == null)
+                    throw new ArgumentNullException(nameof(remainder));
+
+                Quotient = quotient;
+                Remainder = remainder;
+            }
+        }
+
         /// <summary>
         /// Коэффициенты многочлена
         /// </summary>
@@ -257,14 +275,14 @@
         /// </summary>
         /// <param name="b">Делитель</param>
         /// <returns>Пара (частное, остаток)</returns>
-        public Tuple<Polynomial, Polynomial> DivideEx(Polynomial b)
+        public DevisionResult DivideExtended(Polynomial b)
         {
             if (Field.Equals(b.Field) == false || b.IsZero)
                 throw new ArgumentException(nameof(b));
 
-            var result = new Tuple<Polynomial, Polynomial>(new Polynomial(Field), new Polynomial(this));
-            var quotientPolynomial = result.Item1;
-            var remainderPolynomial = result.Item2;
+            var result = new DevisionResult(new Polynomial(Field), new Polynomial(this));
+            var quotientPolynomial = result.Quotient;
+            var remainderPolynomial = result.Remainder;
 
             if (Degree < b.Degree)
                 return result;
@@ -293,8 +311,8 @@
         /// <param name="b">Делитель</param>
         public Polynomial Divide(Polynomial b)
         {
-            var divisionResult = DivideEx(b);
-            _coefficients = divisionResult.Item1._coefficients;
+            var divisionResult = DivideExtended(b);
+            _coefficients = divisionResult.Quotient._coefficients;
             return this;
         }
 
@@ -304,8 +322,8 @@
         /// <param name="b">Многочлен, по модулю которого берется текущий</param>
         public Polynomial Modulo(Polynomial b)
         {
-            var divisionResult = DivideEx(b);
-            _coefficients = divisionResult.Item2._coefficients;
+            var divisionResult = DivideExtended(b);
+            _coefficients = divisionResult.Remainder._coefficients;
             return this;
         }
 
