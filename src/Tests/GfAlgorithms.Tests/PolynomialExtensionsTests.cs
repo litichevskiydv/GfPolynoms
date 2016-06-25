@@ -54,5 +54,22 @@
             // Then
             Assert.Equal(expectedPolynomial, actualPolynomial);
         }
+
+        [Theory]
+        [InlineData(new[] {1, 2, 3}, false)]
+        [InlineData(new[] {0, 0, 1}, true)]
+        [InlineData(new[] {1}, true)]
+        [InlineData(new int[0], true)]
+        public void ShouldDetermineWhatPolynomialHasOnlyOneNotZeroCoefficient(int[] coefficients, bool expected)
+        {
+            // Given
+            var polynomial = new Polynomial(_field, coefficients);
+
+            // When
+            var isMonomial = polynomial.IsMonomial();
+
+            // Then
+            Assert.Equal(expected, isMonomial);
+        }
     }
 }

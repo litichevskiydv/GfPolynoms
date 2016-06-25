@@ -41,5 +41,13 @@
 
             return evenComponent.RaiseVariableDegree(2) + (oddComponent.RaiseVariableDegree(2) >> 1);
         }
+
+        public static bool IsMonomial(this Polynomial polynomial)
+        {
+            var isMonomial = true;
+            for (var i = 0; i < polynomial.Degree && isMonomial; i++)
+                isMonomial = polynomial[i] == 0;
+            return isMonomial;
+        }
     }
 }
