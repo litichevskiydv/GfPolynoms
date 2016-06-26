@@ -68,22 +68,26 @@
         static GsBasedDecoderTests()
         {
             var gf7 = new PrimeOrderField(7);
-            var generationPolynomial = new Polynomial(gf7, 4, 2, 6, 4, 3, 4)
+            var generationPolynomial1 = new Polynomial(gf7, 4, 2, 6, 4, 3, 4)
                                         + new Polynomial(gf7, 1, 2, 1, 5, 2, 1).RightShift(2);
+            var gf11 = new PrimeOrderField(11);
+            var generationPolynomial2 = new Polynomial(gf11, 0, 0, 7, 3, 4, 1, 8, 1, 8, 2, 7, 5);
+            var generationPolynomial3 = new Polynomial(gf11, 0, 0, 2, 0, 10, 9, 3, 9, 3, 10, 2, 2);
 
-            var informationPolynomial1 = new Polynomial(gf7, 4, 0, 2);
-            var informationPolynomial2 = new Polynomial(gf7, 1, 2, 3);
-            var informationPolynomial3 = new Polynomial(gf7, 6, 4, 1);
-            var informationPolynomial4 = new Polynomial(gf7, 0, 2);
-            var informationPolynomial5 = new Polynomial(gf7, 0, 0, 3);
+            var gf13 = new PrimeOrderField(13);
+            var generationPolynomial4 = new Polynomial(gf13, 0, 0, 0, 8, 1, 12, 2, 11, 5, 6, 4, 2, 3, 12, 2, 4);
 
             DecoderTestsData = new[]
                                {
-                                   PrepareTestData(6, 3, 3, generationPolynomial, informationPolynomial1, 1),
-                                   PrepareTestData(6, 3, 3, generationPolynomial, informationPolynomial2, 1),
-                                   PrepareTestData(6, 3, 3, generationPolynomial, informationPolynomial3, 1),
-                                   PrepareTestData(6, 3, 3, generationPolynomial, informationPolynomial4, 1),
-                                   PrepareTestData(6, 3, 3, generationPolynomial, informationPolynomial5, 1)
+                                   PrepareTestData(6, 3, 3, generationPolynomial1, new Polynomial(gf7, 4, 0, 2), 1),
+                                   PrepareTestData(6, 3, 3, generationPolynomial1, new Polynomial(gf7, 1, 2, 3), 1),
+                                   PrepareTestData(6, 3, 3, generationPolynomial1, new Polynomial(gf7, 6, 4, 1), 1),
+                                   PrepareTestData(6, 3, 3, generationPolynomial1, new Polynomial(gf7, 0, 2), 1),
+                                   PrepareTestData(6, 3, 3, generationPolynomial1, new Polynomial(gf7, 0, 0, 3), 1),
+                                   PrepareTestData(10, 5, 6, generationPolynomial2, new Polynomial(gf11, 1, 2, 3, 4, 5), 3),
+                                   PrepareTestData(10, 5, 5, generationPolynomial3, new Polynomial(gf11, 1, 2, 3, 4, 5), 2),
+                                   PrepareTestData(12, 6, 6, generationPolynomial4, new Polynomial(gf13, 1, 2, 3, 4, 5, 6), 3),
+                                   PrepareTestData(12, 6, 6, generationPolynomial4, new Polynomial(gf13, 0, 2, 0, 2, 11), 3)
                                };
         }
 
