@@ -49,7 +49,7 @@
             var expectedPolynomial = new Polynomial(_field, expectedPolynomialCoefficients);
 
             // When
-            var actualPolynomial = PolynomialExtensions.CreateFormPolyphaseComponents(evenComponent, oddComponent);
+            var actualPolynomial = PolynomialsAlgorithmsExtensions.CreateFormPolyphaseComponents(evenComponent, oddComponent);
 
             // Then
             Assert.Equal(expectedPolynomial, actualPolynomial);

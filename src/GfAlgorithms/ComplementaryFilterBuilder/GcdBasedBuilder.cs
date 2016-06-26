@@ -41,7 +41,7 @@
                 complementaryFilterOddComponent = complementaryFilterEvenComponentOld;
             }
 
-            return PolynomialExtensions.CreateFormPolyphaseComponents(complementaryFilterEvenComponent, complementaryFilterOddComponent);
+            return PolynomialsAlgorithmsExtensions.CreateFormPolyphaseComponents(complementaryFilterEvenComponent, complementaryFilterOddComponent);
         }
 
         public GcdBasedBuilder(IPolynomialsGcdFinder gcdFinder)

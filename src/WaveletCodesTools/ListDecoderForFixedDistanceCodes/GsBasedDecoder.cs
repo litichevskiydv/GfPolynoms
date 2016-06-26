@@ -51,10 +51,10 @@
                 var linearSystemMatrix = new FieldElement[n - d + 1, k];
                 for (var i = 0; i < n - d + 1; i++)
                 {
-                    var smaple = decodedCodeword[i + generationPolynomialLeadZeroValuesCount].Item1;
-                    var sampleSqr = smaple*smaple;
+                    var sample = decodedCodeword[i + generationPolynomialLeadZeroValuesCount].Item1;
+                    var sampleSqr = sample * sample;
                     var samplePower = field.One();
-                    var correction = new FieldElement(field, generatingPolynomial.Evaluate(smaple.Representation));
+                    var correction = new FieldElement(field, generatingPolynomial.Evaluate(sample.Representation));
                     for (var j = 0; j < k; j++)
                     {
                         linearSystemMatrix[i, j] = samplePower*correction;

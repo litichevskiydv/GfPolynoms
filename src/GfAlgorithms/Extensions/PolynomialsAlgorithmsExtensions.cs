@@ -5,7 +5,7 @@
     using GfPolynoms;
     using GfPolynoms.Extensions;
 
-    public static class PolynomialExtensions
+    public static class PolynomialsAlgorithmsExtensions
     {
         /// <summary>
         /// Converts source polynomial <paramref name="polynomial"/> to form p(x) = p_e(x^2)+x*p_o(x^2)
