@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using GfAlgorithms.CombinationsCountCalculator;
     using GfAlgorithms.LinearSystemSolver;
     using GfPolynoms;
     using GfPolynoms.GaloisFields;
@@ -74,7 +75,7 @@
 
         public SimplePolynomialBuilderTests()
         {
-            _polynomialBuilder = new SimplePolynomialBuilder(new GaussSolver());
+            _polynomialBuilder = new SimplePolynomialBuilder(new PascalsTriangleBasedCalcualtor(), new GaussSolver());
         }
 
         [Theory]

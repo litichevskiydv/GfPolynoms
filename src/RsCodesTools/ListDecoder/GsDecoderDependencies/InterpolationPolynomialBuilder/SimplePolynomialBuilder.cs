@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using GfAlgorithms.CombinationsCountCalculator;
     using GfAlgorithms.LinearSystemSolver;
     using GfPolynoms;
     using GfPolynoms.Extensions;
@@ -9,6 +10,7 @@
 
     public class SimplePolynomialBuilder : IInterpolationPolynomialBuilder
     {
+        private readonly ICombinationsCountCalculator _combinationsCountCalculator;
         private readonly ILinearSystemSolver _linearSystemSolver;
 
         private static int GetVariableIndexByMonomial(
@@ -28,31 +30,7 @@
             return variableIndex;
         }
 
-        private static FieldElement GetCombinationsCount(GaloisField field, IDictionary<Tuple<int, int>, FieldElement> combinationsCache,
-            int n, int k)
-        {
-            var key = new Tuple<int, int>(n, k);
-            FieldElement combinationsCount;
-
-            if (combinationsCache.TryGetValue(key, out combinationsCount) == false)
-            {
-                if (k == 0 || n == k)
-                    combinationsCount = field.One();
-                else
-                {
-                    if (n < k)
-                        combinationsCount = field.Zero();
-                    else
-                        combinationsCount = GetCombinationsCount(field, combinationsCache, n - 1, k - 1)
-                                            + GetCombinationsCount(field, combinationsCache, n - 1, k);
-                }
-
-                combinationsCache[key] = combinationsCount;
-            }
-            return combinationsCount;
-        }
-
-        private static List<List<Tuple<int, FieldElement>>> BuildEquationsSystem(
+        private List<List<Tuple<int, FieldElement>>> BuildEquationsSystem(
             IDictionary<Tuple<int, int>, int> variableIndexByMonomial,
             IDictionary<int, Tuple<int, int>> monomialByVariableIndex,
             GaloisField field, Tuple<int, int> degreeWeight, int maxWeightedDegree, int maxXDegree,
@@ -72,8 +50,8 @@
                             for (var j = s; i*degreeWeight.Item1 + j*degreeWeight.Item2 <= maxWeightedDegree; j++)
                             {
                                 var variableIndex = GetVariableIndexByMonomial(variableIndexByMonomial, monomialByVariableIndex, i, j);
-                                var coefficient = GetCombinationsCount(field, combinationsCache, i, r)
-                                                  *GetCombinationsCount(field, combinationsCache, j, s)
+                                var coefficient = _combinationsCountCalculator.Calculate(field, i, r, combinationsCache)
+                                                  *_combinationsCountCalculator.Calculate(field, j, s, combinationsCache)
                                                   *FieldElement.Pow(root.Item1, i - r)
                                                   *FieldElement.Pow(root.Item2, j - s);
 
@@ -138,11 +116,14 @@
             return ConstructInterpolationPolynomial(resultPolynomial, systemSolution, monomialByVariableIndex);
         }
 
-        public SimplePolynomialBuilder(ILinearSystemSolver linearSystemSolver)
+        public SimplePolynomialBuilder(ICombinationsCountCalculator combinationsCountCalculator, ILinearSystemSolver linearSystemSolver)
         {
+            if (combinationsCountCalculator == null)
+                throw new ArgumentNullException(nameof(combinationsCountCalculator));
             if (linearSystemSolver == null)
                 throw new ArgumentNullException(nameof(linearSystemSolver));
 
+            _combinationsCountCalculator = combinationsCountCalculator;
             _linearSystemSolver = linearSystemSolver;
         }
     }
