@@ -94,11 +94,10 @@
 
         public GsBasedDecoderTests()
         {
-            var linearSystemsSolver = new GaussSolver();
             _decoder = new GsBasedDecoder(new GsDecoder(
-                    new SimplePolynomialBuilder(new PascalsTriangleBasedCalcualtor(), linearSystemsSolver),
+                    new KotterAlgorithmBasedBuilder(new PascalsTriangleBasedCalcualtor()), 
                     new RrFactorizator()),
-                linearSystemsSolver);
+                new GaussSolver());
         }
 
         [Theory]

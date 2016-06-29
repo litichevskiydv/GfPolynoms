@@ -4,7 +4,6 @@
     using System.Collections.Generic;
     using System.Linq;
     using GfAlgorithms.CombinationsCountCalculator;
-    using GfAlgorithms.LinearSystemSolver;
     using GfPolynoms;
     using GfPolynoms.Extensions;
     using GfPolynoms.GaloisFields;
@@ -91,7 +90,7 @@
 
         public GsDecoderTests()
         {
-            _decoder = new GsDecoder(new SimplePolynomialBuilder(new PascalsTriangleBasedCalcualtor(), new GaussSolver()), new RrFactorizator());
+            _decoder = new GsDecoder(new KotterAlgorithmBasedBuilder(new PascalsTriangleBasedCalcualtor()), new RrFactorizator());
         }
 
         [Theory]
