@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using GfAlgorithms.CombinationsCountCalculator;
     using GfPolynoms;
     using GfPolynoms.Extensions;
 
@@ -98,6 +99,28 @@
                     (coefficient.Value * FieldElement.Pow(yValue, coefficient.Key.Item2)).Representation);
 
             return new Polynomial(polynomial.Field, resultCoefficients);
+        }
+
+        public static FieldElement CalculateHasseDerivative(this BiVariablePolynomial polynomial,
+            int r, int s, FieldElement xValue, FieldElement yValue,
+            ICombinationsCountCalculator combinationsCountCalculator, IDictionary<Tuple<int, int>, FieldElement> combinationsCache = null)
+        {
+            var field = polynomial.Field;
+            var derivativeValue = field.Zero();
+
+            foreach (var coefficient in polynomial)
+            {
+                if (coefficient.Key.Item1 < r || coefficient.Key.Item2 < s)
+                    continue;
+
+                derivativeValue += combinationsCountCalculator.Calculate(field, coefficient.Key.Item1, r, combinationsCache)
+                                   *combinationsCountCalculator.Calculate(field, coefficient.Key.Item2, s, combinationsCache)
+                                   *coefficient.Value
+                                   *FieldElement.Pow(xValue, coefficient.Key.Item1 - r)
+                                   *FieldElement.Pow(yValue, coefficient.Key.Item2 - s);
+            }
+
+            return derivativeValue;
         }
     }
 }

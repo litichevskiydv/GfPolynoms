@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using Extensions;
+    using GfAlgorithms.CombinationsCountCalculator;
     using GfPolynoms;
     using GfPolynoms.Extensions;
     using GfPolynoms.GaloisFields;
@@ -12,6 +13,7 @@
     public class BiVariablePolynomialTests
     {
         private static readonly GaloisField Gf5;
+        private readonly ICombinationsCountCalculator _combinationsCountCalculator;
 
         [UsedImplicitly]
         public static readonly IEnumerable<object[]> EvaluateTestsData;
@@ -31,6 +33,8 @@
         public static readonly IEnumerable<object[]> EvaluateXTestsData;
         [UsedImplicitly]
         public static readonly IEnumerable<object[]> EvaluateYTestsData;
+        [UsedImplicitly]
+        public static readonly IEnumerable<object[]> CalculateHasseDerivativeTestsData;
 
         static BiVariablePolynomialTests()
         {
@@ -410,6 +414,52 @@
                                          new Polynomial(Gf5, 3, 0, 2)
                                      }
                                  };
+
+            CalculateHasseDerivativeTestsData = new[]
+                                                {
+                                                    new object[]
+                                                    {
+                                                        new BiVariablePolynomial(Gf5)
+                                                        {
+                                                            [new Tuple<int, int>(0, 0)] = new FieldElement(Gf5, 2),
+                                                            [new Tuple<int, int>(1, 0)] = new FieldElement(Gf5, 2),
+                                                            [new Tuple<int, int>(0, 1)] = new FieldElement(Gf5, 2),
+                                                            [new Tuple<int, int>(2, 0)] = new FieldElement(Gf5, 1),
+                                                            [new Tuple<int, int>(0, 2)] = new FieldElement(Gf5, 1)
+                                                        },
+                                                        1, 1, Gf5.One(), Gf5.One(),
+                                                        Gf5.Zero()
+                                                    },
+                                                    new object[]
+                                                    {
+                                                        new BiVariablePolynomial(Gf5)
+                                                        {
+                                                            [new Tuple<int, int>(0, 0)] = new FieldElement(Gf5, 2),
+                                                            [new Tuple<int, int>(1, 0)] = new FieldElement(Gf5, 2),
+                                                            [new Tuple<int, int>(0, 1)] = new FieldElement(Gf5, 2),
+                                                            [new Tuple<int, int>(2, 2)] = new FieldElement(Gf5, 1)
+                                                        },
+                                                        1, 1, Gf5.One(), Gf5.One(),
+                                                        new FieldElement(Gf5, 4) 
+                                                    },
+                                                    new object[]
+                                                    {
+                                                        new BiVariablePolynomial(Gf5)
+                                                        {
+                                                            [new Tuple<int, int>(0, 0)] = new FieldElement(Gf5, 2),
+                                                            [new Tuple<int, int>(1, 0)] = new FieldElement(Gf5, 2),
+                                                            [new Tuple<int, int>(0, 1)] = new FieldElement(Gf5, 2),
+                                                            [new Tuple<int, int>(2, 2)] = new FieldElement(Gf5, 1)
+                                                        },
+                                                        2, 1, Gf5.One(), Gf5.One(),
+                                                        new FieldElement(Gf5, 2)
+                                                    }
+                                                };
+        }
+
+        public BiVariablePolynomialTests()
+        {
+            _combinationsCountCalculator = new PascalsTriangleBasedCalcualtor();
         }
 
         [Theory]
@@ -509,6 +559,14 @@
         public void ShouldEvaluateY(BiVariablePolynomial polynomial, FieldElement yValue, Polynomial expectedResult)
         {
             Assert.Equal(expectedResult, polynomial.EvaluateY(yValue));
+        }
+
+        [Theory]
+        [MemberData(nameof(CalculateHasseDerivativeTestsData))]
+        public void ShouldCalculateHasseDerivative(BiVariablePolynomial polynomial, int r, int s, FieldElement xValue, FieldElement yValue,
+            FieldElement expectedValue)
+        {
+            Assert.Equal(expectedValue, polynomial.CalculateHasseDerivative(r, s, xValue, yValue, _combinationsCountCalculator));
         }
     }
 }
