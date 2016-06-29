@@ -93,6 +93,18 @@
             return this;
         }
 
+        public FieldElement InverseForAddition()
+        {
+            Representation = Field.InverseForAddition(Representation);
+            return this;
+        }
+
+        public FieldElement InverseForMultiplication()
+        {
+            Representation = Field.InverseForMultiplication(Representation);
+            return this;
+        }
+
         public static FieldElement Add(FieldElement a, FieldElement b)
         {
             var c = new FieldElement(a);
@@ -121,6 +133,18 @@
         {
             var c = new FieldElement(a);
             return c.Pow(degree);
+        }
+
+        public static FieldElement InverseForAddition(FieldElement a)
+        {
+            var b = new FieldElement(a);
+            return b.InverseForAddition();
+        }
+
+        public static FieldElement InverseForMultiplication(FieldElement a)
+        {
+            var b = new FieldElement(a);
+            return b.InverseForMultiplication();
         }
 
         public static FieldElement operator +(FieldElement a, FieldElement b)
