@@ -77,6 +77,7 @@
         static GsDecoderTests()
         {
             var gf8 = new PrimePowerOrderField(8, 2, new[] { 1, 1, 0, 1 });
+            var gf9 = new PrimePowerOrderField(9, 3, new[] { 1, 0, 1 });
 
             DecoderTestsData = new[]
                                {
@@ -84,7 +85,8 @@
                                    PrepareTestsData(7, 3, new Polynomial(gf8, 1, 2, 3), 3),
                                    PrepareTestsData(7, 3, new Polynomial(gf8, 7, 4, 1), 3),
                                    PrepareTestsData(7, 3, new Polynomial(gf8, 0, 2), 3),
-                                   PrepareTestsData(7, 3, new Polynomial(gf8, 0, 0, 3), 3)
+                                   PrepareTestsData(7, 3, new Polynomial(gf8, 0, 0, 3), 3),
+                                   PrepareTestsData(8, 5, new Polynomial(gf9, 0, 0, 3, 1, 1), 2)
                                };
         }
 

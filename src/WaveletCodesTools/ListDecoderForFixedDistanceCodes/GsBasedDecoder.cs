@@ -6,11 +6,14 @@
     using GfAlgorithms.LinearSystemSolver;
     using GfPolynoms;
     using GfPolynoms.Extensions;
+    using GsBasedDecoderDependencies;
 
     public class GsBasedDecoder : IListDecoder
     {
         private readonly RsCodesTools.ListDecoder.IListDecoder _rsListDecoder;
         private readonly ILinearSystemSolver _linearSystemSolver;
+
+        public IGsBasedDecoderTelemetryCollector TelemetryCollector { get; set; }
 
         private static int CalculateGeneratingPolynomialLeadZeroValuesCount(Polynomial generatingPolynomial,
             IReadOnlyList<Tuple<FieldElement, FieldElement>> decodedCodeword)
@@ -24,16 +27,16 @@
             return count;
         }
 
-        private IEnumerable<Polynomial> GetFrequencyDecodingResults(int n, int d, int generationPolynomialLeadZeroValuesCount,
+        private Polynomial[] GetFrequencyDecodingResults(int n, int d, int generationPolynomialLeadZeroValuesCount,
             IReadOnlyList<Tuple<FieldElement, FieldElement>> decodedCodeword, int minCorrectValuesCount)
         {
             var field = decodedCodeword[0].Item1.Field;
 
-            var correction = new FieldElement(field, n);
+            var correction = new FieldElement(field, n%field.Characteristic);
             var preparedCodeword = new Tuple<FieldElement, FieldElement>[n];
             for (var i = 0; i < n; i++)
             {
-                var inversedSample = new FieldElement(field, field.InverseForMultiplication(decodedCodeword[i].Item1.Representation));
+                var inversedSample = FieldElement.InverseForMultiplication(decodedCodeword[i].Item1);
                 preparedCodeword[i] = new Tuple<FieldElement, FieldElement>(inversedSample,
                     decodedCodeword[i].Item2*correction*FieldElement.Pow(decodedCodeword[i].Item1, generationPolynomialLeadZeroValuesCount));
             }
@@ -94,7 +97,10 @@
 
             var frequencyDecodingResults = GetFrequencyDecodingResults(n, d, leadZerosCount, decodedCodeword, minCorrectValuesCount);
 
-            return SelectCorrectInformationPolynomials(n, k, d, generatingPolynomial, leadZerosCount, decodedCodeword, frequencyDecodingResults);
+            var resultList = SelectCorrectInformationPolynomials(n, k, d, generatingPolynomial, leadZerosCount, decodedCodeword,
+                frequencyDecodingResults);
+            TelemetryCollector?.ReportDecodingListsSizes(frequencyDecodingResults.Length, resultList.Length);
+            return resultList;
         }
 
         public GsBasedDecoder(RsCodesTools.ListDecoder.IListDecoder rsListDecoder, ILinearSystemSolver linearSystemSolver)
