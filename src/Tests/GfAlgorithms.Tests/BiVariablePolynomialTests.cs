@@ -1,9 +1,10 @@
-﻿namespace RsCodesTools.Tests
+﻿namespace GfAlgorithms.Tests
 {
     using System;
     using System.Collections.Generic;
+    using BiVariablePolynomials;
+    using CombinationsCountCalculator;
     using Extensions;
-    using GfAlgorithms.CombinationsCountCalculator;
     using GfPolynoms;
     using GfPolynoms.Extensions;
     using GfPolynoms.GaloisFields;

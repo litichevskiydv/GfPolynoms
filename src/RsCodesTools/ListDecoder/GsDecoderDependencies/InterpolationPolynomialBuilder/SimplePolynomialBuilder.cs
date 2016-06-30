@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using GfAlgorithms.BiVariablePolynomials;
     using GfAlgorithms.CombinationsCountCalculator;
     using GfAlgorithms.LinearSystemSolver;
     using GfPolynoms;

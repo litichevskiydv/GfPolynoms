@@ -2,8 +2,9 @@
 {
     using System;
     using System.Collections.Generic;
-    using Extensions;
+    using GfAlgorithms.BiVariablePolynomials;
     using GfAlgorithms.CombinationsCountCalculator;
+    using GfAlgorithms.Extensions;
     using GfPolynoms;
     using GfPolynoms.Extensions;
 

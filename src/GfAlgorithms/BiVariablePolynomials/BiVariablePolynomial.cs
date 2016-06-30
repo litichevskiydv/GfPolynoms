@@ -1,4 +1,4 @@
-﻿namespace RsCodesTools
+﻿namespace GfAlgorithms.BiVariablePolynomials
 {
     using System;
     using System.Collections;
@@ -108,7 +108,7 @@
 
                             return string.Format(template, x.Value.Representation, x.Key.Item1, x.Key.Item2);
                         });
-            return string.Join("+", monomials);
+            return string.Join((string) "+", (IEnumerable<string>) monomials);
         }
 
         public FieldElement Evaluate(FieldElement xValue, FieldElement yValue)

@@ -1,6 +1,7 @@
 ﻿namespace RsCodesTools.ListDecoder.GsDecoderDependencies.InterpolationPolynomialBuilder
 {
     using System;
+    using GfAlgorithms.BiVariablePolynomials;
     using GfPolynoms;
 
     public interface IInterpolationPolynomialBuilder

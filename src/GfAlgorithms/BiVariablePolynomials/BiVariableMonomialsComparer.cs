@@ -1,7 +1,8 @@
-﻿namespace RsCodesTools
+﻿namespace GfAlgorithms.BiVariablePolynomials
 {
     using System;
     using System.Collections.Generic;
+
     public class BiVariableMonomialsComparer : IComparer<Tuple<int, int>>
     {
         private readonly Tuple<int, int> _degreeWeight;

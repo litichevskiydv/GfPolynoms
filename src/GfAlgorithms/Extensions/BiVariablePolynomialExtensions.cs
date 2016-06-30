@@ -1,9 +1,10 @@
-﻿namespace RsCodesTools.Extensions
+﻿namespace GfAlgorithms.Extensions
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using GfAlgorithms.CombinationsCountCalculator;
+    using BiVariablePolynomials;
+    using CombinationsCountCalculator;
     using GfPolynoms;
     using GfPolynoms.Extensions;
 

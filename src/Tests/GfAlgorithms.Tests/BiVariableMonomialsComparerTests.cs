@@ -1,7 +1,8 @@
-﻿namespace RsCodesTools.Tests
+﻿namespace GfAlgorithms.Tests
 {
     using System;
     using System.Collections.Generic;
+    using BiVariablePolynomials;
     using JetBrains.Annotations;
     using Xunit;
 

@@ -3,7 +3,8 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using Extensions;
+    using GfAlgorithms.BiVariablePolynomials;
+    using GfAlgorithms.Extensions;
     using GfPolynoms;
     using GfPolynoms.Extensions;
 

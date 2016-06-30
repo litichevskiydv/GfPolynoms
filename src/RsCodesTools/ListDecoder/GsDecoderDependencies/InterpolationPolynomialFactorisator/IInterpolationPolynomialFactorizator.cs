@@ -1,5 +1,6 @@
 ﻿namespace RsCodesTools.ListDecoder.GsDecoderDependencies.InterpolationPolynomialFactorisator
 {
+    using GfAlgorithms.BiVariablePolynomials;
     using GfPolynoms;
 
     public interface IInterpolationPolynomialFactorizator
