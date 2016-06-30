@@ -42,6 +42,8 @@
                 valuesVector[i] += field.One();
 
             var systemSolution = _linearSystemSolver.Solve(linearSystemMatrix, valuesVector);
+            if(systemSolution.IsEmpty)
+                throw new InvalidOperationException("Can't find lifting plynomial");
             return new Polynomial(field, systemSolution.Solution.Select(x => x.Representation).ToArray());
         }
 
