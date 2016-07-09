@@ -82,6 +82,10 @@
             var gf13 = new PrimeOrderField(13);
             var generationPolynomial5 = new Polynomial(gf13, 0, 0, 0, 8, 1, 12, 2, 11, 5, 6, 4, 2, 3, 12, 2, 4);
 
+            var gf27 = new PrimePowerOrderField(27, 3, new[] { 2, 2, 0, 1 });
+            var generationPolynomial6 = new Polynomial(gf27, 0, 0, 20, 18, 14, 15, 2, 5, 2, 19, 17, 4, 23, 1, 8, 6, 5, 4, 20, 26, 6, 5, 16,
+                23, 26, 15, 6, 25, 18, 22, 8, 4, 17, 20, 19, 18, 8, 6, 23, 12, 20, 22, 8, 7, 0, 7, 6, 3, 11);
+
             DecoderTestsData = new[]
                                {
                                    PrepareTestData(6, 3, 3, generationPolynomial1, new Polynomial(gf7, 4, 0, 2), 1),
@@ -96,7 +100,8 @@
                                    PrepareTestData(10, 5, 6, generationPolynomial3, new Polynomial(gf11, 1, 2, 3, 4, 5), 3),
                                    PrepareTestData(10, 5, 5, generationPolynomial4, new Polynomial(gf11, 1, 2, 3, 4, 5), 2),
                                    PrepareTestData(12, 6, 6, generationPolynomial5, new Polynomial(gf13, 1, 2, 3, 4, 5, 6), 3),
-                                   PrepareTestData(12, 6, 6, generationPolynomial5, new Polynomial(gf13, 0, 2, 0, 2, 11), 3)
+                                   PrepareTestData(12, 6, 6, generationPolynomial5, new Polynomial(gf13, 0, 2, 0, 2, 11), 3),
+                                   PrepareTestData(26, 13, 12, generationPolynomial6, new Polynomial(gf27, 0, 2, 0, 2, 11), 6)
                                };
         }
 
