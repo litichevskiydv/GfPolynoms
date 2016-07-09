@@ -24,7 +24,8 @@
     public static class Program
     {
         private static void GenerateSamples(int n, Polynomial generatingPolynomial, Polynomial m,
-            int[] informationWord, int informationWordPosition, ICollection<AnalyzingSample> samples)
+            int[] informationWord, int informationWordPosition,
+            ICollection<AnalyzingSample> samples, int? samplesCount = null)
         {
             if (informationWordPosition == informationWord.Length)
             {
@@ -46,12 +47,15 @@
             else
                 for (var i = 0; i < generatingPolynomial.Field.Order; i++)
                 {
+                    if(samplesCount.HasValue && samplesCount.Value == samples.Count)
+                        break;
+
                     informationWord[informationWordPosition] = i;
-                    GenerateSamples(n, generatingPolynomial, m, informationWord, informationWordPosition + 1, samples);
+                    GenerateSamples(n, generatingPolynomial, m, informationWord, informationWordPosition + 1, samples, samplesCount);
                 }
         }
 
-        private static IEnumerable<AnalyzingSample> GenerateSamples(int n, int k, Polynomial generatingPolynomial)
+        private static IEnumerable<AnalyzingSample> GenerateSamples(int n, int k, Polynomial generatingPolynomial, int? samplesCount = null)
         {
             var samples = new List<AnalyzingSample>();
             var informationWord = new int[k];
@@ -59,7 +63,7 @@
             var m = new Polynomial(generatingPolynomial.Field, 1).RightShift(n);
             m[0] = generatingPolynomial.Field.InverseForAddition(1);
 
-            GenerateSamples(n, generatingPolynomial, m, informationWord, 0, samples);
+            GenerateSamples(n, generatingPolynomial, m, informationWord, 0, samples, samplesCount);
             return samples;
         }
 
@@ -118,7 +122,7 @@
                 PlaceNoiseIntoSamplesAndDecode(sample, errorsPositions, 0, n, k, d, generatingPolynomial, decoder);
         }
 
-        private static void AnalyzeCode(int n, int k, int d, Polynomial h, int errorsCount)
+        private static void AnalyzeCode(int n, int k, int d, Polynomial h, int errorsCount, int? samplesCount = null)
         {
             var linearSystemsSolver = new GaussSolver();
             var generatingPolynomialBuilder = new LiftingSchemeBasedBuilder(new GcdBasedBuilder(new RecursiveGcdFinder()), linearSystemsSolver);
@@ -135,7 +139,7 @@
 
             Console.WriteLine("Start samples generation");
             var samplesGenerationTimer = Stopwatch.StartNew();
-            var samples = GenerateSamples(n, k, generatingPolynomial).ToArray();
+            var samples = GenerateSamples(n, k, generatingPolynomial, samplesCount).ToArray();
             samplesGenerationTimer.Stop();
             Console.WriteLine("Samples were generated in {0} seconds", samplesGenerationTimer.Elapsed.TotalSeconds);
 
