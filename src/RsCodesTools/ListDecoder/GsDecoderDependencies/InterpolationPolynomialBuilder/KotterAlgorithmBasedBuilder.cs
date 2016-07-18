@@ -65,24 +65,30 @@
                 for (var r = 0; r < rootsMultiplicity; r++)
                     for (var s = 0; r + s < rootsMultiplicity; s++)
                     {
+                        var anyCompatiblePolynomialFound = false;
                         var nonZeroDerivatives = new List<Tuple<int, FieldElement>>();
                         for (var i = 0; i < buildingPolynomials.Length; i++)
                         {
+                            if (CalculateMonomialWeight(leadMonomials[i], degreeWeight) > maxWeightedDegree)
+                                continue;
+
+                            anyCompatiblePolynomialFound = true;
                             var hasseDerivative = buildingPolynomials[i].CalculateHasseDerivative(r, s, root.Item1, root.Item2,
                                 _combinationsCountCalculator, combinationsCache);
                             if (hasseDerivative.Representation != 0)
                                 nonZeroDerivatives.Add(new Tuple<int, FieldElement>(i, hasseDerivative));
                         }
+
+                        if (anyCompatiblePolynomialFound == false)
+                            throw new NonTrivialPolynomialNotFoundException();
                         if (nonZeroDerivatives.Count == 0)
                             continue;
 
                         var minimumIndex = FindMinimumIndexByLeadMonomial(nonZeroDerivatives,
                             i => leadMonomials[nonZeroDerivatives[i].Item1], monomialsComparer);
-                        if(CalculateMonomialWeight(leadMonomials[nonZeroDerivatives[minimumIndex].Item1], degreeWeight) > maxWeightedDegree)
-                            throw new NonTrivialPolynomialNotFoundException();
-
                         var minimumPolynomial = buildingPolynomials[nonZeroDerivatives[minimumIndex].Item1];
                         var minimumDerivative = nonZeroDerivatives[minimumIndex].Item2;
+
                         for (var i = 0; i < nonZeroDerivatives.Count; i++)
                         {
                             var polynomialIndex = nonZeroDerivatives[i].Item1;
