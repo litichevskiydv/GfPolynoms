@@ -1,7 +1,7 @@
 ﻿namespace GfPolynoms.GaloisFields
 {
     using System;
-    using System.Linq;
+    using System.Collections.Generic;
 
     public class PrimeOrderField : GaloisField
     {
@@ -9,17 +9,17 @@
         {
             for (var i = 1; i < Order; i++)
             {
-                for (int newElement = 1, power = 0;
-                    PowersByElements.ContainsKey(newElement) == false;
-                    newElement = (newElement*i)%Order, power++)
-                    PowersByElements[newElement] = power;
-
-                if (PowersByElements.Count == Order - 1)
+                var generationResult = new HashSet<int>();
+                for (int newElement = 1, power = 0; generationResult.Add(newElement); power++)
                 {
-                    ElementsByPowers = PowersByElements.ToDictionary(x => x.Value, x => x.Key);
-                    break;
+                    PowersByElements[newElement] = power;
+                    ElementsByPowers[power] = newElement;
+
+                    newElement = (newElement*i)%Order;
                 }
-                PowersByElements.Clear();
+
+                if (generationResult.Count == Order - 1)
+                    break;
             }
         }
 

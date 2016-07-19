@@ -1,18 +1,17 @@
 ﻿namespace GfPolynoms.GaloisFields
 {
     using System;
-    using System.Collections.Generic;
 
     public abstract class GaloisField
     {
         /// <summary>
         /// Представление элементов по соответствующим им степеням порождающего элемента
         /// </summary>
-        protected Dictionary<int, int> ElementsByPowers;
+        protected readonly int[] ElementsByPowers;
         /// <summary>
         /// Степени порождающего элемента по соответствующим им элементам
         /// </summary>
-        protected readonly Dictionary<int, int> PowersByElements;
+        protected readonly int[] PowersByElements;
 
 
         /// <summary>
@@ -45,7 +44,10 @@
             Order = order;
             Characteristic = characteristic;
 
-            PowersByElements = new Dictionary<int, int>();
+            PowersByElements = new int[order];
+            PowersByElements[0] = -1;
+
+            ElementsByPowers = new int[order - 1];
         }
 
         /// <summary>

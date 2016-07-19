@@ -38,17 +38,19 @@
         {
             for (var i = 2; i < Order; i++)
             {
-                for (int newElement = 1, power = 0;
-                    PowersByElements.ContainsKey(newElement) == false;
-                    newElement = _representationByPolynomial[(_polynomialByRepresentation[newElement]*_polynomialByRepresentation[i])%IrreduciblePolynomial], power++)
-                    PowersByElements[newElement] = power;
-
-                if (PowersByElements.Count == Order - 1)
+                var generationResult = new HashSet<int>();
+                for (int newElement = 1, power = 0; generationResult.Add(newElement); power++)
                 {
-                    ElementsByPowers = PowersByElements.ToDictionary(x => x.Value, x => x.Key);
-                    break;
+                    PowersByElements[newElement] = power;
+                    ElementsByPowers[power] = newElement;
+
+                    newElement =
+                        _representationByPolynomial[
+                            (_polynomialByRepresentation[newElement]*_polynomialByRepresentation[i])%IrreduciblePolynomial];
                 }
-                PowersByElements.Clear();
+
+                if (generationResult.Count == Order - 1)
+                    break;
             }
         }
 
