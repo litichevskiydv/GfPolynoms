@@ -6,7 +6,7 @@
 
     public class PrimePowerOrderField : GaloisField
     {
-        private readonly Dictionary<int, Polynomial> _polynomialByRepresentation;
+        private readonly Polynomial[] _polynomialByRepresentation;
         private readonly Dictionary<Polynomial, int> _representationByPolynomial;
 
         public Polynomial IrreduciblePolynomial { get; }
@@ -65,7 +65,7 @@
             IrreduciblePolynomial = new Polynomial(new PrimeOrderField(characteristic), irreduciblePolynomial);
 
             _representationByPolynomial = new Dictionary<Polynomial, int>();
-            _polynomialByRepresentation = new Dictionary<int, Polynomial>();
+            _polynomialByRepresentation = new Polynomial[order];
             GenerateFieldElements(characteristic, new int[IrreduciblePolynomial.Degree], IrreduciblePolynomial.Degree - 1);
 
             BuildMultiplicativeGroup();
