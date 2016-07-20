@@ -48,7 +48,8 @@
                 throw new ArgumentException($"{nameof(roots)} is empty");
 
             var field = roots[0].Item1.Field;
-            var combinationsCache = new Dictionary<Tuple<int, int>, FieldElement>();
+            var combinationsCache = new FieldElement[Math.Max(maxWeightedDegree / degreeWeight.Item1, maxWeightedDegree / degreeWeight.Item2) + 1][]
+                    .MakeSquare();
             var transformationMultiplier = new BiVariablePolynomial(field) {[new Tuple<int, int>(1, 0)] = field.One()};
             var monomialsComparer = new BiVariableMonomialsComparer(degreeWeight);
 

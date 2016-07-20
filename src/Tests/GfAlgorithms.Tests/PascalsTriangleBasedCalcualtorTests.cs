@@ -1,8 +1,8 @@
 ﻿namespace GfAlgorithms.Tests
 {
-    using System;
     using System.Collections.Generic;
     using CombinationsCountCalculator;
+    using Extensions;
     using GfPolynoms;
     using GfPolynoms.Extensions;
     using GfPolynoms.GaloisFields;
@@ -51,19 +51,19 @@
             // Given
             const int n = 4;
             const int k = 3;
-            var combinationsCache = new Dictionary<Tuple<int, int>, FieldElement>();
+            var combinationsCache = new FieldElement[5][].MakeSquare();
 
             // When
             _calcualtor.Calculate(Gf27, n, k, combinationsCache);
 
             // Then
-            Assert.Equal(Gf27.One(), combinationsCache[new Tuple<int, int>(4, 3)]);
-            Assert.Equal(Gf27.One(), combinationsCache[new Tuple<int, int>(3, 3)]);
-            Assert.Equal(Gf27.Zero(), combinationsCache[new Tuple<int, int>(3, 2)]);
-            Assert.Equal(Gf27.One(), combinationsCache[new Tuple<int, int>(2, 2)]);
-            Assert.Equal(new FieldElement(Gf27, 2), combinationsCache[new Tuple<int, int>(2, 1)]);
-            Assert.Equal(Gf27.One(), combinationsCache[new Tuple<int, int>(1, 1)]);
-            Assert.Equal(Gf27.One(), combinationsCache[new Tuple<int, int>(1, 0)]);
+            Assert.Equal(Gf27.One(), combinationsCache[4][3]);
+            Assert.Equal(Gf27.One(), combinationsCache[3][3]);
+            Assert.Equal(Gf27.Zero(), combinationsCache[3][2]);
+            Assert.Equal(Gf27.One(), combinationsCache[2][2]);
+            Assert.Equal(new FieldElement(Gf27, 2), combinationsCache[2][1]);
+            Assert.Equal(Gf27.One(), combinationsCache[1][1]);
+            Assert.Equal(Gf27.One(), combinationsCache[1][0]);
         }
     }
 }

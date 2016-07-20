@@ -104,7 +104,7 @@
 
         public static FieldElement CalculateHasseDerivative(this BiVariablePolynomial polynomial,
             int r, int s, FieldElement xValue, FieldElement yValue,
-            ICombinationsCountCalculator combinationsCountCalculator, IDictionary<Tuple<int, int>, FieldElement> combinationsCache = null)
+            ICombinationsCountCalculator combinationsCountCalculator, FieldElement[][] combinationsCache = null)
         {
             var field = polynomial.Field;
             var derivativeValue = field.Zero();
