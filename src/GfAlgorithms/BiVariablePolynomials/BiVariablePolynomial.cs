@@ -128,12 +128,16 @@
             {
                 FieldElement coeficientValue;
                 if (_coefficients.TryGetValue(otherCoefficient.Key, out coeficientValue))
+                {
                     coeficientValue.Add(otherCoefficient.Value);
+                    if (coeficientValue.Representation == 0)
+                        _coefficients.Remove(otherCoefficient.Key);
+                }
                 else
                     _coefficients[otherCoefficient.Key] = otherCoefficient.Value;
             }
 
-            return RemoveZeroCoefficients();
+            return this;
         }
 
         public BiVariablePolynomial Subtract(BiVariablePolynomial b)
@@ -146,10 +150,13 @@
                     coeficientValue = Field.Zero();
                     _coefficients[otherCoefficient.Key] = coeficientValue;
                 }
+
                 coeficientValue.Subtract(otherCoefficient.Value);
+                if (coeficientValue.Representation == 0)
+                    _coefficients.Remove(otherCoefficient.Key);
             }
 
-            return RemoveZeroCoefficients();
+            return this;
         }
 
         public BiVariablePolynomial Multiply(BiVariablePolynomial b)
