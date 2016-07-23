@@ -10,11 +10,11 @@
 
     public static class BiVariablePolynomialExtensions
     {
-        private static BiVariablePolynomial Pow(IDictionary<int, BiVariablePolynomial> powersCache, BiVariablePolynomial polynomial, int degree)
+        private static BiVariablePolynomial Pow(IList<BiVariablePolynomial> powersCache, BiVariablePolynomial polynomial, int degree)
         {
-            BiVariablePolynomial result;
+            var result = powersCache[degree];
 
-            if (powersCache.TryGetValue(degree, out result) == false)
+            if (result == null)
             {
                 if (degree == 0)
                     result = new BiVariablePolynomial(polynomial.Field) {[new Tuple<int, int>(0, 0)] = polynomial.Field.One()};
@@ -41,13 +41,12 @@
                 throw new ArithmeticException(nameof(ySubstitution));
 
             var result = new BiVariablePolynomial(polynomial.Field);
-            var xCache = new Dictionary<int, BiVariablePolynomial>();
-            var yCache = new Dictionary<int, BiVariablePolynomial>();
+            var xCache = new BiVariablePolynomial[polynomial.MaxXDegree + 1];
+            var yCache = new BiVariablePolynomial[polynomial.MaxYDegree + 1];
 
             foreach (var coefficient in polynomial)
-                result += coefficient.Value
-                          *Pow(xCache, xSubstitution, coefficient.Key.Item1)
-                          *Pow(yCache, ySubstitution, coefficient.Key.Item2);
+                result.Add(coefficient.Value, Pow(xCache, xSubstitution, coefficient.Key.Item1)
+                                              *Pow(yCache, ySubstitution, coefficient.Key.Item2));
 
             return result;
         }
