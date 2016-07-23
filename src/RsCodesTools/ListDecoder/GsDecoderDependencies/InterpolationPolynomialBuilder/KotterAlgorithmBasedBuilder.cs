@@ -94,12 +94,10 @@
                         for (var i = 0; i < nonZeroDerivatives.Count; i++)
                             if (i != minimumIndex)
                                 buildingPolynomials[nonZeroDerivatives[i].Item1]
-                                    .Multiply(minimumDerivative)
-                                    .Subtract(nonZeroDerivatives[i].Item2*minimumPolynomial);
+                                    .Subtract(nonZeroDerivatives[i].Item2.Divide(minimumDerivative), minimumPolynomial);
                         transformationMultiplier[_zeroMonomial] = FieldElement.InverseForAddition(root.Item1);
                         minimumPolynomial
-                            .Multiply(minimumDerivative)
-                            .Multiply(transformationMultiplier);
+                            .Multiply(minimumDerivative*transformationMultiplier);
                         leadMonomials[minimumPolynomialIndex] = new Tuple<int, int>(leadMonomials[minimumPolynomialIndex].Item1 + 1,
                             leadMonomials[minimumPolynomialIndex].Item2);
                     }
