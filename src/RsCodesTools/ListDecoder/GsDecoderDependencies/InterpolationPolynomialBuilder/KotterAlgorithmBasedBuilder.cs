@@ -87,24 +87,21 @@
 
                         var minimumIndex = FindMinimumIndexByLeadMonomial(nonZeroDerivatives,
                             i => leadMonomials[nonZeroDerivatives[i].Item1], monomialsComparer);
-                        var minimumPolynomial = buildingPolynomials[nonZeroDerivatives[minimumIndex].Item1];
+                        var minimumPolynomialIndex = nonZeroDerivatives[minimumIndex].Item1;
+                        var minimumPolynomial = buildingPolynomials[minimumPolynomialIndex];
                         var minimumDerivative = nonZeroDerivatives[minimumIndex].Item2;
 
                         for (var i = 0; i < nonZeroDerivatives.Count; i++)
-                        {
-                            var polynomialIndex = nonZeroDerivatives[i].Item1;
                             if (i != minimumIndex)
-                                buildingPolynomials[polynomialIndex] = minimumDerivative*buildingPolynomials[polynomialIndex]
-                                                                       - nonZeroDerivatives[i].Item2*minimumPolynomial;
-                            else
-                            {
-                                transformationMultiplier[_zeroMonomial] = FieldElement.InverseForAddition(root.Item1);
-                                buildingPolynomials[polynomialIndex] = minimumDerivative*transformationMultiplier*minimumPolynomial;
-
-                                var oldLeadMonomial = leadMonomials[polynomialIndex];
-                                leadMonomials[polynomialIndex] = new Tuple<int, int>(oldLeadMonomial.Item1 + 1, oldLeadMonomial.Item2);
-                            }
-                        }
+                                buildingPolynomials[nonZeroDerivatives[i].Item1]
+                                    .Multiply(minimumDerivative)
+                                    .Subtract(nonZeroDerivatives[i].Item2*minimumPolynomial);
+                        transformationMultiplier[_zeroMonomial] = FieldElement.InverseForAddition(root.Item1);
+                        minimumPolynomial
+                            .Multiply(minimumDerivative)
+                            .Multiply(transformationMultiplier);
+                        leadMonomials[minimumPolynomialIndex] = new Tuple<int, int>(leadMonomials[minimumPolynomialIndex].Item1 + 1,
+                            leadMonomials[minimumPolynomialIndex].Item2);
                     }
 
             var resultPolynomialIndex = FindMinimumIndexByLeadMonomial(buildingPolynomials, i => leadMonomials[i], monomialsComparer);
