@@ -107,21 +107,24 @@
             ICombinationsCountCalculator combinationsCountCalculator, FieldElement[][] combinationsCache = null)
         {
             var field = polynomial.Field;
-            var derivativeValue = field.Zero();
+            var derivativeValue = 0;
 
             foreach (var coefficient in polynomial)
             {
                 if (coefficient.Key.Item1 < r || coefficient.Key.Item2 < s)
                     continue;
 
-                derivativeValue += combinationsCountCalculator.Calculate(field, coefficient.Key.Item1, r, combinationsCache)
-                                   *combinationsCountCalculator.Calculate(field, coefficient.Key.Item2, s, combinationsCache)
-                                   *coefficient.Value
-                                   *FieldElement.Pow(xValue, coefficient.Key.Item1 - r)
-                                   *FieldElement.Pow(yValue, coefficient.Key.Item2 - s);
+                var currentAddition = combinationsCountCalculator.Calculate(field, coefficient.Key.Item1, r, combinationsCache).Representation;
+                currentAddition = field.Multiply(currentAddition,
+                    combinationsCountCalculator.Calculate(field, coefficient.Key.Item2, s, combinationsCache).Representation);
+                currentAddition = field.Multiply(currentAddition, coefficient.Value.Representation);
+                currentAddition = field.Multiply(currentAddition, field.Pow(xValue.Representation, coefficient.Key.Item1 - r));
+                currentAddition = field.Multiply(currentAddition, field.Pow(yValue.Representation, coefficient.Key.Item2 - s));
+
+                derivativeValue = field.Add(derivativeValue, currentAddition);
             }
 
-            return derivativeValue;
+            return new FieldElement(field, derivativeValue);
         }
     }
 }
