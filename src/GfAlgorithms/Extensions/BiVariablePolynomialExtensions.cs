@@ -76,12 +76,13 @@
             if (polynomial.Field.Equals(xValue.Field) == false)
                 throw new AggregateException(nameof(xValue));
 
+            var field = polynomial.Field;
             var resultCoefficients = new int[polynomial.MaxYDegree + 1];
             foreach (var coefficient in polynomial)
-                resultCoefficients[coefficient.Key.Item2] = polynomial.Field.Add(resultCoefficients[coefficient.Key.Item2],
-                    (coefficient.Value*FieldElement.Pow(xValue, coefficient.Key.Item1)).Representation);
+                resultCoefficients[coefficient.Key.Item2] = field.Add(resultCoefficients[coefficient.Key.Item2],
+                    field.Multiply(coefficient.Value.Representation, field.Pow(xValue.Representation, coefficient.Key.Item1)));
 
-            return new Polynomial(polynomial.Field, resultCoefficients);
+            return new Polynomial(field, resultCoefficients);
         }
 
         public static Polynomial EvaluateY(this BiVariablePolynomial polynomial, FieldElement yValue)
@@ -93,12 +94,13 @@
             if (polynomial.Field.Equals(yValue.Field) == false)
                 throw new AggregateException(nameof(yValue));
 
+            var field = polynomial.Field;
             var resultCoefficients = new int[polynomial.MaxXDegree + 1];
             foreach (var coefficient in polynomial)
-                resultCoefficients[coefficient.Key.Item1] = polynomial.Field.Add(resultCoefficients[coefficient.Key.Item1],
-                    (coefficient.Value * FieldElement.Pow(yValue, coefficient.Key.Item2)).Representation);
+                resultCoefficients[coefficient.Key.Item1] = field.Add(resultCoefficients[coefficient.Key.Item1],
+                    field.Multiply(coefficient.Value.Representation, field.Pow(yValue.Representation, coefficient.Key.Item2)));
 
-            return new Polynomial(polynomial.Field, resultCoefficients);
+            return new Polynomial(field, resultCoefficients);
         }
 
         public static FieldElement CalculateHasseDerivative(this BiVariablePolynomial polynomial,
