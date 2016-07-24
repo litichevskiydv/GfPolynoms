@@ -1,23 +1,27 @@
 ﻿namespace WaveletCodesListDecodingAnalyzer
 {
     using System;
-    using System.Collections.Generic;
-    using WaveletCodesTools.ListDecoderForFixedDistanceCodes;
+    using System.Collections.Concurrent;
+    using System.Threading;
     using WaveletCodesTools.ListDecoderForFixedDistanceCodes.GsBasedDecoderDependencies;
 
     public class GsBasedDecoderTelemetryCollectorForGsBasedDecoder : IGsBasedDecoderTelemetryCollector
     {
-        public HashSet<Tuple<int, int>> ListsSizes { get; }
+        private int _processedSamplesCount;
+
+        public int ProcessedSamplesCount => _processedSamplesCount;
+        public ConcurrentDictionary<Tuple<int, int>, int> ProcessingResults { get; }
 
         public GsBasedDecoderTelemetryCollectorForGsBasedDecoder()
         {
-            ListsSizes = new HashSet<Tuple<int, int>>();
+            ProcessingResults = new ConcurrentDictionary<Tuple<int, int>, int>();
         }
 
         public void ReportDecodingListsSizes(int frequencyDecodingListSize, int timeDecodingListSize)
         {
-            lock (this)
-                ListsSizes.Add(new Tuple<int, int>(frequencyDecodingListSize, timeDecodingListSize));
+            var listsSizes = new Tuple<int, int>(frequencyDecodingListSize, timeDecodingListSize);
+            ProcessingResults.AddOrUpdate(listsSizes, 1, (key, value) => value + 1);
+            Interlocked.Increment(ref _processedSamplesCount);
         }
     }
 }

@@ -18,7 +18,6 @@
     using RsCodesTools.ListDecoder.GsDecoderDependencies.InterpolationPolynomialFactorisator;
     using WaveletCodesTools.GeneratingPolynomialsBuilder;
     using WaveletCodesTools.ListDecoderForFixedDistanceCodes;
-    using IListDecoder = WaveletCodesTools.ListDecoderForFixedDistanceCodes.IListDecoder;
 
     [UsedImplicitly]
     public static class Program
@@ -89,14 +88,24 @@
         }
 
         private static void PlaceNoiseIntoSamplesAndDecode(AnalyzingSample sample, IReadOnlyList<int> errorsPositions, int currentErrorPosition, 
-            int n, int k, int d, Polynomial generatingPolynomial, IListDecoder decoder)
+            int n, int k, int d, Polynomial generatingPolynomial, GsBasedDecoder decoder)
         {
             if (currentErrorPosition == errorsPositions.Count)
             {
                 var decodingResults = decoder.Decode(n, k, d, generatingPolynomial, sample.Codeword,
                     sample.Codeword.Length - errorsPositions.Count);
+
                 if (decodingResults.Contains(sample.InformationPolynomial) == false)
                     throw new InvalidOperationException("Failed to decode sample");
+
+                if (decoder.TelemetryCollector.ProcessedSamplesCount%100 == 0)
+                {
+                    Console.WriteLine($"\nProcessed {decoder.TelemetryCollector.ProcessedSamplesCount} samples");
+                    var listsSizes = decoder.TelemetryCollector.ProcessingResults.ToArray();
+                    foreach (var listSize in listsSizes)
+                        Console.WriteLine(
+                            $"Frequency decoding list size {listSize.Key.Item1}, time decoding list size {listSize.Key.Item2}, {listSize.Value} samples");
+                }
             }
             else
             {
@@ -116,7 +125,7 @@
         }
 
         private static void PlaceNoiseIntoSamplesAndDecode(AnalyzingSample sample, IEnumerable<int[]> allErrorsPositions,
-            int n, int k, int d, Polynomial generatingPolynomial, IListDecoder decoder)
+            int n, int k, int d, Polynomial generatingPolynomial, GsBasedDecoder decoder)
         {
             foreach (var errorsPositions in allErrorsPositions)
                 PlaceNoiseIntoSamplesAndDecode(sample, errorsPositions, 0, n, k, d, generatingPolynomial, decoder);
@@ -130,10 +139,7 @@
                 new GsBasedDecoder(
                     new GsDecoder(new KotterAlgorithmBasedBuilder(new PascalsTriangleBasedCalcualtor()),
                         new RrFactorizator()),
-                    linearSystemsSolver)
-                {
-                    TelemetryCollector = new GsBasedDecoderTelemetryCollectorForGsBasedDecoder()
-                };
+                    linearSystemsSolver) {TelemetryCollector = new GsBasedDecoderTelemetryCollectorForGsBasedDecoder()};
 
             var generatingPolynomial = generatingPolynomialBuilder.Build(n, d, h);
 
