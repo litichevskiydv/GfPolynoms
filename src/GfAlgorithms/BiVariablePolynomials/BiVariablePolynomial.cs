@@ -34,14 +34,14 @@
             return GetEnumerator();
         }
 
-        public BiVariablePolynomial(GaloisField field)
+        public BiVariablePolynomial(GaloisField field, int? estimatedCoefficientsCount = null)
         {
             if (field == null)
                 throw new ArgumentNullException(nameof(field));
 
             Field = field;
 
-            _coefficients = new Dictionary<Tuple<int, int>, FieldElement>();
+            _coefficients = new Dictionary<Tuple<int, int>, FieldElement>(estimatedCoefficientsCount ?? 0);
         }
 
         public BiVariablePolynomial(BiVariablePolynomial polynomial)
@@ -50,6 +50,7 @@
                 throw new ArgumentNullException(nameof(polynomial));
 
             Field = polynomial.Field;
+
             _coefficients = polynomial._coefficients.ToDictionary(x => x.Key, x => new FieldElement(x.Value));
         }
 

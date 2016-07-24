@@ -48,17 +48,19 @@
                 throw new ArgumentException($"{nameof(roots)} is empty");
 
             var field = roots[0].Item1.Field;
-            var combinationsCache = new FieldElement[Math.Max(maxWeightedDegree / degreeWeight.Item1, maxWeightedDegree / degreeWeight.Item2) + 1][]
-                    .MakeSquare();
+            var maxXDegree = maxWeightedDegree/degreeWeight.Item1;
+            var maxYDegree = maxWeightedDegree/degreeWeight.Item2;
+            
+            var combinationsCache = new FieldElement[Math.Max(maxXDegree, maxYDegree) + 1][].MakeSquare();
             var transformationMultiplier = new BiVariablePolynomial(field) {[new Tuple<int, int>(1, 0)] = field.One()};
             var monomialsComparer = new BiVariableMonomialsComparer(degreeWeight);
 
-            var buildingPolynomials = new BiVariablePolynomial[maxWeightedDegree/degreeWeight.Item2 + 1];
-            var leadMonomials = new Tuple<int, int>[maxWeightedDegree/degreeWeight.Item2 + 1];
+            var buildingPolynomials = new BiVariablePolynomial[maxYDegree + 1];
+            var leadMonomials = new Tuple<int, int>[maxYDegree + 1];
             for (var i = 0; i < buildingPolynomials.Length; i++)
             {
                 var leadMonomial = new Tuple<int, int>(0, i);
-                buildingPolynomials[i] = new BiVariablePolynomial(field) {[leadMonomial] = field.One()};
+                buildingPolynomials[i] = new BiVariablePolynomial(field, (maxXDegree + 1)*(maxYDegree + 1)) {[leadMonomial] = field.One()};
                 leadMonomials[i] = leadMonomial;
             }
 
