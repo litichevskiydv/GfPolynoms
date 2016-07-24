@@ -34,14 +34,14 @@
             return GetEnumerator();
         }
 
-        public BiVariablePolynomial(GaloisField field)
+        public BiVariablePolynomial(GaloisField field, int? estimatedCoefficientsCount = null)
         {
             if (field == null)
                 throw new ArgumentNullException(nameof(field));
 
             Field = field;
 
-            _coefficients = new Dictionary<Tuple<int, int>, FieldElement>();
+            _coefficients = new Dictionary<Tuple<int, int>, FieldElement>(estimatedCoefficientsCount ?? 0);
         }
 
         public BiVariablePolynomial(BiVariablePolynomial polynomial)
@@ -50,6 +50,7 @@
                 throw new ArgumentNullException(nameof(polynomial));
 
             Field = polynomial.Field;
+
             _coefficients = polynomial._coefficients.ToDictionary(x => x.Key, x => new FieldElement(x.Value));
         }
 
@@ -77,6 +78,7 @@
         public bool IsZero => _coefficients.Count == 0;
         public int MaxXDegree => IsZero ? 0 : _coefficients.Keys.Max(x => x.Item1);
         public int MaxYDegree => IsZero ? 0 : _coefficients.Keys.Max(x => x.Item2);
+        public int CoefficientsCount => _coefficients.Count;
 
         public override string ToString()
         {
@@ -122,23 +124,48 @@
             return result;
         }
 
-        public BiVariablePolynomial Add(BiVariablePolynomial b)
+        public BiVariablePolynomial Add(FieldElement b, BiVariablePolynomial other)
         {
-            foreach (var otherCoefficient in b._coefficients)
+            if (Field.Equals(b.Field) == false)
+                throw new ArgumentException(nameof(b));
+            if (Field.Equals(other.Field) == false)
+                throw new ArgumentException(nameof(other));
+
+            if (b.Representation == 0)
+                return this;
+
+            foreach (var otherCoefficient in other._coefficients)
             {
                 FieldElement coeficientValue;
                 if (_coefficients.TryGetValue(otherCoefficient.Key, out coeficientValue))
-                    coeficientValue.Add(otherCoefficient.Value);
+                {
+                    coeficientValue.Add(b*otherCoefficient.Value);
+                    if (coeficientValue.Representation == 0)
+                        _coefficients.Remove(otherCoefficient.Key);
+                }
                 else
-                    _coefficients[otherCoefficient.Key] = otherCoefficient.Value;
+                    _coefficients[otherCoefficient.Key] = b*otherCoefficient.Value;
             }
 
-            return RemoveZeroCoefficients();
+            return this;
         }
 
-        public BiVariablePolynomial Subtract(BiVariablePolynomial b)
+        public BiVariablePolynomial Add(BiVariablePolynomial other)
         {
-            foreach (var otherCoefficient in b._coefficients)
+            return Add(Field.One(), other);
+        }
+
+        public BiVariablePolynomial Subtract(FieldElement b, BiVariablePolynomial other)
+        {
+            if (Field.Equals(b.Field) == false)
+                throw new ArgumentException(nameof(b));
+            if (Field.Equals(other.Field) == false)
+                throw new ArgumentException(nameof(other));
+
+            if (b.Representation == 0)
+                return this;
+
+            foreach (var otherCoefficient in other._coefficients)
             {
                 FieldElement coeficientValue;
                 if (_coefficients.TryGetValue(otherCoefficient.Key, out coeficientValue) == false)
@@ -146,10 +173,18 @@
                     coeficientValue = Field.Zero();
                     _coefficients[otherCoefficient.Key] = coeficientValue;
                 }
-                coeficientValue.Subtract(otherCoefficient.Value);
+
+                coeficientValue.Subtract(b*otherCoefficient.Value);
+                if (coeficientValue.Representation == 0)
+                    _coefficients.Remove(otherCoefficient.Key);
             }
 
-            return RemoveZeroCoefficients();
+            return this;
+        }
+
+        public BiVariablePolynomial Subtract(BiVariablePolynomial other)
+        {
+            return Subtract(Field.One(), other);
         }
 
         public BiVariablePolynomial Multiply(BiVariablePolynomial b)

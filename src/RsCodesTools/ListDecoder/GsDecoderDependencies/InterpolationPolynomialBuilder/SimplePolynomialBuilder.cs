@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using GfAlgorithms.BiVariablePolynomials;
     using GfAlgorithms.CombinationsCountCalculator;
+    using GfAlgorithms.Extensions;
     using GfAlgorithms.LinearSystemSolver;
     using GfPolynoms;
     using GfPolynoms.Extensions;
@@ -38,7 +39,8 @@
             IEnumerable<Tuple<FieldElement, FieldElement>> roots, int rootsMultiplicity)
         {
             var equations = new List<List<Tuple<int, FieldElement>>>();
-            var combinationsCache = new Dictionary<Tuple<int, int>, FieldElement>();
+            var combinationsCache = new FieldElement[Math.Max(maxWeightedDegree/degreeWeight.Item1, maxWeightedDegree/degreeWeight.Item2) + 1][]
+                    .MakeSquare();
 
             foreach (var root in roots)
                 for (var r = 0; r < rootsMultiplicity; r++)
@@ -47,7 +49,7 @@
                         var equation = new List<Tuple<int, FieldElement>>();
                         equations.Add(equation);
 
-                        for (var i = r; i < maxXDegree; i++)
+                        for (var i = r; i <= maxXDegree; i++)
                             for (var j = s; i*degreeWeight.Item1 + j*degreeWeight.Item2 <= maxWeightedDegree; j++)
                             {
                                 var variableIndex = GetVariableIndexByMonomial(variableIndexByMonomial, monomialByVariableIndex, i, j);

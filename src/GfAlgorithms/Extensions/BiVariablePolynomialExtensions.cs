@@ -40,14 +40,14 @@
             if (polynomial.Field.Equals(ySubstitution.Field) == false)
                 throw new ArithmeticException(nameof(ySubstitution));
 
-            var result = new BiVariablePolynomial(polynomial.Field);
-            var xCache = new Dictionary<int, BiVariablePolynomial>();
-            var yCache = new Dictionary<int, BiVariablePolynomial>();
+            var result = new BiVariablePolynomial(polynomial.Field,
+                polynomial.CoefficientsCount*(Math.Max(xSubstitution.CoefficientsCount, ySubstitution.CoefficientsCount) + 1));
+            var xCache = new Dictionary<int, BiVariablePolynomial>(polynomial.CoefficientsCount);
+            var yCache = new Dictionary<int, BiVariablePolynomial>(polynomial.CoefficientsCount);
 
             foreach (var coefficient in polynomial)
-                result += coefficient.Value
-                          *Pow(xCache, xSubstitution, coefficient.Key.Item1)
-                          *Pow(yCache, ySubstitution, coefficient.Key.Item2);
+                result.Add(coefficient.Value, Pow(xCache, xSubstitution, coefficient.Key.Item1)
+                                              *Pow(yCache, ySubstitution, coefficient.Key.Item2));
 
             return result;
         }
@@ -77,12 +77,13 @@
             if (polynomial.Field.Equals(xValue.Field) == false)
                 throw new AggregateException(nameof(xValue));
 
+            var field = polynomial.Field;
             var resultCoefficients = new int[polynomial.MaxYDegree + 1];
             foreach (var coefficient in polynomial)
-                resultCoefficients[coefficient.Key.Item2] = polynomial.Field.Add(resultCoefficients[coefficient.Key.Item2],
-                    (coefficient.Value*FieldElement.Pow(xValue, coefficient.Key.Item1)).Representation);
+                resultCoefficients[coefficient.Key.Item2] = field.Add(resultCoefficients[coefficient.Key.Item2],
+                    field.Multiply(coefficient.Value.Representation, field.Pow(xValue.Representation, coefficient.Key.Item1)));
 
-            return new Polynomial(polynomial.Field, resultCoefficients);
+            return new Polynomial(field, resultCoefficients);
         }
 
         public static Polynomial EvaluateY(this BiVariablePolynomial polynomial, FieldElement yValue)
@@ -94,34 +95,38 @@
             if (polynomial.Field.Equals(yValue.Field) == false)
                 throw new AggregateException(nameof(yValue));
 
+            var field = polynomial.Field;
             var resultCoefficients = new int[polynomial.MaxXDegree + 1];
             foreach (var coefficient in polynomial)
-                resultCoefficients[coefficient.Key.Item1] = polynomial.Field.Add(resultCoefficients[coefficient.Key.Item1],
-                    (coefficient.Value * FieldElement.Pow(yValue, coefficient.Key.Item2)).Representation);
+                resultCoefficients[coefficient.Key.Item1] = field.Add(resultCoefficients[coefficient.Key.Item1],
+                    field.Multiply(coefficient.Value.Representation, field.Pow(yValue.Representation, coefficient.Key.Item2)));
 
-            return new Polynomial(polynomial.Field, resultCoefficients);
+            return new Polynomial(field, resultCoefficients);
         }
 
         public static FieldElement CalculateHasseDerivative(this BiVariablePolynomial polynomial,
             int r, int s, FieldElement xValue, FieldElement yValue,
-            ICombinationsCountCalculator combinationsCountCalculator, IDictionary<Tuple<int, int>, FieldElement> combinationsCache = null)
+            ICombinationsCountCalculator combinationsCountCalculator, FieldElement[][] combinationsCache = null)
         {
             var field = polynomial.Field;
-            var derivativeValue = field.Zero();
+            var derivativeValue = 0;
 
             foreach (var coefficient in polynomial)
             {
                 if (coefficient.Key.Item1 < r || coefficient.Key.Item2 < s)
                     continue;
 
-                derivativeValue += combinationsCountCalculator.Calculate(field, coefficient.Key.Item1, r, combinationsCache)
-                                   *combinationsCountCalculator.Calculate(field, coefficient.Key.Item2, s, combinationsCache)
-                                   *coefficient.Value
-                                   *FieldElement.Pow(xValue, coefficient.Key.Item1 - r)
-                                   *FieldElement.Pow(yValue, coefficient.Key.Item2 - s);
+                var currentAddition = combinationsCountCalculator.Calculate(field, coefficient.Key.Item1, r, combinationsCache).Representation;
+                currentAddition = field.Multiply(currentAddition,
+                    combinationsCountCalculator.Calculate(field, coefficient.Key.Item2, s, combinationsCache).Representation);
+                currentAddition = field.Multiply(currentAddition, coefficient.Value.Representation);
+                currentAddition = field.Multiply(currentAddition, field.Pow(xValue.Representation, coefficient.Key.Item1 - r));
+                currentAddition = field.Multiply(currentAddition, field.Pow(yValue.Representation, coefficient.Key.Item2 - s));
+
+                derivativeValue = field.Add(derivativeValue, currentAddition);
             }
 
-            return derivativeValue;
+            return new FieldElement(field, derivativeValue);
         }
     }
 }

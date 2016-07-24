@@ -6,8 +6,11 @@
 
     public class PrimePowerOrderField : GaloisField
     {
-        private readonly Dictionary<int, Polynomial> _polynomialByRepresentation;
+        private readonly Polynomial[] _polynomialByRepresentation;
         private readonly Dictionary<Polynomial, int> _representationByPolynomial;
+
+        private readonly int[][] _additionResults;
+        private readonly int[][] _subtractionResults;
 
         public Polynomial IrreduciblePolynomial { get; }
 
@@ -38,23 +41,39 @@
         {
             for (var i = 2; i < Order; i++)
             {
-                for (int newElement = 1, power = 0;
-                    PowersByElements.ContainsKey(newElement) == false;
-                    newElement = _representationByPolynomial[(_polynomialByRepresentation[newElement]*_polynomialByRepresentation[i])%IrreduciblePolynomial], power++)
-                    PowersByElements[newElement] = power;
-
-                if (PowersByElements.Count == Order - 1)
+                var generationResult = new HashSet<int>();
+                for (int newElement = 1, power = 0; generationResult.Add(newElement); power++)
                 {
-                    ElementsByPowers = PowersByElements.ToDictionary(x => x.Value, x => x.Key);
-                    break;
+                    PowersByElements[newElement] = power;
+                    ElementsByPowers[power] = newElement;
+
+                    newElement =
+                        _representationByPolynomial[
+                            (_polynomialByRepresentation[newElement]*_polynomialByRepresentation[i])%IrreduciblePolynomial];
                 }
-                PowersByElements.Clear();
+
+                if (generationResult.Count == Order - 1)
+                    break;
+            }
+        }
+        private void PrecalculateAdditionResults()
+        {
+            for (var i = 0; i < Order; i++)
+            {
+                _additionResults[i] = new int[Order];
+                for (var j = 0; j < Order; j++)
+                    _additionResults[i][j] = _representationByPolynomial[_polynomialByRepresentation[i] + _polynomialByRepresentation[j]];
             }
         }
 
-        private bool Equals(PrimePowerOrderField other)
+        private void PrecalculateSubtractionResults()
         {
-            return IrreduciblePolynomial.Equals(other.IrreduciblePolynomial) && Order == other.Order;
+            for (var i = 0; i < Order; i++)
+            {
+                _subtractionResults[i] = new int[Order];
+                for (var j = 0; j < Order; j++)
+                    _subtractionResults[i][j] = _representationByPolynomial[_polynomialByRepresentation[i] - _polynomialByRepresentation[j]];
+            }
         }
 
         public PrimePowerOrderField(int order, int characteristic, int[] irreduciblePolynomial) : base(order, characteristic)
@@ -65,10 +84,21 @@
             IrreduciblePolynomial = new Polynomial(new PrimeOrderField(characteristic), irreduciblePolynomial);
 
             _representationByPolynomial = new Dictionary<Polynomial, int>();
-            _polynomialByRepresentation = new Dictionary<int, Polynomial>();
+            _polynomialByRepresentation = new Polynomial[order];
             GenerateFieldElements(characteristic, new int[IrreduciblePolynomial.Degree], IrreduciblePolynomial.Degree - 1);
 
             BuildMultiplicativeGroup();
+
+            _additionResults = new int[order][];
+            PrecalculateAdditionResults();
+
+            _subtractionResults = new int[order][];
+            PrecalculateSubtractionResults();
+        }
+
+        private bool Equals(PrimePowerOrderField other)
+        {
+            return IrreduciblePolynomial.Equals(other.IrreduciblePolynomial) && Order == other.Order;
         }
 
         public override bool Equals(object obj)
@@ -102,14 +132,14 @@
         {
             ValidateArguments(a, b);
 
-            return _representationByPolynomial[_polynomialByRepresentation[a] + _polynomialByRepresentation[b]];
+            return _additionResults[a][b];
         }
 
         public override int Subtract(int a, int b)
         {
             ValidateArguments(a, b);
 
-            return _representationByPolynomial[_polynomialByRepresentation[a] - _polynomialByRepresentation[b]];
+            return _subtractionResults[a][b];
         }
 
         public override int InverseForAddition(int a)
@@ -117,7 +147,7 @@
             if (IsFieldElement(a) == false)
                 throw new ArgumentException($"Element {a} is not field member");
 
-            return _representationByPolynomial[_polynomialByRepresentation[0] - _polynomialByRepresentation[a]];
+            return _subtractionResults[0][a];
         }
     }
 }

@@ -1,19 +1,16 @@
 ﻿namespace GfAlgorithms.CombinationsCountCalculator
 {
-    using System;
-    using System.Collections.Generic;
     using GfPolynoms;
     using GfPolynoms.Extensions;
     using GfPolynoms.GaloisFields;
 
     public class PascalsTriangleBasedCalcualtor : ICombinationsCountCalculator
     {
-        public FieldElement Calculate(GaloisField field, int n, int k, IDictionary<Tuple<int, int>, FieldElement> combinationsCache = null)
+        public FieldElement Calculate(GaloisField field, int n, int k, FieldElement[][] combinationsCache = null)
         {
-            var key = new Tuple<int, int>(n, k);
-            FieldElement combinationsCount;
+            var combinationsCount = combinationsCache?[n][k];
 
-            if (combinationsCache == null || combinationsCache.TryGetValue(key, out combinationsCount) == false)
+            if (combinationsCount == null)
             {
                 if (k == 0 || n == k)
                     combinationsCount = field.One();
@@ -26,8 +23,8 @@
                                             + Calculate(field, n - 1, k, combinationsCache);
                 }
 
-                if (combinationsCache != null)
-                    combinationsCache[key] = combinationsCount;
+                if (combinationsCache != null && n < combinationsCache.Length && k < combinationsCache[n].Length)
+                    combinationsCache[n][k] = combinationsCount;
             }
 
             return combinationsCount;

@@ -48,16 +48,19 @@
                 throw new ArgumentException($"{nameof(roots)} is empty");
 
             var field = roots[0].Item1.Field;
-            var combinationsCache = new Dictionary<Tuple<int, int>, FieldElement>();
+            var maxXDegree = maxWeightedDegree/degreeWeight.Item1;
+            var maxYDegree = maxWeightedDegree/degreeWeight.Item2;
+            
+            var combinationsCache = new FieldElement[Math.Max(maxXDegree, maxYDegree) + 1][].MakeSquare();
             var transformationMultiplier = new BiVariablePolynomial(field) {[new Tuple<int, int>(1, 0)] = field.One()};
             var monomialsComparer = new BiVariableMonomialsComparer(degreeWeight);
 
-            var buildingPolynomials = new BiVariablePolynomial[maxWeightedDegree/degreeWeight.Item2 + 1];
-            var leadMonomials = new Tuple<int, int>[maxWeightedDegree/degreeWeight.Item2 + 1];
+            var buildingPolynomials = new BiVariablePolynomial[maxYDegree + 1];
+            var leadMonomials = new Tuple<int, int>[maxYDegree + 1];
             for (var i = 0; i < buildingPolynomials.Length; i++)
             {
                 var leadMonomial = new Tuple<int, int>(0, i);
-                buildingPolynomials[i] = new BiVariablePolynomial(field) {[leadMonomial] = field.One()};
+                buildingPolynomials[i] = new BiVariablePolynomial(field, (maxXDegree + 1)*(maxYDegree + 1)) {[leadMonomial] = field.One()};
                 leadMonomials[i] = leadMonomial;
             }
 
@@ -65,39 +68,40 @@
                 for (var r = 0; r < rootsMultiplicity; r++)
                     for (var s = 0; r + s < rootsMultiplicity; s++)
                     {
+                        var anyCompatiblePolynomialFound = false;
                         var nonZeroDerivatives = new List<Tuple<int, FieldElement>>();
                         for (var i = 0; i < buildingPolynomials.Length; i++)
                         {
+                            if (CalculateMonomialWeight(leadMonomials[i], degreeWeight) > maxWeightedDegree)
+                                continue;
+
+                            anyCompatiblePolynomialFound = true;
                             var hasseDerivative = buildingPolynomials[i].CalculateHasseDerivative(r, s, root.Item1, root.Item2,
                                 _combinationsCountCalculator, combinationsCache);
                             if (hasseDerivative.Representation != 0)
                                 nonZeroDerivatives.Add(new Tuple<int, FieldElement>(i, hasseDerivative));
                         }
+
+                        if (anyCompatiblePolynomialFound == false)
+                            throw new NonTrivialPolynomialNotFoundException();
                         if (nonZeroDerivatives.Count == 0)
                             continue;
 
                         var minimumIndex = FindMinimumIndexByLeadMonomial(nonZeroDerivatives,
                             i => leadMonomials[nonZeroDerivatives[i].Item1], monomialsComparer);
-                        if(CalculateMonomialWeight(leadMonomials[nonZeroDerivatives[minimumIndex].Item1], degreeWeight) > maxWeightedDegree)
-                            throw new NonTrivialPolynomialNotFoundException();
-
-                        var minimumPolynomial = buildingPolynomials[nonZeroDerivatives[minimumIndex].Item1];
+                        var minimumPolynomialIndex = nonZeroDerivatives[minimumIndex].Item1;
+                        var minimumPolynomial = buildingPolynomials[minimumPolynomialIndex];
                         var minimumDerivative = nonZeroDerivatives[minimumIndex].Item2;
-                        for (var i = 0; i < nonZeroDerivatives.Count; i++)
-                        {
-                            var polynomialIndex = nonZeroDerivatives[i].Item1;
-                            if (i != minimumIndex)
-                                buildingPolynomials[polynomialIndex] = minimumDerivative*buildingPolynomials[polynomialIndex]
-                                                                       - nonZeroDerivatives[i].Item2*minimumPolynomial;
-                            else
-                            {
-                                transformationMultiplier[_zeroMonomial] = FieldElement.InverseForAddition(root.Item1);
-                                buildingPolynomials[polynomialIndex] = minimumDerivative*transformationMultiplier*minimumPolynomial;
 
-                                var oldLeadMonomial = leadMonomials[polynomialIndex];
-                                leadMonomials[polynomialIndex] = new Tuple<int, int>(oldLeadMonomial.Item1 + 1, oldLeadMonomial.Item2);
-                            }
-                        }
+                        for (var i = 0; i < nonZeroDerivatives.Count; i++)
+                            if (i != minimumIndex)
+                                buildingPolynomials[nonZeroDerivatives[i].Item1]
+                                    .Subtract(nonZeroDerivatives[i].Item2.Divide(minimumDerivative), minimumPolynomial);
+                        transformationMultiplier[_zeroMonomial] = FieldElement.InverseForAddition(root.Item1);
+                        minimumPolynomial
+                            .Multiply(minimumDerivative*transformationMultiplier);
+                        leadMonomials[minimumPolynomialIndex] = new Tuple<int, int>(leadMonomials[minimumPolynomialIndex].Item1 + 1,
+                            leadMonomials[minimumPolynomialIndex].Item2);
                     }
 
             var resultPolynomialIndex = FindMinimumIndexByLeadMonomial(buildingPolynomials, i => leadMonomials[i], monomialsComparer);
