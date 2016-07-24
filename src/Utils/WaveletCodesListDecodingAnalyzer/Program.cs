@@ -124,7 +124,7 @@
             }
         }
 
-        private static void AnalyzeCode(int n, int k, int d, Polynomial h, int errorsCount, int? samplesCount = null)
+        private static void AnalyzeCode(int n, int k, int d, Polynomial h, int errorsCount, int? decodingThreadsCount = null, int? samplesCount = null)
         {
             var linearSystemsSolver = new GaussSolver();
             var generatingPolynomialBuilder = new LiftingSchemeBasedBuilder(new GcdBasedBuilder(new RecursiveGcdFinder()), linearSystemsSolver);
@@ -152,7 +152,7 @@
             var noiseGenerationTimer = Stopwatch.StartNew();
             samples = samples.SelectMany(x => errorsPositions.Select(y => new AnalyzingSample(x) {ErrorPositions = y})).ToArray();
             Parallel.ForEach(samples,
-                new ParallelOptions {MaxDegreeOfParallelism = (int) (Environment.ProcessorCount*1.5d)},
+                new ParallelOptions {MaxDegreeOfParallelism = decodingThreadsCount ?? (int) (Environment.ProcessorCount*1.5d)},
                 x => PlaceNoiseIntoSamplesAndDecode(x, 0, n, k, d, generatingPolynomial, decoder));
             noiseGenerationTimer.Stop();
             Console.WriteLine("Noise decoding was performed in {0} seconds", noiseGenerationTimer.Elapsed.TotalSeconds);
@@ -161,7 +161,9 @@
         [UsedImplicitly]
         public static void Main()
         {
-            AnalyzeCode(8, 4, 4, new Polynomial(new PrimePowerOrderField(9, 3, new[] {1, 0, 1}), 1, 2, 3, 1, 2, 3, 2, 1), 2);
+            AnalyzeCode(26, 13, 12,
+                new Polynomial(new PrimePowerOrderField(27, 3, new[] {2, 2, 0, 1}), 0, 0, 0, 1, 2, 3, 4, 1, 6, 7, 8, 9, 1, 10, 1, 12, 1, 14,
+                    1, 17, 1, 19, 20, 1, 1, 1, 22), 6, 2, 1);
             Console.ReadKey();
         }
     }
