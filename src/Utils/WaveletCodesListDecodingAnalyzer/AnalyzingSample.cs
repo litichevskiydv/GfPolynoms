@@ -10,6 +10,8 @@ namespace WaveletCodesListDecodingAnalyzer
 
         public Tuple<FieldElement, FieldElement>[] Codeword { get; }
 
+        public int[] ErrorPositions { get; set; }
+
         public AnalyzingSample(Polynomial informationPolynomial, Tuple<FieldElement, FieldElement>[] codeword)
         {
             InformationPolynomial = informationPolynomial;
