@@ -124,10 +124,19 @@
             }
         }
 
-        private static void AnalyzeCode(int n, int k, int d, Polynomial h, int errorsCount, int? decodingThreadsCount = null, int? samplesCount = null)
+        private static void AnalyzeCode(int n, int k, int d, Polynomial h, int? placedErrorsCount = null,
+            int? samplesCount = null, int? decodingThreadsCount = null)
         {
+            var maxErrorsCount = (int) Math.Floor(n - Math.Sqrt(n*(n - d)));
+            var errorsCount = placedErrorsCount ?? maxErrorsCount;
+            if (errorsCount > maxErrorsCount)
+                throw new ArgumentException("Errors count is too large");
+            if (errorsCount < d - maxErrorsCount)
+                throw new ArgumentException("Errors count is to small");
+
             var linearSystemsSolver = new GaussSolver();
-            var generatingPolynomialBuilder = new LiftingSchemeBasedBuilder(new GcdBasedBuilder(new RecursiveGcdFinder()), linearSystemsSolver);
+            var generatingPolynomialBuilder = new LiftingSchemeBasedBuilder(new GcdBasedBuilder(new RecursiveGcdFinder()),
+                linearSystemsSolver);
             var decoder =
                 new GsBasedDecoder(
                     new GsDecoder(new KotterAlgorithmBasedBuilder(new PascalsTriangleBasedCalcualtor()),
@@ -163,7 +172,7 @@
         {
             AnalyzeCode(26, 13, 12,
                 new Polynomial(new PrimePowerOrderField(27, 3, new[] {2, 2, 0, 1}), 0, 0, 0, 1, 2, 3, 4, 1, 6, 7, 8, 9, 1, 10, 1, 12, 1, 14,
-                    1, 17, 1, 19, 20, 1, 1, 1, 22), 6, 2, 1);
+                    1, 17, 1, 19, 20, 1, 1, 1, 22), samplesCount: 1, decodingThreadsCount: 2);
             Console.ReadKey();
         }
     }
