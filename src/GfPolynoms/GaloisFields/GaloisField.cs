@@ -1,6 +1,7 @@
 ﻿namespace GfPolynoms.GaloisFields
 {
     using System;
+    using System.Collections.Generic;
 
     public abstract class GaloisField
     {
@@ -22,6 +23,36 @@
         ///     Характеристика поля, степень простого числа в порядке поля
         /// </summary>
         public int Characteristic { get; }
+
+        /// <summary>
+        /// Метод для разложения переданного порядка поля на множители
+        /// </summary>
+        /// <param name="order">Порядок поля, переданный в конструктор</param>
+        /// <returns>Частичное разложение порядка на множители</returns>
+        protected Dictionary<int, int> AnalyzeOrder(int order)
+        {
+            var fractions = new Dictionary<int, int>();
+
+            for (var i = 2; i*i <= order && order > 1; i++)
+            {
+                if(order % i != 0)
+                    continue;
+
+                fractions[i] = 0;
+                if (fractions.Count > 1)
+                    return fractions;
+
+                while (order % i == 0)
+                {
+                    fractions[i]++;
+                    order /= i;
+                }
+            }
+
+            if (order != 1)
+                fractions[order] = 1;
+            return fractions;
+        }
 
         /// <summary>
         /// Проверка, являются ли переданные операнды элементами поля

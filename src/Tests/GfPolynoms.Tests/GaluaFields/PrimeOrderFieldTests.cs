@@ -1,5 +1,6 @@
 ﻿namespace GfPolynoms.Tests.GaluaFields
 {
+    using System;
     using GaloisFields;
     using Xunit;
 
@@ -10,6 +11,12 @@
         public PrimeOrderFieldTests()
         {
             _gf5 = new PrimeOrderField(5);
+        }
+
+        [Fact]
+        public void ShouldNotCreateFieldWithNotPrimeOrder()
+        {
+            Assert.Throws<ArgumentException>(() => new PrimeOrderField(6));
         }
 
         [Theory]

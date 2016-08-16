@@ -34,6 +34,10 @@
         /// <param name="order">Порядок поля, простое число</param>
         public PrimeOrderField(int order) : base(order, order)
         {
+            var analysisResult = AnalyzeOrder(order);
+            if(analysisResult.Count != 1)
+                throw new ArgumentException("Field order is not a prime number");
+
             BuildMultiplicativeGroup();
         }
 
