@@ -21,7 +21,7 @@
         static RrFactorizatorTests()
         {
             var gf19 = new PrimeOrderField(19);
-            var gf8 = new PrimePowerOrderField(8, 2, new[] { 1, 1, 0, 1 });
+            var gf8 = new PrimePowerOrderField(8, new Polynomial(new PrimeOrderField(2), 1, 1, 0, 1));
 
             FactorizationTestsData = new[]
                                      {

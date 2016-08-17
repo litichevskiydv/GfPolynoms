@@ -50,7 +50,7 @@
 
         static GaussSolverTests()
         {
-            var gf27 = new PrimePowerOrderField(27, 3, new[] { 2, 2, 0, 1 });
+            var gf27 = new PrimePowerOrderField(27, new Polynomial(new PrimeOrderField(3), 2, 2, 0, 1));
             OneSolutionTestsData = new[]
                                    {
                                        PrepareTestCaseForOneSolution(gf27, new[,] {{1, 1, 1}, {1, 2, 1}, {1, 1, 2}}, new[] {3, 5, 6},

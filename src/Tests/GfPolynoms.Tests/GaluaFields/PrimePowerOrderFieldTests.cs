@@ -1,5 +1,6 @@
 ﻿namespace GfPolynoms.Tests.GaluaFields
 {
+    using System;
     using System.Collections.Generic;
     using GaloisFields;
     using JetBrains.Annotations;
@@ -11,6 +12,8 @@
         private static readonly PrimePowerOrderField Gf27;
 
         [UsedImplicitly]
+        public static readonly IEnumerable<object[]> IncorrectFieldCreationTestsData;
+        [UsedImplicitly]
         public static readonly IEnumerable<object[]> SumTestsData;
         [UsedImplicitly]
         public static readonly IEnumerable<object[]> SubtractTestsData;
@@ -21,9 +24,16 @@
 
         static PrimePowerOrderFieldTests()
         {
-            Gf8 = new PrimePowerOrderField(8, 2, new[] {1, 1, 0, 1});
-            Gf27 = new PrimePowerOrderField(27, 3, new[] {2, 2, 0, 1});
+            Gf8 = new PrimePowerOrderField(8, new Polynomial(new PrimeOrderField(2), 1, 1, 0, 1));
+            Gf27 = new PrimePowerOrderField(27, new Polynomial(new PrimeOrderField(3), 2, 2, 0, 1));
 
+            IncorrectFieldCreationTestsData = new[]
+                                              {
+                                                  new object[] {8, null},
+                                                  new object[] {8, new Polynomial(new PrimeOrderField(3), 1)},
+                                                  new object[] {8, new Polynomial(new PrimeOrderField(2), 1)},
+                                                  new object[] {8, new Polynomial(new PrimeOrderField(2), 0, 0, 0, 1)}
+                                              };
             SumTestsData = new[]
                             {
                                 new object[] {Gf8, 3, 4, 7},
@@ -81,6 +91,22 @@
                                    new object[] {Gf27, 10, 17, 15},
                                    new object[] {Gf27, 2, 23, 25}
                                };
+        }
+
+        [Theory]
+        [InlineData(1)]
+        [InlineData(3)]
+        [InlineData(6)]
+        public void ShouldNotCreateFieldWithNotPrimePowerOrder(int fieldOrder)
+        {
+            Assert.Throws<ArgumentException>(() => new PrimePowerOrderField(fieldOrder));
+        }
+
+        [Theory]
+        [MemberData(nameof(IncorrectFieldCreationTestsData))]
+        public void ShouldNotCreateFieldWithIncorrectIrreduciblePolynomial(int fieldOrder, Polynomial irreduciblePolynomial)
+        {
+            Assert.ThrowsAny<ArgumentException>(() => new PrimePowerOrderField(fieldOrder, irreduciblePolynomial));
         }
 
         [Theory]

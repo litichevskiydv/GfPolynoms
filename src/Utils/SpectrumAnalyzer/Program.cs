@@ -96,7 +96,7 @@
             const int informationWordLength = 3;
             const int codeWordLength = 7;
 
-            var field = new PrimePowerOrderField(8, 2, new[] { 1, 1, 0, 1 });
+            var field = new PrimePowerOrderField(8, new Polynomial(new PrimeOrderField(2), 1, 1, 0, 1));
             var m = new Polynomial(field, 1).RightShift(7);
             m[0] = 1;
             var f = new Polynomial(field, 0, 3, 2, 0, 4, 2, 7);

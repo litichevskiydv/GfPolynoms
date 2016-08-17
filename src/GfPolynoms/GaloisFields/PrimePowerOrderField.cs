@@ -3,14 +3,15 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using IrreduciblePolynomialsFinder;
 
     public class PrimePowerOrderField : GaloisField
     {
-        private readonly Polynomial[] _polynomialByRepresentation;
-        private readonly Dictionary<Polynomial, int> _representationByPolynomial;
+        private Polynomial[] _polynomialByRepresentation;
+        private Dictionary<Polynomial, int> _representationByPolynomial;
 
-        private readonly int[][] _additionResults;
-        private readonly int[][] _subtractionResults;
+        private int[][] _additionResults;
+        private int[][] _subtractionResults;
 
         public Polynomial IrreduciblePolynomial { get; }
 
@@ -76,24 +77,73 @@
             }
         }
 
-        public PrimePowerOrderField(int order, int characteristic, int[] irreduciblePolynomial) : base(order, characteristic)
+        /// <summary>
+        /// Метод для инициализации дополнительных элементов поля
+        /// </summary>
+        private void InitializeAdditionalStructures()
         {
-            if (irreduciblePolynomial == null)
-                throw new ArgumentNullException(nameof(irreduciblePolynomial));
-
-            IrreduciblePolynomial = new Polynomial(new PrimeOrderField(characteristic), irreduciblePolynomial);
-
             _representationByPolynomial = new Dictionary<Polynomial, int>();
-            _polynomialByRepresentation = new Polynomial[order];
-            GenerateFieldElements(characteristic, new int[IrreduciblePolynomial.Degree], IrreduciblePolynomial.Degree - 1);
+            _polynomialByRepresentation = new Polynomial[Order];
+            GenerateFieldElements(Characteristic, new int[IrreduciblePolynomial.Degree], IrreduciblePolynomial.Degree - 1);
 
             BuildMultiplicativeGroup();
 
-            _additionResults = new int[order][];
+            _additionResults = new int[Order][];
             PrecalculateAdditionResults();
 
-            _subtractionResults = new int[order][];
+            _subtractionResults = new int[Order][];
             PrecalculateSubtractionResults();
+        }
+
+        /// <summary>
+        /// Конструктор для создания поля, в качестве параметра передается его порядок <paramref name="order"/>
+        /// </summary>
+        /// <param name="order">Порядок поля</param>
+        public PrimePowerOrderField(int order) : this(order, new SimpleFinder())
+        {
+        }
+
+        /// <summary>
+        /// Конструктор для создания поля, в качестве параметра передается его порядок <paramref name="order"/> и генератор неприводимых многочленов <paramref name="irreduciblePolynomialsFinder"/>
+        /// </summary>
+        /// <param name="order">Порядок поля</param>
+        /// <param name="irreduciblePolynomialsFinder">Генератор неприводимых многочленов</param>
+        public PrimePowerOrderField(int order, IIrreduciblePolynomialsFinder irreduciblePolynomialsFinder)
+        {
+            var analysisResult = AnalyzeOrder(order);
+            if (analysisResult.Count != 1)
+                throw new ArgumentException("Field order isn't a prime number power");
+            if (analysisResult.First().Value == 1)
+                throw new ArgumentException("Field order is a prime number");
+
+            if (irreduciblePolynomialsFinder == null)
+                throw new ArgumentNullException(nameof(irreduciblePolynomialsFinder));
+
+            Initialize(order, analysisResult.First().Key);
+            IrreduciblePolynomial = irreduciblePolynomialsFinder.Find(Characteristic, analysisResult.First().Value);
+            InitializeAdditionalStructures();
+        }
+
+        public PrimePowerOrderField(int order, Polynomial irreduciblePolynomial)
+        {
+            var analysisResult = AnalyzeOrder(order);
+            if (analysisResult.Count != 1)
+                throw new ArgumentException("Field order isn't a prime number power");
+            if (analysisResult.First().Value == 1)
+                throw new ArgumentException("Field order is a prime number");
+
+            if (irreduciblePolynomial == null)
+                throw new ArgumentNullException(nameof(irreduciblePolynomial));
+            if(irreduciblePolynomial.Field.Order != analysisResult.First().Key)
+                throw new ArgumentException("Irreducible polynomial isn't declared over properly field");
+            if (irreduciblePolynomial.Degree != analysisResult.First().Value)
+                throw new ArgumentException("Irreducible polynomial degree isn't correct");
+            if (Enumerable.Range(0, analysisResult.First().Key).Any(x => irreduciblePolynomial.Evaluate(x) == 0))
+                throw new ArgumentException($"Polynomial {irreduciblePolynomial} isn't irreducible");
+
+            Initialize(order, analysisResult.First().Key);
+            IrreduciblePolynomial = irreduciblePolynomial;
+            InitializeAdditionalStructures();
         }
 
         private bool Equals(PrimePowerOrderField other)

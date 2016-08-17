@@ -19,7 +19,7 @@
 
         static PascalsTriangleBasedCalcualtorTests()
         {
-            Gf27 = new PrimePowerOrderField(27, 3, new[] { 2, 2, 0, 1 });
+            Gf27 = new PrimePowerOrderField(27, new Polynomial(new PrimeOrderField(3), 2, 2, 0, 1));
 
             CalculatorTestsData = new[]
                                   {
