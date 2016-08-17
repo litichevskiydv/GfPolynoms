@@ -171,8 +171,8 @@
         public static void Main()
         {
             AnalyzeCode(26, 13, 12,
-                new Polynomial(new PrimePowerOrderField(27, 3, new[] {2, 2, 0, 1}), 0, 0, 0, 1, 2, 3, 4, 1, 6, 7, 8, 9, 1, 10, 1, 12, 1, 14,
-                    1, 17, 1, 19, 20, 1, 1, 1, 22), samplesCount: 1, decodingThreadsCount: 2);
+                new Polynomial(new PrimePowerOrderField(27), 0, 0, 0, 1, 2, 3, 4, 1, 6, 7, 8, 9, 1, 10, 1, 12, 1, 14, 1, 17, 1, 19, 20, 1, 1,
+                    1, 22), samplesCount: 1, decodingThreadsCount: 2);
             Console.ReadKey();
         }
     }

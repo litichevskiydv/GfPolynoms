@@ -13,10 +13,12 @@
             _gf5 = new PrimeOrderField(5);
         }
 
-        [Fact]
-        public void ShouldNotCreateFieldWithNotPrimeOrder()
+        [Theory]
+        [InlineData(6)]
+        [InlineData(8)]
+        public void ShouldNotCreateFieldWithNotPrimeOrder(int fieldOrder)
         {
-            Assert.Throws<ArgumentException>(() => new PrimeOrderField(6));
+            Assert.Throws<ArgumentException>(() => new PrimeOrderField(fieldOrder));
         }
 
         [Theory]

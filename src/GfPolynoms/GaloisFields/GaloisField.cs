@@ -8,21 +8,21 @@
         /// <summary>
         /// Представление элементов по соответствующим им степеням порождающего элемента
         /// </summary>
-        protected readonly int[] ElementsByPowers;
+        protected int[] ElementsByPowers { get; private set; }
         /// <summary>
         /// Степени порождающего элемента по соответствующим им элементам
         /// </summary>
-        protected readonly int[] PowersByElements;
+        protected int[] PowersByElements { get; private set; }
 
 
         /// <summary>
         ///     Порядок поля, простое число в некоторой степени
         /// </summary>
-        public int Order { get; }
+        public int Order { get; private set; }
         /// <summary>
         ///     Характеристика поля, степень простого числа в порядке поля
         /// </summary>
-        public int Characteristic { get; }
+        public int Characteristic { get; private set; }
 
         /// <summary>
         /// Метод для разложения переданного порядка поля на множители
@@ -55,6 +55,22 @@
         }
 
         /// <summary>
+        /// Метод для инициализации внутренних объектов поля
+        /// </summary>
+        /// <param name="order">Порядок поля</param>
+        /// <param name="characteristic">Характеристика поля</param>
+        protected void Initialize(int order, int characteristic)
+        {
+            Order = order;
+            Characteristic = characteristic;
+
+            PowersByElements = new int[order];
+            PowersByElements[0] = -1;
+
+            ElementsByPowers = new int[order - 1];
+        }
+
+        /// <summary>
         /// Проверка, являются ли переданные операнды элементами поля
         /// </summary>
         protected void ValidateArguments(int a, int b)
@@ -63,22 +79,6 @@
                 throw new ArgumentException($"Element {a} is not field member");
             if (IsFieldElement(b) == false)
                 throw new ArgumentException($"Element {b} is not field member");
-        }
-
-        protected GaloisField(int order, int characteristic)
-        {
-            if (order < 2)
-                throw new ArgumentException(nameof(order));
-            if (characteristic < 2)
-                throw new ArgumentException(nameof(characteristic));
-
-            Order = order;
-            Characteristic = characteristic;
-
-            PowersByElements = new int[order];
-            PowersByElements[0] = -1;
-
-            ElementsByPowers = new int[order - 1];
         }
 
         /// <summary>

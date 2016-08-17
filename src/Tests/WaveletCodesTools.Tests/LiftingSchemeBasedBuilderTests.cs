@@ -19,10 +19,10 @@
 
         static LiftingSchemeBasedBuilderTests()
         {
-            var gf9 = new PrimePowerOrderField(9, 3, new[] {1, 0, 1});
+            var gf9 = new PrimePowerOrderField(9, new Polynomial(new PrimeOrderField(3), 1, 0, 1));
             var gf11 = new PrimeOrderField(11);
             var gf13 = new PrimeOrderField(13);
-            var gf27 = new PrimePowerOrderField(27, 3, new[] { 2, 2, 0, 1 });
+            var gf27 = new PrimePowerOrderField(27, new Polynomial(new PrimeOrderField(3), 2, 2, 0, 1));
 
             BuildTestsData = new[]
                              {
