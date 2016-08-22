@@ -102,9 +102,19 @@
                 {
                     Console.WriteLine($"\nProcessed {decoder.TelemetryCollector.ProcessedSamplesCount} samples");
                     var listsSizes = decoder.TelemetryCollector.ProcessingResults.ToArray();
+                    var interestingSamples = decoder.TelemetryCollector.InterestingSamples.ToDictionary(x => x.Key, x => x.Value.ToArray());
                     foreach (var listSize in listsSizes)
-                        Console.WriteLine(
-                            $"Frequency decoding list size {listSize.Key.Item1}, time decoding list size {listSize.Key.Item2}, {listSize.Value} samples");
+                    {
+                        Console.WriteLine($"Frequency decoding list size {listSize.Key.Item1}, time decoding list size {listSize.Key.Item2}, {listSize.Value} samples");
+
+                        Tuple<FieldElement, FieldElement>[][] collectedSamples;
+                        if (interestingSamples.TryGetValue(listSize.Key, out collectedSamples))
+                        {
+                            Console.WriteLine($"\tInteresting samples were collected:");
+                            foreach (var collectedSample in collectedSamples)
+                                Console.WriteLine("[" + string.Join(",", collectedSample.Select(x => $"({x.Item1},{x.Item2})")) + "]");
+                        }
+                    }
                 }
             }
             else

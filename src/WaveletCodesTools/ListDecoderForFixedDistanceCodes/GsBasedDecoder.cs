@@ -99,7 +99,7 @@
 
             var resultList = SelectCorrectInformationPolynomials(n, k, d, generatingPolynomial, leadZerosCount, decodedCodeword,
                 frequencyDecodingResults);
-            TelemetryCollector?.ReportDecodingListsSizes(frequencyDecodingResults.Length, resultList.Length);
+            TelemetryCollector?.ReportDecodingListsSizes(decodedCodeword, frequencyDecodingResults.Length, resultList.Length);
             return resultList;
         }
 
