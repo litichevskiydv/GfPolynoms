@@ -3,6 +3,8 @@
     using System;
     using System.Collections.Concurrent;
     using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
     using System.Threading;
     using GfPolynoms;
     using WaveletCodesTools.ListDecoderForFixedDistanceCodes.GsBasedDecoderDependencies;
@@ -51,6 +53,29 @@
                     });
 
             Interlocked.Increment(ref _processedSamplesCount);
+        }
+
+        public override string ToString()
+        {
+            var builder = new StringBuilder();
+
+            builder.AppendLine($"Processed {ProcessedSamplesCount} samples");
+            var listsSizes = ProcessingResults.ToArray();
+            var interestingSamples = InterestingSamples.ToDictionary(x => x.Key, x => x.Value.ToArray());
+            foreach (var listSize in listsSizes)
+            {
+                builder.AppendLine($"Frequency decoding list size {listSize.Key.Item1}, time decoding list size {listSize.Key.Item2}, {listSize.Value} samples");
+
+                Tuple<FieldElement, FieldElement>[][] collectedSamples;
+                if (interestingSamples.TryGetValue(listSize.Key, out collectedSamples))
+                {
+                    builder.AppendLine("\tInteresting samples were collected:");
+                    foreach (var collectedSample in collectedSamples)
+                        builder.AppendLine("\t\t[" + string.Join(",", collectedSample.Select(x => $"({x.Item1},{x.Item2})")) + "]");
+                }
+            }
+
+            return builder.ToString();
         }
     }
 }

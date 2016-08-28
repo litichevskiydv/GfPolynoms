@@ -13,6 +13,8 @@
     using GfPolynoms.Extensions;
     using GfPolynoms.GaloisFields;
     using JetBrains.Annotations;
+    using Microsoft.Extensions.Logging;
+    using NLog.Extensions.Logging;
     using RsCodesTools.ListDecoder;
     using RsCodesTools.ListDecoder.GsDecoderDependencies.InterpolationPolynomialBuilder;
     using RsCodesTools.ListDecoder.GsDecoderDependencies.InterpolationPolynomialFactorisator;
@@ -20,8 +22,10 @@
     using WaveletCodesTools.ListDecoderForFixedDistanceCodes;
 
     [UsedImplicitly]
-    public static class Program
+    public class Program
     {
+        private static ILogger _logger;
+
         private static void GenerateSamples(int n, Polynomial generatingPolynomial, Polynomial m,
             int[] informationWord, int informationWordPosition,
             ICollection<AnalyzingSample> samples, int? samplesCount = null)
@@ -36,17 +40,17 @@
                 var codeword = new Tuple<FieldElement, FieldElement>[n];
                 for (; i <= codeWordPolynomial.Degree; i++)
                     codeword[i] = new Tuple<FieldElement, FieldElement>(new FieldElement(field, field.GetGeneratingElementPower(i)),
-                        new FieldElement(field, codeWordPolynomial[i]));
+                                      new FieldElement(field, codeWordPolynomial[i]));
                 for (; i < n; i++)
                     codeword[i] = new Tuple<FieldElement, FieldElement>(new FieldElement(field, field.GetGeneratingElementPower(i)),
-                        field.Zero());
+                                      field.Zero());
 
                 samples.Add(new AnalyzingSample(informationPolynomial, codeword));
             }
             else
                 for (var i = 0; i < generatingPolynomial.Field.Order; i++)
                 {
-                    if(samplesCount.HasValue && samplesCount.Value == samples.Count)
+                    if (samplesCount.HasValue && samplesCount.Value == samples.Count)
                         break;
 
                     informationWord[informationWordPosition] = i;
@@ -66,7 +70,8 @@
             return samples;
         }
 
-        private static void GenerateErrorsPositions(int n, IList<int> errorsPositions, int placedErrorsCount, ICollection<int[]> allErrorsPositions)
+        private static void GenerateErrorsPositions(int n, IList<int> errorsPositions, int placedErrorsCount,
+            ICollection<int[]> allErrorsPositions)
         {
             if (placedErrorsCount == errorsPositions.Count)
                 allErrorsPositions.Add(errorsPositions.ToArray());
@@ -87,35 +92,18 @@
             return allErrorsPositions;
         }
 
-        private static void PlaceNoiseIntoSamplesAndDecode(AnalyzingSample sample, int currentErrorPosition, 
+        private static void PlaceNoiseIntoSamplesAndDecode(AnalyzingSample sample, int currentErrorPosition,
             int n, int k, int d, Polynomial generatingPolynomial, GsBasedDecoder decoder)
         {
             if (currentErrorPosition == sample.ErrorPositions.Length)
             {
                 var decodingResults = decoder.Decode(n, k, d, generatingPolynomial, sample.Codeword,
                     sample.Codeword.Length - sample.ErrorPositions.Length);
-
                 if (decodingResults.Contains(sample.InformationPolynomial) == false)
                     throw new InvalidOperationException("Failed to decode sample");
 
                 if (decoder.TelemetryCollector.ProcessedSamplesCount%100 == 0)
-                {
-                    Console.WriteLine($"\nProcessed {decoder.TelemetryCollector.ProcessedSamplesCount} samples");
-                    var listsSizes = decoder.TelemetryCollector.ProcessingResults.ToArray();
-                    var interestingSamples = decoder.TelemetryCollector.InterestingSamples.ToDictionary(x => x.Key, x => x.Value.ToArray());
-                    foreach (var listSize in listsSizes)
-                    {
-                        Console.WriteLine($"Frequency decoding list size {listSize.Key.Item1}, time decoding list size {listSize.Key.Item2}, {listSize.Value} samples");
-
-                        Tuple<FieldElement, FieldElement>[][] collectedSamples;
-                        if (interestingSamples.TryGetValue(listSize.Key, out collectedSamples))
-                        {
-                            Console.WriteLine($"\tInteresting samples were collected:");
-                            foreach (var collectedSample in collectedSamples)
-                                Console.WriteLine("[" + string.Join(",", collectedSample.Select(x => $"({x.Item1},{x.Item2})")) + "]");
-                        }
-                    }
-                }
+                    _logger.LogInformation(decoder.TelemetryCollector.ToString());
             }
             else
             {
@@ -127,7 +115,7 @@
                         continue;
 
                     sample.Codeword[sample.ErrorPositions[currentErrorPosition]] = new Tuple<FieldElement, FieldElement>(corretValue.Item1,
-                        new FieldElement(field, i));
+                                                                                       new FieldElement(field, i));
                     PlaceNoiseIntoSamplesAndDecode(sample, currentErrorPosition + 1, n, k, d, generatingPolynomial, decoder);
                 }
                 sample.Codeword[sample.ErrorPositions[currentErrorPosition]] = corretValue;
@@ -146,7 +134,7 @@
 
             var linearSystemsSolver = new GaussSolver();
             var generatingPolynomialBuilder = new LiftingSchemeBasedBuilder(new GcdBasedBuilder(new RecursiveGcdFinder()),
-                linearSystemsSolver);
+                                                  linearSystemsSolver);
             var decoder =
                 new GsBasedDecoder(
                     new GsDecoder(new KotterAlgorithmBasedBuilder(new PascalsTriangleBasedCalcualtor()),
@@ -155,35 +143,49 @@
 
             var generatingPolynomial = generatingPolynomialBuilder.Build(n, d, h);
 
-            Console.WriteLine("Start samples generation");
+            _logger.LogInformation("Start samples generation");
             var samplesGenerationTimer = Stopwatch.StartNew();
             var samples = GenerateSamples(n, k, generatingPolynomial, samplesCount).ToArray();
             samplesGenerationTimer.Stop();
-            Console.WriteLine("Samples were generated in {0} seconds", samplesGenerationTimer.Elapsed.TotalSeconds);
+            _logger.LogInformation("Samples were generated in {0} seconds", samplesGenerationTimer.Elapsed.TotalSeconds);
 
-            Console.WriteLine("Start errors positions generation");
+            _logger.LogInformation("Start errors positions generation");
             var errorsPositionsGenerationTimer = Stopwatch.StartNew();
             var errorsPositions = GenerateErrorsPositions(n, errorsCount).ToArray();
             errorsPositionsGenerationTimer.Stop();
-            Console.WriteLine("Errors positions were generated in {0} seconds", errorsPositionsGenerationTimer.Elapsed.TotalSeconds);
+            _logger.LogInformation("Errors positions were generated in {0} seconds", errorsPositionsGenerationTimer.Elapsed.TotalSeconds);
 
-            Console.WriteLine("Start noise decoding");
+            _logger.LogInformation("Start noise decoding");
             var noiseGenerationTimer = Stopwatch.StartNew();
             samples = samples.SelectMany(x => errorsPositions.Select(y => new AnalyzingSample(x) {ErrorPositions = y})).ToArray();
             Parallel.ForEach(samples,
                 new ParallelOptions {MaxDegreeOfParallelism = decodingThreadsCount ?? (int) (Environment.ProcessorCount*1.5d)},
                 x => PlaceNoiseIntoSamplesAndDecode(x, 0, n, k, d, generatingPolynomial, decoder));
             noiseGenerationTimer.Stop();
-            Console.WriteLine("Noise decoding was performed in {0} seconds", noiseGenerationTimer.Elapsed.TotalSeconds);
+            _logger.LogInformation("Noise decoding was performed in {0} seconds", noiseGenerationTimer.Elapsed.TotalSeconds);
         }
 
         [UsedImplicitly]
         public static void Main()
         {
-            AnalyzeCode(26, 13, 12,
+            var loggerFactory = new LoggerFactory()
+                .AddNLog()
+                .AddConsole();
+            _logger = loggerFactory.CreateLogger<Program>();
+
+            try
+            {
+                AnalyzeCode(26, 13, 12,
                 new Polynomial(new PrimePowerOrderField(27, new Polynomial(new PrimeOrderField(3), 2, 2, 0, 1)),
                     0, 0, 0, 1, 2, 3, 4, 1, 6, 7, 8, 9, 1, 10, 1, 12, 1, 14, 1, 17, 1, 19, 20, 1, 1, 1, 22),
                 samplesCount: 1, decodingThreadsCount: 2);
+            }
+            catch (Exception exception)
+            {
+                _logger.LogError(0, exception, "Exception occurred during analysis");
+                throw;
+            }
+
             Console.ReadKey();
         }
     }
