@@ -12,6 +12,8 @@ namespace WaveletCodesListDecodingAnalyzer
 
         public int[] ErrorPositions { get; set; }
 
+        public int ProcessedNoises { get; set; }
+
         public AnalyzingSample(Polynomial informationPolynomial, Tuple<FieldElement, FieldElement>[] codeword)
         {
             InformationPolynomial = informationPolynomial;

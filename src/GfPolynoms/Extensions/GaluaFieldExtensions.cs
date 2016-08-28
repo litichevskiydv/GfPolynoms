@@ -19,5 +19,13 @@
         {
             return new FieldElement(field, 1);
         }
+
+        /// <summary>
+        /// Returns new field element constructed from representation
+        /// </summary>
+        public static FieldElement CreateElement(this GaloisField field, int representation)
+        {
+            return new FieldElement(field, representation);
+        }
     }
 }

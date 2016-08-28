@@ -25,6 +25,9 @@
     "JetBrains.Annotations": "10.1.4",
     "GfPolynoms": "1.0.0-*",
     "WaveletCodesTools": "1.0.0-*",
-    "GfAlgorithms": "1.0.0-*"
+    "GfAlgorithms": "1.0.0-*",
+    "Microsoft.Extensions.Logging": "1.0.0",
+    "NLog.Extensions.Logging": "1.0.0-rtm-alpha4",
+    "Microsoft.Extensions.Logging.Console": "1.0.0"
   }
 }
