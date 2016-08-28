@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.Linq;
+    using System.Threading;
     using System.Threading.Tasks;
     using GfAlgorithms.CombinationsCountCalculator;
     using GfAlgorithms.ComplementaryFilterBuilder;
@@ -94,6 +95,13 @@
                 if (decodingResults.Contains(sample.InformationPolynomial) == false)
                     throw new InvalidOperationException("Failed to decode sample");
 
+                if (++sample.ProcessedNoises%50 == 0)
+                {
+                    var errors = new int[n];
+                    for (var i = 0; i < sample.ErrorPositions.Length; i++)
+                        errors[sample.ErrorPositions[i]] = noiseValue[i];
+                    _logger.LogInformation($"[{Thread.CurrentThread.ManagedThreadId}]: Current noise value ({string.Join(",", errors)})");
+                }
                 if (decoder.TelemetryCollector.ProcessedSamplesCount%100 == 0)
                     _logger.LogInformation(decoder.TelemetryCollector.ToString());
                 return;
@@ -158,6 +166,27 @@
             _logger.LogInformation("Noise decoding was performed in {0} seconds", noiseGenerationTimer.Elapsed.TotalSeconds);
         }
 
+        private static void AnalyzeSamples(int n, int k, int d, Polynomial h, 
+            IList<int> noiseValue, params AnalyzingSample[] samples)
+        {
+            var linearSystemsSolver = new GaussSolver();
+            var generatingPolynomialBuilder = new LiftingSchemeBasedBuilder(new GcdBasedBuilder(new RecursiveGcdFinder()), linearSystemsSolver);
+            var decoder =
+                new GsBasedDecoder(
+                    new GsDecoder(new KotterAlgorithmBasedBuilder(new PascalsTriangleBasedCalcualtor()),
+                        new RrFactorizator()),
+                    linearSystemsSolver)
+                { TelemetryCollector = new GsBasedDecoderTelemetryCollectorForGsBasedDecoder() };
+
+            var generatingPolynomial = generatingPolynomialBuilder.Build(n, d, h);
+            _logger.LogInformation("Generating polynomial was restored");
+
+            _logger.LogInformation("Samples analysis was started");
+            Parallel.ForEach(samples,
+                new ParallelOptions {MaxDegreeOfParallelism = Math.Min((int) (Environment.ProcessorCount*1.5d), samples.Length)},
+                x => PlaceNoiseIntoSamplesAndDecode(x, noiseValue, 0, n, k, d, generatingPolynomial, decoder));
+        }
+
         [UsedImplicitly]
         public static void Main()
         {
@@ -166,12 +195,27 @@
                 .AddConsole();
             _logger = loggerFactory.CreateLogger<Program>();
 
+            var field = new PrimePowerOrderField(27, new Polynomial(new PrimeOrderField(3), 2, 2, 0, 1));
+            var informationPolynomial = new Polynomial(field);
+            var encoder = new Encoder();
+            var samples = new[]
+                              {
+                                  new AnalyzingSample(informationPolynomial, encoder.Encode(26, informationPolynomial, informationPolynomial))
+                                  {
+                                      ErrorPositions = new[] {2, 6, 8, 15, 16, 22}
+                                  },
+                                  new AnalyzingSample(informationPolynomial, encoder.Encode(26, informationPolynomial, informationPolynomial))
+                                  {
+                                      ErrorPositions = new[] {0, 1, 2, 3, 4, 5}
+                                  }
+                              };
+
             try
             {
-                AnalyzeCode(26, 13, 12,
-                new Polynomial(new PrimePowerOrderField(27, new Polynomial(new PrimeOrderField(3), 2, 2, 0, 1)),
-                    0, 0, 0, 1, 2, 3, 4, 1, 6, 7, 8, 9, 1, 10, 1, 12, 1, 14, 1, 17, 1, 19, 20, 1, 1, 1, 22),
-                samplesCount: 1, decodingThreadsCount: 2);
+                AnalyzeSamples(26, 13, 12,
+                    new Polynomial(field, 0, 0, 0, 1, 2, 3, 4, 1, 6, 7, 8, 9, 1, 10, 1, 12, 1, 14, 1, 17, 1, 19, 20, 1, 1, 1, 22),
+                    new[] {1, 1, 6, 4, 4, 15},
+                    samples);
             }
             catch (Exception exception)
             {
