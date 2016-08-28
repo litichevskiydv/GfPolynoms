@@ -18,6 +18,7 @@
     using RsCodesTools.ListDecoder;
     using RsCodesTools.ListDecoder.GsDecoderDependencies.InterpolationPolynomialBuilder;
     using RsCodesTools.ListDecoder.GsDecoderDependencies.InterpolationPolynomialFactorisator;
+    using WaveletCodesTools.Encoder;
     using WaveletCodesTools.GeneratingPolynomialsBuilder;
     using WaveletCodesTools.ListDecoderForFixedDistanceCodes;
 
@@ -26,36 +27,25 @@
     {
         private static ILogger _logger;
 
-        private static void GenerateSamples(int n, Polynomial generatingPolynomial, Polynomial m,
+        private static void GenerateSamples(IEncoder encoder, int n, Polynomial generatingPolynomial, Polynomial m,
             int[] informationWord, int informationWordPosition,
             ICollection<AnalyzingSample> samples, int? samplesCount = null)
         {
             if (informationWordPosition == informationWord.Length)
             {
                 var informationPolynomial = new Polynomial(generatingPolynomial.Field, informationWord);
-                var codeWordPolynomial = (informationPolynomial.RaiseVariableDegree(2)*generatingPolynomial)%m;
-
-                var i = 0;
-                var field = generatingPolynomial.Field;
-                var codeword = new Tuple<FieldElement, FieldElement>[n];
-                for (; i <= codeWordPolynomial.Degree; i++)
-                    codeword[i] = new Tuple<FieldElement, FieldElement>(new FieldElement(field, field.GetGeneratingElementPower(i)),
-                                      new FieldElement(field, codeWordPolynomial[i]));
-                for (; i < n; i++)
-                    codeword[i] = new Tuple<FieldElement, FieldElement>(new FieldElement(field, field.GetGeneratingElementPower(i)),
-                                      field.Zero());
-
-                samples.Add(new AnalyzingSample(informationPolynomial, codeword));
+                samples.Add(new AnalyzingSample(informationPolynomial, encoder.Encode(n, generatingPolynomial, informationPolynomial, m)));
+                return;
             }
-            else
-                for (var i = 0; i < generatingPolynomial.Field.Order; i++)
-                {
-                    if (samplesCount.HasValue && samplesCount.Value == samples.Count)
-                        break;
 
-                    informationWord[informationWordPosition] = i;
-                    GenerateSamples(n, generatingPolynomial, m, informationWord, informationWordPosition + 1, samples, samplesCount);
-                }
+            for (var i = 0; i < generatingPolynomial.Field.Order; i++)
+            {
+                if (samplesCount.HasValue && samplesCount.Value == samples.Count)
+                    break;
+
+                informationWord[informationWordPosition] = i;
+                GenerateSamples(encoder, n, generatingPolynomial, m, informationWord, informationWordPosition + 1, samples, samplesCount);
+            }
         }
 
         private static IEnumerable<AnalyzingSample> GenerateSamples(int n, int k, Polynomial generatingPolynomial, int? samplesCount = null)
@@ -65,8 +55,9 @@
 
             var m = new Polynomial(generatingPolynomial.Field, 1).RightShift(n);
             m[0] = generatingPolynomial.Field.InverseForAddition(1);
+            var encoder = new Encoder();
 
-            GenerateSamples(n, generatingPolynomial, m, informationWord, 0, samples, samplesCount);
+            GenerateSamples(encoder, n, generatingPolynomial, m, informationWord, 0, samples, samplesCount);
             return samples;
         }
 
@@ -136,8 +127,7 @@
                 throw new ArgumentException("Errors count is to small");
 
             var linearSystemsSolver = new GaussSolver();
-            var generatingPolynomialBuilder = new LiftingSchemeBasedBuilder(new GcdBasedBuilder(new RecursiveGcdFinder()),
-                                                  linearSystemsSolver);
+            var generatingPolynomialBuilder = new LiftingSchemeBasedBuilder(new GcdBasedBuilder(new RecursiveGcdFinder()), linearSystemsSolver);
             var decoder =
                 new GsBasedDecoder(
                     new GsDecoder(new KotterAlgorithmBasedBuilder(new PascalsTriangleBasedCalcualtor()),
