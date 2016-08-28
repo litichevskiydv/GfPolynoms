@@ -15,6 +15,7 @@
     using GfPolynoms.GaloisFields;
     using JetBrains.Annotations;
     using Microsoft.Extensions.Logging;
+    using NLog.Config;
     using NLog.Extensions.Logging;
     using RsCodesTools.ListDecoder;
     using RsCodesTools.ListDecoder.GsDecoderDependencies.InterpolationPolynomialBuilder;
@@ -190,6 +191,7 @@
         [UsedImplicitly]
         public static void Main()
         {
+            NLog.LogManager.Configuration = new XmlLoggingConfiguration("./nlog.config", true);
             var loggerFactory = new LoggerFactory()
                 .AddNLog()
                 .AddConsole();
