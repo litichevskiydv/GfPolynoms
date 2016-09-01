@@ -85,11 +85,10 @@
             return allErrorsPositions;
         }
 
-        private static void PlaceNoiseIntoSamplesAndDecode(
-            AnalyzingSample sample, IList<int> noiseValue, int currentErrorPosition,
+        private static void PlaceNoiseIntoSamplesAndDecode(AnalyzingSample sample, int currentErrorNumber,
             int n, int k, int d, Polynomial generatingPolynomial, GsBasedDecoder decoder)
         {
-            if (currentErrorPosition == sample.ErrorPositions.Length)
+            if (currentErrorNumber == sample.ErrorPositions.Length)
             {
                 var decodingResults = decoder.Decode(n, k, d, generatingPolynomial, sample.Codeword,
                     sample.Codeword.Length - sample.ErrorPositions.Length);
@@ -100,7 +99,7 @@
                 {
                     var errors = new int[n];
                     for (var i = 0; i < sample.ErrorPositions.Length; i++)
-                        errors[sample.ErrorPositions[i]] = noiseValue[i];
+                        errors[sample.ErrorPositions[i]] = sample.CurrentNoiseValue[i];
                     _logger.LogInformation($"[{Thread.CurrentThread.ManagedThreadId}]: Current noise value ({string.Join(",", errors)})");
                 }
                 if (decoder.TelemetryCollector.ProcessedSamplesCount%100 == 0)
@@ -109,20 +108,19 @@
             }
 
             var field = sample.InformationPolynomial.Field;
-            var corretValue = sample.Codeword[sample.ErrorPositions[currentErrorPosition]];
+            var corretValue = sample.Codeword[sample.ErrorPositions[currentErrorNumber]];
 
-            for (var i = noiseValue[currentErrorPosition]; i < field.Order; i++)
+            for (var i = sample.CurrentNoiseValue[currentErrorNumber]; i < field.Order; i++)
             {
-                sample.Codeword[sample.ErrorPositions[currentErrorPosition]] = 
+                sample.Codeword[sample.ErrorPositions[currentErrorNumber]] = 
                     Tuple.Create(corretValue.Item1, corretValue.Item2 + field.CreateElement(i));
-                noiseValue[currentErrorPosition] = i;
+                sample.CurrentNoiseValue[currentErrorNumber] = i;
 
-                PlaceNoiseIntoSamplesAndDecode(sample, noiseValue, currentErrorPosition + 1,
-                    n, k, d, generatingPolynomial, decoder);
+                PlaceNoiseIntoSamplesAndDecode(sample, currentErrorNumber + 1, n, k, d, generatingPolynomial, decoder);
             }
 
-            sample.Codeword[sample.ErrorPositions[currentErrorPosition]] = corretValue;
-            noiseValue[currentErrorPosition] = 1;
+            sample.Codeword[sample.ErrorPositions[currentErrorNumber]] = corretValue;
+            sample.CurrentNoiseValue[currentErrorNumber] = 1;
         }
 
         private static void AnalyzeCode(int n, int k, int d, Polynomial h, int? placedErrorsCount = null,
@@ -159,16 +157,21 @@
 
             _logger.LogInformation("Start noise decoding");
             var noiseGenerationTimer = Stopwatch.StartNew();
-            samples = samples.SelectMany(x => errorsPositions.Select(y => new AnalyzingSample(x) {ErrorPositions = y})).ToArray();
+            samples = samples.SelectMany(x => errorsPositions.Select(y =>
+                                                                         new AnalyzingSample(x)
+                                                                         {
+                                                                             ErrorPositions = y,
+                                                                             CurrentNoiseValue = Enumerable.Repeat(1, errorsCount).ToArray()
+                                                                         }))
+                .ToArray();
             Parallel.ForEach(samples,
                 new ParallelOptions {MaxDegreeOfParallelism = decodingThreadsCount ?? (int) (Environment.ProcessorCount*1.5d)},
-                x => PlaceNoiseIntoSamplesAndDecode(x, Enumerable.Repeat(1, errorsCount).ToArray(), 0, n, k, d, generatingPolynomial, decoder));
+                x => PlaceNoiseIntoSamplesAndDecode(x, 0, n, k, d, generatingPolynomial, decoder));
             noiseGenerationTimer.Stop();
             _logger.LogInformation("Noise decoding was performed in {0} seconds", noiseGenerationTimer.Elapsed.TotalSeconds);
         }
 
-        private static void AnalyzeSamples(int n, int k, int d, Polynomial h, 
-            IList<int> noiseValue, params AnalyzingSample[] samples)
+        private static void AnalyzeSamples(int n, int k, int d, Polynomial h, params AnalyzingSample[] samples)
         {
             var linearSystemsSolver = new GaussSolver();
             var generatingPolynomialBuilder = new LiftingSchemeBasedBuilder(new GcdBasedBuilder(new RecursiveGcdFinder()), linearSystemsSolver);
@@ -185,7 +188,7 @@
             _logger.LogInformation("Samples analysis was started");
             Parallel.ForEach(samples,
                 new ParallelOptions {MaxDegreeOfParallelism = Math.Min((int) (Environment.ProcessorCount*1.5d), samples.Length)},
-                x => PlaceNoiseIntoSamplesAndDecode(x, noiseValue, 0, n, k, d, generatingPolynomial, decoder));
+                x => PlaceNoiseIntoSamplesAndDecode(x, 0, n, k, d, generatingPolynomial, decoder));
         }
 
         [UsedImplicitly]
@@ -201,22 +204,23 @@
             var informationPolynomial = new Polynomial(field);
             var encoder = new Encoder();
             var samples = new[]
+                          {
+                              new AnalyzingSample(informationPolynomial, encoder.Encode(26, informationPolynomial, informationPolynomial))
                               {
-                                  new AnalyzingSample(informationPolynomial, encoder.Encode(26, informationPolynomial, informationPolynomial))
-                                  {
-                                      ErrorPositions = new[] {2, 6, 8, 15, 16, 22}
-                                  },
-                                  new AnalyzingSample(informationPolynomial, encoder.Encode(26, informationPolynomial, informationPolynomial))
-                                  {
-                                      ErrorPositions = new[] {0, 1, 2, 3, 4, 5}
-                                  }
-                              };
+                                  ErrorPositions = new[] {2, 6, 8, 15, 16, 22},
+                                  CurrentNoiseValue = new[] {1, 1, 6, 4, 4, 14}
+                              },
+                              new AnalyzingSample(informationPolynomial, encoder.Encode(26, informationPolynomial, informationPolynomial))
+                              {
+                                  ErrorPositions = new[] {0, 1, 2, 3, 4, 5},
+                                  CurrentNoiseValue = new[] {1, 1, 6, 4, 4, 14}
+                              }
+                          };
 
             try
             {
                 AnalyzeSamples(26, 13, 12,
                     new Polynomial(field, 0, 0, 0, 1, 2, 3, 4, 1, 6, 7, 8, 9, 1, 10, 1, 12, 1, 14, 1, 17, 1, 19, 20, 1, 1, 1, 22),
-                    new[] {1, 1, 6, 4, 4, 15},
                     samples);
             }
             catch (Exception exception)
