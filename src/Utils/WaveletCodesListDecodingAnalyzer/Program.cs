@@ -252,6 +252,40 @@
             }
         }
 
+        private static void AnalyzeSamplesForN80K40D37Code()
+        {
+            var field = new PrimePowerOrderField(81, new Polynomial(new PrimeOrderField(3), 2, 0, 0, 2, 1));
+            var informationPolynomial = new Polynomial(field);
+            var encoder = new Encoder();
+            var samples = new[]
+                          {
+                              new AnalyzingSample(informationPolynomial, encoder.Encode(80, informationPolynomial, informationPolynomial))
+                              {
+                                  ErrorPositions = new[] {2, 6, 8, 15, 16, 22, 23, 28, 35, 37, 47, 50, 51, 52, 67, 70, 71, 72, 77, 78, 79},
+                                  CurrentNoiseValue = new[] {1, 1, 6, 4, 4, 14, 7, 3, 8, 23, 76, 1, 5, 8, 2, 6, 2, 14, 45, 64, 13},
+                                  CorrectValuesCount = 59
+                              },
+                              new AnalyzingSample(informationPolynomial, encoder.Encode(80, informationPolynomial, informationPolynomial))
+                              {
+                                  ErrorPositions = new[] {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20},
+                                  CurrentNoiseValue = new[] {1, 1, 6, 4, 4, 14, 7, 3, 8, 23, 76, 1, 5, 8, 2, 6, 2, 14, 45, 64, 13},
+                                  CorrectValuesCount = 59
+                              }
+                          };
+
+            try
+            {
+                AnalyzeSamples(80, 40, 37,
+                    new Polynomial(field, 0, 0, 0, 50, 2, 3, 45, 1, 6, 7, 8, 9, 19, 10, 1, 80, 1, 14, 1, 17, 1, 19, 20, 1, 1, 1, 55, 77, 42, 11),
+                    samples);
+            }
+            catch (Exception exception)
+            {
+                _logger.LogError(0, exception, "Exception occurred during analysis");
+                throw;
+            }
+        }
+
         [UsedImplicitly]
         public static void Main()
         {
@@ -261,7 +295,7 @@
                 .AddConsole();
             _logger = loggerFactory.CreateLogger<Program>();
 
-            AnalyzeCodeN26K13D12();
+            AnalyzeSamplesForN80K40D37Code();
 
             Console.ReadKey();
         }
