@@ -90,8 +90,7 @@
         {
             if (currentErrorNumber == sample.ErrorPositions.Length)
             {
-                var decodingResults = decoder.Decode(n, k, d, generatingPolynomial, sample.Codeword,
-                    sample.Codeword.Length - sample.ErrorPositions.Length);
+                var decodingResults = decoder.Decode(n, k, d, generatingPolynomial, sample.Codeword, sample.CorrectValuesCount);
                 if (decodingResults.Contains(sample.InformationPolynomial) == false)
                     throw new InvalidOperationException("Failed to decode sample");
 
@@ -112,7 +111,7 @@
 
             for (var i = sample.CurrentNoiseValue[currentErrorNumber]; i < field.Order; i++)
             {
-                sample.Codeword[sample.ErrorPositions[currentErrorNumber]] = 
+                sample.Codeword[sample.ErrorPositions[currentErrorNumber]] =
                     Tuple.Create(corretValue.Item1, corretValue.Item2 + field.CreateElement(i));
                 sample.CurrentNoiseValue[currentErrorNumber] = i;
 
@@ -123,7 +122,8 @@
             sample.CurrentNoiseValue[currentErrorNumber] = 1;
         }
 
-        private static void AnalyzeCode(int n, int k, int d, Polynomial h, int? placedErrorsCount = null,
+        private static void AnalyzeCode(int n, int k, int d, Polynomial h,
+            int? placedErrorsCount = null, int? minCorrectValuesCount = null,
             int? samplesCount = null, int? decodingThreadsCount = null)
         {
             var maxErrorsCount = (int) Math.Floor(n - Math.Sqrt(n*(n - d)));
@@ -131,10 +131,19 @@
             if (errorsCount > maxErrorsCount)
                 throw new ArgumentException("Errors count is too large");
             if (errorsCount < d - maxErrorsCount)
-                throw new ArgumentException("Errors count is to small");
+                throw new ArgumentException("Errors count is too small");
+
+            var correctValuesCount = minCorrectValuesCount ?? n - errorsCount;
+            if (correctValuesCount*correctValuesCount <= n*(n - d))
+                throw new ArgumentException("Correct values count is too small for decoding");
+            if (correctValuesCount > n - errorsCount)
+                throw new ArgumentException($"Correct values count can't be larger than {n - errorsCount} for errors count {errorsCount}");
+            if (correctValuesCount >= n - (d - 1)/2)
+                throw new ArgumentException("List size will be always equal to 1");
 
             var linearSystemsSolver = new GaussSolver();
-            var generatingPolynomialBuilder = new LiftingSchemeBasedBuilder(new GcdBasedBuilder(new RecursiveGcdFinder()), linearSystemsSolver);
+            var generatingPolynomialBuilder = new LiftingSchemeBasedBuilder(new GcdBasedBuilder(new RecursiveGcdFinder()),
+                                                  linearSystemsSolver);
             var decoder =
                 new GsBasedDecoder(
                     new GsDecoder(new KotterAlgorithmBasedBuilder(new PascalsTriangleBasedCalcualtor()),
@@ -161,7 +170,8 @@
                                                                          new AnalyzingSample(x)
                                                                          {
                                                                              ErrorPositions = y,
-                                                                             CurrentNoiseValue = Enumerable.Repeat(1, errorsCount).ToArray()
+                                                                             CurrentNoiseValue = Enumerable.Repeat(1, errorsCount).ToArray(),
+                                                                             CorrectValuesCount = correctValuesCount
                                                                          }))
                 .ToArray();
             Parallel.ForEach(samples,
@@ -174,13 +184,14 @@
         private static void AnalyzeSamples(int n, int k, int d, Polynomial h, params AnalyzingSample[] samples)
         {
             var linearSystemsSolver = new GaussSolver();
-            var generatingPolynomialBuilder = new LiftingSchemeBasedBuilder(new GcdBasedBuilder(new RecursiveGcdFinder()), linearSystemsSolver);
+            var generatingPolynomialBuilder = new LiftingSchemeBasedBuilder(new GcdBasedBuilder(new RecursiveGcdFinder()),
+                                                  linearSystemsSolver);
             var decoder =
                 new GsBasedDecoder(
-                    new GsDecoder(new KotterAlgorithmBasedBuilder(new PascalsTriangleBasedCalcualtor()),
-                        new RrFactorizator()),
-                    linearSystemsSolver)
-                { TelemetryCollector = new GsBasedDecoderTelemetryCollectorForGsBasedDecoder() };
+                        new GsDecoder(new KotterAlgorithmBasedBuilder(new PascalsTriangleBasedCalcualtor()),
+                            new RrFactorizator()),
+                        linearSystemsSolver)
+                    {TelemetryCollector = new GsBasedDecoderTelemetryCollectorForGsBasedDecoder()};
 
             var generatingPolynomial = generatingPolynomialBuilder.Build(n, d, h);
             _logger.LogInformation("Generating polynomial was restored");
@@ -191,15 +202,24 @@
                 x => PlaceNoiseIntoSamplesAndDecode(x, 0, n, k, d, generatingPolynomial, decoder));
         }
 
-        [UsedImplicitly]
-        public static void Main()
+        private static void AnalyzeCodeN26K13D12()
         {
-            NLog.LogManager.Configuration = new XmlLoggingConfiguration("./nlog.config", true);
-            var loggerFactory = new LoggerFactory()
-                .AddNLog()
-                .AddConsole();
-            _logger = loggerFactory.CreateLogger<Program>();
+            try
+            {
+                AnalyzeCode(26, 13, 12,
+                    new Polynomial(new PrimePowerOrderField(27, new Polynomial(new PrimeOrderField(3), 2, 2, 0, 1)),
+                        0, 0, 0, 1, 2, 3, 4, 1, 6, 7, 8, 9, 1, 10, 1, 12, 1, 14, 1, 17, 1, 19, 20, 1, 1, 1, 22),
+                    placedErrorsCount: 6, minCorrectValuesCount: 20, samplesCount: 1, decodingThreadsCount: 2);
+            }
+            catch (Exception exception)
+            {
+                _logger.LogError(0, exception, "Exception occurred during analysis");
+                throw;
+            }
+        }
 
+        private static void AnalyzeSamplesForN26K13D12Code()
+        {
             var field = new PrimePowerOrderField(27, new Polynomial(new PrimeOrderField(3), 2, 2, 0, 1));
             var informationPolynomial = new Polynomial(field);
             var encoder = new Encoder();
@@ -208,12 +228,14 @@
                               new AnalyzingSample(informationPolynomial, encoder.Encode(26, informationPolynomial, informationPolynomial))
                               {
                                   ErrorPositions = new[] {2, 6, 8, 15, 16, 22},
-                                  CurrentNoiseValue = new[] {1, 1, 6, 4, 4, 14}
+                                  CurrentNoiseValue = new[] {1, 1, 6, 4, 4, 14},
+                                  CorrectValuesCount = 20
                               },
                               new AnalyzingSample(informationPolynomial, encoder.Encode(26, informationPolynomial, informationPolynomial))
                               {
                                   ErrorPositions = new[] {0, 1, 2, 3, 4, 5},
-                                  CurrentNoiseValue = new[] {1, 1, 6, 4, 4, 14}
+                                  CurrentNoiseValue = new[] {1, 1, 6, 4, 4, 14},
+                                  CorrectValuesCount = 20
                               }
                           };
 
@@ -228,6 +250,18 @@
                 _logger.LogError(0, exception, "Exception occurred during analysis");
                 throw;
             }
+        }
+
+        [UsedImplicitly]
+        public static void Main()
+        {
+            NLog.LogManager.Configuration = new XmlLoggingConfiguration("./nlog.config", true);
+            var loggerFactory = new LoggerFactory()
+                .AddNLog()
+                .AddConsole();
+            _logger = loggerFactory.CreateLogger<Program>();
+
+            AnalyzeCodeN26K13D12();
 
             Console.ReadKey();
         }

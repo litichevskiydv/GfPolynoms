@@ -23,6 +23,8 @@ namespace WaveletCodesListDecodingAnalyzer
 
         public int[] ErrorPositions { get; set; }
         public int[] CurrentNoiseValue { get; set; }
+        public int CorrectValuesCount { get; set; }
+
         public int ProcessedNoises { get; set; }
     }
 }
