@@ -55,6 +55,8 @@
 
                 if (generationResult.Count == Order - 1)
                     break;
+                if(i == Order - 1)
+                    throw new InvalidOperationException("Can't construct field multiplicative group");
             }
         }
         private void PrecalculateAdditionResults()

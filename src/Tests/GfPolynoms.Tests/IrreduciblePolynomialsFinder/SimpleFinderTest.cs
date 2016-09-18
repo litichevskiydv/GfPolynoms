@@ -1,6 +1,7 @@
 ﻿namespace GfPolynoms.Tests.IrreduciblePolynomialsFinder
 {
-    using System.Linq;
+    using System;
+    using GaloisFields;
     using GfPolynoms.IrreduciblePolynomialsFinder;
     using Xunit;
 
@@ -9,10 +10,9 @@
         [Theory]
         [InlineData(2, 2)]
         [InlineData(2, 3)]
-        [InlineData(2, 15)]
         [InlineData(3, 2)]
         [InlineData(3, 3)]
-        [InlineData(5, 7)]
+        [InlineData(3, 4)]
         public void ShouldFindIrreduciblePolynomialsFinder(int fieldOrder, int degree)
         {
             // Given
@@ -23,7 +23,7 @@
 
             // Then
             Assert.Equal(degree, polynomial.Degree);
-            Assert.True(Enumerable.Range(0, fieldOrder).All(x => polynomial.Evaluate(x) != 0));
+            Assert.NotNull(new PrimePowerOrderField((int)Math.Pow(fieldOrder, degree), polynomial));
         }
     }
 }
