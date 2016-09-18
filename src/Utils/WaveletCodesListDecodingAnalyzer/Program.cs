@@ -122,6 +122,21 @@
             sample.CurrentNoiseValue[currentErrorNumber] = 1;
         }
 
+        private static void PlaceNoiseIntoSamplesAndDecodeWrapperForParallelRunning(AnalyzingSample sample,
+            int n, int k, int d, Polynomial generatingPolynomial, GsBasedDecoder decoder)
+        {
+            try
+            {
+                PlaceNoiseIntoSamplesAndDecode(sample, 0, n, k, d, generatingPolynomial, decoder);
+            }
+            catch (Exception exception)
+            {
+                _logger.LogError(0, exception, "Error on processing sample {0}",
+                    "[" + string.Join(",", sample.Codeword.Select(v => $"({v.Item1},{v.Item2})")) + "]");
+                throw;
+            }
+        }
+
         private static void AnalyzeCode(int n, int k, int d, Polynomial h,
             int? placedErrorsCount = null, int? minCorrectValuesCount = null,
             int? samplesCount = null, int? decodingThreadsCount = null)
@@ -176,7 +191,7 @@
                 .ToArray();
             Parallel.ForEach(samples,
                 new ParallelOptions {MaxDegreeOfParallelism = decodingThreadsCount ?? (int) (Environment.ProcessorCount*1.5d)},
-                x => PlaceNoiseIntoSamplesAndDecode(x, 0, n, k, d, generatingPolynomial, decoder));
+                x => PlaceNoiseIntoSamplesAndDecodeWrapperForParallelRunning(x, n, k, d, generatingPolynomial, decoder));
             noiseGenerationTimer.Stop();
             _logger.LogInformation("Noise decoding was performed in {0} seconds", noiseGenerationTimer.Elapsed.TotalSeconds);
         }
@@ -199,7 +214,7 @@
             _logger.LogInformation("Samples analysis was started");
             Parallel.ForEach(samples,
                 new ParallelOptions {MaxDegreeOfParallelism = Math.Min((int) (Environment.ProcessorCount*1.5d), samples.Length)},
-                x => PlaceNoiseIntoSamplesAndDecode(x, 0, n, k, d, generatingPolynomial, decoder));
+                x => PlaceNoiseIntoSamplesAndDecodeWrapperForParallelRunning(x, n, k, d, generatingPolynomial, decoder));
         }
 
         private static void AnalyzeCodeN26K13D12()
@@ -228,13 +243,13 @@
                               new AnalyzingSample(informationPolynomial, encoder.Encode(26, informationPolynomial, informationPolynomial))
                               {
                                   ErrorPositions = new[] {2, 6, 8, 15, 16, 22},
-                                  CurrentNoiseValue = new[] {1, 1, 6, 4, 4, 14},
+                                  CurrentNoiseValue = new[] {1, 1, 12, 12, 4, 3},
                                   CorrectValuesCount = 20
                               },
                               new AnalyzingSample(informationPolynomial, encoder.Encode(26, informationPolynomial, informationPolynomial))
                               {
                                   ErrorPositions = new[] {0, 1, 2, 3, 4, 5},
-                                  CurrentNoiseValue = new[] {1, 1, 6, 4, 4, 14},
+                                  CurrentNoiseValue = new[] {1, 1, 8, 14, 17, 14},
                                   CorrectValuesCount = 20
                               }
                           };
@@ -295,7 +310,7 @@
                 .AddConsole();
             _logger = loggerFactory.CreateLogger<Program>();
 
-            AnalyzeSamplesForN80K40D37Code();
+            AnalyzeSamplesForN26K13D12Code();
 
             Console.ReadKey();
         }

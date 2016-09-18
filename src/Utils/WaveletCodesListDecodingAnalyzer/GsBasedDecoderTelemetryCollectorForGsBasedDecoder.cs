@@ -45,12 +45,15 @@
 
             ProcessingResults.AddOrUpdate(listsSizes, 1, (key, value) => value + 1);
             if (listsSizes.Item1 == listsSizes.Item2 && listsSizes.Item1 != 1)
-                InterestingSamples.AddOrUpdate(listsSizes, new List<Tuple<FieldElement, FieldElement>[]> {decodedCodeword},
+            {
+                var clonnedCodeword = decodedCodeword.Select(x => new Tuple<FieldElement, FieldElement>(x.Item1, new FieldElement(x.Item2))).ToArray();
+                InterestingSamples.AddOrUpdate(listsSizes, new List<Tuple<FieldElement, FieldElement>[]> {clonnedCodeword},
                     (key, value) =>
                     {
-                        value.Add(decodedCodeword);
+                        value.Add(clonnedCodeword);
                         return value;
                     });
+            }
 
             Interlocked.Increment(ref _processedSamplesCount);
         }
