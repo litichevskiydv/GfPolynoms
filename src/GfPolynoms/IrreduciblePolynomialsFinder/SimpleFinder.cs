@@ -1,31 +1,36 @@
 ﻿namespace GfPolynoms.IrreduciblePolynomialsFinder
 {
     using System;
+    using System.Collections.Generic;
+    using System.Linq;
     using GaloisFields;
 
     public class SimpleFinder : IIrreduciblePolynomialsFinder
     {
-        private static bool Find(Polynomial polynomial, int position)
+        private static bool Generate(Polynomial templatePolynomial, int position, Func<Polynomial, bool> onCompleteAction)
         {
-            if (polynomial.Degree == position)
+            if (templatePolynomial.Degree == position)
+                return onCompleteAction(templatePolynomial);
+
+            var stopGeneration = false;
+            var originalValue = templatePolynomial[position];
+            for (var i = originalValue; i < templatePolynomial.Field.Order && stopGeneration == false; i++)
             {
-                for (var i = 0; i < polynomial.Field.Order; i++)
-                    if (polynomial.Evaluate(i) == 0)
-                        return false;
-                return true;
+                templatePolynomial[position] = i;
+                stopGeneration = Generate(templatePolynomial, position + 1, onCompleteAction);
             }
 
-            var checkResult = false;
-            var originalValue = polynomial[position];
-            for (var i = originalValue; i < polynomial.Field.Order && checkResult == false; i++)
-            {
-                polynomial[position] = i;
-                checkResult = Find(polynomial, position + 1);
-            }
+            if (stopGeneration == false)
+                templatePolynomial[position] = originalValue;
+            return stopGeneration;
+        }
 
-            if (checkResult == false)
-                polynomial[position] = originalValue;
-            return checkResult;
+        private static Polynomial GenerateTemplatePolynomial(GaloisField field, int degree)
+        {
+            var templatePolynomial = new Polynomial(field, 1).RightShift(degree);
+            templatePolynomial[0] = 1;
+
+            return templatePolynomial;
         }
 
         public Polynomial Find(int fieldOrder, int degree)
@@ -33,12 +38,24 @@
             if (degree < 2)
                 throw new ArgumentException(nameof(degree));
 
-            var result = new Polynomial(new PrimeOrderField(fieldOrder), 1).RightShift(degree);
-            result[0] = 1;
+            var field = new PrimeOrderField(fieldOrder);
 
-            if (Find(result, 0))
-                return result;
-            throw new InvalidOperationException("Irreducible Polynomial doesn't found");
+            var possibleDivisors = new List<Polynomial>();
+            for (var i = 1; i*i <= degree; i++)
+            {
+                var templatePolynomial = GenerateTemplatePolynomial(field, i);
+                Generate(templatePolynomial, 0,
+                    x =>
+                    {
+                        possibleDivisors.Add(new Polynomial(x));
+                        return false;
+                    });
+            }
+
+            var result = GenerateTemplatePolynomial(field, degree);
+            Generate(result, 0, x => possibleDivisors.All(d => (x%d).IsZero == false));
+
+            return result;
         }
     }
 }

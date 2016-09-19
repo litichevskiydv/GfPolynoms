@@ -13,6 +13,8 @@
         [InlineData(3, 2)]
         [InlineData(3, 3)]
         [InlineData(3, 4)]
+        [InlineData(5, 3)]
+        [InlineData(5, 4)]
         public void ShouldFindIrreduciblePolynomialsFinder(int fieldOrder, int degree)
         {
             // Given
