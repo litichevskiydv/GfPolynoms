@@ -9,13 +9,6 @@
 
   "testRunner": "xunit",
 
-  "dependencies": {
-    "xunit": "2.1.0",
-    "dotnet-test-xunit": "2.2.0-preview2-build1029",
-    "JetBrains.Annotations": "10.1.4",
-    "GfPolynoms": "1.0.0-*"
-  },
-
   "frameworks": {
     "netcoreapp1.0": {
       "dependencies": {
@@ -28,6 +21,14 @@
         "dnxcore50",
         "portable-net45+win8"
       ]
-    }
+    },
+    "net46": {}
+  },
+
+  "dependencies": {
+    "xunit": "2.2.0-*",
+    "dotnet-test-xunit": "2.2.0-*",
+    "JetBrains.Annotations": "10.1.4",
+    "GfPolynoms": "1.0.0-*"
   }
 }
