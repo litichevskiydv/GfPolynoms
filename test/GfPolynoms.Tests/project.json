@@ -1,27 +1,33 @@
 {
   "version": "1.0.0-*",
   "description": "GfPolynoms.Tests Console Application",
-  "authors": [ "Дмитрий" ],
+  "authors": [ "dmitriy.litichevskiy" ],
+
+  "buildOptions": {
+    "debugType": "portable"
+  },
 
   "testRunner": "xunit",
+
   "dependencies": {
     "xunit": "2.1.0",
     "dotnet-test-xunit": "2.2.0-preview2-build1029",
     "JetBrains.Annotations": "10.1.4",
     "GfPolynoms": "1.0.0-*"
   },
-    "frameworks": {
-        "netcoreapp1.0": {
-            "dependencies": {
-                "Microsoft.NETCore.App": {
-                    "type": "platform",
-                    "version": "1.0.0"
-                }
-            },
-            "imports": [
-                "dnxcore50",
-                "portable-net45+win8"
-            ]
+
+  "frameworks": {
+    "netcoreapp1.0": {
+      "dependencies": {
+        "Microsoft.NETCore.App": {
+          "type": "platform",
+          "version": "1.0.0"
         }
+      },
+      "imports": [
+        "dnxcore50",
+        "portable-net45+win8"
+      ]
     }
+  }
 }

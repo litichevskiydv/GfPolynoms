@@ -1,7 +1,7 @@
 {
   "version": "1.0.0-*",
   "description": "SpectrumAnalyzer Console Application",
-  "authors": [ "Дмитрий" ],
+  "authors": [ "dmitriy.litichevskiy" ],
 
   "buildOptions": {
     "emitEntryPoint": true,

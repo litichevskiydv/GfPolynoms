@@ -1,9 +1,16 @@
 {
   "version": "1.0.0-*",
+  "authors": [ "dmitriy.litichevskiy" ],
+
+  "buildOptions": {
+    "debugType": "portable"
+  },
+
   "dependencies": {
     "GfPolynoms": "1.0.0-*",
     "RsCodesTools": "1.0.0-*"
   },
+
   "frameworks": {
     "netcoreapp1.0": {
       "dependencies": {
