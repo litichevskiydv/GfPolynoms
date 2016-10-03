@@ -27,11 +27,7 @@ build:
   verbosity: minimal
 test_script:
 - cmd: >-
-    dotnet test "test\GfPolynoms.Tests" -c %CONFIGURATION%
+    call build\RunTests.bat
 
-    dotnet test "test\GfAlgorithms.Tests" -c %CONFIGURATION%
-
-    dotnet test "test\RsCodesTools.Tests" -c %CONFIGURATION%
-
-    dotnet test "test\WaveletCodesTools.Tests" -c %CONFIGURATION%
+    call build\CalculateCoverage.bat
 deploy: off
