@@ -243,13 +243,13 @@
                               new AnalyzingSample(informationPolynomial, encoder.Encode(26, informationPolynomial, informationPolynomial))
                               {
                                   ErrorPositions = new[] {2, 6, 8, 15, 16, 22},
-                                  CurrentNoiseValue = new[] {1, 1, 12, 12, 4, 3},
+                                  CurrentNoiseValue = new[] {1, 1, 22, 4, 18, 8},
                                   CorrectValuesCount = 20
                               },
                               new AnalyzingSample(informationPolynomial, encoder.Encode(26, informationPolynomial, informationPolynomial))
                               {
                                   ErrorPositions = new[] {0, 1, 2, 3, 4, 5},
-                                  CurrentNoiseValue = new[] {1, 1, 8, 14, 17, 14},
+                                  CurrentNoiseValue = new[] {1, 1, 18, 11, 12, 2},
                                   CorrectValuesCount = 20
                               }
                           };
