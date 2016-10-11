@@ -8,11 +8,18 @@
 
     public class GaussSolver : ILinearSystemSolver
     {
-        private static void Swap(ref FieldElement a, ref FieldElement b)
+        private static void SwapElements(FieldElement[,] a, int firstRowIndex, int secondRowsIndex, int columnIndex)
         {
-            var temp = a;
-            a = b;
-            b = temp;
+            var tmp = a[firstRowIndex, columnIndex];
+            a[firstRowIndex, columnIndex] = a[secondRowsIndex, columnIndex];
+            a[secondRowsIndex, columnIndex] = tmp;
+        }
+
+        private static void SwapElements(IList<FieldElement> b, int firstRowIndex, int secondRowsIndex)
+        {
+            var tmp = b[firstRowIndex];
+            b[firstRowIndex] = b[secondRowsIndex];
+            b[secondRowsIndex] = tmp;
         }
 
         private static int[] TransformSystemToTriangularView(FieldElement[,] a, FieldElement[] b)
@@ -31,8 +38,8 @@
                     continue;
 
                 for (var j = col; j < columnsCount; ++j)
-                    Swap(ref a[selectedRow, j], ref a[row, j]);
-                Swap(ref b[selectedRow], ref b[row]);
+                    SwapElements(a, selectedRow, row, j);
+                SwapElements(b, selectedRow, row);
                 where[col] = row;
 
                 for (var i = 0; i < rowsCount; ++i)
