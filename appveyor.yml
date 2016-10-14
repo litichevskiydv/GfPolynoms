@@ -1,30 +1,8 @@
 version: 1.0.{build}
 configuration: Release
 platform: Any CPU
-before_build:
-- cmd: >-
-    dotnet restore "src\GfPolynoms"
-
-    dotnet restore "src\GfAlgorithms"
-
-    dotnet restore "src\RsCodesTools"
-
-    dotnet restore "src\WaveletCodesTools"
-
-    dotnet restore "src\Utils\SpectrumAnalyzer"
-
-    dotnet restore "src\Utils\WaveletCodesListDecodingAnalyzer"
-
-    dotnet restore "test\GfPolynoms.Tests"
-
-    dotnet restore "test\GfAlgorithms.Tests"
-
-    dotnet restore "test\RsCodesTools.Tests"
-
-    dotnet restore "test\WaveletCodesTools.Tests"
-build:
-  parallel: true
-  verbosity: minimal
+build_script:
+- cmd: call build\BuildSolution.bat
 test_script:
 - cmd: >-
     call build\RunTests.bat
