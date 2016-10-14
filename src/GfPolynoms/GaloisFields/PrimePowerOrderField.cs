@@ -201,5 +201,10 @@
 
             return _subtractionResults[0][a];
         }
+
+        public override string ToString()
+        {
+            return $"GF{Order}, irreducible polynomial {IrreduciblePolynomial}";
+        }
     }
 }

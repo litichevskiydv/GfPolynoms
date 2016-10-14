@@ -77,5 +77,10 @@
 
             return (Order - a)%Order;
         }
+
+        public override string ToString()
+        {
+            return $"GF{Order}";
+        }
     }
 }

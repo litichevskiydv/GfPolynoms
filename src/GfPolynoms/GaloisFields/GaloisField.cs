@@ -185,10 +185,5 @@
                 return 1;
             return element == 0 ? 0 : GetGeneratingElementPower(PowersByElements[element]*degree);
         }
-
-        public override string ToString()
-        {
-            return $"GF{Order}";
-        }
     }
 }

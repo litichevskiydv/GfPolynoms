@@ -10,6 +10,12 @@
             return Equals(Field, other.Field) && Representation == other.Representation;
         }
 
+        protected void ValidateArgument(FieldElement b)
+        {
+            if (Field.Equals(b.Field) == false)
+                throw new ArgumentException($"Field {Field} is not compatible to field {b.Field}");
+        }
+
         public GaloisField Field { get; }
         public int Representation { get; private set; }
 
@@ -53,8 +59,7 @@
 
         public FieldElement Add(FieldElement b)
         {
-            if (Field.Equals(b.Field) == false)
-                throw new ArgumentException("b");
+            ValidateArgument(b);
 
             Representation = Field.Add(Representation, b.Representation);
             return this;
@@ -62,8 +67,7 @@
 
         public FieldElement Subtract(FieldElement b)
         {
-            if (Field.Equals(b.Field) == false)
-                throw new ArgumentException("b");
+            ValidateArgument(b);
 
             Representation = Field.Subtract(Representation, b.Representation);
             return this;
@@ -71,8 +75,7 @@
 
         public FieldElement Multiply(FieldElement b)
         {
-            if (Field.Equals(b.Field) == false)
-                throw new ArgumentException("b");
+            ValidateArgument(b);
 
             Representation = Field.Multiply(Representation, b.Representation);
             return this;
@@ -80,8 +83,9 @@
 
         public FieldElement Divide(FieldElement b)
         {
-            if (Field.Equals(b.Field) == false || b.Representation == 0)
-                throw new ArgumentException("b");
+            ValidateArgument(b);
+            if (b.Representation == 0)
+                throw new ArgumentException("Cannot divide by zero");
 
             Representation = Field.Divide(Representation, b.Representation);
             return this;
