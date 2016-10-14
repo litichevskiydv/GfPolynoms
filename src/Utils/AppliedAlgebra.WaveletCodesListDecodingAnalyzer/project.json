@@ -1,0 +1,34 @@
+{
+  "version": "1.0.0-*",
+  "authors": [ "dmitriy.litichevskiy" ],
+
+  "buildOptions": {
+    "emitEntryPoint": true,
+    "debugType": "portable"
+  },
+
+  "frameworks": {
+    "netcoreapp1.0": {
+      "dependencies": {
+        "Microsoft.NETCore.App": {
+          "type": "platform",
+          "version": "1.0.0"
+        }
+      },
+      "imports": [
+        "dnxcore50",
+        "portable-net45+win8"
+      ]
+    }
+  },
+
+  "dependencies": {
+    "JetBrains.Annotations": "10.1.4",
+    "AppliedAlgebra.GfPolynoms": "1.0.0-*",
+    "AppliedAlgebra.WaveletCodesTools": "1.0.0-*",
+    "AppliedAlgebra.GfAlgorithms": "1.0.0-*",
+    "Microsoft.Extensions.Logging": "1.0.0",
+    "NLog.Extensions.Logging": "1.0.0-rtm-alpha4",
+    "Microsoft.Extensions.Logging.Console": "1.0.0"
+  }
+}

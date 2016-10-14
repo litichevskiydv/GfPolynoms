@@ -1,0 +1,35 @@
+{
+  "version": "1.0.0-*",
+  "authors": [ "dmitriy.litichevskiy" ],
+
+  "buildOptions": {
+    "debugType": "portable"
+  },
+
+  "testRunner": "xunit",
+
+  "frameworks": {
+    "netcoreapp1.0": {
+      "dependencies": {
+        "Microsoft.NETCore.App": {
+          "type": "platform",
+          "version": "1.0.0"
+        }
+      },
+      "imports": [
+        "dnxcore50",
+        "portable-net45+win8"
+      ]
+    },
+    "net46": {}
+  },
+
+  "dependencies": {
+    "xunit": "2.2.0-*",
+    "dotnet-test-xunit": "2.2.0-*",
+    "JetBrains.Annotations": "10.1.4",
+    "AppliedAlgebra.RsCodesTools": "1.0.0-*",
+    "AppliedAlgebra.GfPolynoms": "1.0.0-*",
+    "AppliedAlgebra.WaveletCodesTools": "1.0.0-*"
+  }
+}
