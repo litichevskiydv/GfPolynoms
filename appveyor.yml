@@ -1,11 +1,48 @@
-version: 1.0.{build}
+version: 1.0.0.{build}
+branches:
+  only:
+  - master
 configuration: Release
 platform: Any CPU
-build_script:
-- cmd: call build\BuildSolution.bat
+assembly_info:
+  patch: true
+  file: '**\AssemblyInfo.*'
+  assembly_version: 1.0.0
+  assembly_file_version: '{version}'
+  assembly_informational_version: 1.0
+nuget:
+  project_feed: true
+before_build:
+- cmd: >-
+    dotnet restore "src\GfPolynoms"
+
+    dotnet restore "src\GfAlgorithms"
+
+    dotnet restore "src\RsCodesTools"
+
+    dotnet restore "src\WaveletCodesTools"
+
+    dotnet restore "src\Utils\SpectrumAnalyzer"
+
+    dotnet restore "src\Utils\WaveletCodesListDecodingAnalyzer"
+
+    dotnet restore "test\GfPolynoms.Tests"
+
+    dotnet restore "test\GfAlgorithms.Tests"
+
+    dotnet restore "test\RsCodesTools.Tests"
+
+    dotnet restore "test\WaveletCodesTools.Tests"
+build:
+  parallel: true
+  verbosity: minimal
+after_build:
+- cmd: call build\CreatePackages.bat
 test_script:
 - cmd: >-
     call build\RunTests.bat
 
     call build\CalculateCoverage.bat
+artifacts:
+- path: src\**\*.nupkg
 deploy: off
