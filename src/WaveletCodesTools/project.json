@@ -1,5 +1,5 @@
 ﻿{
-  "name": "AppliedAlgebra.WaveletCodesTools",
+  "name": "Tools for working with Wavelet-codes",
   "version": "1.0.0-*",
   "authors": [ "dmitriy.litichevskiy" ],
 
@@ -26,9 +26,10 @@
     "tags": [ "Applied algebra", "Finite fields", "Wavelet", "Wavelet-codes" ],
     "projectUrl": "https://github.com/litichevskiydv/GfPolynoms",
     "licenseUrl": "https://raw.githubusercontent.com/litichevskiydv/GfPolynoms/master/LICENSE",
+    "owners": [ "dmitriy.litichevskiy" ],
     "repository": {
       "type": "git",
-      "url": "git://github.com/litichevskiydv/GfPolynoms"
+      "url": "https://github.com/litichevskiydv/GfPolynoms"
     }
   }
 }

@@ -1,7 +1,7 @@
 ﻿{
   "name": "AppliedAlgebra.GfPolynoms",
   "version": "1.0.0-*",
-  "description": "GfPolynoms Class Library",
+  "description": "Implementation of finite fields and polynomials above them",
   "authors": [ "dmitriy.litichevskiy" ],
 
   "buildOptions": {
@@ -22,9 +22,10 @@
     "tags": [ "Applied algebra", "Finite fields", "Polynoms" ],
     "projectUrl": "https://github.com/litichevskiydv/GfPolynoms",
     "licenseUrl": "https://raw.githubusercontent.com/litichevskiydv/GfPolynoms/master/LICENSE",
+    "owners": [ "dmitriy.litichevskiy" ],
     "repository": {
       "type": "git",
-      "url": "git://github.com/litichevskiydv/GfPolynoms"
+      "url": "https://github.com/litichevskiydv/GfPolynoms"
     }
   }
 }

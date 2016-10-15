@@ -1,5 +1,5 @@
 ﻿{
-  "name": "AppliedAlgebra.GfAlgorithms",
+  "name": "Implementation of common algorithms above finite fields",
   "version": "1.0.0-*",
   "description": "Common algorithms under finite fields",
   "authors": [ "dmitriy.litichevskiy" ],
@@ -26,9 +26,10 @@
     "tags": [ "Applied algebra", "Finite fields", "Algorithms" ],
     "projectUrl": "https://github.com/litichevskiydv/GfPolynoms",
     "licenseUrl": "https://raw.githubusercontent.com/litichevskiydv/GfPolynoms/master/LICENSE",
+    "owners": [ "dmitriy.litichevskiy" ],
     "repository": {
       "type": "git",
-      "url": "git://github.com/litichevskiydv/GfPolynoms"
+      "url": "https://github.com/litichevskiydv/GfPolynoms"
     }
   }
 }
