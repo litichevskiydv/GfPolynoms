@@ -18,5 +18,16 @@
   "dependencies": {
     "GfPolynoms": "1.0.0-*",
     "RsCodesTools": "1.0.0-*"
+  },
+
+  "packOptions": {
+    "summary": "Tools for working with Wavelet-codes",
+    "tags": [ "Applied algebra", "Finite fields", "Wavelet", "Wavelet-codes" ],
+    "projectUrl": "https://github.com/litichevskiydv/GfPolynoms",
+    "licenseUrl": "https://raw.githubusercontent.com/litichevskiydv/GfPolynoms/master/LICENSE",
+    "repository": {
+      "type": "git",
+      "url": "git://github.com/litichevskiydv/GfPolynoms"
+    }
   }
 }

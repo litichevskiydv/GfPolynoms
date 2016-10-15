@@ -18,5 +18,16 @@
   "dependencies": {
     "GfAlgorithms": "1.0.0-*",
     "GfPolynoms": "1.0.0-*"
+  },
+
+  "packOptions": {
+    "summary": "Tools for working with Reed-Solomon's codes",
+    "tags": [ "Applied algebra", "Finite fields", "RS codes", "Reed-Solomon" ],
+    "projectUrl": "https://github.com/litichevskiydv/GfPolynoms",
+    "licenseUrl": "https://raw.githubusercontent.com/litichevskiydv/GfPolynoms/master/LICENSE",
+    "repository": {
+      "type": "git",
+      "url": "git://github.com/litichevskiydv/GfPolynoms"
+    }
   }
 }

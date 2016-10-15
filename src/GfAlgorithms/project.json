@@ -18,5 +18,16 @@
 
   "dependencies": {
     "GfPolynoms": "1.0.0-*"
+  },
+
+  "packOptions": {
+    "summary": "Implementation of common algorithms above finite fields",
+    "tags": [ "Applied algebra", "Finite fields", "Algorithms" ],
+    "projectUrl": "https://github.com/litichevskiydv/GfPolynoms",
+    "licenseUrl": "https://raw.githubusercontent.com/litichevskiydv/GfPolynoms/master/LICENSE",
+    "repository": {
+      "type": "git",
+      "url": "git://github.com/litichevskiydv/GfPolynoms"
+    }
   }
 }
