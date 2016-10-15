@@ -1,4 +1,5 @@
 ﻿{
+  "name": "AppliedAlgebra.GfPolynoms",
   "version": "1.0.0-*",
   "description": "GfPolynoms Class Library",
   "authors": [ "dmitriy.litichevskiy" ],

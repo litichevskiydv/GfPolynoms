@@ -1,4 +1,5 @@
 ﻿{
+  "name": "AppliedAlgebra.GfAlgorithms",
   "version": "1.0.0-*",
   "description": "Common algorithms under finite fields",
   "authors": [ "dmitriy.litichevskiy" ],
