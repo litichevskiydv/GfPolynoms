@@ -1,7 +1,7 @@
 ﻿{
-  "name": "Implementation of common algorithms above finite fields",
+  "name": "AppliedAlgebra.GfAlgorithms",
   "version": "1.0.0-*",
-  "description": "Common algorithms under finite fields",
+  "description": "Implementation of common algorithms above finite fields",
   "authors": [ "dmitriy.litichevskiy" ],
 
   "buildOptions": {

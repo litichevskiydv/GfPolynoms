@@ -1,6 +1,7 @@
 ﻿{
-  "name": "Tools for working with Wavelet-codes",
+  "name": "AppliedAlgebra.WaveletCodesTools",
   "version": "1.0.0-*",
+  "description": "Tools for working with Wavelet-codes",
   "authors": [ "dmitriy.litichevskiy" ],
 
   "buildOptions": {

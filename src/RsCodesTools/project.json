@@ -1,6 +1,7 @@
 ﻿{
-  "name": "Tools for working with Reed-Solomon's codes",
+  "name": "AppliedAlgebra.RsCodesTools",
   "version": "1.0.0-*",
+  "description": "Tools for working with Reed-Solomon's codes",
   "authors": [ "dmitriy.litichevskiy" ],
 
   "buildOptions": {
