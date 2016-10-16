@@ -6,7 +6,7 @@
   </PropertyGroup>
   <Import Project="$(VSToolsPath)\DotNet\Microsoft.DotNet.Props" Condition="'$(VSToolsPath)' != ''" />
   <PropertyGroup Label="Globals">
-    <ProjectGuid>3994779c-d5b7-4d4e-b3e3-8cc54c952a3d</ProjectGuid>
+    <ProjectGuid>386c63a1-c836-44f7-8353-e9055981f8d8</ProjectGuid>
     <RootNamespace>AppliedAlgebra.WaveletCodesTools.Tests</RootNamespace>
     <BaseIntermediateOutputPath Condition="'$(BaseIntermediateOutputPath)'=='' ">.\obj</BaseIntermediateOutputPath>
     <OutputPath Condition="'$(OutputPath)'=='' ">.\bin\</OutputPath>

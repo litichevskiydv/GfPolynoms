@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 // associated with an assembly.
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("WaveletCodesTools")]
+[assembly: AssemblyProduct("AppliedAlgebra.WaveletCodesTools")]
 [assembly: AssemblyTrademark("")]
 
 // Setting ComVisible to false makes the types in this assembly not visible
@@ -16,4 +16,4 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("ad67f1b1-834e-472c-8971-3386155aa268")]
+[assembly: Guid("4ca0cec7-5716-439a-b73d-a40c561d32ac")]

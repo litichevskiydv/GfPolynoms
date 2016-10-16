@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 // associated with an assembly.
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("GfPolynoms")]
+[assembly: AssemblyProduct("AppliedAlgebra.GfPolynoms")]
 [assembly: AssemblyTrademark("")]
 
 // Setting ComVisible to false makes the types in this assembly not visible
@@ -16,4 +16,4 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("9cec4d4b-5730-47ff-ab73-2655a04d032b")]
+[assembly: Guid("30061e7f-54ee-4d66-bbf5-d4b92b0574fa")]

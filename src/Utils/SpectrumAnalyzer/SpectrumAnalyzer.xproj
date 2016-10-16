@@ -6,7 +6,7 @@
   </PropertyGroup>
   <Import Project="$(VSToolsPath)\DotNet\Microsoft.DotNet.Props" Condition="'$(VSToolsPath)' != ''" />
   <PropertyGroup Label="Globals">
-    <ProjectGuid>f982dd75-25e4-4a6a-a3bf-747926eac039</ProjectGuid>
+    <ProjectGuid>cf94392c-7447-4dae-9e73-97f2e2822914</ProjectGuid>
     <RootNamespace>AppliedAlgebra.SpectrumAnalyzer</RootNamespace>
     <BaseIntermediateOutputPath Condition="'$(BaseIntermediateOutputPath)'=='' ">.\obj</BaseIntermediateOutputPath>
     <OutputPath Condition="'$(OutputPath)'=='' ">.\bin\</OutputPath>

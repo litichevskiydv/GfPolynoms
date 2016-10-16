@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 // associated with an assembly.
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("RsCodesTools")]
+[assembly: AssemblyProduct("AppliedAlgebra.RsCodesTools")]
 [assembly: AssemblyTrademark("")]
 
 // Setting ComVisible to false makes the types in this assembly not visible
@@ -16,4 +16,4 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("2f566060-530e-4e6e-aa25-0308d9c417e1")]
+[assembly: Guid("063767fe-f7ad-4b96-8c61-aa0ba89abaa5")]

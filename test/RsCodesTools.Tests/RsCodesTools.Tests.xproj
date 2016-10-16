@@ -6,7 +6,7 @@
   </PropertyGroup>
   <Import Project="$(VSToolsPath)\DotNet\Microsoft.DotNet.Props" Condition="'$(VSToolsPath)' != ''" />
   <PropertyGroup Label="Globals">
-    <ProjectGuid>f7759d59-09e1-4bbb-b510-fd1a6a0365e0</ProjectGuid>
+    <ProjectGuid>6ac1cf3d-2eb2-4059-a776-f462602f7cb6</ProjectGuid>
     <RootNamespace>AppliedAlgebra.RsCodesTools.Tests</RootNamespace>
     <BaseIntermediateOutputPath Condition="'$(BaseIntermediateOutputPath)'=='' ">.\obj</BaseIntermediateOutputPath>
     <OutputPath Condition="'$(OutputPath)'=='' ">.\bin\</OutputPath>

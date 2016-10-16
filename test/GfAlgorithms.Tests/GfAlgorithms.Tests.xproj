@@ -6,7 +6,7 @@
   </PropertyGroup>
   <Import Project="$(VSToolsPath)\DotNet\Microsoft.DotNet.Props" Condition="'$(VSToolsPath)' != ''" />
   <PropertyGroup Label="Globals">
-    <ProjectGuid>d11aa495-1234-421b-9ad1-42fa57a710ab</ProjectGuid>
+    <ProjectGuid>67df87a6-eb69-4572-8d04-2568c638df39</ProjectGuid>
     <RootNamespace>AppliedAlgebra.GfAlgorithms.Tests</RootNamespace>
     <BaseIntermediateOutputPath Condition="'$(BaseIntermediateOutputPath)'=='' ">.\obj</BaseIntermediateOutputPath>
     <OutputPath Condition="'$(OutputPath)'=='' ">.\bin\</OutputPath>
