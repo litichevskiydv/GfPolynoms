@@ -12,32 +12,11 @@ assembly_info:
   assembly_informational_version: 1.0
 nuget:
   project_feed: true
-before_build:
+build_script:
 - cmd: >-
-    dotnet restore "src\GfPolynoms"
+    call build\BuildSolution.bat
 
-    dotnet restore "src\GfAlgorithms"
-
-    dotnet restore "src\RsCodesTools"
-
-    dotnet restore "src\WaveletCodesTools"
-
-    dotnet restore "src\Utils\SpectrumAnalyzer"
-
-    dotnet restore "src\Utils\WaveletCodesListDecodingAnalyzer"
-
-    dotnet restore "test\GfPolynoms.Tests"
-
-    dotnet restore "test\GfAlgorithms.Tests"
-
-    dotnet restore "test\RsCodesTools.Tests"
-
-    dotnet restore "test\WaveletCodesTools.Tests"
-build:
-  parallel: true
-  verbosity: minimal
-after_build:
-- cmd: call build\CreatePackages.bat
+    call build\CreatePackages.bat
 test_script:
 - cmd: >-
     call build\RunTests.bat
