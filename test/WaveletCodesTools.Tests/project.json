@@ -28,8 +28,8 @@
     "xunit": "2.2.0-*",
     "dotnet-test-xunit": "2.2.0-*",
     "JetBrains.Annotations": "10.1.4",
-    "RsCodesTools": "1.0.0-*",
-    "GfPolynoms": "1.0.0-*",
-    "WaveletCodesTools": "1.0.0-*"
+	"AppliedAlgebra.GfPolynoms": "1.0.0-*",
+    "AppliedAlgebra.RsCodesTools": "1.0.0-*",
+    "AppliedAlgebra.WaveletCodesTools": "1.0.0-*"
   }
 }

@@ -29,6 +29,6 @@
     "xunit": "2.2.0-*",
     "dotnet-test-xunit": "2.2.0-*",
     "JetBrains.Annotations": "10.1.4",
-    "GfPolynoms": "1.0.0-*"
+    "AppliedAlgebra.GfPolynoms": "1.0.0-*"
   }
 }

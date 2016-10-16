@@ -10,13 +10,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		global.json = global.json
 	EndProjectSection
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "GfPolynoms", "src\GfPolynoms\GfPolynoms.xproj", "{9CEC4D4B-5730-47FF-AB73-2655A04D032B}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "GfPolynoms", "src\AppliedAlgebra.GfPolynoms\GfPolynoms.xproj", "{9CEC4D4B-5730-47FF-AB73-2655A04D032B}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "GfAlgorithms", "src\GfAlgorithms\GfAlgorithms.xproj", "{12B4FE38-B65E-4E51-B86E-E27185AAF74E}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "GfAlgorithms", "src\AppliedAlgebra.GfAlgorithms\GfAlgorithms.xproj", "{12B4FE38-B65E-4E51-B86E-E27185AAF74E}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "RsCodesTools", "src\RsCodesTools\RsCodesTools.xproj", "{2F566060-530E-4E6E-AA25-0308D9C417E1}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "RsCodesTools", "src\AppliedAlgebra.RsCodesTools\RsCodesTools.xproj", "{2F566060-530E-4E6E-AA25-0308D9C417E1}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "WaveletCodesTools", "src\WaveletCodesTools\WaveletCodesTools.xproj", "{AD67F1B1-834E-472C-8971-3386155AA268}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "WaveletCodesTools", "src\AppliedAlgebra.WaveletCodesTools\WaveletCodesTools.xproj", "{AD67F1B1-834E-472C-8971-3386155AA268}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Utils", "Utils", "{F9B5A48E-4154-43FE-B73A-95F862E9A895}"
 EndProject

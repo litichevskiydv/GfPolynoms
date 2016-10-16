@@ -25,6 +25,6 @@
 
   "dependencies": {
     "JetBrains.Annotations": "10.1.4",
-    "GfPolynoms": "1.0.0-*"
+    "AppliedAlgebra.GfPolynoms": "1.0.0-*"
   }
 }

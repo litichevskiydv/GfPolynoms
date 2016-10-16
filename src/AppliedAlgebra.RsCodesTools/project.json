@@ -1,12 +1,10 @@
 ﻿{
-  "name": "AppliedAlgebra.WaveletCodesTools",
   "version": "1.0.0-*",
-  "description": "Tools for working with Wavelet-codes",
+  "description": "Tools for working with Reed-Solomon's codes",
   "authors": [ "dmitriy.litichevskiy" ],
 
   "buildOptions": {
-    "debugType": "portable",
-    "outputName": "AppliedAlgebra.WaveletCodesTools"
+    "debugType": "portable"
   },
 
   "frameworks": {
@@ -18,13 +16,13 @@
   },
 
   "dependencies": {
-    "GfPolynoms": "1.0.0-*",
-    "RsCodesTools": "1.0.0-*"
+    "AppliedAlgebra.GfAlgorithms": "1.0.0-*",
+    "AppliedAlgebra.GfPolynoms": "1.0.0-*"
   },
 
   "packOptions": {
-    "summary": "Tools for working with Wavelet-codes",
-    "tags": [ "Applied algebra", "Finite fields", "Wavelet", "Wavelet-codes" ],
+    "summary": "Tools for working with Reed-Solomon's codes",
+    "tags": [ "Applied algebra", "Finite fields", "RS codes", "Reed-Solomon" ],
     "projectUrl": "https://github.com/litichevskiydv/GfPolynoms",
     "licenseUrl": "https://raw.githubusercontent.com/litichevskiydv/GfPolynoms/master/LICENSE",
     "owners": [ "dmitriy.litichevskiy" ],

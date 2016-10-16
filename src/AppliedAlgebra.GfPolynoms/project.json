@@ -1,12 +1,10 @@
 ﻿{
-  "name": "AppliedAlgebra.GfAlgorithms",
   "version": "1.0.0-*",
-  "description": "Implementation of common algorithms above finite fields",
+  "description": "Implementation of finite fields and polynomials above them",
   "authors": [ "dmitriy.litichevskiy" ],
 
   "buildOptions": {
-    "debugType": "portable",
-    "outputName": "AppliedAlgebra.GfAlgorithms"
+    "debugType": "portable"
   },
 
   "frameworks": {
@@ -17,13 +15,9 @@
     }
   },
 
-  "dependencies": {
-    "GfPolynoms": "1.0.0-*"
-  },
-
   "packOptions": {
-    "summary": "Implementation of common algorithms above finite fields",
-    "tags": [ "Applied algebra", "Finite fields", "Algorithms" ],
+    "summary": "Implementation of finite fields and polynomials above them",
+    "tags": [ "Applied algebra", "Finite fields", "Polynoms" ],
     "projectUrl": "https://github.com/litichevskiydv/GfPolynoms",
     "licenseUrl": "https://raw.githubusercontent.com/litichevskiydv/GfPolynoms/master/LICENSE",
     "owners": [ "dmitriy.litichevskiy" ],

@@ -1,8 +1,4 @@
 powershell.exe -file build\SetFullDebugType.ps1
-dotnet build src\GfPolynoms\project.json -c Debug
-dotnet build src\GfAlgorithms\project.json -c Debug
-dotnet build src\RsCodesTools\project.json -c Debug
-dotnet build src\WaveletCodesTools\project.json -c Debug
 
 nuget install OpenCover -ExcludeVersion -OutputDirectory tools
 tools\OpenCover\tools\OpenCover.Console.exe -target:"C:\Program Files\dotnet\dotnet.exe" -targetargs:" test ""test\GfPolynoms.Tests\project.json"" -c Debug -f net46" -register:user -filter:"+[*]* -[xunit*]*" -threshold:100 -oldstyle -returntargetcode -output:coverage.xml
