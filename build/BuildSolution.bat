@@ -9,13 +9,13 @@ dotnet restore "test\GfAlgorithms.Tests"
 dotnet restore "test\RsCodesTools.Tests"
 dotnet restore "test\WaveletCodesTools.Tests"
 
-dotnet build "src\AppliedAlgebra.GfPolynoms" -c %CONFIGURATION% --no-dependencies
-dotnet build "src\AppliedAlgebra.GfAlgorithms" -c %CONFIGURATION% --no-dependencies
-dotnet build "src\AppliedAlgebra.RsCodesTools" -c %CONFIGURATION% --no-dependencies
-dotnet build "src\AppliedAlgebra.WaveletCodesTools" -c %CONFIGURATION% --no-dependencies
-dotnet build "src\Utils\SpectrumAnalyzer" -c %CONFIGURATION% --no-dependencies
-dotnet build "src\Utils\WaveletCodesListDecodingAnalyzer" -c %CONFIGURATION% --no-dependencies
-dotnet build "test\GfPolynoms.Tests" -c %CONFIGURATION% --no-dependencies
-dotnet build "test\GfAlgorithms.Tests" -c %CONFIGURATION% --no-dependencies
-dotnet build "test\RsCodesTools.Tests" -c %CONFIGURATION% --no-dependencies
-dotnet build "test\WaveletCodesTools.Tests" -c %CONFIGURATION% --no-dependencies
+dotnet build "src\AppliedAlgebra.GfPolynoms" -c %1 --no-dependencies
+dotnet build "src\AppliedAlgebra.GfAlgorithms" -c %1 --no-dependencies
+dotnet build "src\AppliedAlgebra.RsCodesTools" -c %1 --no-dependencies
+dotnet build "src\AppliedAlgebra.WaveletCodesTools" -c %1 --no-dependencies
+dotnet build "src\Utils\SpectrumAnalyzer" -c %1 --no-dependencies
+dotnet build "src\Utils\WaveletCodesListDecodingAnalyzer" -c %1 --no-dependencies
+dotnet build "test\GfPolynoms.Tests" -c %1 --no-dependencies
+dotnet build "test\GfAlgorithms.Tests" -c %1 --no-dependencies
+dotnet build "test\RsCodesTools.Tests" -c %1 --no-dependencies
+dotnet build "test\WaveletCodesTools.Tests" -c %1 --no-dependencies
