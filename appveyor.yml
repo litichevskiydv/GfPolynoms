@@ -14,12 +14,12 @@ nuget:
   project_feed: true
 build_script:
 - cmd: >-
-    call build\BuildSolution.bat
+    call build\BuildSolution.bat %CONFIGURATION%
 
-    call build\CreatePackages.bat
+    call build\CreatePackages.bat %CONFIGURATION% beta1-build%APPVEYOR_BUILD_NUMBER%
 test_script:
 - cmd: >-
-    call build\RunTests.bat
+    call build\RunTests.bat %CONFIGURATION%
 
     call build\CalculateCoverage.bat
 artifacts:
