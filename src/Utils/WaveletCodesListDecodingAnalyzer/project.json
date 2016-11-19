@@ -1,4 +1,4 @@
-﻿{
+{
   "version": "1.0.0-*",
   "authors": [ "dmitriy.litichevskiy" ],
 
@@ -23,12 +23,12 @@
   },
 
   "dependencies": {
-    "JetBrains.Annotations": "10.1.4",
+    "JetBrains.Annotations": "10.2.1",
     "AppliedAlgebra.GfPolynoms": "1.0.0-*",
     "AppliedAlgebra.GfAlgorithms": "1.0.0-*",
     "AppliedAlgebra.WaveletCodesTools": "1.0.0-*",
-    "Microsoft.Extensions.Logging": "1.0.0",
+    "Microsoft.Extensions.Logging": "1.1.0",
     "NLog.Extensions.Logging": "1.0.0-rtm-alpha4",
-    "Microsoft.Extensions.Logging.Console": "1.0.0"
+    "Microsoft.Extensions.Logging.Console": "1.1.0"
   }
 }
