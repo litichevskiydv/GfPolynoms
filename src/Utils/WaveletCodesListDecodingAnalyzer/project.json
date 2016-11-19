@@ -8,11 +8,11 @@
   },
 
   "frameworks": {
-    "netcoreapp1.0": {
+    "netcoreapp1.1": {
       "dependencies": {
         "Microsoft.NETCore.App": {
           "type": "platform",
-          "version": "1.0.0"
+          "version": "1.1.0"
         }
       },
       "imports": [
@@ -25,7 +25,7 @@
   "dependencies": {
     "JetBrains.Annotations": "10.1.4",
     "AppliedAlgebra.GfPolynoms": "1.0.0-*",
-	"AppliedAlgebra.GfAlgorithms": "1.0.0-*",
+    "AppliedAlgebra.GfAlgorithms": "1.0.0-*",
     "AppliedAlgebra.WaveletCodesTools": "1.0.0-*",
     "Microsoft.Extensions.Logging": "1.0.0",
     "NLog.Extensions.Logging": "1.0.0-rtm-alpha4",
