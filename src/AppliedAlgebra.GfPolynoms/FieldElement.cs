@@ -13,7 +13,7 @@
         protected void ValidateArgument(FieldElement b)
         {
             if (Field.Equals(b.Field) == false)
-                throw new ArgumentException($"Field {Field} is not compatible to field {b.Field}");
+                throw new ArgumentException($"Field {Field}({Field.GetType()}) is not compatible to field {b.Field}({b.Field.GetType()})");
         }
 
         public GaloisField Field { get; }
