@@ -10,7 +10,7 @@
             return Equals(Field, other.Field) && Representation == other.Representation;
         }
 
-        protected void ValidateArgument(FieldElement b)
+        private void ValidateArgument(FieldElement b)
         {
             if (Field.Equals(b.Field) == false)
                 throw new ArgumentException($"Field {Field}({Field.GetType()}) is not compatible to field {b.Field}({b.Field.GetType()})");
