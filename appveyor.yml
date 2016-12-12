@@ -18,10 +18,7 @@ build_script:
 
     call build\CreatePackages.bat %CONFIGURATION% beta1-build%APPVEYOR_BUILD_NUMBER%
 test_script:
-- cmd: >-
-    call build\RunTests.bat %CONFIGURATION%
-
-    call build\CalculateCoverage.bat
+- cmd: call build\CalculateCoverage.bat %CONFIGURATION%
 artifacts:
 - path: src\**\*.nupkg
 deploy: off
