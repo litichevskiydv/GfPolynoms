@@ -44,7 +44,7 @@
                                  new object[]
                                  {
                                      12, 6, new Polynomial(gf13, 0, 0, 0, 0, 0, 10, 5, 4, 3, 4, 11, 9),
-                                     new Polynomial(gf13, 0, 0, 0, 8, 1, 12, 2, 11, 5, 6, 4, 2, 3, 12, 2, 4)
+                                     new Polynomial(gf13, 0, 0, 2, 12, 1, 12, 2, 11, 5, 6, 4, 2, 3, 12)
                                  },
                                  new object[]
                                  {
