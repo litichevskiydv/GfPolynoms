@@ -223,7 +223,7 @@
             {
                 AnalyzeCode(26, 13, 12,
                     new Polynomial(new PrimePowerOrderField(27, new Polynomial(new PrimeOrderField(3), 2, 2, 0, 1)),
-                        0, 0, 0, 1, 2, 3, 4, 1, 6, 7, 8, 9, 1, 10, 1, 12, 1, 14, 1, 17, 1, 19, 20, 1, 1, 1, 22),
+                        22, 0, 0, 1, 2, 3, 4, 1, 6, 7, 8, 9, 1, 10, 1, 12, 1, 14, 1, 17, 1, 19, 20, 1, 1, 1),
                     placedErrorsCount: 6, minCorrectValuesCount: 20, samplesCount: 1, decodingThreadsCount: 2);
             }
             catch (Exception exception)
@@ -243,13 +243,13 @@
                               new AnalyzingSample(informationPolynomial, encoder.Encode(26, informationPolynomial, informationPolynomial))
                               {
                                   ErrorPositions = new[] {2, 6, 8, 15, 16, 22},
-                                  CurrentNoiseValue = new[] {1, 1, 22, 4, 18, 8},
+                                  CurrentNoiseValue = new[] {1, 1, 12, 12, 4, 3},
                                   CorrectValuesCount = 20
                               },
                               new AnalyzingSample(informationPolynomial, encoder.Encode(26, informationPolynomial, informationPolynomial))
                               {
                                   ErrorPositions = new[] {0, 1, 2, 3, 4, 5},
-                                  CurrentNoiseValue = new[] {1, 1, 18, 11, 12, 2},
+                                  CurrentNoiseValue = new[] {1, 3, 1, 8, 1, 5},
                                   CorrectValuesCount = 20
                               }
                           };
@@ -257,7 +257,7 @@
             try
             {
                 AnalyzeSamples(26, 13, 12,
-                    new Polynomial(field, 0, 0, 0, 1, 2, 3, 4, 1, 6, 7, 8, 9, 1, 10, 1, 12, 1, 14, 1, 17, 1, 19, 20, 1, 1, 1, 22),
+                    new Polynomial(field, 22, 0, 0, 1, 2, 3, 4, 1, 6, 7, 8, 9, 1, 10, 1, 12, 1, 14, 1, 17, 1, 19, 20, 1, 1, 1),
                     samples);
             }
             catch (Exception exception)
