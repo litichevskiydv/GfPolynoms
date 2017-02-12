@@ -301,6 +301,40 @@
             }
         }
 
+        private static void AnalyzeSamplesForN100K50D49Code()
+        {
+            var field = new PrimeOrderField(101);
+            var informationPolynomial = new Polynomial(field);
+            var encoder = new Encoder();
+            var samples = new[]
+                          {
+                              new AnalyzingSample(informationPolynomial, encoder.Encode(100, informationPolynomial, informationPolynomial))
+                              {
+                                  ErrorPositions = new[] {2, 6, 8, 15, 16, 22, 23, 28, 35, 37, 47, 50, 51, 52, 67, 70, 71, 72, 77, 78, 79, 81, 83, 84, 86, 88, 91, 92},
+                                  CurrentNoiseValue = new[] {1, 1, 6, 4, 4, 14, 7, 3, 8, 23, 76, 1, 5, 8, 2, 6, 2, 14, 45, 64, 13, 54, 34, 64, 34, 2, 64, 23},
+                                  CorrectValuesCount = 72
+                              },
+                              //new AnalyzingSample(informationPolynomial, encoder.Encode(100, informationPolynomial, informationPolynomial))
+                              //{
+                              //    ErrorPositions = new[] {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27},
+                              //    CurrentNoiseValue = new[] {1, 1, 6, 4, 4, 14, 7, 3, 8, 23, 76, 1, 5, 8, 2, 6, 2, 14, 45, 64, 13, 54, 34, 64, 34, 2, 64, 23},
+                              //    CorrectValuesCount = 72
+                              //}
+                          };
+
+            try
+            {
+                AnalyzeSamples(100, 50, 49,
+                    new Polynomial(field, 78, 2, 67, 50, 2, 45, 45, 20, 77, 7, 42, 56, 0, 67, 60, 50),
+                    samples);
+            }
+            catch (Exception exception)
+            {
+                _logger.LogError(0, exception, "Exception occurred during analysis");
+                throw;
+            }
+        }
+
         [UsedImplicitly]
         public static void Main()
         {
@@ -310,7 +344,7 @@
                 .AddConsole();
             _logger = loggerFactory.CreateLogger<Program>();
 
-            AnalyzeSamplesForN26K13D12Code();
+            AnalyzeSamplesForN100K50D49Code();
 
             Console.ReadKey();
         }
