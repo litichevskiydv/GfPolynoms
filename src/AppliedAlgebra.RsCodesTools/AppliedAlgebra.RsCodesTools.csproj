@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <Description>Tools for working with Reed-Solomon's codes</Description>
+    <Authors>dmitriy.litichevskiy</Authors>
+    <TargetFramework>netstandard1.6</TargetFramework>
+    <DebugType>portable</DebugType>
+    <AssemblyName>AppliedAlgebra.RsCodesTools</AssemblyName>
+    <PackageId>AppliedAlgebra.RsCodesTools</PackageId>
+    <PackageTags>Applied algebra;Finite fields;RS codes;Reed-Solomon</PackageTags>
+    <PackageProjectUrl>https://github.com/litichevskiydv/GfPolynoms</PackageProjectUrl>
+    <PackageLicenseUrl>https://raw.githubusercontent.com/litichevskiydv/GfPolynoms/master/LICENSE</PackageLicenseUrl>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/litichevskiydv/GfPolynoms</RepositoryUrl>
+    <NetStandardImplicitPackageVersion>1.6.1</NetStandardImplicitPackageVersion>
+    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
+    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AppliedAlgebra.GfAlgorithms\AppliedAlgebra.GfAlgorithms.csproj" />
+    <ProjectReference Include="..\AppliedAlgebra.GfPolynoms\AppliedAlgebra.GfPolynoms.csproj" />
+  </ItemGroup>
+
+</Project>

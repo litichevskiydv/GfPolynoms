@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <Description>Implementation of finite fields and polynomials above them</Description>
+    <Authors>dmitriy.litichevskiy</Authors>
+    <TargetFramework>netstandard1.6</TargetFramework>
+    <DebugType>portable</DebugType>
+    <AssemblyName>AppliedAlgebra.GfPolynoms</AssemblyName>
+    <PackageId>AppliedAlgebra.GfPolynoms</PackageId>
+    <PackageTags>Applied algebra;Finite fields;Polynoms</PackageTags>
+    <PackageProjectUrl>https://github.com/litichevskiydv/GfPolynoms</PackageProjectUrl>
+    <PackageLicenseUrl>https://raw.githubusercontent.com/litichevskiydv/GfPolynoms/master/LICENSE</PackageLicenseUrl>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/litichevskiydv/GfPolynoms</RepositoryUrl>
+    <NetStandardImplicitPackageVersion>1.6.1</NetStandardImplicitPackageVersion>
+    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
+    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+  </PropertyGroup>
+
+</Project>

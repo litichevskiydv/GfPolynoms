@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <Description>Tools for working with Wavelet-codes</Description>
+    <Authors>dmitriy.litichevskiy</Authors>
+    <TargetFramework>netstandard1.6</TargetFramework>
+    <DebugType>portable</DebugType>
+    <AssemblyName>AppliedAlgebra.WaveletCodesTools</AssemblyName>
+    <PackageId>AppliedAlgebra.WaveletCodesTools</PackageId>
+    <PackageTags>Applied algebra;Finite fields;Wavelet;Wavelet-codes</PackageTags>
+    <PackageProjectUrl>https://github.com/litichevskiydv/GfPolynoms</PackageProjectUrl>
+    <PackageLicenseUrl>https://raw.githubusercontent.com/litichevskiydv/GfPolynoms/master/LICENSE</PackageLicenseUrl>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/litichevskiydv/GfPolynoms</RepositoryUrl>
+    <NetStandardImplicitPackageVersion>1.6.1</NetStandardImplicitPackageVersion>
+    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
+    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AppliedAlgebra.GfPolynoms\AppliedAlgebra.GfPolynoms.csproj" />
+    <ProjectReference Include="..\AppliedAlgebra.RsCodesTools\AppliedAlgebra.RsCodesTools.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <Authors>dmitriy.litichevskiy</Authors>
+    <TargetFramework>netcoreapp1.1</TargetFramework>
+    <DebugType>portable</DebugType>
+    <AssemblyName>WaveletCodesListDecodingAnalyzer</AssemblyName>
+    <OutputType>Exe</OutputType>
+    <PackageId>WaveletCodesListDecodingAnalyzer</PackageId>
+    <PackageTargetFallback>$(PackageTargetFallback);portable-net45+win8</PackageTargetFallback>
+    <RuntimeFrameworkVersion>1.1.1</RuntimeFrameworkVersion>
+    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
+    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\AppliedAlgebra.GfAlgorithms\AppliedAlgebra.GfAlgorithms.csproj" />
+    <ProjectReference Include="..\..\AppliedAlgebra.GfPolynoms\AppliedAlgebra.GfPolynoms.csproj" />
+    <ProjectReference Include="..\..\AppliedAlgebra.WaveletCodesTools\AppliedAlgebra.WaveletCodesTools.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="JetBrains.Annotations" Version="10.2.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="1.1.1" />
+    <PackageReference Include="NLog.Extensions.Logging" Version="1.0.0-rtm-alpha4" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="1.1.1" />
+  </ItemGroup>
+
+</Project>

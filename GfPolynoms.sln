@@ -1,38 +1,35 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26228.4
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{D95C035F-8D0F-4047-B6DB-3AB41246F7DC}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{7C7759A4-333F-4BCF-8430-4CC884BE023B}"
-	ProjectSection(SolutionItems) = preProject
-		global.json = global.json
-	EndProjectSection
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "GfPolynoms", "src\AppliedAlgebra.GfPolynoms\GfPolynoms.xproj", "{30061E7F-54EE-4D66-BBF5-D4B92B0574FA}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "GfAlgorithms", "src\AppliedAlgebra.GfAlgorithms\GfAlgorithms.xproj", "{C3AC4E9A-BA10-481F-ABC9-9A9678BAFEB6}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "RsCodesTools", "src\AppliedAlgebra.RsCodesTools\RsCodesTools.xproj", "{063767FE-F7AD-4B96-8C61-AA0BA89ABAA5}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "WaveletCodesTools", "src\AppliedAlgebra.WaveletCodesTools\WaveletCodesTools.xproj", "{4CA0CEC7-5716-439A-B73D-A40C561D32AC}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Utils", "Utils", "{5FEFF932-BD59-4C31-9AAE-B5E28C8DEE5B}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "SpectrumAnalyzer", "src\Utils\SpectrumAnalyzer\SpectrumAnalyzer.xproj", "{CF94392C-7447-4DAE-9E73-97F2E2822914}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "WaveletCodesListDecodingAnalyzer", "src\Utils\WaveletCodesListDecodingAnalyzer\WaveletCodesListDecodingAnalyzer.xproj", "{52A2313C-729A-45F5-B654-C2EFF8035CF9}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{6C2B8CCF-8FC2-41A0-8C67-C45E3A4A9AAC}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "GfPolynoms.Tests", "test\GfPolynoms.Tests\GfPolynoms.Tests.xproj", "{F29C2F70-78CC-4F4D-B241-6CDE02971715}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppliedAlgebra.GfPolynoms", "src\AppliedAlgebra.GfPolynoms\AppliedAlgebra.GfPolynoms.csproj", "{30061E7F-54EE-4D66-BBF5-D4B92B0574FA}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "GfAlgorithms.Tests", "test\GfAlgorithms.Tests\GfAlgorithms.Tests.xproj", "{67DF87A6-EB69-4572-8D04-2568C638DF39}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppliedAlgebra.GfAlgorithms", "src\AppliedAlgebra.GfAlgorithms\AppliedAlgebra.GfAlgorithms.csproj", "{C3AC4E9A-BA10-481F-ABC9-9A9678BAFEB6}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "RsCodesTools.Tests", "test\RsCodesTools.Tests\RsCodesTools.Tests.xproj", "{6AC1CF3D-2EB2-4059-A776-F462602F7CB6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppliedAlgebra.RsCodesTools", "src\AppliedAlgebra.RsCodesTools\AppliedAlgebra.RsCodesTools.csproj", "{063767FE-F7AD-4B96-8C61-AA0BA89ABAA5}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "WaveletCodesTools.Tests", "test\WaveletCodesTools.Tests\WaveletCodesTools.Tests.xproj", "{386C63A1-C836-44F7-8353-E9055981F8D8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppliedAlgebra.WaveletCodesTools", "src\AppliedAlgebra.WaveletCodesTools\AppliedAlgebra.WaveletCodesTools.csproj", "{4CA0CEC7-5716-439A-B73D-A40C561D32AC}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpectrumAnalyzer", "src\Utils\SpectrumAnalyzer\SpectrumAnalyzer.csproj", "{CF94392C-7447-4DAE-9E73-97F2E2822914}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WaveletCodesListDecodingAnalyzer", "src\Utils\WaveletCodesListDecodingAnalyzer\WaveletCodesListDecodingAnalyzer.csproj", "{52A2313C-729A-45F5-B654-C2EFF8035CF9}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GfPolynoms.Tests", "test\GfPolynoms.Tests\GfPolynoms.Tests.csproj", "{F29C2F70-78CC-4F4D-B241-6CDE02971715}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GfAlgorithms.Tests", "test\GfAlgorithms.Tests\GfAlgorithms.Tests.csproj", "{67DF87A6-EB69-4572-8D04-2568C638DF39}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RsCodesTools.Tests", "test\RsCodesTools.Tests\RsCodesTools.Tests.csproj", "{6AC1CF3D-2EB2-4059-A776-F462602F7CB6}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WaveletCodesTools.Tests", "test\WaveletCodesTools.Tests\WaveletCodesTools.Tests.csproj", "{386C63A1-C836-44F7-8353-E9055981F8D8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -85,11 +82,11 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
+		{5FEFF932-BD59-4C31-9AAE-B5E28C8DEE5B} = {D95C035F-8D0F-4047-B6DB-3AB41246F7DC}
 		{30061E7F-54EE-4D66-BBF5-D4B92B0574FA} = {D95C035F-8D0F-4047-B6DB-3AB41246F7DC}
 		{C3AC4E9A-BA10-481F-ABC9-9A9678BAFEB6} = {D95C035F-8D0F-4047-B6DB-3AB41246F7DC}
 		{063767FE-F7AD-4B96-8C61-AA0BA89ABAA5} = {D95C035F-8D0F-4047-B6DB-3AB41246F7DC}
 		{4CA0CEC7-5716-439A-B73D-A40C561D32AC} = {D95C035F-8D0F-4047-B6DB-3AB41246F7DC}
-		{5FEFF932-BD59-4C31-9AAE-B5E28C8DEE5B} = {D95C035F-8D0F-4047-B6DB-3AB41246F7DC}
 		{CF94392C-7447-4DAE-9E73-97F2E2822914} = {5FEFF932-BD59-4C31-9AAE-B5E28C8DEE5B}
 		{52A2313C-729A-45F5-B654-C2EFF8035CF9} = {5FEFF932-BD59-4C31-9AAE-B5E28C8DEE5B}
 		{F29C2F70-78CC-4F4D-B241-6CDE02971715} = {6C2B8CCF-8FC2-41A0-8C67-C45E3A4A9AAC}
