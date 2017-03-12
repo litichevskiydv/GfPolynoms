@@ -11,13 +11,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Utils", "Utils", "{5FEFF932
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{6C2B8CCF-8FC2-41A0-8C67-C45E3A4A9AAC}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppliedAlgebra.GfPolynoms", "src\AppliedAlgebra.GfPolynoms\AppliedAlgebra.GfPolynoms.csproj", "{30061E7F-54EE-4D66-BBF5-D4B92B0574FA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GfPolynoms", "src\GfPolynoms\GfPolynoms.csproj", "{30061E7F-54EE-4D66-BBF5-D4B92B0574FA}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppliedAlgebra.GfAlgorithms", "src\AppliedAlgebra.GfAlgorithms\AppliedAlgebra.GfAlgorithms.csproj", "{C3AC4E9A-BA10-481F-ABC9-9A9678BAFEB6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GfAlgorithms", "src\GfAlgorithms\GfAlgorithms.csproj", "{C3AC4E9A-BA10-481F-ABC9-9A9678BAFEB6}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppliedAlgebra.RsCodesTools", "src\AppliedAlgebra.RsCodesTools\AppliedAlgebra.RsCodesTools.csproj", "{063767FE-F7AD-4B96-8C61-AA0BA89ABAA5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RsCodesTools", "src\RsCodesTools\RsCodesTools.csproj", "{063767FE-F7AD-4B96-8C61-AA0BA89ABAA5}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppliedAlgebra.WaveletCodesTools", "src\AppliedAlgebra.WaveletCodesTools\AppliedAlgebra.WaveletCodesTools.csproj", "{4CA0CEC7-5716-439A-B73D-A40C561D32AC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WaveletCodesTools", "src\WaveletCodesTools\WaveletCodesTools.csproj", "{4CA0CEC7-5716-439A-B73D-A40C561D32AC}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpectrumAnalyzer", "src\Utils\SpectrumAnalyzer\SpectrumAnalyzer.csproj", "{CF94392C-7447-4DAE-9E73-97F2E2822914}"
 EndProject

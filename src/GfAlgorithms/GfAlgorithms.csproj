@@ -16,10 +16,11 @@
     <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+    <RootNamespace>AppliedAlgebra.GfAlgorithms</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\AppliedAlgebra.GfPolynoms\AppliedAlgebra.GfPolynoms.csproj" />
+    <ProjectReference Include="..\GfPolynoms\GfPolynoms.csproj" />
   </ItemGroup>
 
 </Project>

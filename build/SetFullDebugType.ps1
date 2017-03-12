@@ -1,4 +1,4 @@
-(Get-Content src\AppliedAlgebra.GfPolynoms\project.json) -replace 'portable', 'full' | Set-Content src\AppliedAlgebra.GfPolynoms\project.json
-(Get-Content src\AppliedAlgebra.GfAlgorithms\project.json) -replace 'portable', 'full' | Set-Content src\AppliedAlgebra.GfAlgorithms\project.json
-(Get-Content src\AppliedAlgebra.RsCodesTools\project.json) -replace 'portable', 'full' | Set-Content src\AppliedAlgebra.RsCodesTools\project.json
-(Get-Content src\AppliedAlgebra.WaveletCodesTools\project.json) -replace 'portable', 'full' | Set-Content src\AppliedAlgebra.WaveletCodesTools\project.json
+(Get-Content src\GfPolynoms\GfPolynoms.csproj) -replace 'portable', 'full' | Set-Content src\GfPolynoms\GfPolynoms.csproj
+(Get-Content src\GfAlgorithms\GfAlgorithms.csproj) -replace 'portable', 'full' | Set-Content src\GfAlgorithms\GfAlgorithms.csproj
+(Get-Content src\RsCodesTools\RsCodesTools.csproj) -replace 'portable', 'full' | Set-Content src\RsCodesTools\RsCodesTools.csproj
+(Get-Content src\WaveletCodesTools\WaveletCodesTools.csproj) -replace 'portable', 'full' | Set-Content src\WaveletCodesTools\WaveletCodesTools.csproj

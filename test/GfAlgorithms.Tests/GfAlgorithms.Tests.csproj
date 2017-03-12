@@ -16,8 +16,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\AppliedAlgebra.GfAlgorithms\AppliedAlgebra.GfAlgorithms.csproj" />
-    <ProjectReference Include="..\..\src\AppliedAlgebra.GfPolynoms\AppliedAlgebra.GfPolynoms.csproj" />
+    <ProjectReference Include="..\..\src\GfAlgorithms\GfAlgorithms.csproj" />
+    <ProjectReference Include="..\..\src\GfPolynoms\GfPolynoms.csproj" />
   </ItemGroup>
 
   <ItemGroup>

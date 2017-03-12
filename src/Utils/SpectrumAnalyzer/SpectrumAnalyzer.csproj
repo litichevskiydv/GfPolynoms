@@ -20,7 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\AppliedAlgebra.GfPolynoms\AppliedAlgebra.GfPolynoms.csproj" />
+    <ProjectReference Include="..\..\GfPolynoms\GfPolynoms.csproj" />
   </ItemGroup>
 
 </Project>

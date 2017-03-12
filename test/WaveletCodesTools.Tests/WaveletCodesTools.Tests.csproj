@@ -15,9 +15,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\AppliedAlgebra.GfPolynoms\AppliedAlgebra.GfPolynoms.csproj" />
-    <ProjectReference Include="..\..\src\AppliedAlgebra.RsCodesTools\AppliedAlgebra.RsCodesTools.csproj" />
-    <ProjectReference Include="..\..\src\AppliedAlgebra.WaveletCodesTools\AppliedAlgebra.WaveletCodesTools.csproj" />
+    <ProjectReference Include="..\..\src\GfPolynoms\GfPolynoms.csproj" />
+    <ProjectReference Include="..\..\src\RsCodesTools\RsCodesTools.csproj" />
+    <ProjectReference Include="..\..\src\WaveletCodesTools\WaveletCodesTools.csproj" />
   </ItemGroup>
 
   <ItemGroup>
