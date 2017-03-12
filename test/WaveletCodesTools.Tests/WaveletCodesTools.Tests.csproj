@@ -4,7 +4,7 @@
     <Authors>dmitriy.litichevskiy</Authors>
     <TargetFramework>netcoreapp1.1</TargetFramework>
     <DebugType>portable</DebugType>
-    <AssemblyName>WaveletCodesTools.Tests</AssemblyName>
+    <AssemblyName>AppliedAlgebra.WaveletCodesTools.Tests</AssemblyName>
     <PackageId>WaveletCodesTools.Tests</PackageId>
     <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
     <PackageTargetFallback>$(PackageTargetFallback);portable-net45+win8</PackageTargetFallback>
@@ -12,6 +12,7 @@
     <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+    <RootNamespace>AppliedAlgebra.WaveletCodesTools.Tests</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

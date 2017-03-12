@@ -5,7 +5,7 @@
     <Authors>dmitriy.litichevskiy</Authors>
     <TargetFramework>netcoreapp1.1</TargetFramework>
     <DebugType>portable</DebugType>
-    <AssemblyName>GfPolynoms.Tests</AssemblyName>
+    <AssemblyName>AppliedAlgebra.GfPolynoms.Tests</AssemblyName>
     <PackageId>GfPolynoms.Tests</PackageId>
     <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
     <PackageTargetFallback>$(PackageTargetFallback);portable-net45+win8</PackageTargetFallback>
@@ -13,6 +13,7 @@
     <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+    <RootNamespace>AppliedAlgebra.GfPolynoms.Tests</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

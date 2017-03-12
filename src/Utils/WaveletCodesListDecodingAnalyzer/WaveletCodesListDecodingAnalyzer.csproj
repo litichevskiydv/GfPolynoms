@@ -4,7 +4,7 @@
     <Authors>dmitriy.litichevskiy</Authors>
     <TargetFramework>netcoreapp1.1</TargetFramework>
     <DebugType>portable</DebugType>
-    <AssemblyName>WaveletCodesListDecodingAnalyzer</AssemblyName>
+    <AssemblyName>AppliedAlgebra.WaveletCodesListDecodingAnalyzer</AssemblyName>
     <OutputType>Exe</OutputType>
     <PackageId>WaveletCodesListDecodingAnalyzer</PackageId>
     <PackageTargetFallback>$(PackageTargetFallback);portable-net45+win8</PackageTargetFallback>
@@ -12,6 +12,7 @@
     <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+    <RootNamespace>AppliedAlgebra.WaveletCodesListDecodingAnalyzer</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

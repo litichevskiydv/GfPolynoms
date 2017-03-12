@@ -5,7 +5,7 @@
     <Authors>dmitriy.litichevskiy</Authors>
     <TargetFramework>netcoreapp1.1</TargetFramework>
     <DebugType>portable</DebugType>
-    <AssemblyName>SpectrumAnalyzer</AssemblyName>
+    <AssemblyName>AppliedAlgebra.SpectrumAnalyzer</AssemblyName>
     <OutputType>Exe</OutputType>
     <PackageId>SpectrumAnalyzer</PackageId>
     <PackageTargetFallback>$(PackageTargetFallback);portable-net45+win8</PackageTargetFallback>
@@ -13,6 +13,7 @@
     <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+    <RootNamespace>AppliedAlgebra.SpectrumAnalyzer</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
