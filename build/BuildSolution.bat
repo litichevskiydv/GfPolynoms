@@ -1,13 +1,13 @@
-dotnet restore "src\GfPolynoms"
-dotnet restore "src\GfAlgorithms"
-dotnet restore "src\RsCodesTools"
-dotnet restore "src\WaveletCodesTools"
-dotnet restore "src\Utils\SpectrumAnalyzer"
-dotnet restore "src\Utils\WaveletCodesListDecodingAnalyzer"
-dotnet restore "test\GfPolynoms.Tests"
-dotnet restore "test\GfAlgorithms.Tests"
-dotnet restore "test\RsCodesTools.Tests"
-dotnet restore "test\WaveletCodesTools.Tests"
+dotnet restore "src\GfPolynoms" --no-dependencies
+dotnet restore "src\GfAlgorithms" --no-dependencies
+dotnet restore "src\RsCodesTools" --no-dependencies
+dotnet restore "src\WaveletCodesTools" --no-dependencies
+dotnet restore "src\Utils\SpectrumAnalyzer" --no-dependencies
+dotnet restore "src\Utils\WaveletCodesListDecodingAnalyzer" --no-dependencies
+dotnet restore "test\GfPolynoms.Tests" --no-dependencies
+dotnet restore "test\GfAlgorithms.Tests" --no-dependencies
+dotnet restore "test\RsCodesTools.Tests" --no-dependencies
+dotnet restore "test\WaveletCodesTools.Tests" --no-dependencies
 
 dotnet build "src\GfPolynoms" -c %1 --no-dependencies
 dotnet build "src\GfAlgorithms" -c %1 --no-dependencies
