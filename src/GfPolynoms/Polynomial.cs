@@ -6,10 +6,13 @@
     using GaloisFields;
 
     /// <summary>
-    /// Класс многочленов над некоторым конечным полемя
+    /// Polynomial over a finite field
     /// </summary>
     public class Polynomial
     {
+        /// <summary>
+        /// Result of polynomial division
+        /// </summary>
         public class DevisionResult
         {
             public Polynomial Quotient { get; }
@@ -29,18 +32,18 @@
         }
 
         /// <summary>
-        /// Коэффициенты многочлена
+        /// Coefficients of the polynomial
         /// </summary>
         private List<int> _coefficients;
         /// <summary>
-        /// Поле, над которым построен многочлен
+        /// Field from which the coefficients of the polynomial
         /// </summary>
         public GaloisField Field { get; }
 
         /// <summary>
-        /// Операция усечения ведущих нулей коэфициентов многочлена
+        /// Method for truncating the leading zero coefficients of the polynomial
         /// </summary>
-        /// <returns>Текущий многочлен без нулевых ведущих коэфициентов</returns>
+        /// <returns>Current polynomial</returns>
         private Polynomial Truncate()
         {
             int i;
@@ -55,9 +58,9 @@
         }
 
         /// <summary>
-        ///     Увеличивет степень многочлена до заданной, заполняя список коэффициентов нулями
+        /// Method for adding leading zeros to polynomial coefficients
         /// </summary>
-        /// <param name="newDegree">Новая степень многочлена</param>
+        /// <param name="newDegree">A new degree of the polynomial</param>
         private void Enlarge(int newDegree)
         {
             if (Degree < newDegree)
@@ -70,9 +73,9 @@
         }
 
         /// <summary>
-        ///     Конструктор, создающий нулевой многочлен над некоторым полем
+        /// Constructor for creation zero polynomial over field <paramref name="field"/>
         /// </summary>
-        /// <param name="field">Поле, к которому принадлежат коэффициенты</param>
+        /// <param name="field">Field from which the coefficients of the polynomial</param>
         public Polynomial(GaloisField field)
         {
             if (field == null)
@@ -83,10 +86,10 @@
         }
 
         /// <summary>
-        ///     Конструктор, создающий многочлен с переданными коэффициентами над некторомы полем
+        /// Constructor for creation polynomial over field <paramref name="field"/> with coefficients <paramref name="coefficients"/>
         /// </summary>
-        /// <param name="field">Поле, к которому принадлежат коэффициенты</param>
-        /// <param name="coefficients">Коэффициенты создаваемого многочлена</param>
+        /// <param name="field">Field from which the coefficients of the polynomial</param>
+        /// <param name="coefficients">Coefficients of the new polynomial</param>
         public Polynomial(GaloisField field, params int[] coefficients)
         {
             if (field == null)
@@ -104,17 +107,24 @@
         }
 
         /// <summary>
-        ///     Создает копию переданного многочлена
+        /// Constructor for creating copy of the polynomial <paramref name="polynomial"/>
         /// </summary>
-        /// <param name="polynomial">Копируемый многочлен</param>
+        /// <param name="polynomial">The copied polynomial</param>
         public Polynomial(Polynomial polynomial)
         {
             Field = polynomial.Field;
             _coefficients = polynomial._coefficients.ToList();
         }
 
+        /// <summary>
+        /// Degree of the polynomial
+        /// </summary>
         public int Degree => _coefficients.Count - 1;
 
+        /// <summary>
+        /// Method for obtaining a string representation of the current polynomial
+        /// </summary>
+        /// <returns>String representation of the current polynomial</returns>
         public override string ToString()
         {
             var monomials = _coefficients
@@ -137,6 +147,11 @@
             return string.Join("+", monomials);
         }
 
+        /// <summary>
+        /// Method for checking the equality of the current polynomial to the <paramref name="obj"/>
+        /// </summary>
+        /// <param name="obj">Another object</param>
+        /// <returns>Checking result</returns>
         public override bool Equals(object obj)
         {
             if (ReferenceEquals(null, obj)) return false;
@@ -178,9 +193,9 @@
         }
 
         /// <summary>
-        /// Добавляет переданный многочлен к текущему
+        /// Method for adding polynomial <paramref name="b"/> to current polynomial
         /// </summary>
-        /// <param name="b">Добавляемый многочлен</param>
+        /// <param name="b">Term</param>
         public Polynomial Add(Polynomial b)
         {
             if (Field.Equals(b.Field) == false)
@@ -193,9 +208,9 @@
         }
 
         /// <summary>
-        /// Вычетает переданный многочлен из текущего
+        /// Method for subtracting polynomial <paramref name="b"/> from current
         /// </summary>
-        /// <param name="b">Вычетаемый многочлен</param>
+        /// <param name="b">Subtrahend</param>
         public Polynomial Subtract(Polynomial b)
         {
             if (Field.Equals(b.Field) == false)
@@ -208,9 +223,9 @@
         }
 
         /// <summary>
-        /// Умножает переданный многочлен на число
+        /// Method for multiplying current polynomial by number <paramref name="b"/>
         /// </summary>
-        /// <param name="b">Коэффициент для домножения</param>
+        /// <param name="b">Factor</param>
         public Polynomial Multiply(int b)
         {
             if(Field.IsFieldElement(b) == false)
@@ -228,9 +243,9 @@
         }
 
         /// <summary>
-        /// Умножает текущий многочлен на переданный
+        /// Method for multiplying current polynomial by polynomial <paramref name="b"/>
         /// </summary>
-        /// <param name="b">Многочлен для домножения</param>
+        /// <param name="b">Factor</param>
         public Polynomial Multiply(Polynomial b)
         {
             if (Field.Equals(b.Field) == false)
@@ -251,9 +266,9 @@
         }
 
         /// <summary>
-        /// Делит текущий многочлен на элемент поля
+        /// Method for dividing current polynomial by number <paramref name="b"/>
         /// </summary>
-        /// <param name="b">Делитель</param>
+        /// <param name="b">Divider</param>
         public Polynomial Divide(int b)
         {
             if (Field.IsFieldElement(b) == false || b == 0)
@@ -271,10 +286,10 @@
         }
 
         /// <summary>
-        /// Вычисление результата деления текущего многочлена на заданный
+        /// Method for dividing current polynomial by polynomial <paramref name="b"/>
         /// </summary>
-        /// <param name="b">Делитель</param>
-        /// <returns>Пара (частное, остаток)</returns>
+        /// <param name="b">Divider</param>
+        /// <returns>Division result (quotient and remainder)</returns>
         public DevisionResult DivideExtended(Polynomial b)
         {
             if (Field.Equals(b.Field) == false || b.IsZero)
@@ -306,9 +321,9 @@
         }
 
         /// <summary>
-        /// Делит текущий многочлен на заданный
+        /// Method for dividing current polynomial by polynomial <paramref name="b"/>
         /// </summary>
-        /// <param name="b">Делитель</param>
+        /// <param name="b">Divider</param>
         public Polynomial Divide(Polynomial b)
         {
             var divisionResult = DivideExtended(b);
@@ -317,9 +332,9 @@
         }
 
         /// <summary>
-        /// Вычисляет текущий многочлен по модулю переданного
+        /// Method for calculating the remainder of dividing the current polynomial by polynomial <paramref name="b"/>
         /// </summary>
-        /// <param name="b">Многочлен, по модулю которого берется текущий</param>
+        /// <param name="b">Divider</param>
         public Polynomial Modulo(Polynomial b)
         {
             var divisionResult = DivideExtended(b);
@@ -328,9 +343,9 @@
         }
 
         /// <summary>
-        /// Сдвиг текущего многочлена на указанное количество разрядов вправо
+        /// Method for shifting current polynomial by <paramref name="degreeDelta"/> positions to the right
         /// </summary>
-        /// <param name="degreeDelta">Количество разрядов, на которые сдвигается многочлен</param>
+        /// <param name="degreeDelta">Positions count for shifting</param>
         public Polynomial RightShift(int degreeDelta)
         {
             if (degreeDelta < 0)
@@ -351,10 +366,10 @@
         }
 
         /// <summary>
-        /// Вычисляет значение многочлена для заданного значения переменной
+        /// Method for calculating polynomial value for variable value <paramref name="variableValue"/>
         /// </summary>
-        /// <param name="variableValue">Значение переменной</param>
-        /// <returns>Значение многочлена</returns>
+        /// <param name="variableValue">Variable value</param>
+        /// <returns>Polynomial value</returns>
         public int Evaluate(int variableValue)
         {
             if(Field.IsFieldElement(variableValue) == false)
@@ -366,58 +381,98 @@
             return result;
         }
 
+        /// <summary>
+        /// Method for adding polynomial <paramref name="b"/> to <paramref name="a"/>
+        /// </summary>
+        /// <param name="a">First term</param>
+        /// <param name="b">Second term</param>
         public static Polynomial Add(Polynomial a, Polynomial b)
         {
             var c = new Polynomial(a);
             return c.Add(b);
         }
 
+        /// <summary>
+        /// Method for subtracting polynomial <paramref name="b"/> from <paramref name="b"/>
+        /// </summary>
+        /// <param name="a">Minuend</param>
+        /// <param name="b">Subtrahend</param>
         public static Polynomial Subtract(Polynomial a, Polynomial b)
         {
             var c = new Polynomial(a);
             return c.Subtract(b);
         }
 
+        /// <summary>
+        /// Method for multiplying polynomial <paramref name="a"/> by number <paramref name="b"/>
+        /// </summary>
+        /// <param name="a">First factor</param>
+        /// <param name="b">Second factor</param>
         public static Polynomial Multiply(Polynomial a, int b)
         {
             var c = new Polynomial(a);
             return c.Multiply(b);
         }
 
+        /// <summary>
+        /// Method for multiplying number <paramref name="a"/> by polynomial <paramref name="b"/>
+        /// </summary>
+        /// <param name="a">First factor</param>
+        /// <param name="b">Second factor</param>
         public static Polynomial Multiply(int a, Polynomial b)
         {
             return Multiply(b, a);
         }
 
+        /// <summary>
+        /// Method for multiplying polynomial <paramref name="a"/> by polynomial <paramref name="b"/>
+        /// </summary>
+        /// <param name="a">First factor</param>
+        /// <param name="b">Second factor</param>
         public static Polynomial Multiply(Polynomial a, Polynomial b)
         {
             var c = new Polynomial(a);
             return c.Multiply(b);
         }
 
+        /// <summary>
+        /// Method for calculating the remainder of dividing polynomial <paramref name="a"/> by polynomial <paramref name="b"/>
+        /// </summary>
+        /// <param name="a">Dividend</param>
+        /// <param name="b">Divider</param>
         public static Polynomial Modulo(Polynomial a, Polynomial b)
         {
             var c = new Polynomial(a);
             return c.Modulo(b);
         }
 
+        /// <summary>
+        /// Method for calculating the quotient of dividing polynomial <paramref name="a"/> by polynomial <paramref name="b"/>
+        /// </summary>
+        /// <param name="a">Dividend</param>
+        /// <param name="b">Divider</param>
         public static Polynomial Divide(Polynomial a, Polynomial b)
         {
             var c = new Polynomial(a);
             return c.Divide(b);
         }
 
+        /// <summary>
+        /// Method for calculating the quotient of dividing polynomial <paramref name="a"/> by number <paramref name="b"/>
+        /// </summary>
+        /// <param name="a">Dividend</param>
+        /// <param name="b">Divider</param>
         public static Polynomial Divide(Polynomial a, int b)
         {
             var c = new Polynomial(a);
             return c.Divide(b);
         }
 
-        public static Polynomial Divide(int a, Polynomial b)
-        {
-            return Divide(b, a);
-        }
-
+        /// <summary>
+        /// Method for shifting polynomial <paramref name="a"/> by <paramref name="degreeDelta"/> positions to the right
+        /// </summary>
+        /// <param name="a">Shifted polynomial</param>
+        /// <param name="degreeDelta">Positions count for shifting</param>
         public static Polynomial RightShift(Polynomial a, int degreeDelta)
         {
             var c = new Polynomial(a);
@@ -455,11 +510,6 @@
         }
 
         public static Polynomial operator /(Polynomial a, int b)
-        {
-            return Divide(a, b);
-        }
-
-        public static Polynomial operator /(int a, Polynomial b)
         {
             return Divide(a, b);
         }
