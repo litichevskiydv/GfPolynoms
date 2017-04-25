@@ -6,30 +6,30 @@
     public abstract class GaloisField
     {
         /// <summary>
-        /// Представление элементов по соответствующим им степеням порождающего элемента
+        /// Field's elements representation, which can be accessed by powers of field's generating element
         /// </summary>
         protected int[] ElementsByPowers { get; private set; }
         /// <summary>
-        /// Степени порождающего элемента по соответствующим им элементам
+        /// Powers of field's generating element, which can be accessed by field's elements representation
         /// </summary>
         protected int[] PowersByElements { get; private set; }
 
 
         /// <summary>
-        ///     Порядок поля, простое число в некоторой степени
+        /// Field order
         /// </summary>
         public int Order { get; private set; }
         /// <summary>
-        ///     Характеристика поля, степень простого числа в порядке поля
+        /// Field characteristic
         /// </summary>
         public int Characteristic { get; private set; }
 
         /// <summary>
-        /// Метод для разложения переданного порядка поля на множители
+        /// Method for analyzing field order factors
         /// </summary>
-        /// <param name="order">Порядок поля, переданный в конструктор</param>
-        /// <returns>Частичное разложение порядка на множители</returns>
-        protected Dictionary<int, int> AnalyzeOrder(int order)
+        /// <param name="order">Field order </param>
+        /// <returns>First field order factor and its degree</returns>
+        protected static Dictionary<int, int> AnalyzeOrder(int order)
         {
             var fractions = new Dictionary<int, int>();
 
@@ -55,10 +55,10 @@
         }
 
         /// <summary>
-        /// Метод для инициализации внутренних объектов поля
+        /// Method for initializing field's object internal structures
         /// </summary>
-        /// <param name="order">Порядок поля</param>
-        /// <param name="characteristic">Характеристика поля</param>
+        /// <param name="order">Field order</param>
+        /// <param name="characteristic">Field characteristic</param>
         protected void Initialize(int order, int characteristic)
         {
             Order = order;
@@ -71,7 +71,7 @@
         }
 
         /// <summary>
-        /// Проверка, являются ли переданные операнды элементами поля
+        /// Method for checking whether the operands are field elements
         /// </summary>
         protected void ValidateArguments(int a, int b)
         {
@@ -82,7 +82,7 @@
         }
 
         /// <summary>
-        ///     Проверка, входит ли переданное значение в поле
+        /// The method for checking whether the operand is an element of the field
         /// </summary>
         public bool IsFieldElement(int a)
         {
@@ -90,27 +90,27 @@
         }
 
         /// <summary>
-        ///     Сложение двух элементов поля
+        /// Method for adding field element <paramref name="a"/> to field element <paramref name="b"/>
         /// </summary>
-        /// <param name="a">Первое слагаемое</param>
-        /// <param name="b">Второе слагаемое</param>
-        /// <returns>Сумма</returns>
+        /// <param name="a">First term</param>
+        /// <param name="b">Second term</param>
+        /// <returns>Sum</returns>
         public abstract int Add(int a, int b);
 
         /// <summary>
-        ///     Вычетание двух элементов поля
+        /// Method for subtracting field element <paramref name="b"/> from field element <paramref name="a"/>
         /// </summary>
-        /// <param name="a">Уменьшаемое</param>
-        /// <param name="b">Вычетаемое</param>
-        /// <returns>Разность</returns>
+        /// <param name="a">Minuend</param>
+        /// <param name="b">Subtrahend</param>
+        /// <returns>Difference</returns>
         public abstract int Subtract(int a, int b);
 
         /// <summary>
-        ///     Умножение двух элементов поля
+        /// Method for multiplying field element <paramref name="a"/> to field element <paramref name="b"/>
         /// </summary>
-        /// <param name="a">Первый множитель</param>
-        /// <param name="b">Второй множитель</param>
-        /// <returns>Произведение</returns>
+        /// <param name="a">First factor</param>
+        /// <param name="b">Second factor</param>
+        /// <returns>Product</returns>
         public int Multiply(int a, int b)
         {
             ValidateArguments(a, b);
@@ -121,11 +121,11 @@
         }
 
         /// <summary>
-        ///     Деление двух элементов поля
+        /// Method for dividing field element <paramref name="a"/> by field element <paramref name="b"/>
         /// </summary>
-        /// <param name="a">Делимое</param>
-        /// <param name="b">Делитель</param>
-        /// <returns>Частное</returns>
+        /// <param name="a">Dividend</param>
+        /// <param name="b">Divider</param>
+        /// <returns>Quotient</returns>
         public int Divide(int a, int b)
         {
             ValidateArguments(a, b);
