@@ -4,8 +4,14 @@
     using System.Collections.Generic;
     using System.Linq;
 
+    /// <summary>
+    /// Field with prime number order
+    /// </summary>
     public class PrimeOrderField : GaloisField
     {
+        /// <summary>
+        /// Method for calculating elements of field multiplicative group
+        /// </summary>
         private void BuildMultiplicativeGroup()
         {
             for (var i = 1; i < Order; i++)
@@ -24,15 +30,20 @@
             }
         }
 
+        /// <summary>
+        /// Method for checking the equality of the current field to the <paramref name="other"/>
+        /// </summary>
+        /// <param name="other">Another field</param>
+        /// <returns>Checking result</returns>
         private bool Equals(PrimeOrderField other)
         {
             return Order == other.Order;
         }
 
         /// <summary>
-        ///     Создаем поле
+        /// Constructor for creation field with order <param name="order"></param>
         /// </summary>
-        /// <param name="order">Порядок поля, простое число</param>
+        /// <param name="order">Field order, should be a prime number</param>
         public PrimeOrderField(int order)
         {
             var analysisResult = AnalyzeOrder(order);
@@ -43,6 +54,11 @@
             BuildMultiplicativeGroup();
         }
 
+        /// <summary>
+        /// Method for checking the equality of the current field to the <paramref name="obj"/>
+        /// </summary>
+        /// <param name="obj">Another object</param>
+        /// <returns>Checking result</returns>
         public override bool Equals(object obj)
         {
             if (ReferenceEquals(null, obj)) return false;
@@ -51,11 +67,21 @@
             return Equals((PrimeOrderField) obj);
         }
 
+        /// <summary>
+        /// Method for calculation object hash
+        /// </summary>
+        /// <returns>Calculated hash</returns>
         public override int GetHashCode()
         {
             return Order;
         }
 
+        /// <summary>
+        /// Method for adding field element <paramref name="a"/> to field element <paramref name="b"/>
+        /// </summary>
+        /// <param name="a">First term</param>
+        /// <param name="b">Second term</param>
+        /// <returns>Sum</returns>
         public override int Add(int a, int b)
         {
             ValidateArguments(a, b);
@@ -63,6 +89,12 @@
             return (a + b)%Order;
         }
 
+        /// <summary>
+        /// Method for subtracting field element <paramref name="b"/> from field element <paramref name="a"/>
+        /// </summary>
+        /// <param name="a">Minuend</param>
+        /// <param name="b">Subtrahend</param>
+        /// <returns>Difference</returns>
         public override int Subtract(int a, int b)
         {
             ValidateArguments(a, b);
@@ -70,6 +102,11 @@
             return (a - b + Order)%Order;
         }
 
+        /// <summary>
+        /// Inverts field element
+        /// </summary>
+        /// <param name="a">Invetible element</param>
+        /// <returns>Inverse osite element</returns>
         public override int InverseForAddition(int a)
         {
             if (IsFieldElement(a) == false)
@@ -78,6 +115,10 @@
             return (Order - a)%Order;
         }
 
+        /// <summary>
+        /// Method for obtaining a string representation of the current field
+        /// </summary>
+        /// <returns>String representation of the current field</returns>
         public override string ToString()
         {
             return $"GF{Order}";
