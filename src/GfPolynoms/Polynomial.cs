@@ -159,6 +159,10 @@
             return obj.GetType() == GetType() && Equals((Polynomial)obj);
         }
 
+        /// <summary>
+        /// Method for calculation object hash
+        /// </summary>
+        /// <returns>Calculated hash</returns>
         public override int GetHashCode()
         {
             unchecked
