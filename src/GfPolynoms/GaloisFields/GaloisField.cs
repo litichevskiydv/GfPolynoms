@@ -141,14 +141,14 @@
         /// Inverts field element
         /// </summary>
         /// <param name="a">Invetible element</param>
-        /// <returns>Inverse osite element</returns>
+        /// <returns>Inversed element</returns>
         public abstract int InverseForAddition(int a);
 
         /// <summary>
         /// Inverts field element
         /// </summary>
         /// <param name="a">Invetible element</param>
-        /// <returns>Inverse osite element</returns>
+        /// <returns>Inversed element</returns>
         public int InverseForMultiplication(int a)
         {
             if (IsFieldElement(a) == false)
@@ -172,7 +172,7 @@
         }
 
         /// <summary>
-        /// Exponentiation of given element to the specified degree
+        /// Exponentiation of field element <paramref name="element"/> to the degree <paramref name="degree"/>
         /// </summary>
         /// <param name="element">Element for exponentiation</param>
         /// <param name="degree">Power for exponentiation</param>
