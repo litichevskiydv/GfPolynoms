@@ -2,8 +2,17 @@
 {
     using System;
 
+    /// <summary>
+    /// Class with extensions for polynomial
+    /// </summary>
     public static class PolynomialExtensions
     {
+        /// <summary>
+        /// Method for performing replacing x->x^<paramref name="variableDegree"/>
+        /// </summary>
+        /// <param name="polynomial">Transformed polynomial</param>
+        /// <param name="variableDegree">New variable degree</param>
+        /// <returns>Replacement result</returns>
         public static Polynomial RaiseVariableDegree(this Polynomial polynomial, int variableDegree)
         {
             if(polynomial == null)
