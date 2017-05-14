@@ -4,8 +4,19 @@
     using GfPolynoms.Extensions;
     using GfPolynoms.GaloisFields;
 
+    /// <summary>
+    /// Combinations calculator contract implementation via Pascal's triangle
+    /// </summary>
     public class PascalsTriangleBasedCalcualtor : ICombinationsCountCalculator
     {
+        /// <summary>
+        /// Method for calculating number of combinations from <paramref name="n"/> by <paramref name="k"/> over field <paramref name="field"/>
+        /// </summary>
+        /// <param name="field">Field over which combinations count'll calculated</param>
+        /// <param name="n">Total elements count</param>
+        /// <param name="k">Selected elements count</param>
+        /// <param name="combinationsCache">Cache for storing combinations count</param>
+        /// <returns>Combinations count</returns>
         public FieldElement Calculate(GaloisField field, int n, int k, FieldElement[][] combinationsCache = null)
         {
             var combinationsCount = combinationsCache?[n][k];
