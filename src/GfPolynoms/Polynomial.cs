@@ -67,6 +67,11 @@
                 _coefficients.AddRange(Enumerable.Repeat(0, newDegree - Degree));
         }
 
+        /// <summary>
+        /// Method for checking the equality of the current polynomial to the <paramref name="other"/>
+        /// </summary>
+        /// <param name="other">Another polynomial</param>
+        /// <returns>Checking result</returns>
         private bool Equals(Polynomial other)
         {
             return _coefficients.SequenceEqual(other._coefficients) && Equals(Field, other.Field);
@@ -176,6 +181,11 @@
         /// </summary>
         public bool IsZero => Degree == 0 && _coefficients[0] == 0;
 
+        /// <summary>
+        /// Indexing property for obtain bivariate polynomial coefficient by variable power <paramref name="index"/>
+        /// </summary>
+        /// <param name="index">Variable power which coefficient is required</param>
+        /// <returns>Polynomial coefficient</returns>
         public int this[int index]
         {
             get
@@ -397,7 +407,7 @@
         }
 
         /// <summary>
-        /// Method for subtracting polynomial <paramref name="b"/> from <paramref name="b"/>
+        /// Method for subtracting polynomial <paramref name="b"/> from <paramref name="a"/>
         /// </summary>
         /// <param name="a">Minuend</param>
         /// <param name="b">Subtrahend</param>
