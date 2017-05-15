@@ -5,6 +5,9 @@
     using GfPolynoms;
     using PolynomialsGcdFinder;
 
+    /// <summary>
+    /// Implementation of complementary polynomials builder contract based on GCD algorithm
+    /// </summary>
     public class GcdBasedBuilder : IComplementaryFiltersBuilder
     {
         private readonly IPolynomialsGcdFinder _gcdFinder;
@@ -18,6 +21,12 @@
                 .RightShift((modularPolynomialDegree - gcd.Degree)%modularPolynomialDegree);
         }
 
+        /// <summary>
+        /// Method for building complementary polynomial for polynomial <paramref name="sourceFilter"/> with coefficients count <paramref name="maxFilterLength"/>
+        /// </summary>
+        /// <param name="sourceFilter">Polynomial for which complementary polynomial should be built</param>
+        /// <param name="maxFilterLength">Coefficients count in complementary polynomial</param>
+        /// <returns>Built complementary polynomial</returns>
         public Polynomial Build(Polynomial sourceFilter, int maxFilterLength)
         {
             if(sourceFilter == null)
@@ -48,6 +57,10 @@
                 complementaryFilterOddComponent % m);
         }
 
+        /// <summary>
+        /// Constructor for builder creation
+        /// </summary>
+        /// <param name="gcdFinder">Implementation of GCD algorithm contract</param>
         public GcdBasedBuilder(IPolynomialsGcdFinder gcdFinder)
         {
             if(gcdFinder == null)
