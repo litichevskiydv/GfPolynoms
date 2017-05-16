@@ -8,8 +8,17 @@
     using GfPolynoms;
     using GfPolynoms.Extensions;
 
+    /// <summary>
+    /// Class for bivariate polynomials extensions
+    /// </summary>
     public static class BiVariablePolynomialExtensions
     {
+        /// <summary>
+        /// Exponentiation of bivariate polynomial <paramref name="polynomial"/> to the degree <paramref name="degree"/>
+        /// </summary>
+        /// <param name="powersCache">Cache for storing Exponentiation results </param>
+        /// <param name="polynomial">Bivariate polynomial for exponentiation</param>
+        /// <param name="degree">Power for exponentiation</param>
         private static BiVariablePolynomial Pow(IDictionary<int, BiVariablePolynomial> powersCache, BiVariablePolynomial polynomial, int degree)
         {
             BiVariablePolynomial result;
@@ -26,6 +35,13 @@
             return result;
         }
 
+        /// <summary>
+        /// Method for calculating results of replacement bivariate polynomial <paramref name="polynomial"/> variable x by <paramref name="xSubstitution"/> and y by <paramref name="ySubstitution"/>
+        /// </summary>
+        /// <param name="polynomial">Modified polynomial</param>
+        /// <param name="xSubstitution">Substitution for x variable</param>
+        /// <param name="ySubstitution">Substitution for x variable</param>
+        /// <returns>Replacement results</returns>
         public static BiVariablePolynomial PerformVariablesSubstitution(this BiVariablePolynomial polynomial,
             BiVariablePolynomial xSubstitution, BiVariablePolynomial ySubstitution)
         {
@@ -52,6 +68,11 @@
             return result;
         }
 
+        /// <summary>
+        /// Method for dividing bivariate polynomial <paramref name="polynomial"/> by variable x in maximum possible degree
+        /// </summary>
+        /// <param name="polynomial">Modified polynomial</param>
+        /// <returns>Dividing result</returns>
         public static BiVariablePolynomial DivideByMaxPossibleXDegree(this BiVariablePolynomial polynomial)
         {
             if (polynomial == null)
@@ -68,6 +89,12 @@
             return result;
         }
 
+        /// <summary>
+        /// Method Calculating results of replacement bivariate polynomial <paramref name="polynomial"/> variable x by value <paramref name="xValue"/>
+        /// </summary>
+        /// <param name="polynomial">Modified polynomial</param>
+        /// <param name="xValue">Value for x variable</param>
+        /// <returns>Replacement results</returns>
         public static Polynomial EvaluateX(this BiVariablePolynomial polynomial, FieldElement xValue)
         {
             if(polynomial == null)
@@ -86,6 +113,12 @@
             return new Polynomial(field, resultCoefficients);
         }
 
+        /// <summary>
+        /// Method Calculating results of replacement bivariate polynomial <paramref name="polynomial"/> variable y by value <paramref name="yValue"/>
+        /// </summary>
+        /// <param name="polynomial">Modified polynomial</param>
+        /// <param name="yValue">Value for y variable</param>
+        /// <returns>Replacement results</returns>
         public static Polynomial EvaluateY(this BiVariablePolynomial polynomial, FieldElement yValue)
         {
             if (polynomial == null)
@@ -104,6 +137,17 @@
             return new Polynomial(field, resultCoefficients);
         }
 
+        /// <summary>
+        /// Method for calculatin (<paramref name="r"/>, <paramref name="s"/>) Hasse derivative value for bivariate polynomial <paramref name="polynomial"/> at point the (<paramref name="xValue"/>, <paramref name="yValue"/>)
+        /// </summary>
+        /// <param name="polynomial">Polynomial which Hasse derivative'll be calculated</param>
+        /// <param name="r">Hasse derivative order by x variable</param>
+        /// <param name="s">Hasse derivative order by y variable</param>
+        /// <param name="xValue">Value for x variable</param>
+        /// <param name="yValue">Value fro y variable</param>
+        /// <param name="combinationsCountCalculator">Combinations calculator contract implementation</param>
+        /// <param name="combinationsCache">Cache for storing calculated numbers of combinations</param>
+        /// <returns>Hasse derivative value</returns>
         public static FieldElement CalculateHasseDerivative(this BiVariablePolynomial polynomial,
             int r, int s, FieldElement xValue, FieldElement yValue,
             ICombinationsCountCalculator combinationsCountCalculator, FieldElement[][] combinationsCache = null)
