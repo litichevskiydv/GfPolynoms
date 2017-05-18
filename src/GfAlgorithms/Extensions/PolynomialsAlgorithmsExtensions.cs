@@ -10,7 +10,7 @@
         /// <summary>
         /// Converts source polynomial <paramref name="polynomial"/> to form p(x) = p_e(x^2)+x*p_o(x^2)
         /// </summary>
-        /// <param name="polynomial"></param>
+        /// <param name="polynomial">Polynomial for processing</param>
         /// <returns>Pair (p_e(x), p_o(x))</returns>
         public static Tuple<Polynomial, Polynomial> GetPolyphaseComponents(this Polynomial polynomial)
         {
@@ -30,6 +30,12 @@
                 new Polynomial(polynomial.Field, oddDegreesCoefficients.ToArray()));
         }
 
+        /// <summary>
+        /// Creates polynomial p(x) = p_e(x^2)+x*p_o(x^2)
+        /// </summary>
+        /// <param name="evenComponent">p_e(x)</param>
+        /// <param name="oddComponent">p_o(x)</param>
+        /// <returns>Reconstructed polynomial</returns>
         public static Polynomial CreateFormPolyphaseComponents(Polynomial evenComponent, Polynomial oddComponent)
         {
             if(evenComponent == null)
@@ -42,6 +48,11 @@
             return evenComponent.RaiseVariableDegree(2) + (oddComponent.RaiseVariableDegree(2) >> 1);
         }
 
+        /// <summary>
+        /// Method for checking if <paramref name="polynomial"/> is a monomial
+        /// </summary>
+        /// <param name="polynomial">Polynomial for verification</param>
+        /// <returns>Verification result</returns>
         public static bool IsMonomial(this Polynomial polynomial)
         {
             var isMonomial = true;
