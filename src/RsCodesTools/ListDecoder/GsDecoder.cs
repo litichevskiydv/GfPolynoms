@@ -6,11 +6,27 @@
     using GsDecoderDependencies.InterpolationPolynomialBuilder;
     using GsDecoderDependencies.InterpolationPolynomialFactorisator;
 
+    /// <summary>
+    /// Implementation of Guruswami–Sudan algorithm for Reed-Solomon's code list decoding
+    /// </summary>
     public class GsDecoder : IListDecoder
     {
+        /// <summary>
+        /// Implementation of interpolation polynomial builder contract
+        /// </summary>
         private readonly IInterpolationPolynomialBuilder _interpolationPolynomialBuilder;
+        /// <summary>
+        /// Implementation of bivariate polynomial's factorization algorithm contract
+        /// </summary>
         private readonly IInterpolationPolynomialFactorizator _interpolationPolynomialFactorizator;
 
+        /// <summary>
+        /// Method for validating decoding results
+        /// </summary>
+        /// <param name="possiblePolynomials">Possible decoding resultse</param>
+        /// <param name="decodedCodeword">Recived codeword for decoding</param>
+        /// <param name="minCorrectValuesCount">Minimum number of valid values</param>
+        /// <returns>Valid decoding results</returns>
         private static Polynomial[] SelectCorrectInformationPolynomials(IEnumerable<Polynomial> possiblePolynomials,
             IReadOnlyList<Tuple<FieldElement, FieldElement>> decodedCodeword, int minCorrectValuesCount)
         {
@@ -30,6 +46,14 @@
             return correctPolynomials.ToArray();
         }
 
+        /// <summary>
+        /// Method for performing list decoding of Reed-Solomon code codeword
+        /// </summary>
+        /// <param name="n">Codeword length</param>
+        /// <param name="k">Information word length</param>
+        /// <param name="decodedCodeword">Recived codeword for decoding</param>
+        /// <param name="minCorrectValuesCount">Minimum number of valid values</param>
+        /// <returns>Decoding result</returns>
         public Polynomial[] Decode(int n, int k, Tuple<FieldElement, FieldElement>[] decodedCodeword, int minCorrectValuesCount)
         {
             if (n <= 0)
@@ -56,6 +80,11 @@
             return SelectCorrectInformationPolynomials(possibleInformationPolynomials, decodedCodeword, minCorrectValuesCount);
         }
 
+        /// <summary>
+        /// Constructor for creation 
+        /// </summary>
+        /// <param name="interpolationPolynomialBuilder"></param>
+        /// <param name="interpolationPolynomialFactorizator"></param>
         public GsDecoder(IInterpolationPolynomialBuilder interpolationPolynomialBuilder, IInterpolationPolynomialFactorizator interpolationPolynomialFactorizator)
         {
             if (interpolationPolynomialBuilder == null)
