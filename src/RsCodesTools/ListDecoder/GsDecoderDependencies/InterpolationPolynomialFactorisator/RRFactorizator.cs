@@ -8,6 +8,9 @@
     using GfPolynoms;
     using GfPolynoms.Extensions;
 
+    /// <summary>
+    /// Implementation of bivariate polynomials factorization contract
+    /// </summary>
     public class RrFactorizator : IInterpolationPolynomialFactorizator
     {
         private readonly Tuple<int, int> _zeroMonomial;
@@ -22,6 +25,15 @@
             return roots;
         }
 
+        /// <summary>
+        /// Method for recursive search of bivariate polynomial's <paramref name="polynomial"/> factors with max degree <paramref name="maxFactorDegree"/>
+        /// </summary>
+        /// <param name="polynomial">Bivariate polynomial for factorization</param>
+        /// <param name="maxFactorDegree">Maximum degree of factor</param>
+        /// <param name="xSubstitution">Substitution for x variable</param>
+        /// <param name="ySubstitution">Substitution for y variable</param>
+        /// <param name="factors">Array of finded factors</param>
+        /// <param name="currentFactorCoefficients">Stack with current factor's coefficients</param>
         private void Factorize(BiVariablePolynomial polynomial, int maxFactorDegree,
             BiVariablePolynomial xSubstitution, BiVariablePolynomial ySubstitution,
             ISet<Polynomial> factors, Stack<int> currentFactorCoefficients)
@@ -46,6 +58,12 @@
             }
         }
 
+        /// <summary>
+        /// Method for finding bivariate polynomial's <paramref name="interpolationPolynomial"/> factors with max degree <paramref name="maxFactorDegree"/>
+        /// </summary>
+        /// <param name="interpolationPolynomial">Bivariate polynomial for factorization</param>
+        /// <param name="maxFactorDegree">Maximum degree of factor</param>
+        /// <returns>Array of finded factors</returns>
         public Polynomial[] Factorize(BiVariablePolynomial interpolationPolynomial, int maxFactorDegree)
         {
             var xSubstitution = new BiVariablePolynomial(interpolationPolynomial.Field)
@@ -68,6 +86,9 @@
             return factors.ToArray();
         }
 
+        /// <summary>
+        /// Constructor for creation implementation of bivariate polynomials factorization contract
+        /// </summary>
         public RrFactorizator()
         {
             _zeroMonomial = new Tuple<int, int>(0, 0);
