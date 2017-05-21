@@ -10,15 +10,33 @@
     using GfPolynoms.Extensions;
     using GfPolynoms.GaloisFields;
 
+    /// <summary>
+    /// Implementation of interpolation polynomial builder based on linear systems solving
+    /// </summary>
     public class SimplePolynomialBuilder : IInterpolationPolynomialBuilder
     {
+        /// <summary>
+        /// Implementation of combinations count calculator contract
+        /// </summary>
         private readonly ICombinationsCountCalculator _combinationsCountCalculator;
+        /// <summary>
+        /// Implementation of linear systems solver contract
+        /// </summary>
         private readonly ILinearSystemSolver _linearSystemSolver;
 
+        /// <summary>
+        /// Method for numbering bivariate monomials
+        /// </summary>
+        /// <param name="variableIndexByMonomial">Mapping for bivariate monomials to their numbers</param>
+        /// <param name="monomialByVariableIndex">Mapping from numbers to bivariate monomials</param>
+        /// <param name="xDegree">Degree of bivariate monomial's x variable</param>
+        /// <param name="yDegree">Degree of bivariate monomial's y variable</param>
+        /// <returns>Monomial's number</returns>
         private static int GetVariableIndexByMonomial(
             IDictionary<Tuple<int, int>, int> variableIndexByMonomial,
             IDictionary<int, Tuple<int, int>> monomialByVariableIndex,
-            int xDegree, int yDegree)
+            int xDegree, 
+            int yDegree)
         {
             var monomial = new Tuple<int, int>(xDegree, yDegree);
             int variableIndex;
@@ -32,11 +50,27 @@
             return variableIndex;
         }
 
+        /// <summary>
+        /// Method for creating linear equations system for finding interpolation polynomial
+        /// </summary>
+        /// <param name="field">Finite field from which system coefficients'll be taken</param>
+        /// <param name="degreeWeight">Weight of bivariate monomials degree</param>
+        /// <param name="maxWeightedDegree">Maximum value of bivariate monomial degree</param>
+        /// <param name="maxXDegree">Maximum value of bivariate monomial x variable degree</param>
+        /// <param name="roots">Roots of the interpolation polynomial</param>
+        /// <param name="rootsMultiplicity">Multiplicity of bivariate polynomial's roots</param>
+        /// <param name="variableIndexByMonomial">Mapping for bivariate monomials to their numbers</param>
+        /// <param name="monomialByVariableIndex">Mapping from numbers to bivariate monomials</param>
+        /// <returns>Linear system's representation</returns>
         private List<List<Tuple<int, FieldElement>>> BuildEquationsSystem(
-            IDictionary<Tuple<int, int>, int> variableIndexByMonomial,
-            IDictionary<int, Tuple<int, int>> monomialByVariableIndex,
-            GaloisField field, Tuple<int, int> degreeWeight, int maxWeightedDegree, int maxXDegree,
-            IEnumerable<Tuple<FieldElement, FieldElement>> roots, int rootsMultiplicity)
+            GaloisField field,
+            Tuple<int, int> degreeWeight,
+            int maxWeightedDegree, 
+            int maxXDegree, 
+            IEnumerable<Tuple<FieldElement, FieldElement>> roots, 
+            int rootsMultiplicity,
+            IDictionary<Tuple<int, int>, int> variableIndexByMonomial, 
+            IDictionary<int, Tuple<int, int>> monomialByVariableIndex)
         {
             var equations = new List<List<Tuple<int, FieldElement>>>();
             var combinationsCache = new FieldElement[Math.Max(maxWeightedDegree/degreeWeight.Item1, maxWeightedDegree/degreeWeight.Item2) + 1][]
@@ -65,8 +99,17 @@
             return equations;
         }
 
-        private SystemSolution SolveEquationsSystem(GaloisField field,
-            int variablesCount, IReadOnlyList<List<Tuple<int, FieldElement>>> equationsSystem)
+        /// <summary>
+        /// Method for transforming linear system matrix into rectangular form and finding system solution
+        /// </summary>
+        /// <param name="field">Finite field from which system coefficients were taken</param>
+        /// <param name="variablesCount">Variables count</param>
+        /// <param name="equationsSystem">Linear system's representation</param>
+        /// <returns>Linear system's solution</returns>
+        private SystemSolution SolveEquationsSystem(
+            GaloisField field,
+            int variablesCount, 
+            IReadOnlyList<List<Tuple<int, FieldElement>>> equationsSystem)
         {
             var linearSystemMatrix = new FieldElement[equationsSystem.Count, variablesCount];
             var zeros = new FieldElement[equationsSystem.Count];
@@ -83,19 +126,40 @@
             return _linearSystemSolver.Solve(linearSystemMatrix, zeros);
         }
 
-        private static BiVariablePolynomial ConstructInterpolationPolynomial(BiVariablePolynomial blankPolynomial,
-            SystemSolution systemSolution, IReadOnlyDictionary<int, Tuple<int, int>> monomialByVariableIndex)
+        /// <summary>
+        /// Method for creation interpolation polynomial from linear system solution
+        /// </summary>
+        /// <param name="field">Finite field from which system coefficients were taken</param>
+        /// <param name="systemSolution">Solution of the linear equations system</param>
+        /// <param name="monomialByVariableIndex">Mapping from numbers to bivariate monomials</param>
+        /// <returns>Interpolation polynomial</returns>
+        private static BiVariablePolynomial ConstructInterpolationPolynomial(
+            GaloisField field,
+            SystemSolution systemSolution, 
+            IReadOnlyDictionary<int, Tuple<int, int>> monomialByVariableIndex)
         {
+            var interpolationPolynomial = new BiVariablePolynomial(field);
             for (var i = 0; i < systemSolution.Solution.Length; i++)
-                blankPolynomial[monomialByVariableIndex[i]] = systemSolution.Solution[i];
+                interpolationPolynomial[monomialByVariableIndex[i]] = systemSolution.Solution[i];
 
-            if (blankPolynomial.IsZero)
+            if (interpolationPolynomial.IsZero)
                 throw new NonTrivialPolynomialNotFoundException();
-            return blankPolynomial;
+            return interpolationPolynomial;
         }
 
-        public BiVariablePolynomial Build(Tuple<int, int> degreeWeight, int maxWeightedDegree, 
-            Tuple<FieldElement, FieldElement>[] roots, int rootsMultiplicity)
+        /// <summary>
+        /// Method for bivariate interpolation polynomial building
+        /// </summary>
+        /// <param name="degreeWeight">Weight of bivariate monomials degree</param>
+        /// <param name="maxWeightedDegree">Maximum value of bivariate monomial degree</param>
+        /// <param name="roots">Roots of the interpolation polynomial</param>
+        /// <param name="rootsMultiplicity">Multiplicity of bivariate polynomial's roots</param>
+        /// <returns>Builded interpolation polynomial</returns>
+        public BiVariablePolynomial Build(
+            Tuple<int, int> degreeWeight, 
+            int maxWeightedDegree, 
+            Tuple<FieldElement, FieldElement>[] roots, 
+            int rootsMultiplicity)
         {
             if (degreeWeight == null)
                 throw new ArgumentNullException(nameof(degreeWeight));
@@ -105,20 +169,23 @@
                 throw new ArgumentException($"{nameof(roots)} is empty");
 
             var field = roots[0].Item1.Field;
-            var resultPolynomial = new BiVariablePolynomial(field);
-
             var variableIndexByMonomial = new Dictionary<Tuple<int, int>, int>();
             var monomialByVariableIndex = new Dictionary<int, Tuple<int, int>>();
 
-            var equationsSystem = BuildEquationsSystem(variableIndexByMonomial, monomialByVariableIndex,
-                field, degreeWeight, maxWeightedDegree, maxWeightedDegree/degreeWeight.Item1,
-                roots, rootsMultiplicity);
+            var equationsSystem = BuildEquationsSystem(field, degreeWeight,
+                maxWeightedDegree, maxWeightedDegree / degreeWeight.Item1, roots, rootsMultiplicity,
+                variableIndexByMonomial, monomialByVariableIndex);
 
             var systemSolution = SolveEquationsSystem(field, variableIndexByMonomial.Count, equationsSystem);
 
-            return ConstructInterpolationPolynomial(resultPolynomial, systemSolution, monomialByVariableIndex);
+            return ConstructInterpolationPolynomial(field, systemSolution, monomialByVariableIndex);
         }
 
+        /// <summary>
+        /// Constructor for creating instance of interpolation polynomial builder
+        /// </summary>
+        /// <param name="combinationsCountCalculator">Implementation of combinations count calculator contract</param>
+        /// <param name="linearSystemSolver">Implementation of linear systems solver contract</param>
         public SimplePolynomialBuilder(ICombinationsCountCalculator combinationsCountCalculator, ILinearSystemSolver linearSystemSolver)
         {
             if (combinationsCountCalculator == null)

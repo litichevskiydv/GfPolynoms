@@ -8,11 +8,25 @@
     using GfPolynoms;
     using GfPolynoms.Extensions;
 
+    /// <summary>
+    /// Implementation of interpolation polynomials builder based on Kotter's algorithm
+    /// </summary>
     public class KotterAlgorithmBasedBuilder : IInterpolationPolynomialBuilder
     {
         private readonly Tuple<int, int> _zeroMonomial;
+        /// <summary>
+        /// Implementation of combinations count calculator contract
+        /// </summary>
         private readonly ICombinationsCountCalculator _combinationsCountCalculator;
 
+        /// <summary>
+        /// Method for finding index of element with minimum lead monomial
+        /// </summary>
+        /// <typeparam name="TSourse">Type of collection element</typeparam>
+        /// <param name="sourse">Collection from which minimum lead monomial will be chosen</param>
+        /// <param name="leadMonomialSelector">Selector of lead monomial from collection element</param>
+        /// <param name="monomialsComparer">Bivariate monomials comparer</param>
+        /// <returns>Finded index</returns>
         private static int FindMinimumIndexByLeadMonomial<TSourse>(ICollection<TSourse> sourse, 
             Func<int, Tuple<int, int>> leadMonomialSelector, IComparer<Tuple<int, int>> monomialsComparer)
         {
@@ -32,11 +46,25 @@
             return minimumIndex;
         }
 
+        /// <summary>
+        /// Method for calculating monomial's <paramref name="monomial"/> degree weight
+        /// </summary>
+        /// <param name="monomial">Bivariate monomial for degree weight calculation</param>
+        /// <param name="degreeWeight">Weight of bivariate monomials degree</param>
+        /// <returns>Calculated degree weight</returns>
         private static int CalculateMonomialWeight(Tuple<int, int> monomial, Tuple<int, int> degreeWeight)
         {
             return monomial.Item1*degreeWeight.Item1 + monomial.Item2*degreeWeight.Item2;
         }
 
+        /// <summary>
+        /// Method for bivariate interpolation polynomial building
+        /// </summary>
+        /// <param name="degreeWeight">Weight of bivariate monomials degree</param>
+        /// <param name="maxWeightedDegree">Maximum value of bivariate monomial degree</param>
+        /// <param name="roots">Roots of the interpolation polynomial</param>
+        /// <param name="rootsMultiplicity">Multiplicity of bivariate polynomial's roots</param>
+        /// <returns>Builded interpolation polynomial</returns>
         public BiVariablePolynomial Build(Tuple<int, int> degreeWeight, int maxWeightedDegree,
             Tuple<FieldElement, FieldElement>[] roots, int rootsMultiplicity)
         {
@@ -110,6 +138,10 @@
             return buildingPolynomials[resultPolynomialIndex];
         }
 
+        /// <summary>
+        /// Constructor for creating interpolation polynomial builder based on Kotter's algorithm
+        /// </summary>
+        /// <param name="combinationsCountCalculator">Implementation of combinations count calculator contract</param>
         public KotterAlgorithmBasedBuilder(ICombinationsCountCalculator combinationsCountCalculator)
         {
             if(combinationsCountCalculator == null)
