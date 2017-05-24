@@ -8,11 +8,28 @@
     using GfPolynoms;
     using GfPolynoms.Extensions;
 
+    /// <summary>
+    /// Implementation ofvcontract of generating polynomials builder
+    /// </summary>
     public class LiftingSchemeBasedBuilder : IGeneratingPolynomialsBuilder
     {
+        /// <summary>
+        /// Implementation of contract of complementary filters builder
+        /// </summary>
         private readonly IComplementaryFiltersBuilder _complementaryFiltersBuilder;
+        /// <summary>
+        /// Implementation of contract of linear equations system solver
+        /// </summary>
         private readonly ILinearSystemSolver _linearSystemSolver;
 
+        /// <summary>
+        /// Method for finding lifting polynomial for filters pair (<paramref name="h"/>, <paramref name="g"/>)
+        /// </summary>
+        /// <param name="n">Codeword length</param>
+        /// <param name="d">Code distance</param>
+        /// <param name="h">First filter from the original pair</param>
+        /// <param name="g">Second filter from the original pair</param>
+        /// <returns>Finded lifting polynomial</returns>
         private Polynomial FindLiftingPolynomial(int n, int d, Polynomial h, Polynomial g)
         {
             var field = h.Field;
@@ -47,6 +64,14 @@
             return new Polynomial(field, systemSolution.Solution.Select(x => x.Representation).ToArray());
         }
 
+        /// <summary>
+        /// Method for performing generating polynomial reconstruction from filters pair (<paramref name="h"/>, <paramref name="g"/>) and lifting polynomial <paramref name="liftingPolynomial"/>
+        /// </summary>
+        /// <param name="h">First filter from the original pair</param>
+        /// <param name="g">Second filter from the original pair</param>
+        /// <param name="liftingPolynomial">Lifting polynomial</param>
+        /// <param name="maxFilterLength">Maximum possible original filter length</param>
+        /// <returns>Reconstructed generating polynomial</returns>
         private static Polynomial ReconstructGeneratingPolynomial(Polynomial h, Polynomial g, Polynomial liftingPolynomial, int maxFilterLength)
         {
             var hPolyphaseComponents = h.GetPolyphaseComponents();
@@ -61,6 +86,13 @@
                        .RightShift(2);
         }
 
+        /// <summary>
+        /// Method for verification of the generating polynomial 
+        /// </summary>
+        /// <param name="n">Codeword length</param>
+        /// <param name="d">Code distance</param>
+        /// <param name="generatingPolynomial">Generating polynomial for verification</param>
+        /// <returns>Verified generating polynomial</returns>
         private static Polynomial CheckGeneratigPolynomial(int n, int d, Polynomial generatingPolynomial)
         {
             var field = generatingPolynomial.Field;
@@ -91,6 +123,13 @@
             return generatingPolynomial;
         }
 
+        /// <summary>
+        /// Method for building generating polynomial for the wavelet code
+        /// </summary>
+        /// <param name="n">Codeword length</param>
+        /// <param name="d">Code distance</param>
+        /// <param name="sourceFilter">Filter from which generating polynomial will be built</param>
+        /// <returns>Built generating polynomial</returns>
         public Polynomial Build(int n, int d, Polynomial sourceFilter)
         {
             if (n <= 0)
@@ -106,6 +145,11 @@
             return CheckGeneratigPolynomial(n, d, generatingPolynomial);
         }
 
+        /// <summary>
+        /// Constructor for creation implementation of contract of generating polynomials builder
+        /// </summary>
+        /// <param name="complementaryFiltersBuilder">Implementation of contract of complementary filters builder</param>
+        /// <param name="linearSystemSolver">Implementation of contract of linear equations system solver</param>
         public LiftingSchemeBasedBuilder(IComplementaryFiltersBuilder complementaryFiltersBuilder, ILinearSystemSolver linearSystemSolver)
         {
             if(complementaryFiltersBuilder == null)
