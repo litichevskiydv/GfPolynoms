@@ -5,27 +5,30 @@
     using System.Collections.Generic;
     using GfPolynoms;
 
+    /// <summary>
+    /// Contract for telemetry reciver for wavelet code's list decoder based on Guruswami–Sudan algorithm
+    /// </summary>
     public interface IGsBasedDecoderTelemetryCollector
     {
         /// <summary>
-        /// Общее количество обработанных примеров
+        /// Count of processed samples
         /// </summary>
         int ProcessedSamplesCount { get; }
         /// <summary>
-        /// Распределения длин списков в результатах декодирования
+        /// Samples count stored by lists sizes in frequency and time domains
         /// </summary>
         ConcurrentDictionary<Tuple<int, int>, int> ProcessingResults { get; }
         /// <summary>
-        /// Отобранные интересные примеры
+        /// Important samples stored by lists sizes in frequency and time domains
         /// </summary>
         ConcurrentDictionary<Tuple<int, int>, List<Tuple<FieldElement, FieldElement>[]>> InterestingSamples { get; }
 
         /// <summary>
-        /// Метод для регистрации результата декодирования
+        /// Method for registering result of decoding 
         /// </summary>
-        /// <param name="decodedCodeword">Декодируемое кодовое слово</param>
-        /// <param name="frequencyDecodingListSize">Размер списка при декодировании в частотной области</param>
-        /// <param name="timeDecodingListSize">Размер списка при декодировании во временной области</param>
+        /// <param name="decodedCodeword">Decoded codeword</param>
+        /// <param name="frequencyDecodingListSize">List size in frequency domain</param>
+        /// <param name="timeDecodingListSize">List size in time domain</param>
         void ReportDecodingListsSizes(Tuple<FieldElement, FieldElement>[] decodedCodeword, int frequencyDecodingListSize, int timeDecodingListSize);
     }
 }

@@ -8,13 +8,30 @@
     using GfPolynoms.Extensions;
     using GsBasedDecoderDependencies;
 
+    /// <summary>
+    /// Implementation of the wavelet code list decoding contract based on Guruswami–Sudan algorithm
+    /// </summary>
     public class GsBasedDecoder : IListDecoder
     {
+        /// <summary>
+        /// Implementation of the Reed-Solomon code list decoding contract
+        /// </summary>
         private readonly RsCodesTools.ListDecoder.IListDecoder _rsListDecoder;
+        /// <summary>
+        /// Implementation of the linear equations system solver
+        /// </summary>
         private readonly ILinearSystemSolver _linearSystemSolver;
 
+        /// <summary>
+        /// Implementation of telemetry receiver's contract
+        /// </summary>
         public IGsBasedDecoderTelemetryCollector TelemetryCollector { get; set; }
 
+        /// <summary>
+        /// Method for calculating generation plynomial <paramref name="generatingPolynomial"/> first zeros count on passing points <paramref name="decodedCodeword"/>
+        /// </summary>
+        /// <param name="generatingPolynomial">Generating polynomial of the wavelet code</param>
+        /// <param name="decodedCodeword">Received codeword from which points'll be taken</param>
         private static int CalculateGeneratingPolynomialLeadZeroValuesCount(Polynomial generatingPolynomial,
             IReadOnlyList<Tuple<FieldElement, FieldElement>> decodedCodeword)
         {
@@ -27,6 +44,15 @@
             return count;
         }
 
+        /// <summary>
+        /// Method for decoding received codeword in the frequency domain
+        /// </summary>
+        /// <param name="n">Codeword length</param>
+        /// <param name="d">Code distance</param>
+        /// <param name="generationPolynomialLeadZeroValuesCount">Generating polynomial's first zeros count on received points</param>
+        /// <param name="decodedCodeword">Received codeword for decoding</param>
+        /// <param name="minCorrectValuesCount">Minimum number of valid values</param>
+        /// <returns>Decoding result in frequency domain</returns>
         private Polynomial[] GetFrequencyDecodingResults(int n, int d, int generationPolynomialLeadZeroValuesCount,
             IReadOnlyList<Tuple<FieldElement, FieldElement>> decodedCodeword, int minCorrectValuesCount)
         {
@@ -43,6 +69,17 @@
             return _rsListDecoder.Decode(n, n - d + 1, preparedCodeword, minCorrectValuesCount);
         }
 
+        /// <summary>
+        /// Method for obtaining decoding result in time domain
+        /// </summary>
+        /// <param name="n">Codeword length</param>
+        /// <param name="k">Information word length</param>
+        /// <param name="d">Code distance</param>
+        /// <param name="generatingPolynomial">Generating polynomial of the wavelet code</param>
+        /// <param name="generationPolynomialLeadZeroValuesCount">Generating polynomial's first zeros count on received points</param>
+        /// <param name="decodedCodeword">Received codeword for decoding</param>
+        /// <param name="frequencyDecodingResults">Decoding result in the frequency domain</param>
+        /// <returns>Decoding result in the time domain</returns>
         private Polynomial[] SelectCorrectInformationPolynomials(int n, int k, int d, Polynomial generatingPolynomial, int generationPolynomialLeadZeroValuesCount,
             IReadOnlyList<Tuple<FieldElement, FieldElement>> decodedCodeword, IEnumerable<Polynomial> frequencyDecodingResults)
         {
@@ -79,6 +116,16 @@
             return correctPolynomials.ToArray();
         }
 
+        /// <summary>
+        /// Method for performing list decoding of the wavelet code codeword
+        /// </summary>
+        /// <param name="n">Codeword length</param>
+        /// <param name="k">Information word length</param>
+        /// <param name="d">Code distance</param>
+        /// <param name="generatingPolynomial">Generating polynomial of the wavelet code</param>
+        /// <param name="decodedCodeword">Recived codeword for decoding</param>
+        /// <param name="minCorrectValuesCount">Minimum number of valid values</param>
+        /// <returns>Decoding result</returns>
         public Polynomial[] Decode(int n, int k, int d, Polynomial generatingPolynomial, 
             Tuple<FieldElement, FieldElement>[] decodedCodeword, int minCorrectValuesCount)
         {
@@ -103,6 +150,11 @@
             return resultList;
         }
 
+        /// <summary>
+        /// Constructor for creation instance of the implementation of the wavelet code list decoding contract based on Guruswami–Sudan algorithm
+        /// </summary>
+        /// <param name="rsListDecoder">Implementation of the Reed-Solomon code list decoding contract</param>
+        /// <param name="linearSystemSolver">Implementation of the linear equations system solver</param>
         public GsBasedDecoder(RsCodesTools.ListDecoder.IListDecoder rsListDecoder, ILinearSystemSolver linearSystemSolver)
         {
             if (rsListDecoder == null)
