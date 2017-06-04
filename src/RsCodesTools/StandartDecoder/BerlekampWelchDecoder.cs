@@ -48,8 +48,7 @@
                     a[i, j] = coefficient;
                     coefficient *= decodedCodeword[i].Item1;
                 }
-
-                b[i] = decodedCodeword[i].Item1.Field.Zero();
+                b[i] = FieldElement.InverseForAddition(coefficient);
             }
 
             return Tuple.Create(a, b);
@@ -69,8 +68,18 @@
                 throw new InformationPolynomialWasNotFoundException();
 
             var field = solution.VariablesValues[0].Field;
-            var q = new Polynomial(field, solution.VariablesValues.Take(k + errorsCount).Select(x => x.Representation).ToArray());
-            var e = new Polynomial(field, solution.VariablesValues.Skip(k + errorsCount).Select(x => x.Representation).ToArray());
+
+            var q = new Polynomial(field,
+                solution.VariablesValues
+                    .Take(k + errorsCount)
+                    .Select(x => x.Representation)
+                    .ToArray());
+            var e = new Polynomial(field,
+                solution.VariablesValues
+                    .Skip(k + errorsCount)
+                    .Select(x => x.Representation)
+                    .Concat(new[] {1})
+                    .ToArray());
             return q / e;
         }
 
@@ -84,7 +93,7 @@
         /// <returns>Decoding result</returns>
         public Polynomial Decode(int n, int k, Tuple<FieldElement, FieldElement>[] decodedCodeword, int errorsCount)
         {
-            if (errorsCount > (n - k + 1) / 2 - 1)
+            if (errorsCount > (n - k) / 2)
                 throw new InvalidOperationException("Errors count is too high");
 
             var equationsSystem = BuildEquationsSystem(k, decodedCodeword, errorsCount);
