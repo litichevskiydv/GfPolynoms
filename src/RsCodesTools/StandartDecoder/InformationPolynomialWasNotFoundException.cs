@@ -5,7 +5,7 @@
     /// <summary>
     /// Exception for indication that information polynomial cannot be found
     /// </summary>
-    public class InformationWordWasNotFoundException : InvalidOperationException
+    public class InformationPolynomialWasNotFoundException : InvalidOperationException
     {
     }
 }

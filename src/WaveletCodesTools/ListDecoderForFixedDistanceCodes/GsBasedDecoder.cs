@@ -110,7 +110,7 @@
 
                 var systemSolution = _linearSystemSolver.Solve(linearSystemMatrix, valuesVector);
                 if (systemSolution.IsEmpty == false)
-                    correctPolynomials.Add(new Polynomial(field, systemSolution.Solution.Select(x => x.Representation).ToArray()));
+                    correctPolynomials.Add(new Polynomial(field, systemSolution.VariablesValues.Select(x => x.Representation).ToArray()));
             }
 
             return correctPolynomials.ToArray();

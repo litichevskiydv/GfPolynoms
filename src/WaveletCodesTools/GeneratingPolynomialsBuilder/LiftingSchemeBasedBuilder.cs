@@ -61,7 +61,7 @@
             var systemSolution = _linearSystemSolver.Solve(linearSystemMatrix, valuesVector);
             if(systemSolution.IsEmpty)
                 throw new InvalidOperationException("Can't find lifting plynomial");
-            return new Polynomial(field, systemSolution.Solution.Select(x => x.Representation).ToArray());
+            return new Polynomial(field, systemSolution.VariablesValues.Select(x => x.Representation).ToArray());
         }
 
         /// <summary>

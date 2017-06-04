@@ -139,8 +139,8 @@
             IReadOnlyDictionary<int, Tuple<int, int>> monomialByVariableIndex)
         {
             var interpolationPolynomial = new BiVariablePolynomial(field);
-            for (var i = 0; i < systemSolution.Solution.Length; i++)
-                interpolationPolynomial[monomialByVariableIndex[i]] = systemSolution.Solution[i];
+            for (var i = 0; i < systemSolution.VariablesValues.Length; i++)
+                interpolationPolynomial[monomialByVariableIndex[i]] = systemSolution.VariablesValues[i];
 
             if (interpolationPolynomial.IsZero)
                 throw new NonTrivialPolynomialNotFoundException();

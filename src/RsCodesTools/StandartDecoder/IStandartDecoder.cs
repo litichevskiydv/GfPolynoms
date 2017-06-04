@@ -4,12 +4,12 @@
     using GfPolynoms;
 
     /// <summary>
-    /// Contract for Reed-Solomon code decoder
+    /// Contract for Reed-Solomon codes decoder
     /// </summary>
     public interface IStandartDecoder
     {
         /// <summary>
-        /// Method for performing decoding of Reed-Solomon code codeword
+        /// Method for performing decoding of Reed-Solomon code codeword, if unsuccess will throw InformationPolynomialWasNotFoundException
         /// </summary>
         /// <param name="n">Codeword length</param>
         /// <param name="k">Information word length</param>

@@ -16,20 +16,20 @@
         /// <summary>
         /// Variables values
         /// </summary>
-        public FieldElement[] Solution { get; }
+        public FieldElement[] VariablesValues { get; }
 
         /// <summary>
         /// Constructor for creating system solution
         /// </summary>
         /// <param name="solutionsCount">Solutions count</param>
-        /// <param name="solution">Variables values</param>
-        private SystemSolution(int solutionsCount, FieldElement[] solution)
+        /// <param name="variablesValues">Variables values</param>
+        private SystemSolution(int solutionsCount, FieldElement[] variablesValues)
         {
-            if ((solution == null || solution.Length == 0) && solutionsCount != 0)
-                throw new ArgumentException(nameof(solution));
+            if ((variablesValues == null || variablesValues.Length == 0) && solutionsCount != 0)
+                throw new ArgumentException(nameof(variablesValues));
 
             _solutionsCount = solutionsCount;
-            Solution = solution;
+            VariablesValues = variablesValues;
         }
 
         /// <summary>
@@ -40,7 +40,7 @@
         protected bool Equals(SystemSolution other)
         {
             return _solutionsCount == other._solutionsCount
-                   && (IsEmpty || Solution.SequenceEqual(other.Solution));
+                   && (IsEmpty || VariablesValues.SequenceEqual(other.VariablesValues));
         }
 
         /// <summary>
@@ -64,7 +64,7 @@
         {
             unchecked
             {
-                return (_solutionsCount*397) ^ (!IsEmpty ? Solution.GetHashCode() : 0);
+                return (_solutionsCount*397) ^ (!IsEmpty ? VariablesValues.GetHashCode() : 0);
             }
         }
 
@@ -92,19 +92,19 @@
         /// <summary>
         /// Factory method for single solution creation 
         /// </summary>
-        /// <param name="solution">Variables values</param>
-        public static SystemSolution OneSolution(FieldElement[] solution)
+        /// <param name="variablesValues">Variables values</param>
+        public static SystemSolution OneSolution(FieldElement[] variablesValues)
         {
-            return new SystemSolution(1, solution);
+            return new SystemSolution(1, variablesValues);
         }
 
         /// <summary>
         /// Factory method for infinite solutions set creation
         /// </summary>
-        /// <param name="solution">One of possible values of variables</param>
-        public static SystemSolution InfiniteSolution(FieldElement[] solution)
+        /// <param name="variablesValues">One of possible values of variables</param>
+        public static SystemSolution InfiniteSolution(FieldElement[] variablesValues)
         {
-            return new SystemSolution(int.MaxValue, solution);
+            return new SystemSolution(int.MaxValue, variablesValues);
         }
     }
 }
