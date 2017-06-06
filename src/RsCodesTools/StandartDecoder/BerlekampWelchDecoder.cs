@@ -64,7 +64,7 @@
         private Polynomial ComputeInformationPolynomial(int k, int errorsCount, Tuple<FieldElement[,], FieldElement[]> equationsSystem)
         {
             var solution = _linearSystemSolver.Solve(equationsSystem.Item1, equationsSystem.Item2);
-            if(solution.IsEmpty || solution.VariablesValues.All(x=>x.Representation == 0))
+            if(solution.IsEmpty)
                 throw new InformationPolynomialWasNotFoundException();
 
             var field = solution.VariablesValues[0].Field;
