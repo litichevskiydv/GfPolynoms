@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using Encoder;
     using GfAlgorithms.LinearSystemSolver;
     using GfPolynoms;
     using GfPolynoms.Extensions;
@@ -16,17 +17,6 @@
 
         [UsedImplicitly]
         public static readonly IEnumerable<object[]> DecoderTestsData;
-
-        private static Tuple<FieldElement, FieldElement>[] GenerateCodeword(Polynomial informationPolynomial)
-        {
-            var field = informationPolynomial.Field;
-            var codeword = new Tuple<FieldElement, FieldElement>[field.Order - 1];
-            for (var i = 1; i < field.Order; i++)
-                codeword[i - 1] = new Tuple<FieldElement, FieldElement>(new FieldElement(field, i),
-                    new FieldElement(field, informationPolynomial.Evaluate(i)));
-
-            return codeword;
-        }
 
         private static Tuple<FieldElement, FieldElement>[] AddRandomNoise(Tuple<FieldElement, FieldElement>[] codeword, int errorsCount)
         {
@@ -51,22 +41,22 @@
             return codeword;
         }
 
-        private static object[] PrepareTestsWithErrors(int n, int k, Polynomial informationPolynomial, int randomErrorsCount)
+        private static object[] PrepareTestsWithErrors(int n, int k, IEncoder encoder, Polynomial informationPolynomial, int randomErrorsCount)
         {
             return new object[]
                    {
                        n, k,
-                       AddRandomNoise(GenerateCodeword(informationPolynomial), randomErrorsCount), randomErrorsCount,
+                       AddRandomNoise(encoder.Encode(n, informationPolynomial), randomErrorsCount), randomErrorsCount,
                        informationPolynomial
                    };
         }
 
-        private static object[] PrepareTestsDataWithoutErrors(int n, int k, Polynomial informationPolynomial, int errorsCount)
+        private static object[] PrepareTestsDataWithoutErrors(int n, int k, IEncoder encoder, Polynomial informationPolynomial, int errorsCount)
         {
             return new object[]
                    {
                        n, k,
-                       GenerateCodeword(informationPolynomial), errorsCount,
+                       encoder.Encode(n, informationPolynomial), errorsCount,
                        informationPolynomial
                    };
         }
@@ -75,15 +65,16 @@
         {
             var gf8 = new PrimePowerOrderField(8, new Polynomial(new PrimeOrderField(2), 1, 1, 0, 1));
             var gf9 = new PrimePowerOrderField(9, new Polynomial(new PrimeOrderField(3), 1, 0, 1));
+            var encoder = new Encoder();
 
             DecoderTestsData = new[]
                                {
-                                   PrepareTestsWithErrors(7, 3, new Polynomial(gf8, 1, 2, 3), 2),
-                                   PrepareTestsWithErrors(7, 3, new Polynomial(gf8, 7, 4, 1), 2),
-                                   PrepareTestsWithErrors(7, 3, new Polynomial(gf8, 0, 2), 1),
-                                   PrepareTestsWithErrors(7, 3, new Polynomial(gf8, 0, 0, 3), 1),
-                                   PrepareTestsWithErrors(8, 5, new Polynomial(gf9, 0, 0, 3, 1, 1), 1),
-                                   PrepareTestsDataWithoutErrors(8, 5, new Polynomial(gf9, 0, 0, 3, 1, 1), 1)
+                                   PrepareTestsWithErrors(7, 3, encoder, new Polynomial(gf8, 1, 2, 3), 2),
+                                   PrepareTestsWithErrors(7, 3, encoder, new Polynomial(gf8, 7, 4, 1), 2),
+                                   PrepareTestsWithErrors(7, 3, encoder, new Polynomial(gf8, 0, 2), 1),
+                                   PrepareTestsWithErrors(7, 3, encoder, new Polynomial(gf8, 0, 0, 3), 1),
+                                   PrepareTestsWithErrors(8, 5, encoder, new Polynomial(gf9, 0, 0, 3, 1, 1), 1),
+                                   PrepareTestsDataWithoutErrors(8, 5, encoder, new Polynomial(gf9, 0, 0, 3, 1, 1), 1)
                                };
         }
 
@@ -112,7 +103,7 @@
             const int k = 5;
             const int errorsCount = 1;
             var informationPolynomial = new Polynomial(gf9);
-            var decodedCodeword = AddNoise(GenerateCodeword(informationPolynomial), 1, 2);
+            var decodedCodeword = AddNoise(new Encoder().Encode(n, informationPolynomial), 1, 2);
 
             // When, Then
             Assert.Throws<InformationPolynomialWasNotFoundException>(() => _decoder.Decode(n, k, decodedCodeword, errorsCount));

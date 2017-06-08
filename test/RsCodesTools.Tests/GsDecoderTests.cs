@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using Encoder;
     using GfAlgorithms.CombinationsCountCalculator;
     using GfPolynoms;
     using GfPolynoms.Extensions;
@@ -19,17 +20,6 @@
 
         [UsedImplicitly]
         public static readonly IEnumerable<object[]> DecoderTestsData;
-
-        private static Tuple<FieldElement, FieldElement>[] GenerateCodeword(Polynomial informationPolynomial)
-        {
-            var field = informationPolynomial.Field;
-            var codeword = new Tuple<FieldElement, FieldElement>[field.Order - 1];
-            for (var i = 1; i < field.Order; i++)
-                codeword[i - 1] = new Tuple<FieldElement, FieldElement>(new FieldElement(field, i),
-                    new FieldElement(field, informationPolynomial.Evaluate(i)));
-
-            return codeword;
-        }
 
         private static Tuple<FieldElement, FieldElement>[] AddRandomNoise(Tuple<FieldElement, FieldElement>[] codeword, int errorsCount)
         {
@@ -54,22 +44,22 @@
             return codeword;
         }
 
-        private static object[] PrepareTestsData(int n, int k, Polynomial informationPolynomial, int randomErrorsCount)
+        private static object[] PrepareTestsData(int n, int k, IEncoder encoder, Polynomial informationPolynomial, int randomErrorsCount)
         {
             return new object[]
                    {
                        n, k,
-                       AddRandomNoise(GenerateCodeword(informationPolynomial), randomErrorsCount), n - randomErrorsCount,
+                       AddRandomNoise(encoder.Encode(n, informationPolynomial), randomErrorsCount), n - randomErrorsCount,
                        informationPolynomial
                    };
         }
 
-        private static object[] PrepareTestsData(int n, int k, Polynomial informationPolynomial, params int[] errorsPositions)
+        private static object[] PrepareTestsData(int n, int k, IEncoder encoder, Polynomial informationPolynomial, params int[] errorsPositions)
         {
             return new object[]
                    {
                        n, k,
-                       AddNoise(GenerateCodeword(informationPolynomial), errorsPositions), n - errorsPositions.Length,
+                       AddNoise(encoder.Encode(n, informationPolynomial), errorsPositions), n - errorsPositions.Length,
                        informationPolynomial
                    };
         }
@@ -78,15 +68,16 @@
         {
             var gf8 = new PrimePowerOrderField(8, new Polynomial(new PrimeOrderField(2), 1, 1, 0, 1));
             var gf9 = new PrimePowerOrderField(9, new Polynomial(new PrimeOrderField(3), 1, 0, 1));
+            var encoder = new Encoder();
 
             DecoderTestsData = new[]
                                {
-                                   PrepareTestsData(7, 3, new Polynomial(gf8, 1, 2, 3), 2, 3, 6),
-                                   PrepareTestsData(7, 3, new Polynomial(gf8, 1, 2, 3), 3),
-                                   PrepareTestsData(7, 3, new Polynomial(gf8, 7, 4, 1), 3),
-                                   PrepareTestsData(7, 3, new Polynomial(gf8, 0, 2), 3),
-                                   PrepareTestsData(7, 3, new Polynomial(gf8, 0, 0, 3), 3),
-                                   PrepareTestsData(8, 5, new Polynomial(gf9, 0, 0, 3, 1, 1), 2)
+                                   PrepareTestsData(7, 3, encoder, new Polynomial(gf8, 1, 2, 3), 2, 3, 6),
+                                   PrepareTestsData(7, 3, encoder, new Polynomial(gf8, 1, 2, 3), 3),
+                                   PrepareTestsData(7, 3, encoder, new Polynomial(gf8, 7, 4, 1), 3),
+                                   PrepareTestsData(7, 3, encoder, new Polynomial(gf8, 0, 2), 3),
+                                   PrepareTestsData(7, 3, encoder, new Polynomial(gf8, 0, 0, 3), 3),
+                                   PrepareTestsData(8, 5, encoder, new Polynomial(gf9, 0, 0, 3, 1, 1), 2)
                                };
         }
 
