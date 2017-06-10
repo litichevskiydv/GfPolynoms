@@ -24,7 +24,7 @@
         /// <param name="decodedCodeword">Recived codeword for decoding</param>
         /// <param name="errorsCount">Errors count</param>
         /// <returns>Generated system</returns>
-        private Tuple<FieldElement[,], FieldElement[]> BuildEquationsSystem(
+        private static Tuple<FieldElement[,], FieldElement[]> BuildEquationsSystem(
             int k, 
             IReadOnlyList<Tuple<FieldElement, FieldElement>> decodedCodeword,
             int errorsCount)
@@ -91,13 +91,14 @@
         /// <param name="decodedCodeword">Recived codeword for decoding</param>
         /// <param name="errorsCount">Errors count</param>
         /// <returns>Decoding result</returns>
-        public Polynomial Decode(int n, int k, Tuple<FieldElement, FieldElement>[] decodedCodeword, int errorsCount)
+        public Polynomial Decode(int n, int k, Tuple<FieldElement, FieldElement>[] decodedCodeword, int? errorsCount = null)
         {
-            if (errorsCount > (n - k) / 2)
+            var actualErrorsCount = errorsCount ?? (n - k) / 2;
+            if (actualErrorsCount > (n - k) / 2)
                 throw new InvalidOperationException("Errors count is too high");
 
-            var equationsSystem = BuildEquationsSystem(k, decodedCodeword, errorsCount);
-            return ComputeInformationPolynomial(k, errorsCount, equationsSystem);
+            var equationsSystem = BuildEquationsSystem(k, decodedCodeword, actualErrorsCount);
+            return ComputeInformationPolynomial(k, actualErrorsCount, equationsSystem);
         }
 
         /// <summary>

@@ -16,6 +16,6 @@
         /// <param name="decodedCodeword">Recived codeword for decoding</param>
         /// <param name="errorsCount">Errors count</param>
         /// <returns>Decoding result</returns>
-        Polynomial Decode(int n, int k, Tuple<FieldElement, FieldElement>[] decodedCodeword, int errorsCount);
+        Polynomial Decode(int n, int k, Tuple<FieldElement, FieldElement>[] decodedCodeword, int? errorsCount = null);
     }
 }
