@@ -3,14 +3,14 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using Encoder;
+    using Decoding.ListDecoderForFixedDistanceCodes;
+    using Encoding;
     using GfAlgorithms.CombinationsCountCalculator;
     using GfAlgorithms.LinearSystemSolver;
     using GfPolynoms;
     using GfPolynoms.Extensions;
     using GfPolynoms.GaloisFields;
     using JetBrains.Annotations;
-    using ListDecoderForFixedDistanceCodes;
     using RsCodesTools.ListDecoder;
     using RsCodesTools.ListDecoder.GsDecoderDependencies.InterpolationPolynomialBuilder;
     using RsCodesTools.ListDecoder.GsDecoderDependencies.InterpolationPolynomialFactorisator;

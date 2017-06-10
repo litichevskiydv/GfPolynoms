@@ -20,9 +20,9 @@
     using RsCodesTools.ListDecoder;
     using RsCodesTools.ListDecoder.GsDecoderDependencies.InterpolationPolynomialBuilder;
     using RsCodesTools.ListDecoder.GsDecoderDependencies.InterpolationPolynomialFactorisator;
-    using WaveletCodesTools.Encoder;
+    using WaveletCodesTools.Decoding.ListDecoderForFixedDistanceCodes;
+    using WaveletCodesTools.Encoding;
     using WaveletCodesTools.GeneratingPolynomialsBuilder;
-    using WaveletCodesTools.ListDecoderForFixedDistanceCodes;
 
     [UsedImplicitly]
     public class Program

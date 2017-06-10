@@ -1,4 +1,4 @@
-﻿namespace AppliedAlgebra.WaveletCodesTools.ListDecoderForFixedDistanceCodes.GsBasedDecoderDependencies
+﻿namespace AppliedAlgebra.WaveletCodesTools.Decoding.ListDecoderForFixedDistanceCodes.GsBasedDecoderDependencies
 {
     using System;
     using System.Collections.Concurrent;

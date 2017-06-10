@@ -23,4 +23,8 @@
     <ProjectReference Include="..\RsCodesTools\RsCodesTools.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="ListDecoderForFixedDistanceCodes\GsBasedDecoderDependencies\" />
+  </ItemGroup>
+
 </Project>

@@ -1,4 +1,4 @@
-﻿namespace AppliedAlgebra.WaveletCodesTools.ListDecoderForFixedDistanceCodes
+﻿namespace AppliedAlgebra.WaveletCodesTools.Decoding.ListDecoderForFixedDistanceCodes
 {
     using System;
     using GfPolynoms;

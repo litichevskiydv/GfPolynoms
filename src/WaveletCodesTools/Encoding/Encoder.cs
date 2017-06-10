@@ -1,4 +1,4 @@
-﻿namespace AppliedAlgebra.WaveletCodesTools.Encoder
+﻿namespace AppliedAlgebra.WaveletCodesTools.Encoding
 {
     using System;
     using GfPolynoms;

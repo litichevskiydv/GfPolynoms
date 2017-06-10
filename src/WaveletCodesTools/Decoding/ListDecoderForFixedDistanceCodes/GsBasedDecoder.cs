@@ -1,4 +1,4 @@
-﻿namespace AppliedAlgebra.WaveletCodesTools.ListDecoderForFixedDistanceCodes
+﻿namespace AppliedAlgebra.WaveletCodesTools.Decoding.ListDecoderForFixedDistanceCodes
 {
     using System;
     using System.Collections.Generic;
@@ -110,7 +110,7 @@
 
                 var systemSolution = _linearSystemSolver.Solve(linearSystemMatrix, valuesVector);
                 if (systemSolution.IsEmpty == false)
-                    correctPolynomials.Add(new Polynomial(field, systemSolution.VariablesValues.Select(x => x.Representation).ToArray()));
+                    correctPolynomials.Add(new Polynomial(field, Enumerable.Select<FieldElement, int>(systemSolution.VariablesValues, x => x.Representation).ToArray()));
             }
 
             return correctPolynomials.ToArray();

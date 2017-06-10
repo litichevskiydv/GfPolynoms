@@ -7,7 +7,7 @@
     using System.Text;
     using System.Threading;
     using GfPolynoms;
-    using WaveletCodesTools.ListDecoderForFixedDistanceCodes.GsBasedDecoderDependencies;
+    using WaveletCodesTools.Decoding.ListDecoderForFixedDistanceCodes.GsBasedDecoderDependencies;
 
     public class GsBasedDecoderTelemetryCollectorForGsBasedDecoder : IGsBasedDecoderTelemetryCollector
     {
