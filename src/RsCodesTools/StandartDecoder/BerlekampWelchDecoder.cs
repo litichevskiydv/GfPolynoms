@@ -10,7 +10,7 @@
     /// <summary>
     /// Implementation of Reed-Solomon codes decoder based on Berlekamp-Welch algorithm
     /// </summary>
-    public class BerlekampWelchDecoder : IStandartDecoder
+    public class BerlekampWelchDecoder : IStandardDecoder
     {
         /// <summary>
         /// Implementation of linear equations system solver contract

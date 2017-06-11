@@ -32,15 +32,6 @@
             return codeword;
         }
 
-        private static Tuple<FieldElement, FieldElement>[] AddNoise(Tuple<FieldElement, FieldElement>[] codeword, params int[] errorsPositions)
-        {
-            var one = codeword[0].Item1.Field.One();
-            foreach (var errorPosition in errorsPositions)
-                codeword[errorPosition].Item2.Add(one);
-
-            return codeword;
-        }
-
         private static object[] PrepareTestsWithErrors(int n, int k, IEncoder encoder, Polynomial informationPolynomial, int randomErrorsCount)
         {
             return new object[]
@@ -103,7 +94,7 @@
             const int k = 5;
             const int errorsCount = 1;
             var informationPolynomial = new Polynomial(gf9);
-            var decodedCodeword = AddNoise(new Encoder().Encode(n, informationPolynomial), 1, 2);
+            var decodedCodeword = AddRandomNoise(new Encoder().Encode(n, informationPolynomial), errorsCount + 1);
 
             // When, Then
             Assert.Throws<InformationPolynomialWasNotFoundException>(() => _decoder.Decode(n, k, decodedCodeword, errorsCount));
