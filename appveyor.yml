@@ -10,15 +10,14 @@ assembly_info:
   assembly_version: 1.0.0
   assembly_file_version: '{version}'
   assembly_informational_version: 1.0
+environment:
+  VersionSuffix: beta2
 nuget:
   project_feed: true
 build_script:
-- cmd: >-
-    call build\BuildSolution.bat %CONFIGURATION%
+- ps: >-
+    cd build
 
-    call build\CreatePackages.bat %CONFIGURATION% beta2-build%APPVEYOR_BUILD_NUMBER%
-test_script:
-- cmd: call build\CalculateCoverage.bat
+    .\build.ps1 -target CalculateCoverage
 artifacts:
-- path: src\**\*.nupkg
-deploy: off
+- path: build\artifacts\*.nupkg
