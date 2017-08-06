@@ -1,3 +1,3 @@
-# GfPolynoms  [![Build status](https://ci.appveyor.com/api/projects/status/ejke99qcyyuqc471/branch/master?svg=true)](https://ci.appveyor.com/project/litichevskiydv/gfpolynoms/branch/master) [![codecov](https://codecov.io/gh/litichevskiydv/GfPolynoms/branch/master/graph/badge.svg)](https://codecov.io/gh/litichevskiydv/GfPolynoms)
+# GfPolynoms  [![Build status](https://ci.appveyor.com/api/projects/status/ejke99qcyyuqc471/branch/master?svg=true)](https://ci.appveyor.com/project/litichevskiydv/gfpolynoms/branch/master) [![Build Status](https://travis-ci.org/litichevskiydv/GfPolynoms.svg?branch=master)](https://travis-ci.org/litichevskiydv/GfPolynoms) [![codecov](https://codecov.io/gh/litichevskiydv/GfPolynoms/branch/master/graph/badge.svg)](https://codecov.io/gh/litichevskiydv/GfPolynoms)
 
 GfPolynoms is a library for researches and experiments with finite fields.
