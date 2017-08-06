@@ -99,6 +99,7 @@ Task("Test")
                 project.FullPath,
                 "xunit",
                 new ProcessArgumentBuilder() 
+                    .Append("-configuration " + configuration)
                     .Append("-nobuild")
                     .Append("-xml " + artifactsDirectory.CombineWithFilePath(project.GetFilenameWithoutExtension()).FullPath + ".xml")
                 );
