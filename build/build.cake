@@ -76,7 +76,7 @@ Task("Pack")
                 project.GetDirectory().FullPath,
                 new DotNetCorePackSettings()
                 {
-                    Configuration = configuration
+                    Configuration = configuration,
                     NoBuild = true,
                     OutputDirectory = artifactsDirectory,
                     IncludeSymbols = true,
