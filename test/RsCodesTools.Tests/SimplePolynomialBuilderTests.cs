@@ -88,7 +88,7 @@
 
             // Then
             foreach (var root in roots)
-                Assert.Equal(polynomial.Evaluate(root.Item1, root.Item2).Representation, 0);
+                Assert.Equal(0, polynomial.Evaluate(root.Item1, root.Item2).Representation);
         }
 
         [Theory]
