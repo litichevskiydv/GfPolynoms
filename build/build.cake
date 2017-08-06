@@ -50,7 +50,7 @@ Task("Restore")
     .IsDependentOn("Restore")
     .Does(() =>
     {
-        var projects = GetFiles("../**/*.csproj", x => x.Path.FullPath.Contains("build") == false);
+        var projects = GetFiles("../src/**/*.csproj").Concat(GetFiles("../test/**/*.csproj"));
         foreach(var project in projects)
         {
             DotNetCoreBuild(
@@ -99,7 +99,6 @@ Task("Test")
                 project.FullPath,
                 "xunit",
                 new ProcessArgumentBuilder() 
-                    .Append("-configuration " + configuration)
                     .Append("-nobuild")
                     .Append("-xml " + artifactsDirectory.CombineWithFilePath(project.GetFilenameWithoutExtension()).FullPath + ".xml")
                 );
