@@ -1,17 +1,17 @@
-version: 1.0.0.{build}
+version: $(ShortVersion).{build}
 branches:
   only:
   - master
 image: Visual Studio 2017
 configuration: Release
-assembly_info:
+dotnet_csproj:
   patch: true
-  file: '**\AssemblyInfo.*'
-  assembly_version: 1.0.0
-  assembly_file_version: '{version}'
-  assembly_informational_version: 1.0
+  file: '**\*.csproj'
+  version: $(ShortVersion)-$(VersionSuffix)-build{build}
+  package_version: '{version}'
 environment:
   VersionSuffix: beta2
+  ShortVersion: 1.0.0
 nuget:
   project_feed: true
 build_script:
