@@ -110,7 +110,7 @@ Task("Test")
 // Look under a 'test' folder and calculate tests against all of those projects.
 // Then drop the XML test results file in the artifacts folder at the root.
 #tool "nuget:?package=OpenCover"
-#tool "nuget:?package=Codecov"
+#tool "nuget:?package=Codecov&version=1.0.1"
 #addin "nuget:?package=Cake.Codecov"
 Task("CalculateCoverage")
     .IsDependentOn("Pack")
