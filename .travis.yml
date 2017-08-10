@@ -4,9 +4,9 @@ os:
   - osx
 env:
   global:
-    - CONFIGURATION=Release
-    - SHORTVERSION=1.0.0
-    - VERSIONSUFFIX=beta2
+    - Configuration=Release
+    - ShortVersion=1.0.0
+    - VersionSuffix=beta2
 mono: latest
 dotnet: 1.0.4
 script:
