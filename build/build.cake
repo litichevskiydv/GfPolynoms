@@ -49,9 +49,10 @@ Task("Clean")
     {
         if(string.IsNullOrWhiteSpace(shortVersion) == false)
         {
-            var packageVersion = shortVersion + string.IsNullOrWhiteSpace(versionSuffix) == false 
-                                        ? string.Format("-{0}-build{1}", versionSuffix, buildNumber)
-                                        : "";
+            var packageVersion = shortVersion 
+            + (string.IsNullOrWhiteSpace(versionSuffix) == false 
+                 ? string.Format("-{0}-build{1}", versionSuffix, buildNumber)
+                 : "");
             var fullVersion = string.Format("{0}.{1}", shortVersion, buildNumber);
 
             var projects = GetFiles("../src/**/*.csproj").Concat(GetFiles("../test/**/*.csproj"));
