@@ -5,6 +5,7 @@ os:
 env:
   global:
     - CONFIGURATION=Release
+    - SHORTVERSION=1.0.0
     - VERSIONSUFFIX=beta2
 mono: latest
 dotnet: 1.0.4
