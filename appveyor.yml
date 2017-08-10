@@ -4,11 +4,6 @@ branches:
   - master
 image: Visual Studio 2017
 configuration: Release
-dotnet_csproj:
-  patch: true
-  file: '**\*.csproj'
-  version: $(ShortVersion)-$(VersionSuffix)-build{build}
-  package_version: '{version}'
 environment:
   VersionSuffix: beta2
   ShortVersion: 1.0.0
