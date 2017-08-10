@@ -82,9 +82,12 @@ Task("Restore")
         var projects = GetFiles("../src/**/*.csproj").Concat(GetFiles("../test/**/*.csproj"));
         foreach(var project in projects)
         {
-            TransformTextFile(project.FullPath, ">", "<")
-                .WithToken("portable", ">full<")
-                .Save(project.FullPath);
+           DotNetCoreBuild(
+                project.GetDirectory().FullPath,
+                new DotNetCoreBuildSettings()
+                {
+                    Configuration = configuration
+                });
         }
     });
 
@@ -105,10 +108,7 @@ Task("Pack")
                     Configuration = configuration,
                     NoBuild = true,
                     OutputDirectory = artifactsDirectory,
-                    IncludeSymbols = true,
-                    VersionSuffix = string.IsNullOrWhiteSpace(versionSuffix) == false 
-                                        ? string.Format("{0}-build{1}", versionSuffix, buildNumber)
-                                        : null
+                    IncludeSymbols = true
                 });
         }
     });
