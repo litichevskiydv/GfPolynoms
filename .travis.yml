@@ -8,7 +8,7 @@ env:
     - ShortVersion=1.0.0
     - VersionSuffix=beta2
 mono: latest
-dotnet: 1.0.4
+dotnet: 2.0.0
 script:
  - set -e
  - cd build

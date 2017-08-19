@@ -66,17 +66,9 @@ Task("Clean")
         }
     });
  
-// Run dotnet restore to restore all package references.
-Task("Restore")
-    .IsDependentOn("SetVersion")
-    .Does(() =>
-    {
-        DotNetCoreRestore("..");
-    });
- 
 // Find all csproj projects and build them using the build configuration specified as an argument.
  Task("Build")
-    .IsDependentOn("Restore")
+    .IsDependentOn("SetVersion")
     .Does(() =>
     {
         var projects = GetFiles("../src/**/*.csproj").Concat(GetFiles("../test/**/*.csproj"));
