@@ -107,7 +107,7 @@
             var possibleVariants = _decoder.Decode(n, k, d, generatingPolynomial, decodedCodeword, minCorrectValuesCount);
 
             // Then
-            Assert.True(possibleVariants.Contains(expectedInformationPolynomial));
+            Assert.Contains(expectedInformationPolynomial, possibleVariants);
         }
     }
 }
