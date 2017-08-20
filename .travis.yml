@@ -1,7 +1,9 @@
 language: csharp
-os:
-  - linux
-  - osx
+matrix:
+  include:
+    - os: linux
+    - os: osx
+      osx_image: xcode8.3
 env:
   global:
     - Configuration=Release
