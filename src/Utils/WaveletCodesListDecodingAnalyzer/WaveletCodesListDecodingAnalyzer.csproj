@@ -11,8 +11,6 @@
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
     <RootNamespace>AppliedAlgebra.WaveletCodesListDecodingAnalyzer</RootNamespace>
-	  <Version>1.0.0</Version>
-    <AssemblyVersion>1.0.0.0</AssemblyVersion>
   </PropertyGroup>
 
   <ItemGroup>
