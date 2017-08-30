@@ -8,7 +8,7 @@ env:
   global:
     - Configuration=Release
     - ShortVersion=1.0.0
-    - VersionSuffix=beta2
+    - VersionSuffix=
 mono: latest
 dotnet: 2.0.0
 script:
