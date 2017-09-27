@@ -14,4 +14,4 @@ dotnet: 2.0.0
 script:
  - set -e
  - cd build
- - ./build.sh
+ - ./build.sh --settings_skipverification=true
