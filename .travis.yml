@@ -9,7 +9,7 @@ env:
     - Configuration=Release
     - ShortVersion=1.0.0
     - VersionSuffix=
-mono: latest
+mono: none
 dotnet: 2.0.0
 script:
  - set -e
