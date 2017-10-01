@@ -34,7 +34,9 @@ dotnet add "$TEMP_PROJECT" package --package-directory "$TOOLS_DIR" Cake.CoreCLR
 rm -rf tmp
 CAKE_PATH=$(find "$TOOLS_DIR" -name Cake.dll | sort -r | head -1)
 
-curl -sSL https://dot.net/v1/dotnet-install.sh | bash /dev/stdin --version 1.0.4 --install-dir "$CLI_DIR"
+if [ ! -f "$DOTNET_PATH" ]; then
+    curl -sSL https://dot.net/v1/dotnet-install.sh | bash /dev/stdin --version 1.0.4 --install-dir "$CLI_DIR"
+fi
 
 if $SHOW_VERSION; then
     exec "$DOTNET_PATH" "$CAKE_PATH" --version
