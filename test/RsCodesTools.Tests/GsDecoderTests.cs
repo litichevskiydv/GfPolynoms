@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using Encoder;
     using GfAlgorithms.CombinationsCountCalculator;
     using GfPolynoms;
