@@ -32,9 +32,10 @@
         private Polynomial FindLiftingPolynomial(Polynomial h, Polynomial g, int equationsCount, int variablesCount)
         {
             var field = h.Field;
+            var correctedEquationsCount = Math.Max(equationsCount, variablesCount);
 
-            var linearSystemMatrix = new FieldElement[equationsCount, variablesCount];
-            for (var i = 0; i < equationsCount; i++)
+            var linearSystemMatrix = new FieldElement[correctedEquationsCount, variablesCount];
+            for (var i = 0; i < variablesCount; i++)
             {
                 var sample = new FieldElement(field, field.GetGeneratingElementPower(i));
                 var sampleSqr = sample * sample;
@@ -47,13 +48,15 @@
                 }
             }
 
-            var valuesVector = new FieldElement[equationsCount];
-            for (var i = 0; i < equationsCount; i++)
+            var valuesVector = new FieldElement[correctedEquationsCount];
+            for (var i = 0; i < correctedEquationsCount; i++)
             {
                 var sample = new FieldElement(field, field.GetGeneratingElementPower(i));
                 valuesVector[i] = new FieldElement(field, field.InverseForAddition(h.Evaluate(sample.Representation)))
-                                  + sample*sample*new FieldElement(field, field.InverseForAddition(g.Evaluate(sample.Representation)));
+                                  + sample * sample * new FieldElement(field, field.InverseForAddition(g.Evaluate(sample.Representation)));
             }
+            for (var i = equationsCount; i < correctedEquationsCount; i++)
+                valuesVector[i] += field.One();
 
             var systemSolution = _linearSystemSolver.Solve(linearSystemMatrix, valuesVector);
             if(systemSolution.IsEmpty)
@@ -92,14 +95,16 @@
             var nonZeroValuesCount = 0;
 
             var i = 0;
+            var j = n - 1;
             for (; i < n && generatingPolynomial.Evaluate(field.GetGeneratingElementPower(i)) == 0; i++)
                 zeroValuesCount++;
-            for (; i < n && generatingPolynomial.Evaluate(field.GetGeneratingElementPower(i)) != 0; i++)
-                nonZeroValuesCount++;
-            for (; i < n && generatingPolynomial.Evaluate(field.GetGeneratingElementPower(i)) == 0; i++)
+            for (; j > i && generatingPolynomial.Evaluate(field.GetGeneratingElementPower(j)) == 0; j--)
                 zeroValuesCount++;
+            for (; i <= j; i++)
+                if (generatingPolynomial.Evaluate(field.GetGeneratingElementPower(i)) != 0)
+                    nonZeroValuesCount++;
 
-            if (zeroValuesCount != d - 1 || nonZeroValuesCount != n - d + 1)
+            if (zeroValuesCount < d - 1 || n % 2 == 0 && nonZeroValuesCount < n / 2 || n % 2 == 1 && nonZeroValuesCount < (n - 1) / 2)
                 throw new InvalidOperationException("Generating polynomial is incorrect");
             return generatingPolynomial;
         }
@@ -115,13 +120,13 @@
         {
             if (n <= 0)
                 throw new ArgumentException(nameof(n));
-            if (d <= 1 || d > n/2 + 1)
+            if (d <= 1 || n % 2 == 0 && d > n / 2 + 1 || n % 2 == 1 && d > (n + 1) / 2 + 1)
                 throw new ArgumentException(nameof(d));
             if (h == null)
                 throw new ArgumentNullException(nameof(h));
 
             var g = _complementaryFiltersBuilder.Build(h, n);
-            var liftingPolynomial = FindLiftingPolynomial(h, g, d - 1, n / 2);
+            var liftingPolynomial = FindLiftingPolynomial(h, g, d - 1, n % 2 == 0 ? n / 2 : (n - 1) / 2);
             var generatingPolynomial = ReconstructGeneratingPolynomial(h, g, liftingPolynomial, n);
             return CheckGeneratigPolynomial(n, d, generatingPolynomial);
         }

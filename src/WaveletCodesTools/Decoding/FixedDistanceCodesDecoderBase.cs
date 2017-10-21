@@ -74,11 +74,12 @@
             Tuple<FieldElement, FieldElement>[] decodedCodeword, Polynomial frequencyDecodingResult)
         {
             var field = generatingPolynomial.Field;
+            var firstSampleNumber = Math.Min(generationPolynomialLeadZeroValuesCount, d - 1);
 
             var linearSystemMatrix = new FieldElement[n - d + 1, k];
             for (var i = 0; i < n - d + 1; i++)
             {
-                var sample = decodedCodeword[i + generationPolynomialLeadZeroValuesCount].Item1;
+                var sample = decodedCodeword[i + firstSampleNumber].Item1;
                 var sampleSqr = sample * sample;
                 var samplePower = field.One();
                 var correction = new FieldElement(field, generatingPolynomial.Evaluate(sample.Representation));

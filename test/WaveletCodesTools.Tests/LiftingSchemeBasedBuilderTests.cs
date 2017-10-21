@@ -19,6 +19,7 @@
 
         static LiftingSchemeBasedBuilderTests()
         {
+            var gf8 = new PrimePowerOrderField(8, new Polynomial(new PrimeOrderField(2), 1, 1, 0, 1));
             var gf9 = new PrimePowerOrderField(9, new Polynomial(new PrimeOrderField(3), 1, 0, 1));
             var gf11 = new PrimeOrderField(11);
             var gf13 = new PrimeOrderField(13);
@@ -27,6 +28,10 @@
             BuildTestsData =
                 new[]
                 {
+                    new object[]
+                    {
+                        7, 3, new Polynomial(gf8, 3, 2, 7, 6, 4, 2)
+                    },
                     new object[]
                     {
                         8, 4, new Polynomial(gf9, 1, 2, 3, 2, 2, 3, 2, 1)
@@ -68,14 +73,16 @@
             var nonZeroValuesCount = 0;
 
             var i = 0;
+            var j = n - 1;
             for (; i < n && generatingPolynomial.Evaluate(field.GetGeneratingElementPower(i)) == 0; i++)
                 zeroValuesCount++;
-            for (; i < n && generatingPolynomial.Evaluate(field.GetGeneratingElementPower(i)) != 0; i++)
-                nonZeroValuesCount++;
-            for (; i < n && generatingPolynomial.Evaluate(field.GetGeneratingElementPower(i)) == 0; i++)
+            for (; j > i && generatingPolynomial.Evaluate(field.GetGeneratingElementPower(j)) == 0; j--)
                 zeroValuesCount++;
+            for (; i <= j; i++)
+                if (generatingPolynomial.Evaluate(field.GetGeneratingElementPower(i)) != 0)
+                    nonZeroValuesCount++;
 
-            Assert.True(d - 1 == zeroValuesCount && n - d + 1 == nonZeroValuesCount);
+            Assert.True(d - 1 <= zeroValuesCount && (n % 2 == 0 && nonZeroValuesCount >= n / 2 || n % 2 == 1 && nonZeroValuesCount >= (n - 1) / 2));
         }
     }
 }

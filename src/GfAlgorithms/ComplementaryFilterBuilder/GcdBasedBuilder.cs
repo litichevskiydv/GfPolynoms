@@ -17,8 +17,8 @@
         /// </summary>
         private static Polynomial InvertGcdInPolynomialsRing(Polynomial gcd, int modularPolynomialDegree)
         {
-            return new Polynomial(gcd.Field, gcd.Field.InverseForMultiplication(gcd[gcd.Degree]))
-                .RightShift((modularPolynomialDegree - gcd.Degree)%modularPolynomialDegree);
+            var result = new Polynomial(gcd.Field, gcd.Field.InverseForMultiplication(gcd[gcd.Degree]));
+            return gcd.Degree == 0 ? result : result.RightShift((modularPolynomialDegree - gcd.Degree) % modularPolynomialDegree);
         }
 
         /// <summary>
@@ -40,7 +40,7 @@
             var field = sourceFilter.Field;
             var complementaryFilterEvenComponent = new Polynomial(field);
             var complementaryFilterOddComponent = field.Pow(field.InverseForAddition(1), gcdWithQuotients.Quotients.Length)
-                                                  *InvertGcdInPolynomialsRing(gcdWithQuotients.Gcd, maxFilterLength/2);
+                                                  * InvertGcdInPolynomialsRing(gcdWithQuotients.Gcd, (maxFilterLength + 1) / 2);
             for (var i = gcdWithQuotients.Quotients.Length - 1; i > -1; i--)
             {
                 var complementaryFilterEvenComponentOld = complementaryFilterEvenComponent;
@@ -50,11 +50,12 @@
                 complementaryFilterOddComponent = complementaryFilterEvenComponentOld;
             }
 
-            var m = new Polynomial(field, 1).RightShift(maxFilterLength / 2);
+            var m = new Polynomial(field, 1).RightShift(maxFilterLength);
             m[0] = field.InverseForAddition(1);
             return PolynomialsAlgorithmsExtensions.CreateFormPolyphaseComponents(
-                complementaryFilterEvenComponent % m,
-                complementaryFilterOddComponent % m);
+                       complementaryFilterEvenComponent,
+                       complementaryFilterOddComponent
+                   ) % m;
         }
 
         /// <summary>
