@@ -25,38 +25,36 @@
         /// <summary>
         /// Method for finding lifting polynomial for filters pair (<paramref name="h"/>, <paramref name="g"/>)
         /// </summary>
-        /// <param name="n">Codeword length</param>
-        /// <param name="d">Code distance</param>
         /// <param name="h">First filter from the original pair</param>
         /// <param name="g">Second filter from the original pair</param>
+        /// <param name="equationsCount">Equations count</param>
+        /// <param name="variablesCount">Variables count</param>
         /// <returns>Finded lifting polynomial</returns>
-        private Polynomial FindLiftingPolynomial(int n, int d, Polynomial h, Polynomial g)
+        private Polynomial FindLiftingPolynomial(Polynomial h, Polynomial g, int equationsCount, int variablesCount)
         {
             var field = h.Field;
 
-            var linearSystemMatrix = new FieldElement[n/2, n/2];
-            for (var i = 0; i < n/2; i++)
+            var linearSystemMatrix = new FieldElement[equationsCount, variablesCount];
+            for (var i = 0; i < equationsCount; i++)
             {
-                var sample = new FieldElement(field, field.GetGeneratingElementPower(n/2 + i));
+                var sample = new FieldElement(field, field.GetGeneratingElementPower(i));
                 var sampleSqr = sample * sample;
                 var samplePower = field.One();
                 var correction = sampleSqr*new FieldElement(field, h.Evaluate(sample.Representation));
-                for (var j = 0; j < n/2; j++)
+                for (var j = 0; j < variablesCount; j++)
                 {
                     linearSystemMatrix[i, j] = samplePower*correction;
                     samplePower *= sampleSqr;
                 }
             }
 
-            var valuesVector = new FieldElement[n/2];
-            for (var i = 0; i < n/2; i++)
+            var valuesVector = new FieldElement[equationsCount];
+            for (var i = 0; i < equationsCount; i++)
             {
-                var sample = new FieldElement(field, field.GetGeneratingElementPower(n / 2 + i));
+                var sample = new FieldElement(field, field.GetGeneratingElementPower(i));
                 valuesVector[i] = new FieldElement(field, field.InverseForAddition(h.Evaluate(sample.Representation)))
                                   + sample*sample*new FieldElement(field, field.InverseForAddition(g.Evaluate(sample.Representation)));
             }
-            for (var i = 0; i < n/2 - d + 1; i++)
-                valuesVector[i] += field.One();
 
             var systemSolution = _linearSystemSolver.Solve(linearSystemMatrix, valuesVector);
             if(systemSolution.IsEmpty)
@@ -98,27 +96,17 @@
             var field = generatingPolynomial.Field;
 
             var zeroValuesCount = 0;
-            var sequentalNonzeroValuesCount = 0;
-            var firstNonzeroValueMet = false;
-            var lastNonzeroValueMet = false;
-            for (var i = 0; i < n; i++)
-            {
-                if (generatingPolynomial.Evaluate(field.GetGeneratingElementPower(i)) == 0)
-                {
-                    if (firstNonzeroValueMet)
-                        lastNonzeroValueMet = true;
-                    zeroValuesCount++;
-                }
-                else
-                {
-                    if (firstNonzeroValueMet == false)
-                        firstNonzeroValueMet = true;
-                    if (lastNonzeroValueMet == false)
-                        sequentalNonzeroValuesCount++;
-                }
-            }
+            var nonZeroValuesCount = 0;
 
-            if (zeroValuesCount != d - 1 || sequentalNonzeroValuesCount != n - d + 1)
+            var i = 0;
+            for (; i < n && generatingPolynomial.Evaluate(field.GetGeneratingElementPower(i)) == 0; i++)
+                zeroValuesCount++;
+            for (; i < n && generatingPolynomial.Evaluate(field.GetGeneratingElementPower(i)) != 0; i++)
+                nonZeroValuesCount++;
+            for (; i < n && generatingPolynomial.Evaluate(field.GetGeneratingElementPower(i)) == 0; i++)
+                zeroValuesCount++;
+
+            if (zeroValuesCount != d - 1 || nonZeroValuesCount != n - d + 1)
                 throw new InvalidOperationException("Generating polynomial is incorrect");
             return generatingPolynomial;
         }
@@ -128,20 +116,20 @@
         /// </summary>
         /// <param name="n">Codeword length</param>
         /// <param name="d">Code distance</param>
-        /// <param name="sourceFilter">Filter from which generating polynomial will be built</param>
+        /// <param name="h">Filter from which generating polynomial will be built</param>
         /// <returns>Built generating polynomial</returns>
-        public Polynomial Build(int n, int d, Polynomial sourceFilter)
+        public Polynomial Build(int n, int d, Polynomial h)
         {
             if (n <= 0)
                 throw new ArgumentException(nameof(n));
-            if (d <= 0 || d > n/2 + 1)
+            if (d <= 1 || d > n/2 + 1)
                 throw new ArgumentException(nameof(d));
-            if (sourceFilter == null)
-                throw new ArgumentNullException(nameof(sourceFilter));
+            if (h == null)
+                throw new ArgumentNullException(nameof(h));
 
-            var complementaryFilter = _complementaryFiltersBuilder.Build(sourceFilter, n);
-            var liftingPolynomial = FindLiftingPolynomial(n, d, sourceFilter, complementaryFilter);
-            var generatingPolynomial = ReconstructGeneratingPolynomial(sourceFilter, complementaryFilter, liftingPolynomial, n);
+            var g = _complementaryFiltersBuilder.Build(h, n);
+            var liftingPolynomial = FindLiftingPolynomial(h, g, d - 1, n / 2);
+            var generatingPolynomial = ReconstructGeneratingPolynomial(h, g, liftingPolynomial, n);
             return CheckGeneratigPolynomial(n, d, generatingPolynomial);
         }
 

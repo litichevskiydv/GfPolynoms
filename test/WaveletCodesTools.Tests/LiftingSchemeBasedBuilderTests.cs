@@ -24,37 +24,30 @@
             var gf13 = new PrimeOrderField(13);
             var gf27 = new PrimePowerOrderField(27, new Polynomial(new PrimeOrderField(3), 2, 2, 0, 1));
 
-            BuildTestsData = new[]
-                             {
-                                 new object[]
-                                 {
-                                     8, 4, new Polynomial(gf9, 1, 2, 3, 1, 2, 3, 2, 1),
-                                     new Polynomial(gf9, 1, 2, 7, 2, 2, 2, 1, 5, 7)
-                                 },
-                                 new object[]
-                                 {
-                                     10, 6, new Polynomial(gf11, 0, 0, 0, 0, 0, 10, 5, 4, 3, 4),
-                                     new Polynomial(gf11, 0, 0, 7, 3, 4, 1, 8, 1, 8, 2, 7, 5)
-                                 },
-                                 new object[]
-                                 {
-                                     10, 5, new Polynomial(gf11, 0, 0, 0, 0, 0, 10, 5, 4, 3, 4),
-                                     new Polynomial(gf11, 0, 0, 2, 0, 10, 9, 3, 9, 3, 10, 2, 2)
-                                 },
-                                 new object[]
-                                 {
-                                     12, 6, new Polynomial(gf13, 0, 0, 0, 0, 0, 10, 5, 4, 3, 4, 11, 9),
-                                     new Polynomial(gf13, 0, 0, 2, 12, 1, 12, 2, 11, 5, 6, 4, 2, 3, 12)
-                                 },
-                                 new object[]
-                                 {
-                                     26, 12,
-                                     new Polynomial(gf27, 0, 0, 0, 1, 2, 3, 4, 1, 6, 7, 8, 9, 1, 10, 1, 12, 1, 14, 1, 17, 1, 19, 20, 1, 1, 1,
-                                         22),
-                                     new Polynomial(gf27, 0, 0, 11, 13, 10, 10, 16, 22, 18, 10, 13, 1, 16, 13, 25, 19, 1, 2, 20, 21, 3, 8, 24, 23, 26,
-                                     15, 6, 25)
-                                 }
-                             };
+            BuildTestsData =
+                new[]
+                {
+                    new object[]
+                    {
+                        8, 4, new Polynomial(gf9, 1, 2, 3, 2, 2, 3, 2, 1)
+                    },
+                    new object[]
+                    {
+                        10, 6, new Polynomial(gf11, 0, 0, 0, 0, 0, 10, 5, 4, 3, 4)
+                    },
+                    new object[]
+                    {
+                        10, 5, new Polynomial(gf11, 0, 0, 0, 0, 0, 10, 5, 4, 3, 4)
+                    },
+                    new object[]
+                    {
+                        12, 6, new Polynomial(gf13, 0, 0, 0, 0, 0, 10, 5, 4, 3, 4, 11, 9)
+                    },
+                    new object[]
+                    {
+                        26, 12, new Polynomial(gf27, 0, 0, 0, 1, 2, 3, 4, 1, 6, 7, 8, 9, 1, 10, 1, 12, 1, 14, 1, 17, 1, 19, 20, 1, 1, 1, 22)
+                    }
+                };
         }
 
         public LiftingSchemeBasedBuilderTests()
@@ -64,9 +57,25 @@
 
         [Theory]
         [MemberData(nameof(BuildTestsData))]
-        public void ShouldBuildGeneratingPolynomial(int n, int d, Polynomial sourceFilter, Polynomial expectedPolynomial)
+        public void ShouldBuildGeneratingPolynomial(int n, int d, Polynomial sourceFilter)
         {
-            Assert.Equal(expectedPolynomial, _builder.Build(n, d, sourceFilter));
+            // When
+            var generatingPolynomial = _builder.Build(n, d, sourceFilter);
+
+            // Then
+            var field = sourceFilter.Field;
+            var zeroValuesCount = 0;
+            var nonZeroValuesCount = 0;
+
+            var i = 0;
+            for (; i < n && generatingPolynomial.Evaluate(field.GetGeneratingElementPower(i)) == 0; i++)
+                zeroValuesCount++;
+            for (; i < n && generatingPolynomial.Evaluate(field.GetGeneratingElementPower(i)) != 0; i++)
+                nonZeroValuesCount++;
+            for (; i < n && generatingPolynomial.Evaluate(field.GetGeneratingElementPower(i)) == 0; i++)
+                zeroValuesCount++;
+
+            Assert.True(d - 1 == zeroValuesCount && n - d + 1 == nonZeroValuesCount);
         }
     }
 }
