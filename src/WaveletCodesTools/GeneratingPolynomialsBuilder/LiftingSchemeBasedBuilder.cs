@@ -3,7 +3,6 @@
     using System;
     using System.Linq;
     using GfAlgorithms.ComplementaryFilterBuilder;
-    using GfAlgorithms.Extensions;
     using GfAlgorithms.LinearSystemSolver;
     using GfPolynoms;
     using GfPolynoms.Extensions;
@@ -68,20 +67,14 @@
         /// <param name="h">First filter from the original pair</param>
         /// <param name="g">Second filter from the original pair</param>
         /// <param name="liftingPolynomial">Lifting polynomial</param>
-        /// <param name="maxFilterLength">Maximum possible original filter length</param>
+        /// <param name="n">Maximum possible original filter length</param>
         /// <returns>Reconstructed generating polynomial</returns>
-        private static Polynomial ReconstructGeneratingPolynomial(Polynomial h, Polynomial g, Polynomial liftingPolynomial, int maxFilterLength)
+        private static Polynomial ReconstructGeneratingPolynomial(Polynomial h, Polynomial g, Polynomial liftingPolynomial, int n)
         {
-            var hPolyphaseComponents = h.GetPolyphaseComponents();
-            var gPolyphaseComponents = g.GetPolyphaseComponents();
-            var m = new Polynomial(h.Field, 1).RightShift(maxFilterLength/2);
+            var m = new Polynomial(h.Field, 1).RightShift(n);
             m[0] = h.Field.InverseForAddition(1);
 
-            return h +
-                   PolynomialsAlgorithmsExtensions.CreateFormPolyphaseComponents(
-                       hPolyphaseComponents.Item1*liftingPolynomial%m + gPolyphaseComponents.Item1,
-                       hPolyphaseComponents.Item2*liftingPolynomial%m + gPolyphaseComponents.Item2)
-                       .RightShift(2);
+            return (h + (g + h * liftingPolynomial.RaiseVariableDegree(2)).RightShift(2)) % m;
         }
 
         /// <summary>
