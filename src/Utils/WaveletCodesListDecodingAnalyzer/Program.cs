@@ -233,6 +233,40 @@
             }
         }
 
+        private static void AnalyzeSamplesForN15K7D8Code()
+        {
+            var field = new PrimePowerOrderField(16, new Polynomial(new PrimeOrderField(2), 1, 0, 0, 1, 1));
+            var informationPolynomial = new Polynomial(field);
+            var encoder = new Encoder();
+            var samples = new[]
+                          {
+                              new AnalyzingSample(informationPolynomial, encoder.Encode(15, informationPolynomial, informationPolynomial))
+                              {
+                                  ErrorPositions = new[] {2, 6, 8, 14},
+                                  CurrentNoiseValue = new[] {1, 1, 12, 12},
+                                  CorrectValuesCount = 11
+                              },
+                              new AnalyzingSample(informationPolynomial, encoder.Encode(15, informationPolynomial, informationPolynomial))
+                              {
+                                  ErrorPositions = new[] {0, 1, 2, 3},
+                                  CurrentNoiseValue = new[] {1, 3, 1, 8},
+                                  CorrectValuesCount = 11
+                              }
+                          };
+
+            try
+            {
+                AnalyzeSamples(15, 7, 8,
+                    new Polynomial(field, 3, 2, 7, 6, 4, 2, 11, 7, 5),
+                    samples);
+            }
+            catch (Exception exception)
+            {
+                _logger.LogError(0, exception, "Exception occurred during analysis");
+                throw;
+            }
+        }
+
         private static void AnalyzeSamplesForN26K13D12Code()
         {
             var field = new PrimePowerOrderField(27, new Polynomial(new PrimeOrderField(3), 2, 2, 0, 1));
@@ -378,7 +412,7 @@
                 .AddConsole();
             _logger = loggerFactory.CreateLogger<Program>();
 
-            AnalyzeSamplesForN30K15D13Code();
+            AnalyzeSamplesForN15K7D8Code();
 
             Console.ReadKey();
         }

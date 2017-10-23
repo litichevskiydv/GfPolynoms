@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using Decoding.ListDecoderForFixedDistanceCodes;
     using Encoding;
     using GfAlgorithms.CombinationsCountCalculator;
@@ -66,8 +65,11 @@
             var gf13 = new PrimeOrderField(13);
             var generationPolynomial5 = new Polynomial(gf13, 0, 0, 0, 8, 1, 12, 2, 11, 5, 6, 4, 2, 3, 12, 2, 4);
 
+            var gf16 = new PrimePowerOrderField(16, new Polynomial(new PrimeOrderField(2), 1, 0, 0, 1, 1));
+            var generationPolynomial6 = new Polynomial(gf16, 3, 3, 13, 2, 4, 5, 2, 9, 11, 11, 14, 3, 9, 11, 10);
+
             var gf27 = new PrimePowerOrderField(27, new Polynomial(new PrimeOrderField(3), 2, 2, 0, 1));
-            var generationPolynomial6 = new Polynomial(gf27, 0, 0, 20, 18, 14, 15, 2, 5, 2, 19, 17, 4, 23, 1, 8, 6, 5, 4, 20, 26, 6, 5, 16,
+            var generationPolynomial7 = new Polynomial(gf27, 0, 0, 20, 18, 14, 15, 2, 5, 2, 19, 17, 4, 23, 1, 8, 6, 5, 4, 20, 26, 6, 5, 16,
                 23, 26, 15, 6, 25, 18, 22, 8, 4, 17, 20, 19, 18, 8, 6, 23, 12, 20, 22, 8, 7, 0, 7, 6, 3, 11);
 
             var encoder = new Encoder();
@@ -86,7 +88,9 @@
                                    PrepareTestData(encoder, 10, 5, 5, generationPolynomial4, new Polynomial(gf11, 1, 2, 3, 4, 5), 2),
                                    PrepareTestData(encoder, 12, 6, 6, generationPolynomial5, new Polynomial(gf13, 1, 2, 3, 4, 5, 6), 3),
                                    PrepareTestData(encoder, 12, 6, 6, generationPolynomial5, new Polynomial(gf13, 0, 2, 0, 2, 11), 3),
-                                   PrepareTestData(encoder, 26, 13, 12, generationPolynomial6, new Polynomial(gf27, 0, 2, 0, 2, 11), 6)
+                                   PrepareTestData(encoder, 15, 7, 8, generationPolynomial6, new Polynomial(gf16, 1, 2, 14, 2, 11), 4),
+                                   PrepareTestData(encoder, 15, 7, 8, generationPolynomial6, new Polynomial(gf16, 0, 0, 0, 1, 12, 12, 1), 4),
+                                   PrepareTestData(encoder, 26, 13, 12, generationPolynomial7, new Polynomial(gf27, 0, 2, 0, 2, 11), 6)
                                };
         }
 
