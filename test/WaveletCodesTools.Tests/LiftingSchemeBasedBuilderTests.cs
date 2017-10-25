@@ -25,6 +25,7 @@
             var gf13 = new PrimeOrderField(13);
             var gf16 = new PrimePowerOrderField(16, new Polynomial(new PrimeOrderField(2), 1, 0, 0, 1, 1));
             var gf27 = new PrimePowerOrderField(27, new Polynomial(new PrimeOrderField(3), 2, 2, 0, 1));
+            var gf32 = new PrimePowerOrderField(32, new Polynomial(new PrimeOrderField(2), 1, 0, 0, 1, 0, 1));
 
             BuildTestsData =
                 new[]
@@ -60,6 +61,14 @@
                     new object[]
                     {
                         26, 12, new Polynomial(gf27, 0, 0, 0, 1, 2, 3, 4, 1, 6, 7, 8, 9, 1, 10, 1, 12, 1, 14, 1, 17, 1, 19, 20, 1, 1, 1, 22)
+                    },
+                    new object[]
+                    {
+                        31, 16, new Polynomial(gf32, 23, 13, 27, 1, 15, 13, 1, 16, 1, 21, 28, 30, 12, 19, 17, 4, 1, 19, 14, 0, 3, 5, 6)
+                    },
+                    new object[]
+                    {
+                        31, 15, new Polynomial(gf32, 23, 13, 27, 1, 15, 13, 1, 16, 1, 21, 28, 30, 12, 19, 17, 4, 1, 19, 14, 0, 3, 5, 6)
                     }
                 };
         }

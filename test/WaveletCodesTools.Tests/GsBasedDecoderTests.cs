@@ -72,6 +72,12 @@
             var generationPolynomial7 = new Polynomial(gf27, 0, 0, 20, 18, 14, 15, 2, 5, 2, 19, 17, 4, 23, 1, 8, 6, 5, 4, 20, 26, 6, 5, 16,
                 23, 26, 15, 6, 25, 18, 22, 8, 4, 17, 20, 19, 18, 8, 6, 23, 12, 20, 22, 8, 7, 0, 7, 6, 3, 11);
 
+            var gf32 = new PrimePowerOrderField(32, new Polynomial(new PrimeOrderField(2), 1, 0, 0, 1, 0, 1));
+            var generationPolynomial8 = new Polynomial(gf32, 6, 27, 1, 17, 13, 28, 18, 23, 15, 12, 3, 8, 5, 28, 1, 5, 29, 17, 18, 10, 12,
+                18, 27, 22, 28, 22, 8, 2, 26, 18, 3);
+            var generationPolynomial9 = new Polynomial(gf32, 7, 24, 2, 0, 5, 29, 2, 18, 3, 1, 15, 22, 1, 16, 29, 17, 6, 16, 17, 25, 21, 26,
+                10, 30, 18, 6, 24, 4, 31, 14, 15);
+
             var encoder = new Encoder();
             DecoderTestsData = new[]
                                {
@@ -90,7 +96,11 @@
                                    PrepareTestData(encoder, 12, 6, 6, generationPolynomial5, new Polynomial(gf13, 0, 2, 0, 2, 11), 3),
                                    PrepareTestData(encoder, 15, 7, 8, generationPolynomial6, new Polynomial(gf16, 1, 2, 14, 2, 11), 4),
                                    PrepareTestData(encoder, 15, 7, 8, generationPolynomial6, new Polynomial(gf16, 0, 0, 0, 1, 12, 12, 1), 4),
-                                   PrepareTestData(encoder, 26, 13, 12, generationPolynomial7, new Polynomial(gf27, 0, 2, 0, 2, 11), 6)
+                                   PrepareTestData(encoder, 26, 13, 12, generationPolynomial7, new Polynomial(gf27, 0, 2, 0, 2, 11), 6),
+                                   PrepareTestData(encoder, 31, 15, 16, generationPolynomial8, new Polynomial(gf32, 19, 2, 7, 2, 12, 23, 26), 8),
+                                   PrepareTestData(encoder, 31, 15, 16, generationPolynomial8, new Polynomial(gf32, 0, 2, 7, 2, 2, 0, 26), 8),
+                                   PrepareTestData(encoder, 31, 15, 16, generationPolynomial8, new Polynomial(gf32, 16, 30, 23), 8),
+                                   PrepareTestData(encoder, 31, 15, 15, generationPolynomial9, new Polynomial(gf32, 19, 2, 7, 2, 12, 30, 11), 8)
                                };
         }
 

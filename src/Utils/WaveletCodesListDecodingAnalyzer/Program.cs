@@ -335,6 +335,40 @@
             }
         }
 
+        private static void AnalyzeSamplesForN31K15D15Code()
+        {
+            var field = new PrimePowerOrderField(32, new Polynomial(new PrimeOrderField(2), 1, 0, 0, 1, 0, 1));
+            var informationPolynomial = new Polynomial(field);
+            var encoder = new Encoder();
+            var samples = new[]
+                          {
+                              new AnalyzingSample(informationPolynomial, encoder.Encode(31, informationPolynomial, informationPolynomial))
+                              {
+                                  ErrorPositions = new[] {2, 6, 8, 14, 18, 23, 27, 30},
+                                  CurrentNoiseValue = new[] {1, 1, 12, 12, 26, 15, 29, 3},
+                                  CorrectValuesCount = 23
+                              },
+                              new AnalyzingSample(informationPolynomial, encoder.Encode(31, informationPolynomial, informationPolynomial))
+                              {
+                                  ErrorPositions = new[] {0, 1, 2, 3, 4, 5, 6, 7},
+                                  CurrentNoiseValue = new[] {1, 3, 1, 8, 3, 21, 13, 5},
+                                  CorrectValuesCount = 23
+                              }
+                          };
+
+            try
+            {
+                AnalyzeSamples(31, 15, 15,
+                    new Polynomial(field, 23, 13, 27, 1, 15, 13, 1, 16, 1, 21, 28, 30, 12, 19, 17, 4, 1, 19, 14, 0, 3, 5, 6),
+                    samples);
+            }
+            catch (Exception exception)
+            {
+                _logger.LogError(0, exception, "Exception occurred during analysis");
+                throw;
+            }
+        }
+
         private static void AnalyzeSamplesForN80K40D37Code()
         {
             var field = new PrimePowerOrderField(81, new Polynomial(new PrimeOrderField(3), 2, 0, 0, 2, 1));
@@ -412,7 +446,7 @@
                 .AddConsole();
             _logger = loggerFactory.CreateLogger<Program>();
 
-            AnalyzeSamplesForN15K7D8Code();
+            AnalyzeSamplesForN31K15D15Code();
 
             Console.ReadKey();
         }
