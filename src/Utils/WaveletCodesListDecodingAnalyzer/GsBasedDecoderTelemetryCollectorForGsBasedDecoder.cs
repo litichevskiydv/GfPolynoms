@@ -44,7 +44,7 @@
             var listsSizes = Tuple.Create(frequencyDecodingListSize, timeDecodingListSize);
 
             ProcessingResults.AddOrUpdate(listsSizes, 1, (key, value) => value + 1);
-            if (listsSizes.Item1 == listsSizes.Item2 && listsSizes.Item1 != 1)
+            if (timeDecodingListSize > 1 && frequencyDecodingListSize > timeDecodingListSize)
             {
                 var clonnedCodeword = decodedCodeword.Select(x => new Tuple<FieldElement, FieldElement>(x.Item1, new FieldElement(x.Item2))).ToArray();
                 InterestingSamples.AddOrUpdate(listsSizes, new List<Tuple<FieldElement, FieldElement>[]> {clonnedCodeword},

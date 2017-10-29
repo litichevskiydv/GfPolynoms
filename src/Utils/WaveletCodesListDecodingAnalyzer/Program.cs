@@ -446,7 +446,7 @@
                 .AddConsole();
             _logger = loggerFactory.CreateLogger<Program>();
 
-            AnalyzeSamplesForN31K15D15Code();
+            AnalyzeSamplesForN15K7D8Code();
 
             Console.ReadKey();
         }
