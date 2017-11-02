@@ -15,4 +15,4 @@ before_script:
 script:
  - set -e
  - cd build
- - ./build.sh --settings_skipverification=true
+ - ./build.sh
