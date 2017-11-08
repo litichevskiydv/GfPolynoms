@@ -345,13 +345,13 @@
                               new AnalyzingSample(informationPolynomial, encoder.Encode(31, informationPolynomial, informationPolynomial))
                               {
                                   ErrorPositions = new[] {2, 6, 8, 14, 18, 23, 27, 30},
-                                  CurrentNoiseValue = new[] {1, 1, 12, 12, 26, 15, 29, 3},
+                                  CurrentNoiseValue = new[] {1, 1, 12, 12, 26, 21, 9, 6},
                                   CorrectValuesCount = 23
                               },
                               new AnalyzingSample(informationPolynomial, encoder.Encode(31, informationPolynomial, informationPolynomial))
                               {
                                   ErrorPositions = new[] {0, 1, 2, 3, 4, 5, 6, 7},
-                                  CurrentNoiseValue = new[] {1, 3, 1, 8, 3, 21, 13, 5},
+                                  CurrentNoiseValue = new[] {1, 3, 1, 8, 3, 26, 16, 6},
                                   CorrectValuesCount = 23
                               }
                           };
@@ -446,7 +446,7 @@
                 .AddConsole();
             _logger = loggerFactory.CreateLogger<Program>();
 
-            AnalyzeSamplesForN15K7D8Code();
+            AnalyzeSamplesForN31K15D15Code();
 
             Console.ReadKey();
         }
