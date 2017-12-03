@@ -233,6 +233,25 @@
             }
         }
 
+        private static void AnalyzeCodeN7K3D4()
+        {
+            try
+            {
+                AnalyzeCode(7, 3, 4,
+                    new Polynomial(
+                        new PrimePowerOrderField(8, new Polynomial(new PrimeOrderField(2), 1, 1, 0, 1)),
+                        3, 2, 7, 6, 4, 2
+                    ),
+                    placedErrorsCount: 2, decodingThreadsCount: 2
+                );
+            }
+            catch (Exception exception)
+            {
+                _logger.LogError(0, exception, "Exception occurred during analysis");
+                throw;
+            }
+        }
+
         private static void AnalyzeSamplesForN15K7D8Code()
         {
             var field = new PrimePowerOrderField(16, new Polynomial(new PrimeOrderField(2), 1, 0, 0, 1, 1));
@@ -446,7 +465,7 @@
                 .AddConsole();
             _logger = loggerFactory.CreateLogger<Program>();
 
-            AnalyzeSamplesForN31K15D15Code();
+            AnalyzeCodeN7K3D4();
 
             Console.ReadKey();
         }

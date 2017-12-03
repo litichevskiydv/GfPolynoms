@@ -36,6 +36,10 @@
                     },
                     new object[]
                     {
+                        7, 4, new Polynomial(gf8, 3, 2, 7, 6, 4, 2)
+                    },
+                    new object[]
+                    {
                         8, 4, new Polynomial(gf9, 1, 2, 3, 2, 2, 3, 2, 1)
                     },
                     new object[]
