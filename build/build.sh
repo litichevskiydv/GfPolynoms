@@ -10,7 +10,7 @@ TEMP_PROJECT=$TEMP_DIR/tmp.csproj
 SCRIPT="build.cake"
 TARGET="Default"
 CONFIGURATION="Release"
-VERBOSITY="Verbose"
+VERBOSITY="verbose"
 DRYRUN=
 SHOW_VERSION=false
 SCRIPT_ARGUMENTS=()
@@ -35,7 +35,7 @@ rm -rf tmp
 CAKE_PATH=$(find "$TOOLS_DIR" -name Cake.dll | sort -r | head -1)
 
 if [ ! -f "$DOTNET_PATH" ]; then
-    curl -sSL https://dot.net/v1/dotnet-install.sh | bash /dev/stdin --version 1.0.4 --install-dir "$CLI_DIR"
+    curl -sSL https://dot.net/v1/dotnet-install.sh | bash /dev/stdin --version 1.0.8 --shared-runtime --install-dir "$CLI_DIR" --no-path
 fi
 
 if $SHOW_VERSION; then
