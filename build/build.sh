@@ -35,5 +35,5 @@ CAKE_PATH=$(find "$TOOLS_DIR" -name Cake.dll | sort -r | head -1)
 if $SHOW_VERSION; then
     dotnet "$CAKE_PATH" --version
 else
-    dotnet "$CAKE_PATH" $SCRIPT --nuget_useinprocessclient=true --verbosity=$VERBOSITY --configuration=$CONFIGURATION --target=$TARGET $DRYRUN "${SCRIPT_ARGUMENTS[@]}"
+    dotnet "$CAKE_PATH" $SCRIPT --nuget_useinprocessclient=true --settings_skipverification=true --verbosity=$VERBOSITY --configuration=$CONFIGURATION --target=$TARGET $DRYRUN "${SCRIPT_ARGUMENTS[@]}"
 fi
