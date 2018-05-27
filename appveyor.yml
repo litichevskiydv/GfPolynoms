@@ -17,7 +17,7 @@ skip_commits:
   - LICENSE
   - README.md
   - .travis.yml
-  - WebInfrastructure.sln.DotSettings
+  - GfPolynoms.sln.DotSettings
 for:
   -
     matrix:
