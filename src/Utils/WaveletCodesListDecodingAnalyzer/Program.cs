@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.Linq;
+    using System.Reflection;
     using System.Threading;
     using System.Threading.Tasks;
     using GfAlgorithms.CombinationsCountCalculator;
@@ -14,15 +15,16 @@
     using GfPolynoms.Extensions;
     using GfPolynoms.GaloisFields;
     using JetBrains.Annotations;
+    using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.Logging;
-    using NLog.Config;
-    using NLog.Extensions.Logging;
     using RsCodesTools.ListDecoder;
     using RsCodesTools.ListDecoder.GsDecoderDependencies.InterpolationPolynomialBuilder;
     using RsCodesTools.ListDecoder.GsDecoderDependencies.InterpolationPolynomialFactorisator;
+    using Serilog;
     using WaveletCodesTools.Decoding.ListDecoderForFixedDistanceCodes;
     using WaveletCodesTools.Encoding;
     using WaveletCodesTools.GeneratingPolynomialsBuilder;
+    using ILogger = Microsoft.Extensions.Logging.ILogger;
 
     [UsedImplicitly]
     public class Program
@@ -459,10 +461,18 @@
         [UsedImplicitly]
         public static void Main()
         {
-            NLog.LogManager.Configuration = new XmlLoggingConfiguration("./nlog.config", true);
+            var configuration = new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json")
+                .Build();
+
             var loggerFactory = new LoggerFactory()
-                .AddNLog()
-                .AddConsole();
+                .AddSerilog(
+                    new LoggerConfiguration()
+                        .ReadFrom.Configuration(configuration)
+                        .Enrich.FromLogContext()
+                        .Enrich.WithProperty("Version", Assembly.GetEntryAssembly().GetName().Version.ToString(4))
+                        .CreateLogger()
+                    );
             _logger = loggerFactory.CreateLogger<Program>();
 
             AnalyzeCodeN7K3D4();

@@ -78,7 +78,7 @@
                 }
             }
 
-            return builder.ToString();
+            return builder.ToString().TrimEnd('\n');
         }
     }
 }
