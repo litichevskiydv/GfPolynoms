@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Description>SpectrumAnalyzer Console Application</Description>
     <Authors>dmitriy.litichevskiy</Authors>
-    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
     <DebugType>portable</DebugType>
     <AssemblyName>AppliedAlgebra.SpectrumAnalyzer</AssemblyName>
     <OutputType>Exe</OutputType>

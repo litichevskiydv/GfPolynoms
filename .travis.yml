@@ -9,7 +9,7 @@ env:
     - Configuration=Release
     - ShortVersion=1.0.0
 mono: none
-dotnet: 2.0.0
+dotnet: 2.1.300
 before_script:
  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then curl -sSL https://rvm.io/mpapis.asc | gpg --import -; rvm get stable; fi
 script:
