@@ -25,18 +25,19 @@ var buildNumber =
 // The branch name use in version suffix
 var branch = 
     AppVeyor.IsRunningOnAppVeyor ? AppVeyor.Environment.Repository.Branch :
-    TravisCI.IsRunningOnTravisCI ? TravisCI.Environment.Build.Branch : string.Empty;
-Information($"Branch name: {branch}");
-
-// Packages version in format major.minor.patch
-var version = HasArgument("ShortVersion") ? Argument<string>("ShortVersion") : EnvironmentVariable("ShortVersion");
-version = !string.IsNullOrWhiteSpace(version) ? version : "1.0.0";
-var assemblyVersion = $"{version}.{buildNumber}";
+    TravisCI.IsRunningOnTravisCI ? TravisCI.Environment.Build.Branch : (string)null;
 
 // Text suffix of the package version
-var versionSuffix = HasArgument("VersionSuffix") ? Argument<string>("VersionSuffix") : EnvironmentVariable("VersionSuffix");
-var packageVersion = version + (!string.IsNullOrWhiteSpace(versionSuffix) ? $"-{versionSuffix}-build{buildNumber}" : "");
- 
+string versionSuffix = null;
+if(string.IsNullOrWhiteSpace(branch) == false && branch != "master")
+{
+    versionSuffix = $"-dev-build{buildNumber:00000}";
+
+    var match = Regex.Match(branch, "release\\/\\d+\\.\\d+\\.\\d+\\-(.+)", RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
+    if(match.Success)
+        versionSuffix = $"-{match.Groups[1]}-build{buildNumber:00000}";
+}
+
 // A directory path to an Artifacts directory.
 var artifactsDirectory = MakeAbsolute(Directory("./artifacts"));
  
@@ -60,9 +61,7 @@ Task("Clean")
                 new DotNetCoreBuildSettings()
                 {
                     Configuration = configuration,
-                    ArgumentCustomization = args => args
-                        .Append($"/p:Version={version}")
-                        .Append($"/p:AssemblyVersion={assemblyVersion}")
+                    VersionSuffix = versionSuffix
                 });
         }
     });
@@ -86,8 +85,7 @@ Task("Pack")
                     NoBuild = true,
                     OutputDirectory = artifactsDirectory,
                     IncludeSymbols = true,
-                     ArgumentCustomization = args => args
-                        .Append($"/p:PackageVersion={packageVersion}")
+                    VersionSuffix = versionSuffix
                 });
         }
     });
