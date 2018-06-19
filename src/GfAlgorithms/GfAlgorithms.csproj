@@ -1,5 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
+  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), common.props))\common.props" />
+
   <PropertyGroup>
     <Description>Implementation of common algorithms above finite fields</Description>
     <Authors>dmitriy.litichevskiy</Authors>

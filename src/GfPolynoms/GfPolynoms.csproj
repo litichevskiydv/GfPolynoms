@@ -1,5 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
+  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), common.props))\common.props" />
+
   <PropertyGroup>
     <Description>Implementation of finite fields and polynomials above them</Description>
     <Authors>dmitriy.litichevskiy</Authors>
