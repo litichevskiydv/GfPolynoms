@@ -23,9 +23,10 @@ var buildNumber =
     EnvironmentVariable("BuildNumber") != null ? int.Parse(EnvironmentVariable("BuildNumber")) : 0;
 
 // The branch name use in version suffix
-var barnch = 
+var branch = 
     AppVeyor.IsRunningOnAppVeyor ? AppVeyor.Environment.Repository.Branch :
     TravisCI.IsRunningOnTravisCI ? TravisCI.Environment.Build.Branch : string.Empty;
+Information($"Branch name: {branch}");
 
 // Packages version in format major.minor.patch
 var version = HasArgument("ShortVersion") ? Argument<string>("ShortVersion") : EnvironmentVariable("ShortVersion");
