@@ -38,9 +38,11 @@ if(string.IsNullOrWhiteSpace(branch) == false && branch != "master")
 {
     versionSuffix = $"-dev-build{buildNumber:00000}";
 
-    var match = Regex.Match(branch, "release\\/\\d+\\.\\d+\\.\\d+\\-(.+)", RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
+    var match = Regex.Match(branch, "release\\/\\d+\\.\\d+\\.\\d+\\-?(.*)", RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
     if(match.Success)
-        versionSuffix = $"-{match.Groups[1]}-build{buildNumber:00000}";
+        versionSuffix = string.IsNullOrWhiteSpace(match.Groups[1]) == false
+            ? $"-{match.Groups[1]}-build{buildNumber:00000}"
+            : $"-build{buildNumber:00000}";
 }
 
 // A directory path to an Artifacts directory.
