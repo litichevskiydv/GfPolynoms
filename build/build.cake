@@ -1,3 +1,8 @@
+#tool "nuget:?package=OpenCover"
+#tool "nuget:?package=Codecov&version=1.0.3"
+#addin "nuget:?package=Cake.Codecov"
+using System.Text.RegularExpressions;
+
 // Target - The task you want to start. Runs the Default task if not specified.
 var target = Argument("Target", "Default");
 
@@ -110,9 +115,6 @@ Task("Test")
 
 // Look under a 'test' folder and calculate tests against all of those projects.
 // Then drop the XML test results file in the artifacts folder at the root.
-#tool "nuget:?package=OpenCover"
-#tool "nuget:?package=Codecov&version=1.0.3"
-#addin "nuget:?package=Cake.Codecov"
 Task("CalculateCoverage")
     .IsDependentOn("Pack")
     .Does(() =>
