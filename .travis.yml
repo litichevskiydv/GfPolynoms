@@ -7,7 +7,6 @@ matrix:
 env:
   global:
     - Configuration=Release
-    - ShortVersion=1.0.0
 mono: none
 dotnet: 2.1.300
 before_script:
