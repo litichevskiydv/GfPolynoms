@@ -9,6 +9,11 @@ env:
     - Configuration=Release
 mono: none
 dotnet: 2.1.300
+branches:
+  only:
+  - master
+  - /^release\/.*$/
+  - develop
 before_script:
  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then curl -sSL https://rvm.io/mpapis.asc | gpg --import -; rvm get stable; fi
 script:
