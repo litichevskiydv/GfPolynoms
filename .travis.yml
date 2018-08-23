@@ -19,4 +19,5 @@ before_script:
 script:
  - set -e
  - cd build
+ - export PATH="$PATH:/home/travis/.dotnet/tools"
  - ./build.sh
