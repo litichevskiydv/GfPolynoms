@@ -2,6 +2,12 @@
 
   <PropertyGroup>
     <Description>Implementation of finite fields and polynomials above them</Description>
+    <PackageDescription Condition="'$(RepositoryBranch)'!=''">
+      $(Description)
+      Branch: $(RepositoryBranch)
+      Working tree: $(RepositoryUrl)/tree/$(RepositoryCommit)
+      Commit message: $(RepositoryCommitMessage)
+    </PackageDescription>
     <TargetFramework>netstandard1.1</TargetFramework>
     <AssemblyName>AppliedAlgebra.GfPolynoms</AssemblyName>
     <RootNamespace>AppliedAlgebra.GfPolynoms</RootNamespace>
