@@ -1,6 +1,7 @@
 #tool "nuget:?package=OpenCover"
 #tool "nuget:?package=Codecov&version=1.0.4"
 #addin "nuget:?package=Cake.Codecov"
+using System.Linq;
 using System.Text.RegularExpressions;
 
 // Target - The task you want to start. Runs the Default task if not specified.
@@ -64,10 +65,11 @@ Task("Clean")
         var settings =  new DotNetCoreBuildSettings
                 {
                     Configuration = configuration,
-                    VersionSuffix = versionSuffix
+                    VersionSuffix = versionSuffix,
+                    MSBuildSettings = new DotNetCoreMSBuildSettings()
                 };
         if(buildNumber != 0)
-            settings.ArgumentCustomization = x => x.Append($"/p:Build={buildNumber}");
+            settings.MSBuildSettings.Properties["Build"] = new[] {buildNumber.ToString()};
 
         foreach(var project in projects)
            DotNetCoreBuild(project.GetDirectory().FullPath, settings);
@@ -119,15 +121,10 @@ Task("CalculateCoverage")
     .IsDependentOn("Pack")
     .Does(() =>
     {
-        var projects = GetFiles("../src/*/*.csproj");
-        foreach(var project in projects)
-        {
-            TransformTextFile(project.FullPath, ">", "<")
-                .WithToken("portable", ">full<")
-                .Save(project.FullPath);
-        }
+        var buildProps = GetFiles("../src/Directory.Build.props").Single();
+        TransformTextFile(buildProps.FullPath, ">", "<").WithToken("portable", ">full<").Save(buildProps.FullPath);
 
-        projects = GetFiles("../test/**/*.csproj");
+        var projects = GetFiles("../test/**/*.csproj");
         var resultsFile = artifactsDirectory.CombineWithFilePath("coverage.xml");
         var settings = new OpenCoverSettings
                 {

@@ -1,23 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), common.props))\common.props" />
-
   <PropertyGroup>
     <Description>Implementation of finite fields and polynomials above them</Description>
-    <Authors>dmitriy.litichevskiy</Authors>
     <TargetFramework>netstandard1.1</TargetFramework>
-    <DebugType>portable</DebugType>
     <AssemblyName>AppliedAlgebra.GfPolynoms</AssemblyName>
+    <RootNamespace>AppliedAlgebra.GfPolynoms</RootNamespace>
     <PackageId>AppliedAlgebra.GfPolynoms</PackageId>
     <PackageTags>Applied algebra;Finite fields;Polynoms</PackageTags>
-    <PackageProjectUrl>https://github.com/litichevskiydv/GfPolynoms</PackageProjectUrl>
-    <PackageLicenseUrl>https://raw.githubusercontent.com/litichevskiydv/GfPolynoms/master/LICENSE</PackageLicenseUrl>
-    <RepositoryType>git</RepositoryType>
-    <RepositoryUrl>https://github.com/litichevskiydv/GfPolynoms</RepositoryUrl>
-    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
-    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
-    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
-    <RootNamespace>AppliedAlgebra.GfPolynoms</RootNamespace>
+    
   </PropertyGroup>
 
 </Project>

@@ -1,23 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), common.props))\common.props" />
-
   <PropertyGroup>
     <Description>Tools for working with Wavelet-codes</Description>
-    <Authors>dmitriy.litichevskiy</Authors>
     <TargetFramework>netstandard1.1</TargetFramework>
-    <DebugType>portable</DebugType>
     <AssemblyName>AppliedAlgebra.WaveletCodesTools</AssemblyName>
+    <RootNamespace>AppliedAlgebra.WaveletCodesTools</RootNamespace>
     <PackageId>AppliedAlgebra.WaveletCodesTools</PackageId>
     <PackageTags>Applied algebra;Finite fields;Wavelet;Wavelet-codes</PackageTags>
-    <PackageProjectUrl>https://github.com/litichevskiydv/GfPolynoms</PackageProjectUrl>
-    <PackageLicenseUrl>https://raw.githubusercontent.com/litichevskiydv/GfPolynoms/master/LICENSE</PackageLicenseUrl>
-    <RepositoryType>git</RepositoryType>
-    <RepositoryUrl>https://github.com/litichevskiydv/GfPolynoms</RepositoryUrl>
-    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
-    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
-    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
-    <RootNamespace>AppliedAlgebra.WaveletCodesTools</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

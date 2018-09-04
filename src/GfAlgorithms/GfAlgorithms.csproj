@@ -4,20 +4,11 @@
 
   <PropertyGroup>
     <Description>Implementation of common algorithms above finite fields</Description>
-    <Authors>dmitriy.litichevskiy</Authors>
     <TargetFramework>netstandard1.1</TargetFramework>
-    <DebugType>portable</DebugType>
     <AssemblyName>AppliedAlgebra.GfAlgorithms</AssemblyName>
+    <RootNamespace>AppliedAlgebra.GfAlgorithms</RootNamespace>
     <PackageId>AppliedAlgebra.GfAlgorithms</PackageId>
     <PackageTags>Applied algebra;Finite fields;Algorithms</PackageTags>
-    <PackageProjectUrl>https://github.com/litichevskiydv/GfPolynoms</PackageProjectUrl>
-    <PackageLicenseUrl>https://raw.githubusercontent.com/litichevskiydv/GfPolynoms/master/LICENSE</PackageLicenseUrl>
-    <RepositoryType>git</RepositoryType>
-    <RepositoryUrl>https://github.com/litichevskiydv/GfPolynoms</RepositoryUrl>
-    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
-    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
-    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
-    <RootNamespace>AppliedAlgebra.GfAlgorithms</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

@@ -1,19 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), common.props))\common.props" />
-
   <PropertyGroup>
     <Description>SpectrumAnalyzer Console Application</Description>
-    <Authors>dmitriy.litichevskiy</Authors>
     <TargetFramework>netcoreapp2.1</TargetFramework>
-    <DebugType>portable</DebugType>
     <AssemblyName>AppliedAlgebra.SpectrumAnalyzer</AssemblyName>
-    <OutputType>Exe</OutputType>
-    <PackageId>SpectrumAnalyzer</PackageId>
-    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
-    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
-    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
     <RootNamespace>AppliedAlgebra.SpectrumAnalyzer</RootNamespace>
+    <OutputType>Exe</OutputType>
   </PropertyGroup>
 
   <ItemGroup>
