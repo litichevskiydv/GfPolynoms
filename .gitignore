@@ -19,3 +19,5 @@ _UpgradeReport*
 /.vs/
 project.lock.json
 logs
+/build/tools/
+/build/artifacts/

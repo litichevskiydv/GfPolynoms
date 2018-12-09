@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <Description>SpectrumAnalyzer Console Application</Description>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
     <AssemblyName>AppliedAlgebra.SpectrumAnalyzer</AssemblyName>
     <RootNamespace>AppliedAlgebra.SpectrumAnalyzer</RootNamespace>
     <OutputType>Exe</OutputType>
