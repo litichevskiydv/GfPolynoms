@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <Description>Codes research tools</Description>
+    <PackageDescription Condition="'$(RepositoryBranch)'!=''">
+      $(Description)
+      Branch: $(RepositoryBranch)
+      Working tree: $(RepositoryUrl)/tree/$(RepositoryCommit)
+      Commit message: $(RepositoryCommitMessage)
+    </PackageDescription>
+    <TargetFramework>netstandard1.1</TargetFramework>
+    <AssemblyName>AppliedAlgebra.CodesResearchTools</AssemblyName>
+    <RootNamespace>AppliedAlgebra.CodesResearchTools</RootNamespace>
+    <PackageId>AppliedAlgebra.CodesResearchTools</PackageId>
+    <PackageTags>Applied algebra;Finite fields;Codes;Research</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\GfPolynoms\GfPolynoms.csproj" />
+  </ItemGroup>
+
+</Project>
