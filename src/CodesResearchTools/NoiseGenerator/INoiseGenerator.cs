@@ -1,6 +1,7 @@
-﻿namespace AppliedAlgebra.WaveletCodesListDecodingAnalyzer.NoiseGenerator
+﻿namespace AppliedAlgebra.CodesResearchTools.NoiseGenerator
 {
     using System.Collections.Generic;
+    using GfPolynoms;
     using GfPolynoms.GaloisFields;
 
     /// <summary>
@@ -15,6 +16,6 @@
         /// <param name="codewordLength">Codeword length</param>
         /// <param name="errorsCount">Errors count</param>
         /// <param name="initialNoiseValue">Generator initial value</param>
-        IEnumerable<int[]> Generate(GaloisField field, int codewordLength, int errorsCount, int[] initialNoiseValue = null);
+        IEnumerable<FieldElement[]> Generate(GaloisField field, int codewordLength, int errorsCount, int[] initialNoiseValue = null);
     }
 }

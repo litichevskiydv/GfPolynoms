@@ -1,13 +1,15 @@
-﻿namespace AppliedAlgebra.WaveletCodesListDecodingAnalyzer.NoiseGenerator
+﻿namespace AppliedAlgebra.CodesResearchTools.NoiseGenerator
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using GfPolynoms;
+    using GfPolynoms.Extensions;
     using GfPolynoms.GaloisFields;
 
     public class RecursiveGenerator : INoiseGenerator
     {
-        private static IEnumerable<int[]> PlaceErrors(GaloisField field,
+        private static IEnumerable<FieldElement[]> PlaceErrors(GaloisField field,
             int codewordLength,
             IReadOnlyList<int> errorsPositions,
             int[] noiseValue,
@@ -15,9 +17,9 @@
         {
             if (currentErrorPosition == errorsPositions.Count)
             {
-                var additiveNoise = new int[codewordLength];
+                var additiveNoise = Enumerable.Repeat(field.Zero(), codewordLength).ToArray();
                 for (var i = 0; i < errorsPositions.Count; i++)
-                    additiveNoise[errorsPositions[i]] = noiseValue[i];
+                    additiveNoise[errorsPositions[i]] = field.CreateElement(noiseValue[i]);
                 yield return additiveNoise;
                 yield break;
             }
@@ -32,7 +34,7 @@
             noiseValue[currentErrorPosition] = 1;
         }
 
-        private static IEnumerable<int[]> Generate(
+        private static IEnumerable<FieldElement[]> Generate(
             GaloisField field, 
             int codewordLength, 
             int[] errorsPositions, 
@@ -60,7 +62,7 @@
         }
 
         /// <inheritdoc />
-        public IEnumerable<int[]> Generate(GaloisField field, int codewordLength, int errorsCount, int[] initialNoiseValue = null)
+        public IEnumerable<FieldElement[]> Generate(GaloisField field, int codewordLength, int errorsCount, int[] initialNoiseValue = null)
         {
             if(field == null)
                 throw new ArgumentNullException(nameof(field));
