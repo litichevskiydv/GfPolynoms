@@ -16,12 +16,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="ListDecoderForFixedDistanceCodes\**" />
-    <EmbeddedResource Remove="ListDecoderForFixedDistanceCodes\**" />
-    <None Remove="ListDecoderForFixedDistanceCodes\**" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\GfPolynoms\GfPolynoms.csproj" />
     <ProjectReference Include="..\RsCodesTools\RsCodesTools.csproj" />
   </ItemGroup>
