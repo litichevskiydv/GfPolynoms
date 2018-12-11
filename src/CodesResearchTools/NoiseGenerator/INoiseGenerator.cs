@@ -16,6 +16,6 @@
         /// <param name="codewordLength">Codeword length</param>
         /// <param name="errorsCount">Errors count</param>
         /// <param name="initialNoiseValue">Generator initial value</param>
-        IEnumerable<FieldElement[]> Generate(GaloisField field, int codewordLength, int errorsCount, int[] initialNoiseValue = null);
+        IEnumerable<FieldElement[]> Generate(GaloisField field, int codewordLength, int errorsCount, FieldElement[] initialNoiseValue = null);
     }
 }

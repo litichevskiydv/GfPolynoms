@@ -62,7 +62,7 @@
         }
 
         /// <inheritdoc />
-        public IEnumerable<FieldElement[]> Generate(GaloisField field, int codewordLength, int errorsCount, int[] initialNoiseValue = null)
+        public IEnumerable<FieldElement[]> Generate(GaloisField field, int codewordLength, int errorsCount, FieldElement[] initialNoiseValue = null)
         {
             if(field == null)
                 throw new ArgumentNullException(nameof(field));
@@ -76,7 +76,7 @@
             {
                 if(initialNoiseValue.Length != codewordLength)
                     throw new ArgumentException($"Length of {nameof(initialNoiseValue)} must be equal to codeword length");
-                if(initialNoiseValue.Count(x => x != 0) != errorsCount)
+                if(initialNoiseValue.Count(x => x.Representation != 0) != errorsCount)
                     throw new ArgumentException($"{nameof(initialNoiseValue)} must contain {errorsCount} non-zero elements");
             }
 
@@ -84,10 +84,10 @@
             var noiseValue = Enumerable.Repeat(1, errorsCount).ToArray();
             if(initialNoiseValue != null)
                 for(int i = 0, j = 0; i < codewordLength && j < errorsCount; i++)
-                    if (initialNoiseValue[i] != 0)
+                    if (initialNoiseValue[i].Representation != 0)
                     {
                         errorsPositions[j] = i;
-                        noiseValue[j] = initialNoiseValue[i];
+                        noiseValue[j] = initialNoiseValue[i].Representation;
                         j++;
                     }
 
