@@ -10,12 +10,22 @@
     public interface INoiseGenerator
     {
         /// <summary>
-        /// Generates additive noise for code which was defined over field <paramref name="field"/>
+        /// Generate additive noise varying errors positions and values
         /// </summary>
         /// <param name="field">The field that produces the code alphabet</param>
         /// <param name="codewordLength">Codeword length</param>
         /// <param name="errorsCount">Errors count</param>
         /// <param name="initialNoiseValue">Generator initial value</param>
-        IEnumerable<FieldElement[]> Generate(GaloisField field, int codewordLength, int errorsCount, FieldElement[] initialNoiseValue = null);
+        IEnumerable<FieldElement[]> VariatePositionsAndValues(
+            GaloisField field, 
+            int codewordLength, 
+            int errorsCount,
+            FieldElement[] initialNoiseValue = null);
+
+        /// <summary>
+        /// Generate additive noise varying errors values
+        /// </summary>
+        /// <param name="initialNoiseValue">Generator initial value</param>
+        IEnumerable<FieldElement[]> VariateValues(FieldElement[] initialNoiseValue);
     }
 }

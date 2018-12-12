@@ -12,7 +12,7 @@
         private static IEnumerable<FieldElement[]> PlaceErrors(GaloisField field,
             int codewordLength,
             IReadOnlyList<int> errorsPositions,
-            int[] noiseValue,
+            IList<int> noiseValue,
             int currentErrorPosition)
         {
             if (currentErrorPosition == errorsPositions.Count)
@@ -38,7 +38,7 @@
             GaloisField field, 
             int codewordLength, 
             int[] errorsPositions, 
-            int[] noiseValue,
+            IList<int> noiseValue,
             int currentErrorPosition)
         {
             if (currentErrorPosition == errorsPositions.Length)
@@ -62,7 +62,7 @@
         }
 
         /// <inheritdoc />
-        public IEnumerable<FieldElement[]> Generate(GaloisField field, int codewordLength, int errorsCount, FieldElement[] initialNoiseValue = null)
+        public IEnumerable<FieldElement[]> VariatePositionsAndValues(GaloisField field, int codewordLength, int errorsCount, FieldElement[] initialNoiseValue = null)
         {
             if(field == null)
                 throw new ArgumentNullException(nameof(field));
@@ -92,6 +92,28 @@
                     }
 
             return Generate(field, codewordLength, errorsPositions, noiseValue, 0);
+        }
+
+        /// <inheritdoc />
+        public IEnumerable<FieldElement[]> VariateValues(FieldElement[] initialNoiseValue)
+        {
+            if (initialNoiseValue == null || initialNoiseValue.Length == 0)
+                throw new ArgumentNullException(nameof(initialNoiseValue));
+            if (initialNoiseValue.All(x => x.Representation == 0))
+                throw new ArgumentException($"{nameof(initialNoiseValue)} should contain non-zero elements");
+
+            var errorsPositions = new List<int>();
+            var noiseValue = new List<int>();
+            for (var i = 0; i < initialNoiseValue.Length; i++)
+            {
+                if (initialNoiseValue[i].Representation == 0)
+                    continue;
+
+                errorsPositions.Add(i);
+                noiseValue.Add(initialNoiseValue[i].Representation);
+            }
+
+            return PlaceErrors(initialNoiseValue[0].Field, initialNoiseValue.Length, errorsPositions, noiseValue, 0);
         }
     }
 }

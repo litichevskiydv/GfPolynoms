@@ -76,7 +76,7 @@
             FieldElement[][] expected)
         {
             // When
-            var actual = _noiseGenerator.Generate(field, codewordLength, errorsCount, initialNoiseValue).ToArray();
+            var actual = _noiseGenerator.VariatePositionsAndValues(field, codewordLength, errorsCount, initialNoiseValue).ToArray();
 
             // Then
             Assert.Equal(expected.Length, actual.Length);
