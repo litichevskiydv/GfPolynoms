@@ -3,8 +3,8 @@
     using System;
     using GfAlgorithms.LinearSystemSolver;
     using GfPolynoms;
-    using RsCodesTools.StandartDecoder;
-    using RsInformationPolynomialNotFoundException = RsCodesTools.StandartDecoder.InformationPolynomialWasNotFoundException;
+    using RsCodesTools.Decoding.StandartDecoder;
+    using RsInformationPolynomialNotFoundException = RsCodesTools.Decoding.StandartDecoder.InformationPolynomialWasNotFoundException;
 
     /// <summary>
     /// Implementation of standart wavelet codes decoder contract based on Reed-Solomon codes standart decoder

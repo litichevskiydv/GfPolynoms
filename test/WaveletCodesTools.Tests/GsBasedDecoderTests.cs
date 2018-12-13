@@ -10,9 +10,9 @@
     using GfPolynoms.Extensions;
     using GfPolynoms.GaloisFields;
     using JetBrains.Annotations;
-    using RsCodesTools.ListDecoder;
-    using RsCodesTools.ListDecoder.GsDecoderDependencies.InterpolationPolynomialBuilder;
-    using RsCodesTools.ListDecoder.GsDecoderDependencies.InterpolationPolynomialFactorisator;
+    using RsCodesTools.Decoding.ListDecoder;
+    using RsCodesTools.Decoding.ListDecoder.GsDecoderDependencies.InterpolationPolynomialBuilder;
+    using RsCodesTools.Decoding.ListDecoder.GsDecoderDependencies.InterpolationPolynomialFactorisator;
     using Xunit;
 
     public class GsBasedDecoderTests

@@ -17,9 +17,9 @@
     using JetBrains.Annotations;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.Logging;
-    using RsCodesTools.ListDecoder;
-    using RsCodesTools.ListDecoder.GsDecoderDependencies.InterpolationPolynomialBuilder;
-    using RsCodesTools.ListDecoder.GsDecoderDependencies.InterpolationPolynomialFactorisator;
+    using RsCodesTools.Decoding.ListDecoder;
+    using RsCodesTools.Decoding.ListDecoder.GsDecoderDependencies.InterpolationPolynomialBuilder;
+    using RsCodesTools.Decoding.ListDecoder.GsDecoderDependencies.InterpolationPolynomialFactorisator;
     using Serilog;
     using WaveletCodesTools.Decoding.ListDecoderForFixedDistanceCodes;
     using WaveletCodesTools.Encoding;

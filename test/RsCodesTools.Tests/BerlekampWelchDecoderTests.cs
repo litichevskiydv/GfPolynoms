@@ -2,13 +2,13 @@
 {
     using System;
     using System.Collections.Generic;
-    using Encoder;
+    using Decoding.StandartDecoder;
+    using Encoding;
     using GfAlgorithms.LinearSystemSolver;
     using GfPolynoms;
     using GfPolynoms.Extensions;
     using GfPolynoms.GaloisFields;
     using JetBrains.Annotations;
-    using StandartDecoder;
     using Xunit;
 
     public class BerlekampWelchDecoderTests

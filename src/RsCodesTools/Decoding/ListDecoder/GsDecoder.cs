@@ -1,4 +1,4 @@
-﻿namespace AppliedAlgebra.RsCodesTools.ListDecoder
+﻿namespace AppliedAlgebra.RsCodesTools.Decoding.ListDecoder
 {
     using System;
     using System.Collections.Generic;

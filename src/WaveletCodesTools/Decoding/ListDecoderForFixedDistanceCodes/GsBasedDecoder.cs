@@ -15,7 +15,7 @@
         /// <summary>
         /// Implementation of the Reed-Solomon code list decoding contract
         /// </summary>
-        private readonly RsCodesTools.ListDecoder.IListDecoder _rsListDecoder;
+        private readonly RsCodesTools.Decoding.ListDecoder.IListDecoder _rsListDecoder;
 
         /// <summary>
         /// Implementation of telemetry receiver's contract
@@ -102,7 +102,7 @@
         /// </summary>
         /// <param name="rsListDecoder">Implementation of the Reed-Solomon code list decoding contract</param>
         /// <param name="linearSystemSolver">Implementation of the linear equations system solver</param>
-        public GsBasedDecoder(RsCodesTools.ListDecoder.IListDecoder rsListDecoder, ILinearSystemSolver linearSystemSolver) : base(linearSystemSolver)
+        public GsBasedDecoder(RsCodesTools.Decoding.ListDecoder.IListDecoder rsListDecoder, ILinearSystemSolver linearSystemSolver) : base(linearSystemSolver)
         {
             if (rsListDecoder == null)
                 throw new ArgumentNullException(nameof(rsListDecoder));

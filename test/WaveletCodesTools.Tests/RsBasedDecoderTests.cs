@@ -9,7 +9,7 @@
     using GfPolynoms.Extensions;
     using GfPolynoms.GaloisFields;
     using JetBrains.Annotations;
-    using RsCodesTools.StandartDecoder;
+    using RsCodesTools.Decoding.StandartDecoder;
     using Xunit;
     using InformationPolynomialWasNotFoundException = Decoding.StandartDecoderForFixedDistanceCodes.InformationPolynomialWasNotFoundException;
 

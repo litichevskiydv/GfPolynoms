@@ -2,11 +2,11 @@
 {
     using System;
     using System.Collections.Generic;
+    using Decoding.ListDecoder.GsDecoderDependencies.InterpolationPolynomialBuilder;
     using GfAlgorithms.CombinationsCountCalculator;
     using GfPolynoms;
     using GfPolynoms.GaloisFields;
     using JetBrains.Annotations;
-    using ListDecoder.GsDecoderDependencies.InterpolationPolynomialBuilder;
     using Xunit;
 
     public class KotterAlgorithmBasedBuilderTests

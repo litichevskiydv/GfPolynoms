@@ -2,15 +2,15 @@
 {
     using System;
     using System.Collections.Generic;
-    using Encoder;
+    using Decoding.ListDecoder;
+    using Decoding.ListDecoder.GsDecoderDependencies.InterpolationPolynomialBuilder;
+    using Decoding.ListDecoder.GsDecoderDependencies.InterpolationPolynomialFactorisator;
+    using Encoding;
     using GfAlgorithms.CombinationsCountCalculator;
     using GfPolynoms;
     using GfPolynoms.Extensions;
     using GfPolynoms.GaloisFields;
     using JetBrains.Annotations;
-    using ListDecoder;
-    using ListDecoder.GsDecoderDependencies.InterpolationPolynomialBuilder;
-    using ListDecoder.GsDecoderDependencies.InterpolationPolynomialFactorisator;
     using Xunit;
 
     public class GsDecoderTests

@@ -3,12 +3,12 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using Decoding.ListDecoder.GsDecoderDependencies.InterpolationPolynomialFactorisator;
     using GfAlgorithms.BiVariablePolynomials;
     using GfPolynoms;
     using GfPolynoms.Extensions;
     using GfPolynoms.GaloisFields;
     using JetBrains.Annotations;
-    using ListDecoder.GsDecoderDependencies.InterpolationPolynomialFactorisator;
     using Xunit;
 
     public class RrFactorizatorTests

@@ -1,4 +1,4 @@
-﻿namespace AppliedAlgebra.RsCodesTools.Encoder
+﻿namespace AppliedAlgebra.RsCodesTools.Encoding
 {
     using System;
     using GfPolynoms;
