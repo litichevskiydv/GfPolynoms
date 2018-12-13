@@ -112,6 +112,25 @@
         }
 
         /// <summary>
+        /// Constructor for creation polynomial with coefficients <paramref name="coefficients"/>
+        /// </summary>
+        /// <param name="coefficients">Coefficients of the new polynomial</param>
+        public Polynomial(params FieldElement[] coefficients)
+        {
+            if(coefficients == null)
+                throw new ArgumentNullException(nameof(coefficients));
+            if (coefficients.Length == 0)
+                throw new ArgumentException("At least one coefficient must be passed");
+            if (coefficients.Select(x => x.Field).Distinct().Count() > 1)
+                throw new ArgumentException("All coefficients must belong to the same field");
+
+            Field = coefficients[0].Field;
+            _coefficients = coefficients.Select(x => x.Representation).ToList();
+
+            Truncate();
+        }
+
+        /// <summary>
         /// Constructor for creating copy of the polynomial <paramref name="polynomial"/>
         /// </summary>
         /// <param name="polynomial">The copied polynomial</param>

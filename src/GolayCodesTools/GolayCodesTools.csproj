@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <Description>Tools for working with Golay codes</Description>
+    <PackageDescription Condition="'$(RepositoryBranch)'!=''">
+      $(Description)
+      Branch: $(RepositoryBranch)
+      Working tree: $(RepositoryUrl)/tree/$(RepositoryCommit)
+      Commit message: $(RepositoryCommitMessage)
+    </PackageDescription>
+    <TargetFramework>netstandard1.1</TargetFramework>
+    <AssemblyName>AppliedAlgebra.GolayCodesTools</AssemblyName>
+    <RootNamespace>AppliedAlgebra.GolayCodesTools</RootNamespace>
+    <PackageId>AppliedAlgebra.GolayCodesTools</PackageId>
+    <PackageTags>Applied algebra;Finite fields;Golay codes</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CodesAbstractions\CodesAbstractions.csproj" />
+    <ProjectReference Include="..\GfAlgorithms\GfAlgorithms.csproj" />
+  </ItemGroup>
+
+</Project>
