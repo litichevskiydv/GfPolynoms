@@ -37,9 +37,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "shared", "shared", "{B3DFCC
 		common.props = common.props
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodesResearchTools", "src\CodesResearchTools\CodesResearchTools.csproj", "{1C2FA36A-20DD-4111-806A-F9678BC66862}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CodesResearchTools", "src\CodesResearchTools\CodesResearchTools.csproj", "{1C2FA36A-20DD-4111-806A-F9678BC66862}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodesResearchTools.Tests", "test\CodesResearchTools.Tests\CodesResearchTools.Tests.csproj", "{77F23738-1901-468D-A628-084345E1D658}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CodesResearchTools.Tests", "test\CodesResearchTools.Tests\CodesResearchTools.Tests.csproj", "{77F23738-1901-468D-A628-084345E1D658}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodesAbstractions", "src\CodesAbstractions\CodesAbstractions.csproj", "{91810A1E-EBE7-4C24-9632-6FEFE048092D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -95,6 +97,10 @@ Global
 		{77F23738-1901-468D-A628-084345E1D658}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{77F23738-1901-468D-A628-084345E1D658}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{77F23738-1901-468D-A628-084345E1D658}.Release|Any CPU.Build.0 = Release|Any CPU
+		{91810A1E-EBE7-4C24-9632-6FEFE048092D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{91810A1E-EBE7-4C24-9632-6FEFE048092D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{91810A1E-EBE7-4C24-9632-6FEFE048092D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{91810A1E-EBE7-4C24-9632-6FEFE048092D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -113,6 +119,7 @@ Global
 		{386C63A1-C836-44F7-8353-E9055981F8D8} = {6C2B8CCF-8FC2-41A0-8C67-C45E3A4A9AAC}
 		{1C2FA36A-20DD-4111-806A-F9678BC66862} = {D95C035F-8D0F-4047-B6DB-3AB41246F7DC}
 		{77F23738-1901-468D-A628-084345E1D658} = {6C2B8CCF-8FC2-41A0-8C67-C45E3A4A9AAC}
+		{91810A1E-EBE7-4C24-9632-6FEFE048092D} = {D95C035F-8D0F-4047-B6DB-3AB41246F7DC}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {33E32F9A-47E6-4F28-A39C-4DEE34F8D3B8}
