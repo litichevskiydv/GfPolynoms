@@ -14,6 +14,7 @@
         private readonly PrimeOrderField _field;
         private readonly int _listDecodingRadius;
         private readonly Dictionary<Polynomial, FieldElement[]> _codeByInformation;
+        private readonly Dictionary<Polynomial, FieldElement[]> _informationWordsByPolynomials;
 
         public GaloisField Field => _field;
 
@@ -30,11 +31,15 @@
             if (currentPosition == InformationWordLength)
             {
                 var informationPolynomial = new Polynomial(Field, informationWord);
+                _informationWordsByPolynomials[informationPolynomial] = informationWord.Select(x => Field.CreateElement(x)).ToArray();
 
                 var codePolynomial = informationPolynomial * generatingPolynomial % modularPolynomial;
                 codePolynomial += new Polynomial(Field, informationPolynomial.Evaluate(1)).RightShift(CodewordLength - 1);
 
-                _codeByInformation[informationPolynomial] = codePolynomial.GetCoefficients();
+                var codeWord = Enumerable.Repeat(Field.Zero(), CodewordLength).ToArray();
+                for (var i = 0; i <= codePolynomial.Degree; i++)
+                    codeWord[i] = Field.CreateElement(codePolynomial[i]);
+                _codeByInformation[informationPolynomial] = codeWord;
                 return;
             }
 
@@ -51,9 +56,10 @@
             _listDecodingRadius = listDecodingRadius;
 
             _codeByInformation = new Dictionary<Polynomial, FieldElement[]>();
+            _informationWordsByPolynomials = new Dictionary<Polynomial, FieldElement[]>();
             GenerateCodewords(
                 new Polynomial(Field, 2, 2, 1, 2, 2, 2, 1, 1, 1, 2, 1),
-                new Polynomial(Field, 1).RightShift(CodewordLength - 2) + new Polynomial(Field, Field.InverseForAddition(1)),
+                new Polynomial(Field, 1).RightShift(CodewordLength - 1) + new Polynomial(Field, Field.InverseForAddition(1)),
                 new int[InformationWordLength],
                 0
             );
@@ -78,15 +84,16 @@
         {
             if(noisyCodeword == null)
                 throw new ArgumentNullException(nameof(noisyCodeword));
-            if (noisyCodeword.Length != InformationWordLength)
+            if (noisyCodeword.Length != CodewordLength)
                 throw new ArgumentNullException($"{nameof(noisyCodeword)} length must be {CodewordLength}");
             if (noisyCodeword.Any(x => x == null))
                 throw new ArgumentException($"{nameof(noisyCodeword)} mustn't contains null elements");
             if (noisyCodeword.Any(x => x.Field.Equals(Field) == false))
                 throw new ArgumentException($"All elements of {nameof(noisyCodeword)} must belong to field {Field}");
 
-            return _codeByInformation.Values
-                .Where(x => x.ComputeHammingDistance(noisyCodeword) <= listDecodingRadius)
+            return _codeByInformation
+                .Where(x => x.Value.ComputeHammingDistance(noisyCodeword) <= listDecodingRadius)
+                .Select(x => _informationWordsByPolynomials[x.Key])
                 .ToArray();
         }
 
