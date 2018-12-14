@@ -61,7 +61,7 @@
                 var codeword = code.Encode(informationWord);
 
                 var researchResult = new ListDecodingResearchResult();
-                for (var errorsCount = 1; errorsCount <= code.CodewordLength; errorsCount++)
+                for (var errorsCount = 0; errorsCount <= code.CodewordLength; errorsCount++)
                     Parallel.ForEach(
                         noiseGenerator.VariatePositionsAndValues(code.Field, code.CodewordLength, errorsCount),
                         new ParallelOptions {MaxDegreeOfParallelism = 3},

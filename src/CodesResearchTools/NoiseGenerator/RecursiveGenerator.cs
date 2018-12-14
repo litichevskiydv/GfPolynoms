@@ -68,8 +68,8 @@
                 throw new ArgumentNullException(nameof(field));
             if(codewordLength <= 0)
                 throw new ArgumentException($"{nameof(codewordLength)} must be positive");
-            if(errorsCount <= 0)
-                throw new ArgumentNullException($"{nameof(errorsCount)} must be positive");
+            if(errorsCount < 0)
+                throw new ArgumentNullException($"{nameof(errorsCount)} must be not negative");
             if(errorsCount > codewordLength)
                 throw new ArgumentNullException($"{nameof(errorsCount)} must not be greater than codeword length");
             if (initialNoiseValue != null)
