@@ -23,12 +23,16 @@
         private int _processedSamplesCount;
         private string _wrongDecodingExample;
 
+        [UsedImplicitly]
         public int ProcessedSamplesCount => _processedSamplesCount;
-        
+
+        [UsedImplicitly]
         public ConcurrentDictionary<int, int> ListSizesDistribution { get; }
 
+        [UsedImplicitly]
         public ConcurrentDictionary<int, string> NoisyCodewordsExamples { get; }
 
+        [UsedImplicitly]
         public string WrongDecodingExample => _wrongDecodingExample;
 
 

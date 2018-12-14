@@ -36,10 +36,7 @@
                 var codePolynomial = informationPolynomial * generatingPolynomial % modularPolynomial;
                 codePolynomial += new Polynomial(Field, informationPolynomial.Evaluate(1)).RightShift(CodewordLength - 1);
 
-                var codeWord = Enumerable.Repeat(Field.Zero(), CodewordLength).ToArray();
-                for (var i = 0; i <= codePolynomial.Degree; i++)
-                    codeWord[i] = Field.CreateElement(codePolynomial[i]);
-                _codeByInformation[informationPolynomial] = codeWord;
+                _codeByInformation[informationPolynomial] = codePolynomial.GetCoefficients(CodewordLength - 1);
                 return;
             }
 

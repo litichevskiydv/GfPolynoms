@@ -1,7 +1,7 @@
 ﻿namespace AppliedAlgebra.GfPolynoms.Extensions
 {
     using System;
-    using System.Collections.Generic;
+    using System.Linq;
 
     /// <summary>
     /// Class with extensions for polynomial
@@ -33,12 +33,16 @@
         /// <summary>
         /// Method for obtaining polynomial coefficients
         /// </summary>
-        public static FieldElement[] GetCoefficients(this Polynomial polynomial)
+        public static FieldElement[] GetCoefficients(this Polynomial polynomial, int? expectedDegree = null)
         {
             if (polynomial == null)
                 throw new ArgumentNullException(nameof(polynomial));
+            if(expectedDegree.HasValue && expectedDegree.Value < 0)
+                throw new ArgumentException($"{nameof(expectedDegree)} must be not negative");
+            if(expectedDegree.HasValue && expectedDegree.Value < polynomial.Degree)
+                throw new ArgumentException($"{nameof(expectedDegree)} must be greater or equal polynomial's degree");
 
-            var coefficients = new FieldElement[polynomial.Degree + 1];
+            var coefficients = Enumerable.Repeat(polynomial.Field.Zero(), (expectedDegree ?? polynomial.Degree) + 1).ToArray();
             for (var i = 0; i <= polynomial.Degree; i++)
                 coefficients[i] = polynomial.Field.CreateElement(polynomial[i]);
 
