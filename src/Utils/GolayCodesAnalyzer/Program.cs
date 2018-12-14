@@ -4,6 +4,7 @@
     using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Reflection;
     using System.Threading;
     using System.Threading.Tasks;
     using CodesResearchTools.NoiseGenerator;
@@ -11,7 +12,11 @@
     using GfPolynoms;
     using GfPolynoms.Extensions;
     using GolayCodesTools;
+    using JetBrains.Annotations;
+    using Microsoft.Extensions.Configuration;
+    using Microsoft.Extensions.Logging;
     using Newtonsoft.Json;
+    using Serilog;
 
     public class ListDecodingResearchResult
     {
@@ -48,12 +53,27 @@
         }
     }
 
-    static class Program
+    [UsedImplicitly]
+    public class Program
     {
+        [UsedImplicitly]
         static void Main(string[] args)
         {
-            var noiseGenerator = new RecursiveGenerator();
+            var configuration = new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json")
+                .Build();
 
+            var loggerFactory = new LoggerFactory()
+                .AddSerilog(
+                    new LoggerConfiguration()
+                        .ReadFrom.Configuration(configuration)
+                        .Enrich.FromLogContext()
+                        .Enrich.WithProperty("Version", Assembly.GetEntryAssembly().GetName().Version.ToString(4))
+                        .CreateLogger()
+                );
+            var logger = loggerFactory.CreateLogger<Program>();
+
+            var noiseGenerator = new RecursiveGenerator();
             for (var listDecodingRadius = 1; listDecodingRadius < 12; listDecodingRadius++)
             {
                 var code = new G12GolayCode(listDecodingRadius);
@@ -72,8 +92,8 @@
                         }
                     );
 
-                Console.WriteLine($"Results for radius {listDecodingRadius}");
-                Console.WriteLine(JsonConvert.SerializeObject(researchResult, Formatting.Indented));
+                logger.LogInformation($"Results for radius {listDecodingRadius}");
+                logger.LogInformation(JsonConvert.SerializeObject(researchResult, Formatting.Indented));
             }
         }
     }
