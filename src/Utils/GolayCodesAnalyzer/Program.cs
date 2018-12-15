@@ -88,7 +88,7 @@
                 for (var errorsCount = 0; errorsCount <= code.CodewordLength; errorsCount++)
                     Parallel.ForEach(
                         noiseGenerator.VariatePositionsAndValues(code.Field, code.CodewordLength, errorsCount),
-                        new ParallelOptions {MaxDegreeOfParallelism = 3},
+                        new ParallelOptions {MaxDegreeOfParallelism = 2},
                         x =>
                         {
                             var noisyCodeword = codeword.AddNoise(x);
