@@ -47,7 +47,10 @@
             );
             var logger = _loggerFactory.CreateLogger<Program>();
 
-            var listsSizesDistribution = listsSizesDistributionAnalyzer.Analyze(new G12GolayCode(), 3);
+            var listsSizesDistribution = listsSizesDistributionAnalyzer.Analyze(
+                new G12GolayCode(),
+                new ListsSizesDistributionAnalyzerOptions {MaxDegreeOfParallelism = 3}
+            );
             logger.LogInformation(JsonConvert.SerializeObject(listsSizesDistribution, Formatting.Indented));
         }
     }
