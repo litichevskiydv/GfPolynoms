@@ -105,5 +105,10 @@
         {
             return PerformListDecoding(listDecodingRadius ?? (CodeDistance - 1) / 2 + 1, noisyCodeword);
         }
+
+        public override string ToString()
+        {
+            return $"G{CodewordLength}[{CodewordLength},{InformationWordLength},{CodeDistance}]";
+        }
     }
 }

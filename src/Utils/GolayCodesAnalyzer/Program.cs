@@ -1,5 +1,6 @@
 ﻿namespace AppliedAlgebra.GolayCodesAnalyzer
 {
+    using System;
     using System.Reflection;
     using CodesResearchTools.Analyzers.ListsSizesDistribution;
     using CodesResearchTools.NoiseGenerator;
@@ -47,11 +48,22 @@
             );
             var logger = _loggerFactory.CreateLogger<Program>();
 
-            var listsSizesDistribution = listsSizesDistributionAnalyzer.Analyze(
-                new G12GolayCode(),
-                new ListsSizesDistributionAnalyzerOptions {MaxDegreeOfParallelism = 3}
-            );
-            logger.LogInformation(JsonConvert.SerializeObject(listsSizesDistribution, Formatting.Indented));
+            try
+            {
+                var listsSizesDistribution = listsSizesDistributionAnalyzer.Analyze(
+                    new G12GolayCode(),
+                    new ListsSizesDistributionAnalyzerOptions
+                    {
+                        MaxDegreeOfParallelism = 3,
+                        FullLogsPath = @"c:\Users\litic\Documents\Study\Coding\PostGraduateWorks\Experiments\"
+                    }
+                );
+                logger.LogInformation(JsonConvert.SerializeObject(listsSizesDistribution, Formatting.Indented));
+            }
+            catch (Exception exception)
+            {
+                logger.LogError(0, exception, "Exception occurred during analysis");
+            }
         }
     }
 }
