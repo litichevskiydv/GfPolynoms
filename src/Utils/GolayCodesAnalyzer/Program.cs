@@ -1,17 +1,8 @@
 ﻿namespace AppliedAlgebra.GolayCodesAnalyzer
 {
-    using System;
-    using System.Collections.Concurrent;
-    using System.Collections.Generic;
-    using System.Linq;
     using System.Reflection;
-    using System.Threading;
-    using System.Threading.Tasks;
-    using CodesAbstractions;
+    using CodesResearchTools.Analyzers.ListsSizesDistribution;
     using CodesResearchTools.NoiseGenerator;
-    using GfAlgorithms.Extensions;
-    using GfPolynoms;
-    using GfPolynoms.Extensions;
     using GolayCodesTools;
     using JetBrains.Annotations;
     using Microsoft.Extensions.Configuration;
@@ -19,87 +10,45 @@
     using Newtonsoft.Json;
     using Serilog;
 
-    public class ListDecodingResearchResult
-    {
-        private int _processedSamplesCount;
-        private string _wrongDecodingExample;
-
-        [UsedImplicitly]
-        public int ProcessedSamplesCount => _processedSamplesCount;
-
-        [UsedImplicitly]
-        public ConcurrentDictionary<int, int> ListSizesDistribution { get; }
-
-        [UsedImplicitly]
-        public ConcurrentDictionary<int, string> NoisyCodewordsExamples { get; }
-
-        [UsedImplicitly]
-        public string WrongDecodingExample => _wrongDecodingExample;
-
-
-
-        public ListDecodingResearchResult()
-        {
-            ListSizesDistribution = new ConcurrentDictionary<int, int>();
-            NoisyCodewordsExamples = new ConcurrentDictionary<int, string>();
-        }
-
-        public void CollectInformation(
-            FieldElement[] informationWord,
-            FieldElement[] noisyCodeword,
-            IReadOnlyList<FieldElement[]> decodingResults)
-        {
-            Interlocked.Increment(ref _processedSamplesCount);
-            ListSizesDistribution.AddOrUpdate(decodingResults.Count, 1, (key, value) => value + 1);
-            NoisyCodewordsExamples.TryAdd(decodingResults.Count, $"[{string.Join<FieldElement>(", ", noisyCodeword)}]");
-
-            if (decodingResults.All(x => x.SequenceEqual(informationWord) == false))
-                Interlocked.CompareExchange(ref _wrongDecodingExample, $"[{string.Join<FieldElement>(", ", noisyCodeword)}]", null);
-        }
-    }
-
     [UsedImplicitly]
     public class Program
     {
-        [UsedImplicitly]
-        static void Main(string[] args)
+        private static IConfiguration _configuration;
+        private static ILoggerFactory _loggerFactory;
+
+        private static void BuildConfiguration()
         {
-            var configuration = new ConfigurationBuilder()
+            _configuration = new ConfigurationBuilder()
                 .AddJsonFile("appsettings.json")
                 .Build();
+        }
 
-            var loggerFactory = new LoggerFactory()
+        private static void BuildLoggerFactory()
+        {
+            _loggerFactory = new LoggerFactory()
                 .AddSerilog(
                     new LoggerConfiguration()
-                        .ReadFrom.Configuration(configuration)
+                        .ReadFrom.Configuration(_configuration)
                         .Enrich.FromLogContext()
                         .Enrich.WithProperty("Version", Assembly.GetEntryAssembly().GetName().Version.ToString(4))
                         .CreateLogger()
                 );
-            var logger = loggerFactory.CreateLogger<Program>();
+        }
 
-            ICode code = new G12GolayCode();
-            var noiseGenerator = new RecursiveGenerator();
-            for (var listDecodingRadius = 1; listDecodingRadius < code.CodewordLength; listDecodingRadius++)
-            {
-                var informationWord = Enumerable.Repeat(code.Field.Zero(), code.InformationWordLength).ToArray();
-                var codeword = code.Encode(informationWord);
+        [UsedImplicitly]
+        static void Main(string[] args)
+        {
+            BuildConfiguration();
+            BuildLoggerFactory();
 
-                var researchResult = new ListDecodingResearchResult();
-                for (var errorsCount = 0; errorsCount <= code.CodewordLength; errorsCount++)
-                    Parallel.ForEach(
-                        noiseGenerator.VariatePositionsAndValues(code.Field, code.CodewordLength, errorsCount),
-                        new ParallelOptions {MaxDegreeOfParallelism = 2},
-                        x =>
-                        {
-                            var noisyCodeword = codeword.AddNoise(x);
-                            researchResult.CollectInformation(informationWord, noisyCodeword, code.DecodeViaList(noisyCodeword, listDecodingRadius));
-                        }
-                    );
+            var listsSizesDistributionAnalyzer = new ListsSizesDistributionAnalyzer(
+                new RecursiveGenerator(),
+                _loggerFactory.CreateLogger<ListsSizesDistributionAnalyzer>()
+            );
+            var logger = _loggerFactory.CreateLogger<Program>();
 
-                logger.LogInformation($"Results for radius {listDecodingRadius}");
-                logger.LogInformation(JsonConvert.SerializeObject(researchResult, Formatting.Indented));
-            }
+            var listsSizesDistribution = listsSizesDistributionAnalyzer.Analyze(new G12GolayCode(), 3);
+            logger.LogInformation(JsonConvert.SerializeObject(listsSizesDistribution, Formatting.Indented));
         }
     }
 }
