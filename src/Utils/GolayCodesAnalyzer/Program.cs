@@ -7,6 +7,7 @@
     using System.Reflection;
     using System.Threading;
     using System.Threading.Tasks;
+    using CodesAbstractions;
     using CodesResearchTools.NoiseGenerator;
     using GfAlgorithms.Extensions;
     using GfPolynoms;
@@ -77,10 +78,10 @@
                 );
             var logger = loggerFactory.CreateLogger<Program>();
 
+            ICode code = new G12GolayCode();
             var noiseGenerator = new RecursiveGenerator();
-            for (var listDecodingRadius = 1; listDecodingRadius < 12; listDecodingRadius++)
+            for (var listDecodingRadius = 1; listDecodingRadius < code.CodewordLength; listDecodingRadius++)
             {
-                var code = new G12GolayCode(listDecodingRadius);
                 var informationWord = Enumerable.Repeat(code.Field.Zero(), code.InformationWordLength).ToArray();
                 var codeword = code.Encode(informationWord);
 
@@ -92,7 +93,7 @@
                         x =>
                         {
                             var noisyCodeword = codeword.AddNoise(x);
-                            researchResult.CollectInformation(informationWord, noisyCodeword, code.DecodeViaList(noisyCodeword));
+                            researchResult.CollectInformation(informationWord, noisyCodeword, code.DecodeViaList(noisyCodeword, listDecodingRadius));
                         }
                     );
 

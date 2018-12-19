@@ -12,7 +12,6 @@
     public class G12GolayCode : ICode
     {
         private readonly PrimeOrderField _field;
-        private readonly int _listDecodingRadius;
         private readonly Dictionary<Polynomial, FieldElement[]> _codeByInformation;
         private readonly Dictionary<Polynomial, FieldElement[]> _informationWordsByPolynomials;
 
@@ -47,10 +46,9 @@
             }
         }
 
-        public G12GolayCode(int listDecodingRadius)
+        public G12GolayCode()
         {
             _field = new PrimeOrderField(3);
-            _listDecodingRadius = listDecodingRadius;
 
             _codeByInformation = new Dictionary<Polynomial, FieldElement[]>();
             _informationWordsByPolynomials = new Dictionary<Polynomial, FieldElement[]>();
@@ -103,9 +101,9 @@
             return listDecodingResult[0];
         }
 
-        public IReadOnlyList<FieldElement[]> DecodeViaList(FieldElement[] noisyCodeword)
+        public IReadOnlyList<FieldElement[]> DecodeViaList(FieldElement[] noisyCodeword, int? listDecodingRadius = null)
         {
-            return PerformListDecoding(_listDecodingRadius, noisyCodeword);
+            return PerformListDecoding(listDecodingRadius ?? (CodeDistance - 1) / 2 + 1, noisyCodeword);
         }
     }
 }

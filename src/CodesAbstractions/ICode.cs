@@ -19,6 +19,6 @@
 
         FieldElement[] Decode(FieldElement[] noisyCodeword);
 
-        IReadOnlyList<FieldElement[]> DecodeViaList(FieldElement[] noisyCodeword);
+        IReadOnlyList<FieldElement[]> DecodeViaList(FieldElement[] noisyCodeword, int? listDecodingRadius = null);
     }
 }
