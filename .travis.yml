@@ -4,7 +4,7 @@ matrix:
     - os: linux
       dist: xenial
     - os: osx
-      osx_image: xcode8.3
+      osx_image: xcode10.1
 env:
   global:
     - Configuration=Release
@@ -15,8 +15,6 @@ branches:
   - master
   - /^release\/.*$/
   - develop
-before_script:
- - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then gpg --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3 7D2BAF1CF37B13E2069D6956105BD0E739499BDB; rvm get stable; fi
 script:
  - set -e
  - cd build
