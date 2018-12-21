@@ -45,9 +45,9 @@
             }
         }
 
-        protected GolayCodeBase(PrimeOrderField field, int codewordLength, int informationWordLength, int codeDistance)
+        protected GolayCodeBase(int codewordLength, int informationWordLength, int codeDistance, Polynomial generatingPolynomial)
         {
-            Field = field;
+            Field = generatingPolynomial.Field;
             CodewordLength = codewordLength;
             InformationWordLength = informationWordLength;
             CodeDistance = codeDistance;
@@ -56,7 +56,7 @@
             _informationWordsByPolynomials = new Dictionary<Polynomial, FieldElement[]>();
             var modularPolynomialDegree = CodewordLength - (CodewordLength % 2 == 0 ? 1 : 0);
             GenerateCodewords(
-                new Polynomial(Field, 2, 2, 1, 2, 2, 2, 1, 1, 1, 2, 1),
+                generatingPolynomial,
                 new Polynomial(Field, 1).RightShift(modularPolynomialDegree) + new Polynomial(Field, Field.InverseForAddition(1)),
                 new int[InformationWordLength],
                 0
