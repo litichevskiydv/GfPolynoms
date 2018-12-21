@@ -43,9 +43,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CodesResearchTools.Tests", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CodesAbstractions", "src\CodesAbstractions\CodesAbstractions.csproj", "{91810A1E-EBE7-4C24-9632-6FEFE048092D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GolayCodesTools", "src\GolayCodesTools\GolayCodesTools.csproj", "{898F9334-1984-4201-BC17-329F0E45932F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GolayCodesTools", "src\GolayCodesTools\GolayCodesTools.csproj", "{898F9334-1984-4201-BC17-329F0E45932F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GolayCodesAnalyzer", "src\Utils\GolayCodesAnalyzer\GolayCodesAnalyzer.csproj", "{E2923E72-9FFB-415E-9230-D187012A06B1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GolayCodesAnalyzer", "src\Utils\GolayCodesAnalyzer\GolayCodesAnalyzer.csproj", "{E2923E72-9FFB-415E-9230-D187012A06B1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GolayCodesTools.Tests", "test\GolayCodesTools.Tests\GolayCodesTools.Tests.csproj", "{4543FD4D-8D32-44D6-819F-418054EEA1A5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -113,6 +115,10 @@ Global
 		{E2923E72-9FFB-415E-9230-D187012A06B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E2923E72-9FFB-415E-9230-D187012A06B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E2923E72-9FFB-415E-9230-D187012A06B1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4543FD4D-8D32-44D6-819F-418054EEA1A5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4543FD4D-8D32-44D6-819F-418054EEA1A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4543FD4D-8D32-44D6-819F-418054EEA1A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4543FD4D-8D32-44D6-819F-418054EEA1A5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -134,6 +140,7 @@ Global
 		{91810A1E-EBE7-4C24-9632-6FEFE048092D} = {D95C035F-8D0F-4047-B6DB-3AB41246F7DC}
 		{898F9334-1984-4201-BC17-329F0E45932F} = {D95C035F-8D0F-4047-B6DB-3AB41246F7DC}
 		{E2923E72-9FFB-415E-9230-D187012A06B1} = {5FEFF932-BD59-4C31-9AAE-B5E28C8DEE5B}
+		{4543FD4D-8D32-44D6-819F-418054EEA1A5} = {6C2B8CCF-8FC2-41A0-8C67-C45E3A4A9AAC}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {33E32F9A-47E6-4F28-A39C-4DEE34F8D3B8}
