@@ -78,5 +78,11 @@
             // Then
             Assert.Contains(expectedInformationWord, actualInformationWords);
         }
+
+        [Fact]
+        public void ShouldReturnCorrectStringRepresentation()
+        {
+            Assert.Equal("G12[12,6,6]", _code.ToString());
+        }
     }
 }
