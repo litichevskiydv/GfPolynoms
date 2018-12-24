@@ -16,6 +16,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+      <_Parameter1>AppliedAlgebra.CodesResearchTools.Tests</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\CodesAbstractions\CodesAbstractions.csproj" />
     <ProjectReference Include="..\GfAlgorithms\GfAlgorithms.csproj" />
   </ItemGroup>

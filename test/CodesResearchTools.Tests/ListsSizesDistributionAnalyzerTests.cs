@@ -44,13 +44,32 @@
             }
         }
 
+        private class ListsSizesDistributionAnalyzerForTests : ListsSizesDistributionAnalyzer
+        {
+            private readonly List<string> _messages;
+
+            public IReadOnlyList<string> Messages => _messages;
+
+            public ListsSizesDistributionAnalyzerForTests(
+                INoiseGenerator noiseGenerator,
+                ILogger<ListsSizesDistributionAnalyzer> logger) : base(noiseGenerator, logger)
+            {
+                _messages = new List<string>();
+            }
+
+            internal override void WriteLineToLog(string fullLogsPath, ICode code, int listDecodingRadius, string line, bool append = true)
+            {
+                _messages.Add(line);
+            }
+        }
+
         private readonly Mock<ILogger<ListsSizesDistributionAnalyzer>> _mockLogger;
-        private readonly ListsSizesDistributionAnalyzer _analyzer;
+        private readonly ListsSizesDistributionAnalyzerForTests _analyzer;
 
         public ListsSizesDistributionAnalyzerTests()
         {
             _mockLogger = new Mock<ILogger<ListsSizesDistributionAnalyzer>>();
-            _analyzer = new ListsSizesDistributionAnalyzer(new RecursiveGenerator(), _mockLogger.Object);
+            _analyzer = new ListsSizesDistributionAnalyzerForTests(new RecursiveGenerator(), _mockLogger.Object);
         }
 
         [Fact]
@@ -62,7 +81,8 @@
                 = new ListsSizesDistributionAnalyzerOptions
                   {
                       MaxDegreeOfParallelism = 1,
-                      LoggingResolution = 2
+                      LoggingResolution = 2,
+                      FullLogsPath = "."
                   };
 
             // When
@@ -73,6 +93,13 @@
             Assert.Equal(4, listSizesDistribution.ProcessedSamplesCount);
             Assert.Equal(1, listSizesDistribution.ListDecodingRadius);
             Assert.Equal(4, listSizesDistribution.ListSizesDistribution[2]);
+
+            Assert.Equal(5, _analyzer.Messages.Count);
+            Assert.Equal("x1,x2,list_size", _analyzer.Messages.First());
+            Assert.Contains("0,0,2", _analyzer.Messages);
+            Assert.Contains("0,1,2", _analyzer.Messages);
+            Assert.Contains("1,0,2", _analyzer.Messages);
+            Assert.Contains("1,1,2", _analyzer.Messages);
 
             _mockLogger.Verify(
                 x => x.Log(

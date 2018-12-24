@@ -27,7 +27,7 @@
             _logger = logger;
         }
 
-        private void WriteLineToLog(string fullLogsPath, ICode code, int listDecodingRadius, string line, bool append = true)
+        internal virtual void WriteLineToLog(string fullLogsPath, ICode code, int listDecodingRadius, string line, bool append = true)
         {
             var fileName = Path.Combine(fullLogsPath, $"{code}_list_decoding_radius_{listDecodingRadius}.csv");
 
