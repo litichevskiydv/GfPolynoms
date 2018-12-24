@@ -16,7 +16,7 @@
         private readonly INoiseGenerator _noiseGenerator;
         private readonly ILogger _logger;
 
-        public ListsSizesDistributionAnalyzer(INoiseGenerator noiseGenerator, ILogger logger)
+        public ListsSizesDistributionAnalyzer(INoiseGenerator noiseGenerator, ILogger<ListsSizesDistributionAnalyzer> logger)
         {
             if(noiseGenerator == null)
                 throw new ArgumentNullException(nameof(noiseGenerator));
