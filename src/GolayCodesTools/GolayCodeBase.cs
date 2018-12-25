@@ -6,13 +6,13 @@
     using CodesAbstractions;
     using GfAlgorithms.Extensions;
     using GfPolynoms;
+    using GfPolynoms.Comparers;
     using GfPolynoms.Extensions;
     using GfPolynoms.GaloisFields;
 
     public abstract class GolayCodeBase : ICode
     {
-        private readonly Dictionary<Polynomial, FieldElement[]> _codeByInformation;
-        private readonly Dictionary<Polynomial, FieldElement[]> _informationWordsByPolynomials;
+        private readonly Dictionary<FieldElement[], FieldElement[]> _codeByInformation;
 
         public GaloisField Field { get; }
         public int CodewordLength { get; }
@@ -28,13 +28,11 @@
             if (currentPosition == InformationWordLength)
             {
                 var informationPolynomial = new Polynomial(Field, informationWord);
-                _informationWordsByPolynomials[informationPolynomial] = informationWord.Select(x => Field.CreateElement(x)).ToArray();
-
                 var codePolynomial = informationPolynomial * generatingPolynomial % modularPolynomial;
                 if (CodewordLength % 2 == 0)
                     codePolynomial += new Polynomial(Field, informationPolynomial.Evaluate(1)).RightShift(CodewordLength - 1);
 
-                _codeByInformation[informationPolynomial] = codePolynomial.GetCoefficients(CodewordLength - 1);
+                _codeByInformation[informationPolynomial.GetCoefficients(InformationWordLength - 1)] = codePolynomial.GetCoefficients(CodewordLength - 1);
                 return;
             }
 
@@ -52,8 +50,7 @@
             InformationWordLength = informationWordLength;
             CodeDistance = codeDistance;
 
-            _codeByInformation = new Dictionary<Polynomial, FieldElement[]>();
-            _informationWordsByPolynomials = new Dictionary<Polynomial, FieldElement[]>();
+            _codeByInformation = new Dictionary<FieldElement[], FieldElement[]>(new FieldElementsArraysComparer());
             var modularPolynomialDegree = CodewordLength - (CodewordLength % 2 == 0 ? 1 : 0);
             GenerateCodewords(
                 generatingPolynomial,
@@ -74,7 +71,7 @@
             if (informationWord.Any(x => x.Field.Equals(Field) == false))
                 throw new ArgumentException($"All elements of {nameof(informationWord)} must belong to field {Field}");
 
-            return _codeByInformation[new Polynomial(informationWord)];
+            return _codeByInformation[informationWord];
         }
 
         private IReadOnlyList<FieldElement[]> PerformListDecoding(int listDecodingRadius, FieldElement[] noisyCodeword)
@@ -90,7 +87,7 @@
 
             return _codeByInformation
                 .Where(x => x.Value.ComputeHammingDistance(noisyCodeword) <= listDecodingRadius)
-                .Select(x => _informationWordsByPolynomials[x.Key])
+                .Select(x => x.Key)
                 .ToArray();
         }
 
