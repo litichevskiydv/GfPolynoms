@@ -38,8 +38,8 @@
             {
                 return new[]
                        {
-                           new[] {_gf2.One(), _gf2.One()},
-                           new[] {_gf2.Zero(), _gf2.Zero()}
+                           new[] {noisyCodeword[0], noisyCodeword[1] + _gf2.One()},
+                           new[] {noisyCodeword[0] + _gf2.One(), noisyCodeword[1]}
                        };
             }
         }

@@ -7,6 +7,7 @@
     using System.Threading;
     using System.Threading.Tasks;
     using CodesAbstractions;
+    using GfAlgorithms.Extensions;
     using GfPolynoms;
     using Microsoft.Extensions.Logging;
     using NoiseGenerator;
@@ -71,12 +72,16 @@
                     new ParallelOptions {MaxDegreeOfParallelism = opts.MaxDegreeOfParallelism},
                     ballCenter =>
                     {
-                        for (var listDecodingRadius = 1; listDecodingRadius < code.CodewordLength; listDecodingRadius++)
-                        {
-                            var decodingResults = code.DecodeViaList(ballCenter, listDecodingRadius);
-                            result[listDecodingRadius - 1].CollectInformation(ballCenter, decodingResults);
+                        var lists = result.Select(x => new List<FieldElement[]>()).ToArray();
+                        var codewordsForLargestBall = code.DecodeViaList(ballCenter, code.CodewordLength - 1).Select(code.Encode);
+                        foreach (var codeword in codewordsForLargestBall)
+                            for (var i = Math.Max(0, ballCenter.ComputeHammingDistance(codeword) - 1); i < lists.Length; i++)
+                                lists[i].Add(codeword);
 
-                            LogListSize(opts.FullLogsPath, code, listDecodingRadius, ballCenter, decodingResults.Count);
+                        for (var i = 0; i < lists.Length; i++)
+                        {
+                            result[i].CollectInformation(ballCenter, lists[i]);
+                            LogListSize(opts.FullLogsPath, code, i + 1, ballCenter, lists[i].Count);
                         }
 
                         if (Interlocked.Increment(ref processedCentersCount) % opts.LoggingResolution == 0)
