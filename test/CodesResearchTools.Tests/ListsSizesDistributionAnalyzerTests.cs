@@ -20,13 +20,13 @@
             private readonly PrimeOrderField _gf2 = new PrimeOrderField(2);
 
             public GaloisField Field => _gf2;
-            public int CodewordLength => 2;
+            public int CodewordLength => 3;
             public int InformationWordLength => 2;
             public int CodeDistance => 0;
 
             public FieldElement[] Encode(FieldElement[] informationWord)
             {
-                return informationWord.Select(x => new FieldElement(x)).ToArray();
+                return new[] {informationWord[0], informationWord[1], informationWord[0] + informationWord[1]};
             }
 
             public FieldElement[] Decode(FieldElement[] noisyCodeword)
@@ -36,11 +36,15 @@
 
             public IReadOnlyList<FieldElement[]> DecodeViaList(FieldElement[] noisyCodeword, int? listDecodingRadius = null)
             {
-                return new[]
-                       {
-                           new[] {noisyCodeword[0], noisyCodeword[1] + _gf2.One()},
-                           new[] {noisyCodeword[0] + _gf2.One(), noisyCodeword[1]}
-                       };
+                var list = new List<FieldElement[]> { new[] { noisyCodeword[0], noisyCodeword[1] } };
+                if (Equals(noisyCodeword[0] + noisyCodeword[1], noisyCodeword[2]) == false)
+                {
+                    list.Add(new[] { noisyCodeword[0] + _gf2.One(), noisyCodeword[1] });
+                    list.Add(new[] { noisyCodeword[0], noisyCodeword[1] + _gf2.One() });
+                }
+                else if (listDecodingRadius == 2) list.Add(new[] {noisyCodeword[0] + _gf2.One(), noisyCodeword[1] + _gf2.One()});
+
+                return list;
             }
         }
 
@@ -89,17 +93,32 @@
             var actualResult = _analyzer.Analyze(code, analyzerOptions);
 
             // Then
-            var listSizesDistribution = actualResult.Single();
-            Assert.Equal(4, listSizesDistribution.ProcessedSamplesCount);
-            Assert.Equal(1, listSizesDistribution.ListDecodingRadius);
-            Assert.Equal(4, listSizesDistribution.ListSizesDistribution[2]);
+            var listSizesDistributionForRadiusOne = actualResult.Single(x => x.ListDecodingRadius == 1);
+            Assert.Equal(8, listSizesDistributionForRadiusOne.ProcessedSamplesCount);
+            Assert.Equal(4, listSizesDistributionForRadiusOne.ListSizesDistribution[1]);
+            Assert.Equal(4, listSizesDistributionForRadiusOne.ListSizesDistribution[3]);
 
-            Assert.Equal(5, _analyzer.Messages.Count);
-            Assert.Equal("x1,x2,list_size", _analyzer.Messages.First());
-            Assert.Contains("0,0,2", _analyzer.Messages);
-            Assert.Contains("0,1,2", _analyzer.Messages);
-            Assert.Contains("1,0,2", _analyzer.Messages);
-            Assert.Contains("1,1,2", _analyzer.Messages);
+            var listSizesDistributionForRadiusTwo = actualResult.Single(x => x.ListDecodingRadius == 2);
+            Assert.Equal(8, listSizesDistributionForRadiusTwo.ProcessedSamplesCount);
+            Assert.Equal(4, listSizesDistributionForRadiusTwo.ListSizesDistribution[2]);
+            Assert.Equal(4, listSizesDistributionForRadiusTwo.ListSizesDistribution[3]);
+
+            Assert.Equal(18, _analyzer.Messages.Count);
+            Assert.Equal("x1,x2,x3,list_size", _analyzer.Messages[0]);
+            Assert.Equal("x1,x2,x3,list_size", _analyzer.Messages[1]);
+            Assert.Contains("0,0,0,1", _analyzer.Messages);
+            Assert.Contains("0,0,0,2", _analyzer.Messages);
+            Assert.Contains("1,0,0,3", _analyzer.Messages);
+            Assert.Contains("0,1,0,3", _analyzer.Messages);
+            Assert.Contains("0,0,1,3", _analyzer.Messages);
+            Assert.Contains("0,0,1,3", _analyzer.Messages);
+            Assert.Contains("1,1,0,1", _analyzer.Messages);
+            Assert.Contains("1,1,0,2", _analyzer.Messages);
+            Assert.Contains("1,0,1,1", _analyzer.Messages);
+            Assert.Contains("1,0,1,2", _analyzer.Messages);
+            Assert.Contains("0,1,1,1", _analyzer.Messages);
+            Assert.Contains("0,1,1,2", _analyzer.Messages);
+            Assert.Contains("1,1,1,3", _analyzer.Messages);
 
             _mockLogger.Verify(
                 x => x.Log(
@@ -109,7 +128,7 @@
                     It.IsAny<Exception>(),
                     It.IsAny<Func<object, Exception, string>>()
                 ),
-                Times.Exactly(2)
+                Times.Exactly(4)
             );
         }
     }
