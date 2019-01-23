@@ -8,11 +8,18 @@
 
     public class PrimePowerOrderFieldTests
     {
+        public class IncorrectFieldCreationTestCase
+        {
+            public int FieldOrder { get; set; }
+
+            public Polynomial IrreduciblePolynomial { get; set; }
+        }
+
         private static readonly PrimePowerOrderField Gf8;
         private static readonly PrimePowerOrderField Gf27;
 
         [UsedImplicitly]
-        public static readonly IEnumerable<object[]> IncorrectFieldCreationTestsData;
+        public static readonly TheoryData<IncorrectFieldCreationTestCase> IncorrectFieldCreationTestsData;
         [UsedImplicitly]
         public static readonly IEnumerable<object[]> SumTestsData;
         [UsedImplicitly]
@@ -27,13 +34,27 @@
             Gf8 = new PrimePowerOrderField(8, new Polynomial(new PrimeOrderField(2), 1, 1, 0, 1));
             Gf27 = new PrimePowerOrderField(27, new Polynomial(new PrimeOrderField(3), 2, 2, 0, 1));
 
-            IncorrectFieldCreationTestsData = new[]
-                                              {
-                                                  new object[] {8, null},
-                                                  new object[] {8, new Polynomial(new PrimeOrderField(3), 1)},
-                                                  new object[] {8, new Polynomial(new PrimeOrderField(2), 1)},
-                                                  new object[] {8, new Polynomial(new PrimeOrderField(2), 0, 0, 0, 1)}
-                                              };
+            IncorrectFieldCreationTestsData
+                = new TheoryData<IncorrectFieldCreationTestCase>
+                  {
+                      new IncorrectFieldCreationTestCase {FieldOrder = 8},
+                      new IncorrectFieldCreationTestCase
+                      {
+                          FieldOrder = 8,
+                          IrreduciblePolynomial = new Polynomial(new PrimeOrderField(3), 1)
+                      },
+                      new IncorrectFieldCreationTestCase
+                      {
+                          FieldOrder = 8,
+                          IrreduciblePolynomial = new Polynomial(new PrimeOrderField(2), 1)
+                      },
+                      new IncorrectFieldCreationTestCase
+                      {
+                          FieldOrder = 8,
+                          IrreduciblePolynomial = new Polynomial(new PrimeOrderField(2), 0, 0, 0, 1)
+                      }
+                  };
+
             SumTestsData = new[]
                             {
                                 new object[] {Gf8, 3, 4, 7},
@@ -104,9 +125,9 @@
 
         [Theory]
         [MemberData(nameof(IncorrectFieldCreationTestsData))]
-        public void ShouldNotCreateFieldWithIncorrectIrreduciblePolynomial(int fieldOrder, Polynomial irreduciblePolynomial)
+        public void ShouldNotCreateFieldWithIncorrectIrreduciblePolynomial(IncorrectFieldCreationTestCase testCase)
         {
-            Assert.ThrowsAny<ArgumentException>(() => new PrimePowerOrderField(fieldOrder, irreduciblePolynomial));
+            Assert.ThrowsAny<ArgumentException>(() => new PrimePowerOrderField(testCase.FieldOrder, testCase.IrreduciblePolynomial));
         }
 
         [Theory]
