@@ -15,19 +15,30 @@
             public Polynomial IrreduciblePolynomial { get; set; }
         }
 
+        public class BinaryOperationTestCase
+        {
+            public PrimePowerOrderField Field { get; set; }
+
+            public int FirstOperand { get; set; }
+
+            public int SecondOperand { get; set; }
+
+            public int Expected { get; set; }
+        }
+
         private static readonly PrimePowerOrderField Gf8;
         private static readonly PrimePowerOrderField Gf27;
 
         [UsedImplicitly]
         public static readonly TheoryData<IncorrectFieldCreationTestCase> IncorrectFieldCreationTestsData;
         [UsedImplicitly]
-        public static readonly IEnumerable<object[]> SumTestsData;
+        public static readonly TheoryData<BinaryOperationTestCase> SumTestsData;
         [UsedImplicitly]
-        public static readonly IEnumerable<object[]> SubtractTestsData;
+        public static readonly TheoryData<BinaryOperationTestCase> SubtractTestsData;
         [UsedImplicitly]
-        public static readonly IEnumerable<object[]> MultiplyTestsData;
+        public static readonly TheoryData<BinaryOperationTestCase> MultiplyTestsData;
         [UsedImplicitly]
-        public static readonly IEnumerable<object[]> DivideTestsData;
+        public static readonly TheoryData<BinaryOperationTestCase> DivideTestsData;
 
         static PrimePowerOrderFieldTests()
         {
@@ -55,63 +66,67 @@
                       }
                   };
 
-            SumTestsData = new[]
-                            {
-                                new object[] {Gf8, 3, 4, 7},
-                                new object[] {Gf8, 1, 3, 2},
-                                new object[] {Gf8, 1, 6, 7},
-                                new object[] {Gf8, 5, 6, 3},
-                                new object[] {Gf8, 4, 7, 3},
-                                new object[] {Gf8, 5, 5, 0},
-                                new object[] {Gf27, 3, 4, 7},
-                                new object[] {Gf27, 10, 12, 22},
-                                new object[] {Gf27, 11, 10, 18},
-                                new object[] {Gf27, 18, 9, 0},
-                                new object[] {Gf27, 20, 17, 7},
-                                new object[] {Gf27, 9, 21, 3}
-                            };
-            SubtractTestsData = new[]
-                                 {
-                                     new object[] {Gf8, 3, 4, 7},
-                                     new object[] {Gf8, 1, 3, 2},
-                                     new object[] {Gf8, 1, 6, 7},
-                                     new object[] {Gf8, 5, 6, 3},
-                                     new object[] {Gf8, 4, 7, 3},
-                                     new object[] {Gf8, 5, 5, 0},
-                                     new object[] {Gf27, 3, 4, 2},
-                                     new object[] {Gf27, 10, 12, 7},
-                                     new object[] {Gf27, 11, 14, 6},
-                                     new object[] {Gf27, 18, 9, 9},
-                                     new object[] {Gf27, 20, 17, 12},
-                                     new object[] {Gf27, 9, 21, 24}
-                                 };
-            MultiplyTestsData = new[]
-                                 {
-                                     new object[] {Gf8, 0, 4, 0},
-                                     new object[] {Gf8, 2, 4, 3},
-                                     new object[] {Gf8, 3, 4, 7},
-                                     new object[] {Gf8, 2, 3, 6},
-                                     new object[] {Gf8, 6, 7, 4},
-                                     new object[] {Gf8, 2, 7, 5},
-                                     new object[] {Gf27, 0, 4, 0},
-                                     new object[] {Gf27, 12, 5, 1},
-                                     new object[] {Gf27, 3, 4, 12},
-                                     new object[] {Gf27, 21, 3, 17},
-                                     new object[] {Gf27, 20, 21, 26},
-                                     new object[] {Gf27, 2, 7, 5}
-                                 };
-            DivideTestsData = new[]
-                               {
-                                   new object[] {Gf8, 0, 3, 0},
-                                   new object[] {Gf8, 4, 3, 5},
-                                   new object[] {Gf8, 7, 2, 6},
-                                   new object[] {Gf8, 2, 7, 3},
-                                   new object[] {Gf27, 0, 3, 0},
-                                   new object[] {Gf27, 15, 7, 6},
-                                   new object[] {Gf27, 11, 26, 14},
-                                   new object[] {Gf27, 10, 17, 15},
-                                   new object[] {Gf27, 2, 23, 25}
-                               };
+            SumTestsData
+                = new TheoryData<BinaryOperationTestCase>
+                  {
+                      new BinaryOperationTestCase {Field = Gf8, FirstOperand = 3, SecondOperand = 4, Expected = 7},
+                      new BinaryOperationTestCase {Field = Gf8, FirstOperand = 1, SecondOperand = 3, Expected = 2},
+                      new BinaryOperationTestCase {Field = Gf8, FirstOperand = 1, SecondOperand = 6, Expected = 7},
+                      new BinaryOperationTestCase {Field = Gf8, FirstOperand = 5, SecondOperand = 6, Expected = 3},
+                      new BinaryOperationTestCase {Field = Gf8, FirstOperand = 4, SecondOperand = 7, Expected = 3},
+                      new BinaryOperationTestCase {Field = Gf8, FirstOperand = 5, SecondOperand = 5, Expected = 0},
+                      new BinaryOperationTestCase {Field = Gf27, FirstOperand = 3, SecondOperand = 4, Expected = 7},
+                      new BinaryOperationTestCase {Field = Gf27, FirstOperand = 10, SecondOperand = 12, Expected = 22},
+                      new BinaryOperationTestCase {Field = Gf27, FirstOperand = 11, SecondOperand = 10, Expected = 18},
+                      new BinaryOperationTestCase {Field = Gf27, FirstOperand = 18, SecondOperand = 9, Expected = 0},
+                      new BinaryOperationTestCase {Field = Gf27, FirstOperand = 20, SecondOperand = 17, Expected = 7},
+                      new BinaryOperationTestCase {Field = Gf27, FirstOperand = 9, SecondOperand = 21, Expected = 3}
+                  };
+            SubtractTestsData
+                = new TheoryData<BinaryOperationTestCase>
+                  {
+                      new BinaryOperationTestCase {Field = Gf8, FirstOperand = 3, SecondOperand = 4, Expected = 7},
+                      new BinaryOperationTestCase {Field = Gf8, FirstOperand = 1, SecondOperand = 3, Expected = 2},
+                      new BinaryOperationTestCase {Field = Gf8, FirstOperand = 1, SecondOperand = 6, Expected = 7},
+                      new BinaryOperationTestCase {Field = Gf8, FirstOperand = 5, SecondOperand = 6, Expected = 3},
+                      new BinaryOperationTestCase {Field = Gf8, FirstOperand = 4, SecondOperand = 7, Expected = 3},
+                      new BinaryOperationTestCase {Field = Gf8, FirstOperand = 5, SecondOperand = 5, Expected = 0},
+                      new BinaryOperationTestCase {Field = Gf27, FirstOperand = 3, SecondOperand = 4, Expected = 2},
+                      new BinaryOperationTestCase {Field = Gf27, FirstOperand = 10, SecondOperand = 12, Expected = 7},
+                      new BinaryOperationTestCase {Field = Gf27, FirstOperand = 11, SecondOperand = 14, Expected = 6},
+                      new BinaryOperationTestCase {Field = Gf27, FirstOperand = 18, SecondOperand = 9, Expected = 9},
+                      new BinaryOperationTestCase {Field = Gf27, FirstOperand = 20, SecondOperand = 17, Expected = 12},
+                      new BinaryOperationTestCase {Field = Gf27, FirstOperand = 9, SecondOperand = 21, Expected = 24}
+                  };
+            MultiplyTestsData
+                = new TheoryData<BinaryOperationTestCase>
+                  {
+                      new BinaryOperationTestCase {Field = Gf8, FirstOperand = 0, SecondOperand = 4, Expected = 0},
+                      new BinaryOperationTestCase {Field = Gf8, FirstOperand = 2, SecondOperand = 4, Expected = 3},
+                      new BinaryOperationTestCase {Field = Gf8, FirstOperand = 3, SecondOperand = 4, Expected = 7},
+                      new BinaryOperationTestCase {Field = Gf8, FirstOperand = 2, SecondOperand = 3, Expected = 6},
+                      new BinaryOperationTestCase {Field = Gf8, FirstOperand = 6, SecondOperand = 7, Expected = 4},
+                      new BinaryOperationTestCase {Field = Gf8, FirstOperand = 2, SecondOperand = 7, Expected = 5},
+                      new BinaryOperationTestCase {Field = Gf27, FirstOperand = 0, SecondOperand = 4, Expected = 0},
+                      new BinaryOperationTestCase {Field = Gf27, FirstOperand = 12, SecondOperand = 5, Expected = 1},
+                      new BinaryOperationTestCase {Field = Gf27, FirstOperand = 3, SecondOperand = 4, Expected = 12},
+                      new BinaryOperationTestCase {Field = Gf27, FirstOperand = 21, SecondOperand = 3, Expected = 17},
+                      new BinaryOperationTestCase {Field = Gf27, FirstOperand = 20, SecondOperand = 21, Expected = 26},
+                      new BinaryOperationTestCase {Field = Gf27, FirstOperand = 2, SecondOperand = 7, Expected = 5}
+                  };
+            DivideTestsData
+                = new TheoryData<BinaryOperationTestCase>
+                  {
+                      new BinaryOperationTestCase {Field = Gf8, FirstOperand = 0, SecondOperand = 3, Expected = 0},
+                      new BinaryOperationTestCase {Field = Gf8, FirstOperand = 4, SecondOperand = 3, Expected = 5},
+                      new BinaryOperationTestCase {Field = Gf8, FirstOperand = 7, SecondOperand = 2, Expected = 6},
+                      new BinaryOperationTestCase {Field = Gf8, FirstOperand = 2, SecondOperand = 7, Expected = 3},
+                      new BinaryOperationTestCase {Field = Gf27, FirstOperand = 0, SecondOperand = 3, Expected = 0},
+                      new BinaryOperationTestCase {Field = Gf27, FirstOperand = 15, SecondOperand = 7, Expected = 6},
+                      new BinaryOperationTestCase {Field = Gf27, FirstOperand = 11, SecondOperand = 26, Expected = 14},
+                      new BinaryOperationTestCase {Field = Gf27, FirstOperand = 10, SecondOperand = 17, Expected = 15},
+                      new BinaryOperationTestCase {Field = Gf27, FirstOperand = 2, SecondOperand = 23, Expected = 25}
+                  };
         }
 
         [Theory]
@@ -144,46 +159,46 @@
 
         [Theory]
         [MemberData(nameof(SumTestsData))]
-        public void ShouldSumTwoFieldElements(PrimePowerOrderField field, int firstItem, int secondItem, int expected)
+        public void ShouldSumTwoFieldElements(BinaryOperationTestCase testCase)
         {
             // When
-            var actual =  field.Add(firstItem, secondItem);
+            var actual = testCase.Field.Add(testCase.FirstOperand, testCase.SecondOperand);
 
             //Then
-            Assert.Equal(expected, actual);
+            Assert.Equal(testCase.Expected, actual);
         }
 
         [Theory]
         [MemberData(nameof(SubtractTestsData))]
-        public void ShouldSubtractTwoFieldElements(PrimePowerOrderField field, int minuend, int subtrahend, int expected)
+        public void ShouldSubtractTwoFieldElements(BinaryOperationTestCase testCase)
         {
             // When
-            var actual = field.Subtract(minuend, subtrahend);
+            var actual = testCase.Field.Subtract(testCase.FirstOperand, testCase.SecondOperand);
 
             //Then
-            Assert.Equal(expected, actual);
+            Assert.Equal(testCase.Expected, actual);
         }
 
         [Theory]
         [MemberData(nameof(MultiplyTestsData))]
-        public void ShouldMultiplyTwoFieldElements(PrimePowerOrderField field, int firstMultiplied, int secondMultiplied, int expected)
+        public void ShouldMultiplyTwoFieldElements(BinaryOperationTestCase testCase)
         {
             // When
-            var actual = field.Multiply(firstMultiplied, secondMultiplied);
+            var actual = testCase.Field.Multiply(testCase.FirstOperand, testCase.SecondOperand);
 
             // Then
-            Assert.Equal(expected, actual);
+            Assert.Equal(testCase.Expected, actual);
         }
 
         [Theory]
         [MemberData(nameof(DivideTestsData))]
-        public void ShouldDivideTwoFieldElements(PrimePowerOrderField field, int dividend, int divisor, int expected)
+        public void ShouldDivideTwoFieldElements(BinaryOperationTestCase testCase)
         {
             // When
-            var actual = field.Divide(dividend, divisor);
+            var actual = testCase.Field.Divide(testCase.FirstOperand, testCase.SecondOperand);
 
             // Then
-            Assert.Equal(expected, actual);
+            Assert.Equal(testCase.Expected, actual);
         }
 
         [Theory]
