@@ -1,4 +1,4 @@
-﻿namespace AppliedAlgebra.WaveletCodesTools
+﻿namespace AppliedAlgebra.WaveletCodesTools.FixedDistanceCodesFactory
 {
     using System;
     using System.Collections.Generic;
