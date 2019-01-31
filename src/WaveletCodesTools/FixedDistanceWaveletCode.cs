@@ -1,8 +1,10 @@
 ﻿namespace AppliedAlgebra.WaveletCodesTools
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using CodesAbstractions;
+    using Decoding.StandartDecoderForFixedDistanceCodes;
     using GfPolynoms;
     using GfPolynoms.Extensions;
     using GfPolynoms.GaloisFields;
@@ -13,6 +15,8 @@
         private readonly Polynomial _modularPolynomial;
         private readonly FieldElement[] _preparedPoints;
 
+        private readonly IDecoder _decoder;
+
         public GaloisField Field { get; }
         public int CodewordLength { get; }
         public int InformationWordLength { get; }
@@ -22,7 +26,8 @@
             int codewordLength, 
             int informationWordLength, 
             int codeDistance, 
-            Polynomial generatingPolynomial)
+            Polynomial generatingPolynomial,
+            IDecoder decoder)
         {
             Field = generatingPolynomial.Field;
             CodewordLength = codewordLength;
@@ -34,6 +39,8 @@
             _preparedPoints = Enumerable.Range(0, CodeDistance)
                 .Select(x => Field.CreateElement(Field.GetGeneratingElementPower(x)))
                 .ToArray();
+
+            _decoder = decoder;
         }
 
         public FieldElement[] Encode(FieldElement[] informationWord)
@@ -45,7 +52,14 @@
 
         public FieldElement[] Decode(FieldElement[] noisyCodeword)
         {
-            throw new System.NotImplementedException();
+            return _decoder.Decode(
+                    CodewordLength,
+                    InformationWordLength,
+                    CodeDistance,
+                    _generatingPolynomial,
+                    noisyCodeword.Select((x, i) => Tuple.Create(_preparedPoints[i], x)).ToArray()
+                )
+                .GetCoefficients(InformationWordLength - 1);
         }
 
         public IReadOnlyList<FieldElement[]> DecodeViaList(FieldElement[] noisyCodeword, int? listDecodingRadius = null)
