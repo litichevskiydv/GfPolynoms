@@ -16,6 +16,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\CodesAbstractions\CodesAbstractions.csproj" />
     <ProjectReference Include="..\GfPolynoms\GfPolynoms.csproj" />
     <ProjectReference Include="..\RsCodesTools\RsCodesTools.csproj" />
   </ItemGroup>
