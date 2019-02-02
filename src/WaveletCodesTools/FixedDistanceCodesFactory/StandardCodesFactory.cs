@@ -35,11 +35,14 @@
             var codewordLength = generatingPolynomial.Field.Order - 1;
             var informationWordLength = codewordLength % 2 == 0 ? codewordLength / 2 : (codewordLength - 1) / 2;
 
-            var codeDistance = 1;
+            var codeDistance = 0;
             var field = generatingPolynomial.Field;
-            for (var i = 0;
-                i < codewordLength && generatingPolynomial.Evaluate(field.GetGeneratingElementPower(i)) == 0;
-                i++, codeDistance++) ;
+            for (var i = 0; i < codewordLength; i++)
+            {
+                var zerosCount = 0;
+                for (; i < codewordLength && generatingPolynomial.Evaluate(field.GetGeneratingElementPower(i)) == 0; i++, zerosCount++) ;
+                codeDistance = Math.Max(codeDistance, zerosCount + 1);
+            }
             if (codeDistance <= 1
                 || codewordLength % 2 == 0 && codeDistance > codewordLength / 2 + 1
                 || codewordLength % 2 == 1 && codeDistance > (codewordLength + 1) / 2 + 1)
