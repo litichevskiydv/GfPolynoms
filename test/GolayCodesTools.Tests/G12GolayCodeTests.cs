@@ -5,6 +5,7 @@
     using CodesResearchTools.NoiseGenerator;
     using GfAlgorithms.Extensions;
     using GfPolynoms;
+    using GfPolynoms.Comparers;
     using GfPolynoms.Extensions;
     using GfPolynoms.GaloisFields;
     using JetBrains.Annotations;
@@ -76,7 +77,7 @@
             var actualInformationWords = _code.DecodeViaList(noisyCodeword);
 
             // Then
-            Assert.Contains(expectedInformationWord, actualInformationWords);
+            Assert.Contains(expectedInformationWord, actualInformationWords, new FieldElementsArraysComparer());
         }
 
         [Fact]
