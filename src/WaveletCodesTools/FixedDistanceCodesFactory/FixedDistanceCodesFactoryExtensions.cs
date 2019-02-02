@@ -31,7 +31,7 @@
             );
 
         public static ICode CreateN30K15D13(this IFixedDistanceCodesFactory factory) =>
-            factory.Create(new Polynomial(new PrimeOrderField(31), 22, 0, 2, 1, 27, 8, 4, 18, 6, 9, 8, 17, 11), 13);
+            factory.Create(new Polynomial(new PrimeOrderField(31), 22, 0, 2, 1, 27, 8, 4, 18, 6, 9, 8, 17, 18), 13);
 
         public static ICode CreateN31K15D15(this IFixedDistanceCodesFactory factory) =>
             factory.Create(new Polynomial(
@@ -50,6 +50,6 @@
             );
 
         public static ICode CreateN100K50D49(this IFixedDistanceCodesFactory factory) =>
-            factory.Create(new Polynomial(new PrimeOrderField(101), 78, 2, 67, 50, 2, 45, 45, 20, 77, 7, 42, 56, 0, 67, 60, 50), 49);
+            factory.Create(new Polynomial(new PrimeOrderField(101), 78, 2, 67, 50, 2, 45, 45, 20, 77, 7, 42, 56, 0, 67, 60, 81), 49);
     }
 }

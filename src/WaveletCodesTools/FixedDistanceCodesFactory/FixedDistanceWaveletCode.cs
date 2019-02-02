@@ -43,7 +43,7 @@
             _listDecoder = listDecoder;
 
             _modularPolynomial = new Polynomial(Field, 1).RightShift(CodewordLength) + new Polynomial(Field, Field.InverseForAddition(1));
-            _preparedPoints = Enumerable.Range(0, CodeDistance)
+            _preparedPoints = Enumerable.Range(0, CodewordLength)
                 .Select(x => Field.CreateElement(Field.GetGeneratingElementPower(x)))
                 .ToArray();
             _maxListDecodingRadius = (int) Math.Ceiling(CodewordLength - Math.Sqrt(CodewordLength * (CodewordLength - CodeDistance)) - 1);
@@ -79,5 +79,7 @@
                 )
                 .Select(x => x.GetCoefficients(InformationWordLength - 1))
                 .ToArray();
+
+        public override string ToString() => $"W[{CodewordLength}, {InformationWordLength}, {CodeDistance}]";
     }
 }
