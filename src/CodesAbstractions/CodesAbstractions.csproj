@@ -16,6 +16,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\GfAlgorithms\GfAlgorithms.csproj" />
     <ProjectReference Include="..\GfPolynoms\GfPolynoms.csproj" />
   </ItemGroup>
 

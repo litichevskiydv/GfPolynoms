@@ -1,6 +1,5 @@
 ﻿namespace AppliedAlgebra.WaveletCodesTools.Tests
 {
-    using CodesResearchTools.NoiseGenerator;
     using Decoding.ListDecoderForFixedDistanceCodes;
     using Decoding.StandartDecoderForFixedDistanceCodes;
     using FixedDistanceCodesFactory;
