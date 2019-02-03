@@ -80,6 +80,6 @@
                 .Select(x => x.GetCoefficients(InformationWordLength - 1))
                 .ToArray();
 
-        public override string ToString() => $"W[{CodewordLength}, {InformationWordLength}, {CodeDistance}]";
+        public override string ToString() => $"W[{CodewordLength},{InformationWordLength},{CodeDistance}]";
     }
 }
