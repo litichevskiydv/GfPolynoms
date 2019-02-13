@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\CodesResearchTools\CodesResearchTools.csproj" />
     <ProjectReference Include="..\..\GfAlgorithms\GfAlgorithms.csproj" />
     <ProjectReference Include="..\..\GfPolynoms\GfPolynoms.csproj" />
     <ProjectReference Include="..\..\WaveletCodesTools\WaveletCodesTools.csproj" />

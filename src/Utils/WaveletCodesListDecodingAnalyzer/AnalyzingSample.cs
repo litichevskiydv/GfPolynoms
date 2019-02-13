@@ -1,28 +1,25 @@
 namespace AppliedAlgebra.WaveletCodesListDecodingAnalyzer
 {
-    using System;
     using System.Linq;
+    using CodesAbstractions;
     using GfPolynoms;
+    using GfPolynoms.Extensions;
 
     public class AnalyzingSample
     {
-        public Polynomial InformationPolynomial { get; }
-        public Tuple<FieldElement, FieldElement>[] Codeword { get; }
+        public ICode Code { get; }
+        public FieldElement[] InformationWord { get; }
+        public FieldElement[] Codeword { get; }
 
-        public AnalyzingSample(Polynomial informationPolynomial, Tuple<FieldElement, FieldElement>[] codeword)
+        public AnalyzingSample(ICode code, FieldElement[] informationWord = null)
         {
-            InformationPolynomial = informationPolynomial;
-            Codeword = codeword;
+            Code = code;
+            InformationWord = informationWord ?? Enumerable.Repeat(Code.Field.Zero(), Code.InformationWordLength).ToArray();
+            Codeword = code.Encode(InformationWord);
         }
 
-        public AnalyzingSample(AnalyzingSample sample)
-        {
-            InformationPolynomial = sample.InformationPolynomial;
-            Codeword = sample.Codeword.Select(x => new Tuple<FieldElement, FieldElement>(x.Item1, new FieldElement(x.Item2))).ToArray();
-        }
-
-        public int[] ErrorPositions { get; set; }
-        public int[] CurrentNoiseValue { get; set; }
+        public int[] ErrorsPositions { get; set; }
+        public int[] ErrorsValues { get; set; }
         public int CorrectValuesCount { get; set; }
 
         public int ProcessedNoises { get; set; }
