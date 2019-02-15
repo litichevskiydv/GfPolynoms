@@ -7,6 +7,7 @@
     using System.Threading;
     using System.Threading.Tasks;
     using CodesAbstractions;
+    using CodesResearchTools.Analyzers.ListsSizesDistribution;
     using CodesResearchTools.NoiseGenerator;
     using GfAlgorithms.CombinationsCountCalculator;
     using GfAlgorithms.ComplementaryFilterBuilder;
@@ -16,14 +17,17 @@
     using GfPolynoms;
     using GfPolynoms.Comparers;
     using GfPolynoms.Extensions;
+    using GfPolynoms.GaloisFields;
     using JetBrains.Annotations;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.Logging;
+    using Newtonsoft.Json;
     using RsCodesTools.Decoding.ListDecoder;
     using RsCodesTools.Decoding.ListDecoder.GsDecoderDependencies.InterpolationPolynomialBuilder;
     using RsCodesTools.Decoding.ListDecoder.GsDecoderDependencies.InterpolationPolynomialFactorisator;
     using RsCodesTools.Decoding.StandartDecoder;
     using Serilog;
+    using WaveletCodesTools;
     using WaveletCodesTools.Decoding.ListDecoderForFixedDistanceCodes;
     using WaveletCodesTools.Decoding.ListDecoderForFixedDistanceCodes.GsBasedDecoderDependencies;
     using WaveletCodesTools.Decoding.StandartDecoderForFixedDistanceCodes;
@@ -35,11 +39,22 @@
     public class Program
     {
         private static readonly INoiseGenerator NoiseGenerator;
+        private static readonly ListsSizesDistributionAnalyzer ListsSizesDistributionAnalyzer;
         private static readonly IEqualityComparer<FieldElement[]> WordsComparer;
         private static readonly IFixedDistanceCodesFactory FixedDistanceCodesFactory;
         private static readonly IGsBasedDecoderTelemetryCollector TelemetryCollector;
 
         private static readonly ILogger Logger;
+
+        private static void AnalyzeSpherePackings(ICode code)
+        {
+            Logger.LogInformation(
+                JsonConvert.SerializeObject(
+                    ListsSizesDistributionAnalyzer.Analyze(code, new ListsSizesDistributionAnalyzerOptions {MaxDegreeOfParallelism = 2}),
+                    Formatting.Indented
+                )
+            );
+        }
 
         private static void AnalyzeCode(ICode code, int errorsCount, int? decodingThreadsCount = null)
         {
@@ -89,6 +104,14 @@
                 }
             );
         }
+
+        private static void AnalyzeSpherePackingsForN8D4() =>
+            AnalyzeSpherePackings(
+                new WaveletCode(
+                    8, 4, 1,
+                    new Polynomial(new PrimePowerOrderField(9), 2, 0, 1, 2, 1, 1)
+                )
+            );
 
         private static void AnalyzeCodeN7K3D4() => AnalyzeCode(FixedDistanceCodesFactory.CreateN7K3D4(), 2, 2);
 
@@ -196,7 +219,7 @@
         {
             try
             {
-                AnalyzeSamplesForN31K15D15Code();
+                AnalyzeSpherePackingsForN8D4();
             }
             catch (Exception exception)
             {
@@ -207,8 +230,22 @@
 
         static Program()
         {
+            var configuration = new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json")
+                .Build();
+            var loggerFactory = new LoggerFactory()
+                .AddSerilog(
+                    new LoggerConfiguration()
+                        .ReadFrom.Configuration(configuration)
+                        .Enrich.FromLogContext()
+                        .Enrich.WithProperty("Version", Assembly.GetEntryAssembly().GetName().Version.ToString(4))
+                        .CreateLogger()
+                );
+            Logger = loggerFactory.CreateLogger<Program>();
+
             NoiseGenerator = new RecursiveGenerator();
             WordsComparer = new FieldElementsArraysComparer();
+            ListsSizesDistributionAnalyzer = new ListsSizesDistributionAnalyzer(NoiseGenerator, loggerFactory.CreateLogger<ListsSizesDistributionAnalyzer>());
 
             var gaussSolver = new GaussSolver();
             TelemetryCollector = new GsBasedDecoderTelemetryCollectorForGsBasedDecoder();
@@ -222,19 +259,6 @@
                     )
                     {TelemetryCollector = TelemetryCollector}
                 );
-
-            var configuration = new ConfigurationBuilder()
-                .AddJsonFile("appsettings.json")
-                .Build();
-            var loggerFactory = new LoggerFactory()
-                .AddSerilog(
-                    new LoggerConfiguration()
-                        .ReadFrom.Configuration(configuration)
-                        .Enrich.FromLogContext()
-                        .Enrich.WithProperty("Version", Assembly.GetEntryAssembly().GetName().Version.ToString(4))
-                        .CreateLogger()
-                );
-            Logger = loggerFactory.CreateLogger<Program>();
         }
     }
 }
