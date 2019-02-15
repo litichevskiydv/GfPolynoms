@@ -1,5 +1,5 @@
 #tool "nuget:?package=OpenCover"
-#tool "nuget:?package=Codecov&version=1.0.4"
+#tool "nuget:?package=Codecov"
 #addin "nuget:?package=Cake.Codecov"
 using System.Linq;
 using System.Text.RegularExpressions;
