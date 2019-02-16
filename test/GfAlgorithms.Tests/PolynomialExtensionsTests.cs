@@ -1,7 +1,9 @@
 ﻿namespace AppliedAlgebra.GfAlgorithms.Tests
 {
+    using System.Linq;
     using Extensions;
     using GfPolynoms;
+    using GfPolynoms.Extensions;
     using GfPolynoms.GaloisFields;
     using Xunit;
 
@@ -70,6 +72,21 @@
 
             // Then
             Assert.Equal(expected, isMonomial);
+        }
+
+        [Fact]
+        public void ShouldGetPolynomialSpectrum()
+        {
+            // Given
+            var gf5 = new PrimeOrderField(5);
+            var polynomial = new Polynomial(gf5, 1, 1, 1);
+
+            // When
+            var actualSpectrum = polynomial.GetSpectrum();
+
+            // Then
+            var expectedSpectrum = new[] {3, 2, 1, 3}.Select(x => gf5.CreateElement(x)).ToArray();
+            Assert.Equal(expectedSpectrum, actualSpectrum);
         }
     }
 }
