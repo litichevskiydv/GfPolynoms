@@ -105,10 +105,10 @@
             );
         }
 
-        private static void AnalyzeSpherePackingsForN8D4() =>
+        private static void AnalyzeSpherePackingsForN8K4D3() =>
             AnalyzeSpherePackings(
                 new WaveletCode(
-                    8, 4, 1,
+                    8, 4, 3,
                     new Polynomial(new PrimePowerOrderField(9), 2, 0, 1, 2, 1, 1)
                 )
             );
@@ -219,7 +219,7 @@
         {
             try
             {
-                AnalyzeSpherePackingsForN8D4();
+                AnalyzeSpherePackingsForN8K4D3();
             }
             catch (Exception exception)
             {
