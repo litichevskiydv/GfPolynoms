@@ -113,6 +113,8 @@
                 )
             );
 
+        private static void AnalyzeSpherePackingsForN7K3D4() => AnalyzeSpherePackings(FixedDistanceCodesFactory.CreateN7K3D4());
+
         private static void AnalyzeCodeN7K3D4() => AnalyzeCode(FixedDistanceCodesFactory.CreateN7K3D4(), 2, 2);
 
         private static void AnalyzeCodeN26K13D12() => AnalyzeCode(FixedDistanceCodesFactory.CreateN26K13D12(), 6, 2);
@@ -219,7 +221,7 @@
         {
             try
             {
-                AnalyzeSpherePackingsForN8K4D3();
+                AnalyzeSpherePackingsForN7K3D4();
             }
             catch (Exception exception)
             {
