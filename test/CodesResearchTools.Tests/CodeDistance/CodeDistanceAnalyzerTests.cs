@@ -1,4 +1,4 @@
-﻿namespace AppliedAlgebra.CodesResearchTools.Tests
+﻿namespace AppliedAlgebra.CodesResearchTools.Tests.CodeDistance
 {
     using System;
     using Analyzers.CodeDistance;
@@ -25,7 +25,7 @@
 
     public class CodeDistanceAnalyzerTests
     {
-        [UsedImplicitly] public static TheoryData<ICode> CodeDistanceAnalyzysTestsData;
+        [UsedImplicitly] public static TheoryData<CodeDistanceAnalyzerTestCase> CodeDistanceAnalyzysTestCases;
 
         static CodeDistanceAnalyzerTests()
         {
@@ -39,13 +39,34 @@
                         gaussSolver
                     )
                 );
+            var wN7K3D4 = codesFactory.CreateN7K3D4();
+            var wN8K4D4First = new WaveletCode(8, 4, 4, new Polynomial(new PrimePowerOrderField(9), 2, 0, 1, 2, 1, 1));
+            var wN8K4D4Second = new WaveletCode(8, 4, 4, new Polynomial(new PrimePowerOrderField(9), 2, 2, 1, 2, 0, 1));
 
-            CodeDistanceAnalyzysTestsData
-                = new TheoryData<ICode>
+            CodeDistanceAnalyzysTestCases
+                = new TheoryData<CodeDistanceAnalyzerTestCase>
                   {
-                      codesFactory.CreateN7K3D4(),
-                      new WaveletCode(8, 4, 4, new Polynomial(new PrimePowerOrderField(9), 2, 0, 1, 2, 1, 1)),
-                      new WaveletCode(8, 4, 4, new Polynomial(new PrimePowerOrderField(9), 2, 2, 1, 2, 0, 1))
+                      new CodeDistanceAnalyzerTestCase
+                      {
+                          Field = wN7K3D4.Field,
+                          InformationWordLength = wN7K3D4.InformationWordLength,
+                          EncodingProcedure = x => wN7K3D4.Encode(x),
+                          ExpectedCodeDistance = wN7K3D4.CodeDistance
+                      },
+                      new CodeDistanceAnalyzerTestCase
+                      {
+                          Field = wN8K4D4First.Field,
+                          InformationWordLength = wN8K4D4First.InformationWordLength,
+                          EncodingProcedure = x => wN8K4D4First.Encode(x),
+                          ExpectedCodeDistance = wN8K4D4First.CodeDistance
+                      },
+                      new CodeDistanceAnalyzerTestCase
+                      {
+                          Field = wN8K4D4Second.Field,
+                          InformationWordLength = wN8K4D4Second.InformationWordLength,
+                          EncodingProcedure = x => wN8K4D4Second.Encode(x),
+                          ExpectedCodeDistance = wN8K4D4Second.CodeDistance
+                      }
                   };
         }
 
@@ -59,10 +80,13 @@
         }
 
         [Theory]
-        [MemberData(nameof(CodeDistanceAnalyzysTestsData))]
-        public void ShouldAnalyzeCodeDistance(ICode code)
+        [MemberData(nameof(CodeDistanceAnalyzysTestCases))]
+        public void ShouldAnalyzeCodeDistance(CodeDistanceAnalyzerTestCase testCase)
         {
-            Assert.Equal(code.CodeDistance, _analyzer.Analyze(code));
+            Assert.Equal(
+                testCase.ExpectedCodeDistance,
+                _analyzer.Analyze(testCase.Field, testCase.InformationWordLength, testCase.EncodingProcedure)
+            );
 
             _mockLogger.Verify(
                 x => x.Log(
