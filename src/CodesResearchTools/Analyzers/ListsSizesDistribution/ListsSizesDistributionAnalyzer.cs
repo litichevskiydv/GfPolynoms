@@ -17,17 +17,6 @@
         private readonly INoiseGenerator _noiseGenerator;
         private readonly ILogger _logger;
 
-        public ListsSizesDistributionAnalyzer(INoiseGenerator noiseGenerator, ILogger<ListsSizesDistributionAnalyzer> logger)
-        {
-            if(noiseGenerator == null)
-                throw new ArgumentNullException(nameof(noiseGenerator));
-            if(logger == null)
-                throw new ArgumentNullException(nameof(logger));
-
-            _noiseGenerator = noiseGenerator;
-            _logger = logger;
-        }
-
         internal virtual void WriteLineToLog(string fullLogsPath, ICode code, int listDecodingRadius, string line, bool append = true)
         {
             var fileName = Path.Combine(fullLogsPath, $"{code}_list_decoding_radius_{listDecodingRadius}.csv");
@@ -61,6 +50,9 @@
 
         public IReadOnlyList<ListsSizesDistribution> Analyze(ICode code, ListsSizesDistributionAnalyzerOptions options = null)
         {
+            if(code == null)
+                throw new ArgumentNullException(nameof(code));
+
             var opts = options ?? new ListsSizesDistributionAnalyzerOptions();
             PrepareLogFiles(opts.FullLogsPath, code);
 
@@ -90,6 +82,17 @@
                 );
 
             return result;
+        }
+
+        public ListsSizesDistributionAnalyzer(INoiseGenerator noiseGenerator, ILogger<ListsSizesDistributionAnalyzer> logger)
+        {
+            if (noiseGenerator == null)
+                throw new ArgumentNullException(nameof(noiseGenerator));
+            if (logger == null)
+                throw new ArgumentNullException(nameof(logger));
+
+            _noiseGenerator = noiseGenerator;
+            _logger = logger;
         }
     }
 }

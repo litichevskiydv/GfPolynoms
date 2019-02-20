@@ -1,5 +1,6 @@
 ﻿namespace AppliedAlgebra.CodesResearchTools.Tests
 {
+    using System;
     using Analyzers.CodeDistance;
     using CodesAbstractions;
     using GfAlgorithms.CombinationsCountCalculator;
@@ -9,7 +10,8 @@
     using GfPolynoms;
     using GfPolynoms.GaloisFields;
     using JetBrains.Annotations;
-    using NoiseGenerator;
+    using Microsoft.Extensions.Logging;
+    using Moq;
     using RsCodesTools.Decoding.ListDecoder;
     using RsCodesTools.Decoding.ListDecoder.GsDecoderDependencies.InterpolationPolynomialBuilder;
     using RsCodesTools.Decoding.ListDecoder.GsDecoderDependencies.InterpolationPolynomialFactorisator;
@@ -47,11 +49,13 @@
                   };
         }
 
+        private readonly Mock<ILogger<CodeDistanceAnalyzer>> _mockLogger;
         private readonly CodeDistanceAnalyzer _analyzer;
 
         public CodeDistanceAnalyzerTests()
         {
-            _analyzer = new CodeDistanceAnalyzer();
+            _mockLogger = new Mock<ILogger<CodeDistanceAnalyzer>>();
+            _analyzer = new CodeDistanceAnalyzer(_mockLogger.Object);
         }
 
         [Theory]
@@ -59,6 +63,17 @@
         public void ShouldAnalyzeCodeDistance(ICode code)
         {
             Assert.Equal(code.CodeDistance, _analyzer.Analyze(code));
+
+            _mockLogger.Verify(
+                x => x.Log(
+                    It.Is<LogLevel>(l => l == LogLevel.Information),
+                    It.IsAny<EventId>(),
+                    It.IsAny<object>(),
+                    It.IsAny<Exception>(),
+                    It.IsAny<Func<object, Exception, string>>()
+                ),
+                Times.AtLeastOnce
+            );
         }
     }
 }
