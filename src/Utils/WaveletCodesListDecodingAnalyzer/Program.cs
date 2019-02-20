@@ -119,7 +119,7 @@
                     7, 3, 4,
                     new Polynomial(
                         new PrimePowerOrderField(8, new Polynomial(new PrimeOrderField(2), 1, 1, 0, 1)),
-                        3, 2, 7, 6, 4, 2
+                        0, 0, 2, 5, 6, 0, 1
                     )
                 )
             );
