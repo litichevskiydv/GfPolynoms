@@ -2,7 +2,6 @@
 {
     using System;
     using Analyzers.CodeDistance;
-    using CodesAbstractions;
     using GfAlgorithms.CombinationsCountCalculator;
     using GfAlgorithms.ComplementaryFilterBuilder;
     using GfAlgorithms.LinearSystemSolver;

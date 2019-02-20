@@ -152,7 +152,8 @@ Task("CalculateCoverage")
                     MergeOutput = true
                 }
                 .WithFilter("+[*]*")
-                .WithFilter("-[xunit*]*");
+                .WithFilter("-[xunit*]*")
+                .WithFilter("-[*.Tests]*");
 
         foreach(var project in projects)
             OpenCover(
