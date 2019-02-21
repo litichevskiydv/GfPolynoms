@@ -17,19 +17,21 @@
             CodeDistanceAnalyzerOptions options)
         {
             var processedCodewords = 0L;
-            var syncObject = new object();
             var codeDistance = int.MaxValue;
             Parallel.ForEach(
                 GenerateMappings(field, encodingProcedure, new int[informationWordLength], 0).Skip(1),
                 new ParallelOptions { MaxDegreeOfParallelism = options.MaxDegreeOfParallelism },
-                mapping =>
+                () => int.MaxValue,
+                (mapping, loopState, localCodeDistance) =>
                 {
-                    var distance = mapping.codeword.Count(x => x.Representation != 0);
-                    lock (syncObject) codeDistance = Math.Min(codeDistance, distance);
-
                     if (Interlocked.Increment(ref processedCodewords) % options.LoggingResolution == 0)
-                        Logger.LogInformation("Processed {processedCodewords} pairs, code distance {codeDistance}", processedCodewords, codeDistance);
-                }
+                        Logger.LogInformation("Processed {processedCodewords} pairs, code distance {codeDistance}", processedCodewords, localCodeDistance);
+
+                    var distance = mapping.codeword.Count(x => x.Representation != 0);
+                    return Math.Min(localCodeDistance, distance);
+
+                },
+                localCodeDistance => { codeDistance = Math.Min(codeDistance, localCodeDistance);}
             );
 
             return codeDistance;
