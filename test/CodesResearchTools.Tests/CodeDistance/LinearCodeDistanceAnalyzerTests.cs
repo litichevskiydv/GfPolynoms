@@ -1,12 +1,14 @@
 ﻿namespace AppliedAlgebra.CodesResearchTools.Tests.CodeDistance
 {
     using System;
+    using System.Linq;
     using Analyzers.CodeDistance;
     using GfAlgorithms.CombinationsCountCalculator;
     using GfAlgorithms.ComplementaryFilterBuilder;
     using GfAlgorithms.LinearSystemSolver;
     using GfAlgorithms.PolynomialsGcdFinder;
     using GfPolynoms;
+    using GfPolynoms.Extensions;
     using GfPolynoms.GaloisFields;
     using JetBrains.Annotations;
     using Microsoft.Extensions.Logging;
@@ -49,21 +51,21 @@
                       {
                           Field = wN7K3D4.Field,
                           InformationWordLength = wN7K3D4.InformationWordLength,
-                          EncodingProcedure = x => wN7K3D4.Encode(x),
+                          EncodingProcedure = x => wN7K3D4.Encode(x.Select(value => wN7K3D4.Field.CreateElement(value)).ToArray()),
                           ExpectedCodeDistance = wN7K3D4.CodeDistance
                       },
                       new CodeDistanceAnalyzerTestCase
                       {
                           Field = wN8K4D4First.Field,
                           InformationWordLength = wN8K4D4First.InformationWordLength,
-                          EncodingProcedure = x => wN8K4D4First.Encode(x),
+                          EncodingProcedure = x => wN8K4D4First.Encode(x.Select(value => wN8K4D4First.Field.CreateElement(value)).ToArray()),
                           ExpectedCodeDistance = wN8K4D4First.CodeDistance
                       },
                       new CodeDistanceAnalyzerTestCase
                       {
                           Field = wN8K4D4Second.Field,
                           InformationWordLength = wN8K4D4Second.InformationWordLength,
-                          EncodingProcedure = x => wN8K4D4Second.Encode(x),
+                          EncodingProcedure = x => wN8K4D4Second.Encode(x.Select(value => wN8K4D4Second.Field.CreateElement(value)).ToArray()),
                           ExpectedCodeDistance = wN8K4D4Second.CodeDistance
                       }
                   };

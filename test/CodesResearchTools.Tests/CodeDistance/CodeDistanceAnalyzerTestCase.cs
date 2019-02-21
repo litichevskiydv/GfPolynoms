@@ -8,7 +8,7 @@
     {
         public GaloisField Field { get; set; }
         public int InformationWordLength { get; set; }
-        public Func<FieldElement[], FieldElement[]> EncodingProcedure;
+        public Func<int[], FieldElement[]> EncodingProcedure;
         public int ExpectedCodeDistance { get; set; }
     }
 }

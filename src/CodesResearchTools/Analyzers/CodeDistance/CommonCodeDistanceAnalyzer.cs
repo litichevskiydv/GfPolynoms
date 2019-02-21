@@ -14,7 +14,7 @@
         protected override int AnalyzeInternal(
             GaloisField field, 
             int informationWordLength, 
-            Func<FieldElement[], FieldElement[]> encodingProcedure,
+            Func<int[], FieldElement[]> encodingProcedure,
             CodeDistanceAnalyzerOptions options)
         {
             var processedPairsCount = 0L;

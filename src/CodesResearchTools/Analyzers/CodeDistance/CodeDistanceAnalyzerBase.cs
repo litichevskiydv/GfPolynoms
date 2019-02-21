@@ -14,13 +14,13 @@
 
         protected static IEnumerable<(int[] informationWord, FieldElement[] codeword)> GenerateMappings(
             GaloisField field,
-            Func<FieldElement[], FieldElement[]> encodingProcedure,
+            Func<int[], FieldElement[]> encodingProcedure,
             int[] informationWord,
             int currentPosition)
         {
             if (currentPosition == informationWord.Length)
             {
-                yield return (informationWord.ToArray(), encodingProcedure(informationWord.Select(field.CreateElement).ToArray()));
+                yield return (informationWord.ToArray(), encodingProcedure(informationWord));
                 yield break;
             }
 
@@ -37,13 +37,13 @@
 
         protected abstract int AnalyzeInternal(GaloisField field,
             int informationWordLength,
-            Func<FieldElement[], FieldElement[]> encodingProcedure,
+            Func<int[], FieldElement[]> encodingProcedure,
             CodeDistanceAnalyzerOptions options);
 
         public int Analyze(
             GaloisField field, 
             int informationWordLength,
-            Func<FieldElement[], FieldElement[]> encodingProcedure,
+            Func<int[], FieldElement[]> encodingProcedure,
             CodeDistanceAnalyzerOptions options = null)
         {
             if (field == null)
