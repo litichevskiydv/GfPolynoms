@@ -7,6 +7,7 @@
     using System.Threading;
     using System.Threading.Tasks;
     using CodesAbstractions;
+    using CodesResearchTools.Analyzers.CodeDistance;
     using CodesResearchTools.Analyzers.ListsSizesDistribution;
     using CodesResearchTools.NoiseGenerator;
     using GfAlgorithms.CombinationsCountCalculator;
@@ -39,12 +40,28 @@
     public class Program
     {
         private static readonly INoiseGenerator NoiseGenerator;
+        private static readonly LinearCodeDistanceAnalyzer LinearCodeDistanceAnalyzer;
         private static readonly ListsSizesDistributionAnalyzer ListsSizesDistributionAnalyzer;
         private static readonly IEqualityComparer<FieldElement[]> WordsComparer;
         private static readonly IFixedDistanceCodesFactory FixedDistanceCodesFactory;
         private static readonly IGsBasedDecoderTelemetryCollector TelemetryCollector;
 
         private static readonly ILogger Logger;
+
+        private static void AnalyzeCodeDistance(int codewordLength, int informationWordLength, Polynomial generatingPolynomial)
+        {
+            var field = generatingPolynomial.Field;
+            var modularPolynomial = new Polynomial(field, 1).RightShift(codewordLength) + new Polynomial(field, field.InverseForAddition(1));
+
+            var codeDistance = LinearCodeDistanceAnalyzer.Analyze(
+                field,
+                informationWordLength,
+                x => (new Polynomial(field, x).RaiseVariableDegree(2) * generatingPolynomial % modularPolynomial).GetCoefficients(codewordLength - 1),
+                new CodeDistanceAnalyzerOptions { LoggingResolution = 1000000000L}
+            );
+            Logger.LogInformation("Code distance: {codeDistance}", codeDistance);
+
+        }
 
         private static void AnalyzeSpherePackings(ICode code)
         {
@@ -105,13 +122,8 @@
             );
         }
 
-        private static void AnalyzeSpherePackingsForN8K4D3() =>
-            AnalyzeSpherePackings(
-                new WaveletCode(
-                    8, 4, 4,
-                    new Polynomial(new PrimePowerOrderField(9), 2, 0, 1, 2, 1, 1)
-                )
-            );
+        private static void AnalyzeCodeDistanceForN26K13() =>
+            AnalyzeCodeDistance(26, 13, new Polynomial(new PrimePowerOrderField(27), 2, 0, 1, 2, 1, 1));
 
         private static void AnalyzeSpherePackingsForN7K3D4() =>
             AnalyzeSpherePackings(
@@ -121,6 +133,14 @@
                         new PrimePowerOrderField(8, new Polynomial(new PrimeOrderField(2), 1, 1, 0, 1)),
                         0, 0, 2, 5, 6, 0, 1
                     )
+                )
+            );
+
+        private static void AnalyzeSpherePackingsForN8K4D3() =>
+            AnalyzeSpherePackings(
+                new WaveletCode(
+                    8, 4, 4,
+                    new Polynomial(new PrimePowerOrderField(9), 2, 0, 1, 2, 1, 1)
                 )
             );
 
@@ -230,7 +250,7 @@
         {
             try
             {
-                AnalyzeSpherePackingsForN7K3D4();
+                AnalyzeCodeDistanceForN26K13();
             }
             catch (Exception exception)
             {
@@ -253,6 +273,8 @@
                         .CreateLogger()
                 );
             Logger = loggerFactory.CreateLogger<Program>();
+
+            LinearCodeDistanceAnalyzer = new LinearCodeDistanceAnalyzer(loggerFactory.CreateLogger<LinearCodeDistanceAnalyzer>());
 
             NoiseGenerator = new RecursiveGenerator();
             WordsComparer = new FieldElementsArraysComparer();
