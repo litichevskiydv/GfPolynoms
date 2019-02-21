@@ -5,7 +5,7 @@
     public class CodeDistanceAnalyzerOptions
     {
         public int MaxDegreeOfParallelism { get; set; }
-        public int LoggingResolution { get; set; }
+        public long LoggingResolution { get; set; }
 
         public CodeDistanceAnalyzerOptions()
         {

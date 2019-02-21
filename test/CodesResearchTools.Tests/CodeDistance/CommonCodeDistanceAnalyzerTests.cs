@@ -22,11 +22,11 @@
     using WaveletCodesTools.GeneratingPolynomialsBuilder;
     using Xunit;
 
-    public class CodeDistanceAnalyzerTests
+    public class CommonCodeDistanceAnalyzerTests
     {
         [UsedImplicitly] public static TheoryData<CodeDistanceAnalyzerTestCase> CodeDistanceAnalyzysTestCases;
 
-        static CodeDistanceAnalyzerTests()
+        static CommonCodeDistanceAnalyzerTests()
         {
             var gaussSolver = new GaussSolver();
             var codesFactory
@@ -69,13 +69,13 @@
                   };
         }
 
-        private readonly Mock<ILogger<CodeDistanceAnalyzer>> _mockLogger;
-        private readonly CodeDistanceAnalyzer _analyzer;
+        private readonly Mock<ILogger<CommonCodeDistanceAnalyzer>> _mockLogger;
+        private readonly CommonCodeDistanceAnalyzer _analyzer;
 
-        public CodeDistanceAnalyzerTests()
+        public CommonCodeDistanceAnalyzerTests()
         {
-            _mockLogger = new Mock<ILogger<CodeDistanceAnalyzer>>();
-            _analyzer = new CodeDistanceAnalyzer(_mockLogger.Object);
+            _mockLogger = new Mock<ILogger<CommonCodeDistanceAnalyzer>>();
+            _analyzer = new CommonCodeDistanceAnalyzer(_mockLogger.Object);
         }
 
         [Theory]

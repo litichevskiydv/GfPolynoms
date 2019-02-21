@@ -9,7 +9,7 @@
     using GfPolynoms.GaloisFields;
     using Microsoft.Extensions.Logging;
 
-    public class CodeDistanceAnalyzer :  CodeDistanceAnalyzerBase
+    public class CommonCodeDistanceAnalyzer :  CodeDistanceAnalyzerBase
     {
         protected override int AnalyzeInternal(
             GaloisField field, 
@@ -31,7 +31,7 @@
                         lock (syncObject) codeDistance = Math.Min(codeDistance, distance);
 
                         if (Interlocked.Increment(ref processedPairsCount) % options.LoggingResolution == 0)
-                            Logger.LogInformation("Processed {processedPairsCount} centers", processedPairsCount);
+                            Logger.LogInformation("Processed {processedPairsCount} pairs, code distance {codeDistance}", processedPairsCount, codeDistance);
                     }
                 }
             );
@@ -39,7 +39,7 @@
             return codeDistance;
         }
 
-        public CodeDistanceAnalyzer(ILogger<CodeDistanceAnalyzer> logger) : base(logger)
+        public CommonCodeDistanceAnalyzer(ILogger<CommonCodeDistanceAnalyzer> logger) : base(logger)
         {
         }
     }
