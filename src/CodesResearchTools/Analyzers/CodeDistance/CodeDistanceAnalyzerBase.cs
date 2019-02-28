@@ -4,7 +4,6 @@
     using System.Linq;
     using System.Collections.Generic;
     using GfPolynoms;
-    using GfPolynoms.Extensions;
     using GfPolynoms.GaloisFields;
     using Microsoft.Extensions.Logging;
 
