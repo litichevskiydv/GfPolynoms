@@ -144,6 +144,14 @@
                 )
             );
 
+        private static void AnalyzeSpherePackingsForN10K5D5() =>
+            AnalyzeSpherePackings(
+                new WaveletCode(
+                    10, 5, 5,
+                    new Polynomial(new PrimeOrderField(11), 8, 10, 4, 6, 8, 9, 2, 10, 4, 5)
+                )
+            );
+
         private static void AnalyzeCodeN7K3D4() => AnalyzeCode(FixedDistanceCodesFactory.CreateN7K3D4(), 2, 2);
 
         private static void AnalyzeCodeN26K13D12() => AnalyzeCode(FixedDistanceCodesFactory.CreateN26K13D12(), 6, 2);
@@ -250,7 +258,7 @@
         {
             try
             {
-                AnalyzeCodeDistanceForN26K13();
+                AnalyzeSpherePackingsForN10K5D5();
             }
             catch (Exception exception)
             {
