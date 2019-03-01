@@ -5,7 +5,7 @@
     public class ListsSizesDistributionAnalyzerOptions
     {
         public int MaxDegreeOfParallelism { get; set; }
-        public int LoggingResolution { get; set; }
+        public long LoggingResolution { get; set; }
         public string FullLogsPath { get; set; }
 
         public ListsSizesDistributionAnalyzerOptions()

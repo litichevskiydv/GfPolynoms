@@ -56,7 +56,7 @@
             var opts = options ?? new ListsSizesDistributionAnalyzerOptions();
             PrepareLogFiles(opts.FullLogsPath, code);
 
-            var processedCentersCount = 0;
+            var processedCentersCount = 0L;
             var result = Enumerable.Range(1, code.CodewordLength - 1).Select(x => new ListsSizesDistribution(x)).ToArray();
             for (var errorsCount = 0; errorsCount <= code.CodewordLength; errorsCount++)
                 Parallel.ForEach(
