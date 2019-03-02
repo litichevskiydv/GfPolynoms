@@ -8,6 +8,7 @@
     using System.Threading.Tasks;
     using CodesAbstractions;
     using CodesResearchTools.Analyzers.CodeDistance;
+    using CodesResearchTools.Analyzers.CodeSpaceCovering;
     using CodesResearchTools.Analyzers.ListsSizesDistribution;
     using CodesResearchTools.NoiseGenerator;
     using GfAlgorithms.CombinationsCountCalculator;
@@ -41,6 +42,7 @@
     {
         private static readonly INoiseGenerator NoiseGenerator;
         private static readonly LinearCodeDistanceAnalyzer LinearCodeDistanceAnalyzer;
+        private static readonly MinimalSphereCoveringAnalyzer MinimalSphereCoveringAnalyzer;
         private static readonly ListsSizesDistributionAnalyzer ListsSizesDistributionAnalyzer;
         private static readonly IEqualityComparer<FieldElement[]> WordsComparer;
         private static readonly IFixedDistanceCodesFactory FixedDistanceCodesFactory;
@@ -61,6 +63,11 @@
             );
             Logger.LogInformation("Code distance: {codeDistance}", codeDistance);
 
+        }
+
+        private static void AnalyzeMinimalSphereCovering(ICode code)
+        {
+            Logger.LogInformation("Minimal radius: {minimalRadius}", MinimalSphereCoveringAnalyzer.Analyze(code));
         }
 
         private static void AnalyzeSpherePackings(ICode code)
@@ -125,6 +132,14 @@
         private static void AnalyzeCodeDistanceForN26K13() =>
             AnalyzeCodeDistance(26, 13, new Polynomial(new PrimePowerOrderField(27), 2, 0, 1, 2, 1, 1));
 
+        private static void AnalyzeMinimalSphereCoveringForN8K4D4() =>
+            AnalyzeMinimalSphereCovering(
+                new WaveletCode(
+                    8, 4, 4,
+                    new Polynomial(new PrimePowerOrderField(9), 2, 2, 1, 2, 0, 1)
+                )
+            );
+
         private static void AnalyzeSpherePackingsForN7K3D4() =>
             AnalyzeSpherePackings(
                 new WaveletCode(
@@ -136,7 +151,7 @@
                 )
             );
 
-        private static void AnalyzeSpherePackingsForN8K4D3() =>
+        private static void AnalyzeSpherePackingsForN8K4D4() =>
             AnalyzeSpherePackings(
                 new WaveletCode(
                     8, 4, 4,
@@ -258,7 +273,7 @@
         {
             try
             {
-                AnalyzeSpherePackingsForN10K5D5();
+                AnalyzeMinimalSphereCoveringForN8K4D4();
             }
             catch (Exception exception)
             {
@@ -282,10 +297,11 @@
                 );
             Logger = loggerFactory.CreateLogger<Program>();
 
-            LinearCodeDistanceAnalyzer = new LinearCodeDistanceAnalyzer(loggerFactory.CreateLogger<LinearCodeDistanceAnalyzer>());
-
             NoiseGenerator = new RecursiveGenerator();
             WordsComparer = new FieldElementsArraysComparer();
+
+            LinearCodeDistanceAnalyzer = new LinearCodeDistanceAnalyzer(loggerFactory.CreateLogger<LinearCodeDistanceAnalyzer>());
+            MinimalSphereCoveringAnalyzer = new MinimalSphereCoveringAnalyzer(NoiseGenerator, loggerFactory.CreateLogger<MinimalSphereCoveringAnalyzer>());
             ListsSizesDistributionAnalyzer = new ListsSizesDistributionAnalyzer(NoiseGenerator, loggerFactory.CreateLogger<ListsSizesDistributionAnalyzer>());
 
             var gaussSolver = new GaussSolver();
