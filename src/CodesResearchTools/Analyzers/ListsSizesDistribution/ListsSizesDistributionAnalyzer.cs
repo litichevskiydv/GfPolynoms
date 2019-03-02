@@ -12,7 +12,7 @@
     using Microsoft.Extensions.Logging;
     using NoiseGenerator;
 
-    public class ListsSizesDistributionAnalyzer
+    public class ListsSizesDistributionAnalyzer : IListsSizesDistributionAnalyzer
     {
         private readonly INoiseGenerator _noiseGenerator;
         private readonly ILogger _logger;
