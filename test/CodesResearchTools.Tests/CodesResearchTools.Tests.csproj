@@ -23,6 +23,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\CodesResearchTools\CodesResearchTools.csproj" />
+    <ProjectReference Include="..\..\src\GolayCodesTools\GolayCodesTools.csproj" />
     <ProjectReference Include="..\..\src\WaveletCodesTools\WaveletCodesTools.csproj" />
   </ItemGroup>
 
