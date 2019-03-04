@@ -136,7 +136,7 @@
             AnalyzeMinimalSphereCovering(
                 new WaveletCode(
                     8, 4, 4,
-                    new Polynomial(new PrimePowerOrderField(9), 2, 2, 1, 2, 0, 1)
+                    new Polynomial(new PrimePowerOrderField(9), 2, 0, 1, 2, 1, 1)
                 )
             );
 
