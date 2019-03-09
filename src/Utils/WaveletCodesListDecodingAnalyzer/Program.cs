@@ -151,11 +151,19 @@
                 )
             );
 
-        private static void AnalyzeSpherePackingsForN8K4D4() =>
+        private static void AnalyzeSpherePackingsForN8K4D4Golay() =>
             AnalyzeSpherePackings(
                 new WaveletCode(
                     8, 4, 4,
                     new Polynomial(new PrimePowerOrderField(9), 2, 0, 1, 2, 1, 1)
+                )
+            );
+
+        private static void AnalyzeSpherePackingsForN8K4D4() =>
+            AnalyzeSpherePackings(
+                new WaveletCode(
+                    8, 4, 4,
+                    new Polynomial(new PrimePowerOrderField(9), 5, 5, 2, 3, 6, 3, 1, 2)
                 )
             );
 
@@ -273,7 +281,7 @@
         {
             try
             {
-                AnalyzeMinimalSphereCoveringForN8K4D4();
+                AnalyzeSpherePackingsForN8K4D4();
             }
             catch (Exception exception)
             {
