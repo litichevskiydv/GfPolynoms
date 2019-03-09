@@ -14,6 +14,9 @@
                 4
             );
 
+        public static ICode CreateN8K4D4(this IFixedDistanceCodesFactory factory) =>
+            factory.Create(new Polynomial(new PrimePowerOrderField(9), 2, 0, 1, 0, 2, 2), 4);
+
         public static ICode CreateN10K5D5(this IFixedDistanceCodesFactory factory) =>
             factory.Create(new Polynomial(new PrimeOrderField(11), 7, 1, 9, 0, 5, 4, 10, 2, 2, 1), 5);
 
