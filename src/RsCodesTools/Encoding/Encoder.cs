@@ -20,10 +20,10 @@
             var field = informationPolynomial.Field;
             var codeword = new Tuple<FieldElement, FieldElement>[n];
 
-            for (var i = 1; i <= n; i++)
+            for (var i = 0; i < n; i++)
             {
                 var variableValue = field.GetGeneratingElementPower(i);
-                codeword[i - 1] = Tuple.Create(field.CreateElement(variableValue),
+                codeword[i] = Tuple.Create(field.CreateElement(variableValue),
                     field.CreateElement(informationPolynomial.Evaluate(variableValue)));
             }
 
