@@ -3,7 +3,7 @@
     using System;
     using GfAlgorithms.LinearSystemSolver;
     using GfPolynoms;
-    using RsCodesTools.Decoding.StandartDecoder;
+    using IRsDecoder = RsCodesTools.Decoding.StandartDecoder.IDecoder;
     using RsInformationPolynomialNotFoundException = RsCodesTools.Decoding.StandartDecoder.InformationPolynomialWasNotFoundException;
 
     /// <summary>
@@ -14,7 +14,7 @@
         /// <summary>
         /// Implementation of the Reed-Solomon code standard decoder
         /// </summary>
-        private readonly IStandardDecoder _rsStandardDecoder;
+        private readonly IRsDecoder _rsDecoder;
 
         /// <summary>
         /// Method for decoding received codeword in the frequency domain
@@ -31,7 +31,7 @@
             var preparedCodeword = PrepareCodewordForFrequenceDecoding(n, generationPolynomialLeadZeroValuesCount, decodedCodeword);
             try
             {
-                return _rsStandardDecoder.Decode(n, n - d + 1, preparedCodeword, errorsCount);
+                return _rsDecoder.Decode(n, n - d + 1, preparedCodeword, errorsCount);
             }
             catch (RsInformationPolynomialNotFoundException e)
             {
@@ -78,14 +78,14 @@
         /// <summary>
         /// Constructor for initializing internal structures of the decoder
         /// </summary>
-        /// <param name="rsStandardDecoder">Implementation of the Reed-Solomon code standard decoder</param>
+        /// <param name="rsDecoder">Implementation of the Reed-Solomon code standard decoder</param>
         /// <param name="linearSystemSolver">Implementation of the linear equations system solver</param>
-        public RsBasedDecoder(IStandardDecoder rsStandardDecoder, ILinearSystemSolver linearSystemSolver) : base(linearSystemSolver)
+        public RsBasedDecoder(IRsDecoder rsDecoder, ILinearSystemSolver linearSystemSolver) : base(linearSystemSolver)
         {
-            if (rsStandardDecoder == null)
-                throw new ArgumentNullException(nameof(rsStandardDecoder));
+            if (rsDecoder == null)
+                throw new ArgumentNullException(nameof(rsDecoder));
 
-            _rsStandardDecoder = rsStandardDecoder;
+            _rsDecoder = rsDecoder;
         }
     }
 }

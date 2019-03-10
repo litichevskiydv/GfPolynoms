@@ -6,7 +6,7 @@
     /// <summary>
     /// Contract for Reed-Solomon codes decoder
     /// </summary>
-    public interface IStandardDecoder
+    public interface IDecoder
     {
         /// <summary>
         /// Method for performing decoding of Reed-Solomon code codeword, if unsuccess will throw InformationPolynomialWasNotFoundException
