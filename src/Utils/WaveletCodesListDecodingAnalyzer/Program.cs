@@ -24,6 +24,7 @@
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.Logging;
     using Newtonsoft.Json;
+    using RsCodesTools;
     using RsCodesTools.Decoding.ListDecoder;
     using RsCodesTools.Decoding.ListDecoder.GsDecoderDependencies.InterpolationPolynomialBuilder;
     using RsCodesTools.Decoding.ListDecoder.GsDecoderDependencies.InterpolationPolynomialFactorisator;
@@ -167,6 +168,9 @@
                 )
             );
 
+        private static void AnalyzeSpherePackingsForRsN8K4() =>
+            AnalyzeSpherePackings(new ReedSolomonCode(new PrimePowerOrderField(9), 8, 4));
+
         private static void AnalyzeSpherePackingsForN10K5D5() =>
             AnalyzeSpherePackings(
                 new WaveletCode(
@@ -281,7 +285,7 @@
         {
             try
             {
-                AnalyzeSpherePackingsForN8K4D4();
+                AnalyzeSpherePackingsForRsN8K4();
             }
             catch (Exception exception)
             {
