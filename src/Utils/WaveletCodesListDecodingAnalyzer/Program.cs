@@ -164,7 +164,7 @@
             AnalyzeSpherePackings(
                 new WaveletCode(
                     8, 4, 4,
-                    new Polynomial(new PrimePowerOrderField(9), 5, 5, 2, 3, 6, 3, 1, 2)
+                    new Polynomial(new PrimePowerOrderField(9), 2, 8, 3, 8, 0, 6, 2, 7)
                 )
             );
 
@@ -285,7 +285,7 @@
         {
             try
             {
-                AnalyzeSpherePackingsForRsN8K4();
+                AnalyzeSpherePackingsForN8K4D4();
             }
             catch (Exception exception)
             {
