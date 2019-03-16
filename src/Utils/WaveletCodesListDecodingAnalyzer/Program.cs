@@ -171,6 +171,9 @@
         private static void AnalyzeSpherePackingsForRsN8K4() =>
             AnalyzeSpherePackings(new ReedSolomonCode(new PrimePowerOrderField(9), 8, 4));
 
+        private static void AnalyzeSpherePackingsForRsN8K5() =>
+            AnalyzeSpherePackings(new ReedSolomonCode(new PrimePowerOrderField(9), 8, 5));
+
         private static void AnalyzeSpherePackingsForN10K5D5() =>
             AnalyzeSpherePackings(
                 new WaveletCode(
@@ -285,7 +288,7 @@
         {
             try
             {
-                AnalyzeSpherePackingsForN8K4D4();
+                AnalyzeSpherePackingsForRsN8K5();
             }
             catch (Exception exception)
             {
