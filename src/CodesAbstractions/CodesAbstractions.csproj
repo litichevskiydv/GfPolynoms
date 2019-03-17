@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Description>Abstractions for codes</Description>
+    <Description>Common abstractions for codes</Description>
     <PackageDescription Condition="'$(RepositoryBranch)'!=''">
       $(Description)
       Branch: $(RepositoryBranch)

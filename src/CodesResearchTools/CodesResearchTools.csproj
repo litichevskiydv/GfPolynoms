@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Description>Codes research tools</Description>
+    <Description>Tools for experimenting with codes</Description>
     <PackageDescription Condition="'$(RepositoryBranch)'!=''">
       $(Description)
       Branch: $(RepositoryBranch)

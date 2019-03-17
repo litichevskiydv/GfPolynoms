@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Description>Tools for working with Golay codes</Description>
+    <Description>Implementation of Golay codes</Description>
     <PackageDescription Condition="'$(RepositoryBranch)'!=''">
       $(Description)
       Branch: $(RepositoryBranch)
