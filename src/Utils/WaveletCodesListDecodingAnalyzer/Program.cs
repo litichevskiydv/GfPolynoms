@@ -184,6 +184,8 @@
 
         private static void AnalyzeCodeN7K3D4() => AnalyzeCode(FixedDistanceCodesFactory.CreateN7K3D4(), 2, 2);
 
+        private static void AnalyzeCodeN8K4D4() => AnalyzeCode(FixedDistanceCodesFactory.CreateN8K4D4(), 2, 2);
+
         private static void AnalyzeCodeN26K13D12() => AnalyzeCode(FixedDistanceCodesFactory.CreateN26K13D12(), 6, 2);
 
         private static void AnalyzeSamplesForN15K7D8Code() =>
@@ -288,7 +290,7 @@
         {
             try
             {
-                AnalyzeSpherePackingsForRsN8K5();
+                AnalyzeCodeN8K4D4();
             }
             catch (Exception exception)
             {
