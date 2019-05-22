@@ -1,7 +1,6 @@
 ﻿namespace AppliedAlgebra.GfPolynoms.Tests
 {
     using System;
-    using System.Collections.Generic;
     using Extensions;
     using GaloisFields;
     using JetBrains.Annotations;
@@ -9,42 +8,151 @@
 
     public class PolynomialUnderPrimeOrderFieldTest
     {
+        public class BinaryOperationTestCase
+        { 
+            public PrimeOrderField Field { get; set; }
+
+            public int[] FirstOperandCoefficients { get; set; }
+
+            public int[] SecondOperandCoefficients { get; set; }
+
+            public int[] ExpectedResultCoefficients { get; set; }
+        }
+
         private static readonly PrimeOrderField Gf2;
         private static readonly PrimeOrderField Gf3;
 
         [UsedImplicitly]
-        public static readonly IEnumerable<object[]> DevideTestsData;
+        public static readonly TheoryData<BinaryOperationTestCase> DevideTestsData;
         [UsedImplicitly]
-        public static readonly IEnumerable<object[]> ModuloTestsData;
+        public static readonly TheoryData<BinaryOperationTestCase> ModuloTestsData;
 
         static PolynomialUnderPrimeOrderFieldTest()
         {
             Gf2 = new PrimeOrderField(2);
             Gf3 = new PrimeOrderField(3);
 
+            DevideTestsData
+                = new TheoryData<BinaryOperationTestCase>
+                  {
+                      new BinaryOperationTestCase
+                      {
+                          Field = Gf2,
+                          FirstOperandCoefficients = new[] {1},
+                          SecondOperandCoefficients = new[] {1, 1, 0, 1},
+                          ExpectedResultCoefficients = new[] {0}
+                      },
+                      new BinaryOperationTestCase
+                      {
+                          Field = Gf2,
+                          FirstOperandCoefficients = new[] {0, 1},
+                          SecondOperandCoefficients = new[] {1, 1, 0, 1},
+                          ExpectedResultCoefficients = new[] {0}
+                      },
+                      new BinaryOperationTestCase
+                      {
+                          Field = Gf2,
+                          FirstOperandCoefficients = new[] {0, 0, 0, 1},
+                          SecondOperandCoefficients = new[] {1, 1, 0, 1},
+                          ExpectedResultCoefficients = new[] {1}
+                      },
+                      new BinaryOperationTestCase
+                      {
+                          Field = Gf2,
+                          FirstOperandCoefficients = new[] {0, 0, 0, 0, 1},
+                          SecondOperandCoefficients = new[] {1, 1, 0, 1},
+                          ExpectedResultCoefficients = new[] {0, 1}
+                      },
+                      new BinaryOperationTestCase
+                      {
+                          Field = Gf2,
+                          FirstOperandCoefficients = new[] {0, 0, 0, 0, 0, 1},
+                          SecondOperandCoefficients = new[] {1, 1, 0, 1},
+                          ExpectedResultCoefficients = new[] {1, 0, 1}
+                      },
+                      new BinaryOperationTestCase
+                      {
+                          Field = Gf2,
+                          FirstOperandCoefficients = new[] {0, 0, 0, 0, 0, 0, 1},
+                          SecondOperandCoefficients = new[] {1, 1, 0, 1},
+                          ExpectedResultCoefficients = new[] {1, 1, 0, 1}
+                      },
+                      new BinaryOperationTestCase
+                      {
+                          Field = Gf2,
+                          FirstOperandCoefficients = new[] {0, 0, 0, 0, 0, 0, 0, 1},
+                          SecondOperandCoefficients = new[] {1, 1, 0, 1},
+                          ExpectedResultCoefficients = new[] {1, 1, 1, 0, 1}
+                      },
+                      new BinaryOperationTestCase
+                      {
+                          Field = Gf3,
+                          FirstOperandCoefficients = new[] {0, 0, 0, 1},
+                          SecondOperandCoefficients = new[] {1, 1},
+                          ExpectedResultCoefficients = new[] {1, 2, 1}
+                      }
+                  };
 
-            DevideTestsData = new[]
-                               {
-                                   new object[] {Gf2, new[] {1}, new[] {1, 1, 0, 1}, new[] {0}},
-                                   new object[] {Gf2, new[] {0, 1}, new[] {1, 1, 0, 1}, new[] {0}},
-                                   new object[] {Gf2, new[] {0, 0, 0, 1}, new[] {1, 1, 0, 1}, new[] {1}},
-                                   new object[] {Gf2, new[] {0, 0, 0, 0, 1}, new[] {1, 1, 0, 1}, new[] {0, 1}},
-                                   new object[] {Gf2, new[] {0, 0, 0, 0, 0, 1}, new[] {1, 1, 0, 1}, new[] {1, 0, 1}},
-                                   new object[] {Gf2, new[] {0, 0, 0, 0, 0, 0, 1}, new[] {1, 1, 0, 1}, new[] {1, 1, 0, 1}},
-                                   new object[] {Gf2, new[] {0, 0, 0, 0, 0, 0, 0, 1}, new[] {1, 1, 0, 1}, new[] {1, 1, 1, 0, 1 } },
-                                   new object[] {Gf3, new[] {0, 0, 0, 1}, new[] {1, 1}, new[] {1, 2, 1}}
-                               };
-            ModuloTestsData = new[]
-                               {
-                                   new object[] {Gf2, new[] {1}, new[] {1, 1, 0, 1}, new[] {1}},
-                                   new object[] {Gf2, new[] {0, 1}, new[] {1, 1, 0, 1}, new[] {0, 1}},
-                                   new object[] {Gf2, new[] {0, 0, 0, 1}, new[] {1, 1, 0, 1}, new[] {1, 1}},
-                                   new object[] {Gf2, new[] {0, 0, 0, 0, 1}, new[] {1, 1, 0, 1}, new[] {0, 1, 1}},
-                                   new object[] {Gf2, new[] {0, 0, 0, 0, 0, 1}, new[] {1, 1, 0, 1}, new[] {1, 1, 1}},
-                                   new object[] {Gf2, new[] {0, 0, 0, 0, 0, 0, 1}, new[] {1, 1, 0, 1}, new[] {1, 0, 1}},
-                                   new object[] {Gf2, new[] {0, 0, 0, 0, 0, 0, 0, 1}, new[] {1, 1, 0, 1}, new[] {1}},
-                                   new object[] {Gf3, new[] {0, 0, 0, 1}, new[] {1, 1}, new[] {2}}
-                               };
+            ModuloTestsData
+                = new TheoryData<BinaryOperationTestCase>
+                  {
+                      new BinaryOperationTestCase
+                      {
+                          Field = Gf2,
+                          FirstOperandCoefficients = new[] {1},
+                          SecondOperandCoefficients = new[] {1, 1, 0, 1},
+                          ExpectedResultCoefficients = new[] {1}
+                      },
+                      new BinaryOperationTestCase
+                      {
+                          Field = Gf2,
+                          FirstOperandCoefficients = new[] {0, 1},
+                          SecondOperandCoefficients = new[] {1, 1, 0, 1},
+                          ExpectedResultCoefficients = new[] {0, 1}
+                      },
+                      new BinaryOperationTestCase
+                      {
+                          Field = Gf2,
+                          FirstOperandCoefficients = new[] {0, 0, 0, 1},
+                          SecondOperandCoefficients = new[] {1, 1, 0, 1},
+                          ExpectedResultCoefficients = new[] {1, 1}
+                      },
+                      new BinaryOperationTestCase
+                      {
+                          Field = Gf2,
+                          FirstOperandCoefficients = new[] {0, 0, 0, 0, 1},
+                          SecondOperandCoefficients = new[] {1, 1, 0, 1},
+                          ExpectedResultCoefficients = new[] {0, 1, 1}
+                      },
+                      new BinaryOperationTestCase
+                      {
+                          Field = Gf2,
+                          FirstOperandCoefficients = new[] {0, 0, 0, 0, 0, 1},
+                          SecondOperandCoefficients = new[] {1, 1, 0, 1},
+                          ExpectedResultCoefficients = new[] {1, 1, 1}
+                      },
+                      new BinaryOperationTestCase
+                      {
+                          Field = Gf2,
+                          FirstOperandCoefficients = new[] {0, 0, 0, 0, 0, 0, 1},
+                          SecondOperandCoefficients = new[] {1, 1, 0, 1},
+                          ExpectedResultCoefficients = new[] {1, 0, 1}
+                      },
+                      new BinaryOperationTestCase
+                      {
+                          Field = Gf2,
+                          FirstOperandCoefficients = new[] {0, 0, 0, 0, 0, 0, 0, 1},
+                          SecondOperandCoefficients = new[] {1, 1, 0, 1},
+                          ExpectedResultCoefficients = new[] {1}
+                      },
+                      new BinaryOperationTestCase
+                      {
+                          Field = Gf3,
+                          FirstOperandCoefficients = new[] {0, 0, 0, 1},
+                          SecondOperandCoefficients = new[] {1, 1},
+                          ExpectedResultCoefficients = new[] {2}
+                      }
+                  };
 
         }
 
@@ -135,32 +243,32 @@
 
         [Theory]
         [MemberData(nameof(DevideTestsData))]
-        public void ShouldDevide(PrimeOrderField field, int[] dividendCoefficients, int[] divisorCoefficients, int[] quotientCoefficients)
+        public void ShouldDevide(BinaryOperationTestCase testCase)
         {
             // Given
-            var a = new Polynomial(field, dividendCoefficients);
-            var b = new Polynomial(field, divisorCoefficients);
+            var a = new Polynomial(testCase.Field, testCase.FirstOperandCoefficients);
+            var b = new Polynomial(testCase.Field, testCase.SecondOperandCoefficients);
 
             // When
             var c = a/b;
 
             // Then
-            Assert.Equal(new Polynomial(field, quotientCoefficients), c);
+            Assert.Equal(new Polynomial(testCase.Field, testCase.ExpectedResultCoefficients), c);
         }
 
         [Theory]
         [MemberData(nameof(ModuloTestsData))]
-        public void ShouldCalculateModulo(PrimeOrderField field, int[] dividendCoefficients, int[] divisorCoefficients, int[] remainderCoefficients)
+        public void ShouldCalculateModulo(BinaryOperationTestCase testCase)
         {
             // Given
-            var a = new Polynomial(field, dividendCoefficients);
-            var b = new Polynomial(field, divisorCoefficients);
+            var a = new Polynomial(testCase.Field, testCase.FirstOperandCoefficients);
+            var b = new Polynomial(testCase.Field, testCase.SecondOperandCoefficients);
 
             // When
             var c = a%b;
 
             // Then
-            Assert.Equal(new Polynomial(field, remainderCoefficients), c);
+            Assert.Equal(new Polynomial(testCase.Field, testCase.ExpectedResultCoefficients), c);
         }
 
         [Theory]

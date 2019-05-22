@@ -1,7 +1,6 @@
 ﻿namespace AppliedAlgebra.GfPolynoms.Tests.GaluaFields
 {
     using System;
-    using System.Collections.Generic;
     using GaloisFields;
     using JetBrains.Annotations;
     using Xunit;
