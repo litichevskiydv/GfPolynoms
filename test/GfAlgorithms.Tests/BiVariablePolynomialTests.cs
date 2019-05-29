@@ -13,6 +13,7 @@
 
     public class BiVariablePolynomialTests
     {
+        #region TestCases
         public class EvaluationTestCase
         {
             public BiVariablePolynomial Polynomial { get; set; }
@@ -23,6 +24,16 @@
 
             public FieldElement Expected { get; set; }
         }
+
+        public class PartialEvaluationTestCase
+        {
+            public BiVariablePolynomial Polynomial { get; set; }
+
+            public FieldElement VariableValue { get; set; }
+
+            public Polynomial Expected { get; set; }
+        }
+        #endregion
 
         private static readonly GaloisField Gf5;
         private readonly ICombinationsCountCalculator _combinationsCountCalculator;
@@ -42,7 +53,7 @@
         [UsedImplicitly]
         public static readonly IEnumerable<object[]> DivideByXDegreeTestsData;
         [UsedImplicitly]
-        public static readonly IEnumerable<object[]> EvaluateXTestsData;
+        public static readonly TheoryData<PartialEvaluationTestCase> EvaluateXTestsData;
         [UsedImplicitly]
         public static readonly IEnumerable<object[]> EvaluateYTestsData;
         [UsedImplicitly]
@@ -372,45 +383,46 @@
                                            } 
                                        };
 
-            EvaluateXTestsData = new[]
-                                 {
-                                     new object[]
-                                     {
-                                         new BiVariablePolynomial(Gf5)
-                                         {
-                                             [new Tuple<int, int>(0, 0)] = new FieldElement(Gf5, 3),
-                                             [new Tuple<int, int>(1, 0)] = new FieldElement(Gf5, 2),
-                                             [new Tuple<int, int>(0, 1)] = new FieldElement(Gf5, 1)
-                                         },
-                                         new FieldElement(Gf5, 1),
-                                         new Polynomial(Gf5, 0, 1)
-                                     },
-                                     new object[]
-                                     {
-                                         new BiVariablePolynomial(Gf5)
-                                         {
-                                             [new Tuple<int, int>(0, 0)] = new FieldElement(Gf5, 3),
-                                             [new Tuple<int, int>(1, 0)] = new FieldElement(Gf5, 2),
-                                             [new Tuple<int, int>(1, 1)] = new FieldElement(Gf5, 1)
-                                         },
-                                         Gf5.Zero(),
-                                         new Polynomial(Gf5, 3)
-                                     },
-                                     new object[]
-                                     {
-                                         new BiVariablePolynomial(Gf5)
-                                         {
-                                             [new Tuple<int, int>(0, 0)] = new FieldElement(Gf5, 2),
-                                             [new Tuple<int, int>(1, 0)] = new FieldElement(Gf5, 3),
-                                             [new Tuple<int, int>(2, 0)] = new FieldElement(Gf5, 2),
-                                             [new Tuple<int, int>(0, 1)] = new FieldElement(Gf5, 1),
-                                             [new Tuple<int, int>(1, 1)] = new FieldElement(Gf5, 1),
-                                             [new Tuple<int, int>(0, 2)] = new FieldElement(Gf5, 1)
-                                         },
-                                         new FieldElement(Gf5, 3),
-                                         new Polynomial(Gf5, 4, 4, 1)
-                                     }
-                                 };
+            EvaluateXTestsData
+                = new TheoryData<PartialEvaluationTestCase>
+                  {
+                      new PartialEvaluationTestCase
+                      {
+                          Polynomial = new BiVariablePolynomial(Gf5)
+                          {
+                              [Tuple.Create(0, 0)] = Gf5.CreateElement(3),
+                              [Tuple.Create(1, 0)] = Gf5.CreateElement(2),
+                              [Tuple.Create(0, 1)] = Gf5.One()
+                          },
+                          VariableValue = Gf5.One(),
+                          Expected = new Polynomial(Gf5, 0, 1)
+                      },
+                      new PartialEvaluationTestCase
+                      {
+                          Polynomial = new BiVariablePolynomial(Gf5)
+                          {
+                              [Tuple.Create(0, 0)] = Gf5.CreateElement(3),
+                              [Tuple.Create(1, 0)] = Gf5.CreateElement(2),
+                              [Tuple.Create(1, 1)] = Gf5.One()
+                          },
+                          VariableValue = Gf5.Zero(),
+                          Expected = new Polynomial(Gf5, 3)
+                      },
+                      new PartialEvaluationTestCase
+                      {
+                          Polynomial = new BiVariablePolynomial(Gf5)
+                          {
+                              [Tuple.Create(0, 0)] = Gf5.CreateElement(2),
+                              [Tuple.Create(1, 0)] = Gf5.CreateElement(3),
+                              [Tuple.Create(2, 0)] = Gf5.CreateElement(2),
+                              [Tuple.Create(0, 1)] = Gf5.One(),
+                              [Tuple.Create(1, 1)] = Gf5.One(),
+                              [Tuple.Create(0, 2)] = Gf5.One()
+                          },
+                          VariableValue = Gf5.CreateElement(3),
+                          Expected = new Polynomial(Gf5, 4, 4, 1)
+                      }
+                  };
 
             EvaluateYTestsData = new[]
                                  {
@@ -586,9 +598,9 @@
 
         [Theory]
         [MemberData(nameof(EvaluateXTestsData))]
-        public void ShouldEvaluateX(BiVariablePolynomial polynomial, FieldElement xValue, Polynomial expectedResult)
+        public void ShouldEvaluateX(PartialEvaluationTestCase testCase)
         {
-            Assert.Equal(expectedResult, polynomial.EvaluateX(xValue));
+            Assert.Equal(testCase.Expected, testCase.Polynomial.EvaluateX(testCase.VariableValue));
         }
 
         [Theory]
