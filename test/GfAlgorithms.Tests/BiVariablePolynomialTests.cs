@@ -55,7 +55,7 @@
         [UsedImplicitly]
         public static readonly TheoryData<PartialEvaluationTestCase> EvaluateXTestsData;
         [UsedImplicitly]
-        public static readonly IEnumerable<object[]> EvaluateYTestsData;
+        public static readonly TheoryData<PartialEvaluationTestCase> EvaluateYTestsData;
         [UsedImplicitly]
         public static readonly IEnumerable<object[]> CalculateHasseDerivativeTestsData;
 
@@ -424,45 +424,46 @@
                       }
                   };
 
-            EvaluateYTestsData = new[]
-                                 {
-                                     new object[]
-                                     {
-                                         new BiVariablePolynomial(Gf5)
-                                         {
-                                             [new Tuple<int, int>(0, 0)] = new FieldElement(Gf5, 3),
-                                             [new Tuple<int, int>(1, 0)] = new FieldElement(Gf5, 1),
-                                             [new Tuple<int, int>(0, 1)] = new FieldElement(Gf5, 2)
-                                         },
-                                         new FieldElement(Gf5, 1),
-                                         new Polynomial(Gf5, 0, 1)
-                                     },
-                                     new object[]
-                                     {
-                                         new BiVariablePolynomial(Gf5)
-                                         {
-                                             [new Tuple<int, int>(0, 0)] = new FieldElement(Gf5, 3),
-                                             [new Tuple<int, int>(0, 1)] = new FieldElement(Gf5, 2),
-                                             [new Tuple<int, int>(1, 1)] = new FieldElement(Gf5, 1)
-                                         },
-                                         Gf5.Zero(),
-                                         new Polynomial(Gf5, 3)
-                                     },
-                                     new object[]
-                                     {
-                                         new BiVariablePolynomial(Gf5)
-                                         {
-                                             [new Tuple<int, int>(0, 0)] = new FieldElement(Gf5, 2),
-                                             [new Tuple<int, int>(1, 0)] = new FieldElement(Gf5, 3),
-                                             [new Tuple<int, int>(2, 0)] = new FieldElement(Gf5, 2),
-                                             [new Tuple<int, int>(0, 1)] = new FieldElement(Gf5, 1),
-                                             [new Tuple<int, int>(1, 1)] = new FieldElement(Gf5, 1),
-                                             [new Tuple<int, int>(0, 2)] = new FieldElement(Gf5, 1)
-                                         },
-                                         new FieldElement(Gf5, 2),
-                                         new Polynomial(Gf5, 3, 0, 2)
-                                     }
-                                 };
+            EvaluateYTestsData
+                = new TheoryData<PartialEvaluationTestCase>
+                  {
+                      new PartialEvaluationTestCase
+                      {
+                          Polynomial = new BiVariablePolynomial(Gf5)
+                          {
+                              [Tuple.Create(0, 0)] = Gf5.CreateElement(3),
+                              [Tuple.Create(1, 0)] = Gf5.One(),
+                              [Tuple.Create(0, 1)] = Gf5.CreateElement(2)
+                          },
+                          VariableValue = Gf5.One(),
+                          Expected = new Polynomial(Gf5, 0, 1)
+                      },
+                      new PartialEvaluationTestCase
+                      {
+                          Polynomial = new BiVariablePolynomial(Gf5)
+                          {
+                              [Tuple.Create(0, 0)] = Gf5.CreateElement(3),
+                              [Tuple.Create(0, 1)] = Gf5.CreateElement(2),
+                              [Tuple.Create(1, 1)] = Gf5.One()
+                          },
+                          VariableValue = Gf5.Zero(),
+                          Expected = new Polynomial(Gf5, 3)
+                      },
+                      new PartialEvaluationTestCase
+                      {
+                          Polynomial = new BiVariablePolynomial(Gf5)
+                          {
+                              [Tuple.Create(0, 0)] = Gf5.CreateElement(2),
+                              [Tuple.Create(1, 0)] = Gf5.CreateElement(3),
+                              [Tuple.Create(2, 0)] = Gf5.CreateElement(2),
+                              [Tuple.Create(0, 1)] = Gf5.One(),
+                              [Tuple.Create(1, 1)] = Gf5.One(),
+                              [Tuple.Create(0, 2)] = Gf5.One()
+                          },
+                          VariableValue = Gf5.CreateElement(2),
+                          Expected = new Polynomial(Gf5, 3, 0, 2)
+                      }
+                  };
 
             CalculateHasseDerivativeTestsData = new[]
                                                 {
@@ -605,9 +606,9 @@
 
         [Theory]
         [MemberData(nameof(EvaluateYTestsData))]
-        public void ShouldEvaluateY(BiVariablePolynomial polynomial, FieldElement yValue, Polynomial expectedResult)
+        public void ShouldEvaluateY(PartialEvaluationTestCase testCase)
         {
-            Assert.Equal(expectedResult, polynomial.EvaluateY(yValue));
+            Assert.Equal(testCase.Expected, testCase.Polynomial.EvaluateY(testCase.VariableValue));
         }
 
         [Theory]
