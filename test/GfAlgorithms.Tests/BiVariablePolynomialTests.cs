@@ -42,6 +42,15 @@
 
             public BiVariablePolynomial Expected { get; set; }
         }
+
+        public class MultiplicationByFieldElementTestsCase
+        {
+            public BiVariablePolynomial Polynomial { get; set; }
+
+            public FieldElement Multiplier { get; set; }
+
+            public BiVariablePolynomial Expected { get; set; }
+        }
         #endregion
 
         private static readonly GaloisField Gf5;
@@ -56,7 +65,7 @@
         [UsedImplicitly]
         public static readonly TheoryData<BinaryOperationTestCase> MultiplyPolynomialsTestsData;
         [UsedImplicitly]
-        public static readonly IEnumerable<object[]> MultiplyByFieldElementTestsData;
+        public static readonly TheoryData<MultiplicationByFieldElementTestsCase> MultiplyByFieldElementTestsData;
         [UsedImplicitly]
         public static readonly IEnumerable<object[]> SubstitutionTestsData;
         [UsedImplicitly]
@@ -261,28 +270,36 @@
                       }
                   };
 
-            var polynomialForMultiplication = new BiVariablePolynomial(Gf5)
-                                              {
-                                                  [new Tuple<int, int>(0, 0)] = new FieldElement(Gf5, 3),
-                                                  [new Tuple<int, int>(1, 0)] = new FieldElement(Gf5, 2),
-                                                  [new Tuple<int, int>(0, 1)] = new FieldElement(Gf5, 4),
-                                                  [new Tuple<int, int>(1, 1)] = new FieldElement(Gf5, 1)
-                                              };
-            MultiplyByFieldElementTestsData = new[]
-                                              {
-                                                  new object[] {polynomialForMultiplication, Gf5.Zero(), new BiVariablePolynomial(Gf5)},
-                                                  new object[]
-                                                  {
-                                                      polynomialForMultiplication, new FieldElement(Gf5, 2),
-                                                      new BiVariablePolynomial(Gf5)
-                                                      {
-                                                          [new Tuple<int, int>(0, 0)] = new FieldElement(Gf5, 1),
-                                                          [new Tuple<int, int>(1, 0)] = new FieldElement(Gf5, 4),
-                                                          [new Tuple<int, int>(0, 1)] = new FieldElement(Gf5, 3),
-                                                          [new Tuple<int, int>(1, 1)] = new FieldElement(Gf5, 2)
-                                                      }
-                                                  }
-                                              };
+            var polynomialForMultiplication
+                = new BiVariablePolynomial(Gf5)
+                  {
+                      [Tuple.Create(0, 0)] = Gf5.CreateElement(3),
+                      [Tuple.Create(1, 0)] = Gf5.CreateElement(2),
+                      [Tuple.Create(0, 1)] = Gf5.CreateElement(4),
+                      [Tuple.Create(1, 1)] = Gf5.One()
+                  };
+            MultiplyByFieldElementTestsData
+                = new TheoryData<MultiplicationByFieldElementTestsCase>
+                  {
+                      new MultiplicationByFieldElementTestsCase
+                      {
+                          Polynomial = polynomialForMultiplication,
+                          Multiplier = Gf5.Zero(),
+                          Expected = new BiVariablePolynomial(Gf5)
+                      },
+                      new MultiplicationByFieldElementTestsCase
+                      {
+                          Polynomial = polynomialForMultiplication,
+                          Multiplier = Gf5.CreateElement(2),
+                          Expected = new BiVariablePolynomial(Gf5)
+                          {
+                              [Tuple.Create(0, 0)] = Gf5.One(),
+                              [Tuple.Create(1, 0)] = Gf5.CreateElement(4),
+                              [Tuple.Create(0, 1)] = Gf5.CreateElement(3),
+                              [Tuple.Create(1, 1)] = Gf5.CreateElement(2)
+                          }
+                      }
+                  };
 
             SubstitutionTestsData = new[]
                                     {
@@ -588,9 +605,9 @@
 
         [Theory]
         [MemberData(nameof(MultiplyByFieldElementTestsData))]
-        public void ShouldMultiplyByFieldElement(BiVariablePolynomial a, FieldElement b, BiVariablePolynomial expectedResult)
+        public void ShouldMultiplyByFieldElement(MultiplicationByFieldElementTestsCase testsCase)
         {
-            Assert.Equal(expectedResult, a * b, EqualityComparer<BiVariablePolynomial>.Default);
+            Assert.Equal(testsCase.Expected, testsCase.Polynomial * testsCase.Multiplier, EqualityComparer<BiVariablePolynomial>.Default);
         }
 
         [Theory]
