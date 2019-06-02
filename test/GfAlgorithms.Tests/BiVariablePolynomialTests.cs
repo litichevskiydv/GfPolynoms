@@ -54,7 +54,7 @@
         [UsedImplicitly]
         public static readonly TheoryData<BinaryOperationTestCase> SubtractTestsData;
         [UsedImplicitly]
-        public static readonly IEnumerable<object[]> MultiplyPolynomialsTestsData;
+        public static readonly TheoryData<BinaryOperationTestCase> MultiplyPolynomialsTestsData;
         [UsedImplicitly]
         public static readonly IEnumerable<object[]> MultiplyByFieldElementTestsData;
         [UsedImplicitly]
@@ -203,62 +203,63 @@
                       }
                   };
 
-            MultiplyPolynomialsTestsData = new[]
-                                           {
-                                               new object[]
-                                               {
-                                                   new BiVariablePolynomial(Gf5)
-                                                   {
-                                                       [new Tuple<int, int>(0, 0)] = new FieldElement(Gf5, 2),
-                                                       [new Tuple<int, int>(1, 0)] = new FieldElement(Gf5, 3)
-                                                   },
-                                                   new BiVariablePolynomial(Gf5)
-                                                   {
-                                                       [new Tuple<int, int>(0, 0)] = new FieldElement(Gf5, 3),
-                                                       [new Tuple<int, int>(0, 1)] = new FieldElement(Gf5, 4)
-                                                   },
-                                                   new BiVariablePolynomial(Gf5)
-                                                   {
-                                                       [new Tuple<int, int>(0, 0)] = new FieldElement(Gf5, 1),
-                                                       [new Tuple<int, int>(1, 0)] = new FieldElement(Gf5, 4),
-                                                       [new Tuple<int, int>(0, 1)] = new FieldElement(Gf5, 3),
-                                                       [new Tuple<int, int>(1, 1)] = new FieldElement(Gf5, 2)
-                                                   }
-                                               },
-                                               new object[]
-                                               {
-                                                   new BiVariablePolynomial(Gf5)
-                                                   {
-                                                       [new Tuple<int, int>(0, 0)] = new FieldElement(Gf5, 2),
-                                                       [new Tuple<int, int>(1, 0)] = new FieldElement(Gf5, 3),
-                                                       [new Tuple<int, int>(0, 1)] = new FieldElement(Gf5, 4)
-                                                   },
-                                                   new BiVariablePolynomial(Gf5)
-                                                   {
-                                                       [new Tuple<int, int>(0, 0)] = new FieldElement(Gf5, 4),
-                                                       [new Tuple<int, int>(1, 0)] = new FieldElement(Gf5, 1),
-                                                       [new Tuple<int, int>(0, 1)] = new FieldElement(Gf5, 2)
-                                                   },
-                                                   new BiVariablePolynomial(Gf5)
-                                                   {
-                                                       [new Tuple<int, int>(0, 0)] = new FieldElement(Gf5, 3),
-                                                       [new Tuple<int, int>(1, 0)] = new FieldElement(Gf5, 4),
-                                                       [new Tuple<int, int>(2, 0)] = new FieldElement(Gf5, 3),
-                                                       [new Tuple<int, int>(0, 2)] = new FieldElement(Gf5, 3)
-                                                   }
-                                               },
-                                               new object[]
-                                               {
-                                                   new BiVariablePolynomial(Gf5)
-                                                   {
-                                                       [new Tuple<int, int>(0, 0)] = new FieldElement(Gf5, 2),
-                                                       [new Tuple<int, int>(1, 0)] = new FieldElement(Gf5, 3),
-                                                       [new Tuple<int, int>(0, 1)] = new FieldElement(Gf5, 4)
-                                                   },
-                                                   new BiVariablePolynomial(Gf5),
-                                                   new BiVariablePolynomial(Gf5)
-                                               }
-                                           };
+            MultiplyPolynomialsTestsData
+                = new TheoryData<BinaryOperationTestCase>
+                  {
+                      new BinaryOperationTestCase
+                      {
+                          FirstOperand = new BiVariablePolynomial(Gf5)
+                          {
+                              [Tuple.Create(0, 0)] = Gf5.CreateElement(2),
+                              [Tuple.Create(1, 0)] = Gf5.CreateElement(3)
+                          },
+                          SecondOperand = new BiVariablePolynomial(Gf5)
+                          {
+                              [Tuple.Create(0, 0)] = Gf5.CreateElement(3),
+                              [Tuple.Create(0, 1)] = Gf5.CreateElement(4)
+                          },
+                          Expected = new BiVariablePolynomial(Gf5)
+                          {
+                              [Tuple.Create(0, 0)] = Gf5.One(),
+                              [Tuple.Create(1, 0)] = Gf5.CreateElement(4),
+                              [Tuple.Create(0, 1)] = Gf5.CreateElement(3),
+                              [Tuple.Create(1, 1)] = Gf5.CreateElement(2)
+                          }
+                      },
+                      new BinaryOperationTestCase
+                      {
+                          FirstOperand = new BiVariablePolynomial(Gf5)
+                          {
+                              [Tuple.Create(0, 0)] = Gf5.CreateElement(2),
+                              [Tuple.Create(1, 0)] = Gf5.CreateElement(3),
+                              [Tuple.Create(0, 1)] = Gf5.CreateElement(4)
+                          },
+                          SecondOperand = new BiVariablePolynomial(Gf5)
+                          {
+                              [Tuple.Create(0, 0)] = Gf5.CreateElement(4),
+                              [Tuple.Create(1, 0)] = Gf5.One(),
+                              [Tuple.Create(0, 1)] = Gf5.CreateElement(2)
+                          },
+                          Expected = new BiVariablePolynomial(Gf5)
+                          {
+                              [Tuple.Create(0, 0)] = Gf5.CreateElement(3),
+                              [Tuple.Create(1, 0)] = Gf5.CreateElement(4),
+                              [Tuple.Create(2, 0)] = Gf5.CreateElement(3),
+                              [Tuple.Create(0, 2)] = Gf5.CreateElement(3)
+                          }
+                      },
+                      new BinaryOperationTestCase
+                      {
+                          FirstOperand = new BiVariablePolynomial(Gf5)
+                          {
+                              [Tuple.Create(0, 0)] = Gf5.CreateElement(2),
+                              [Tuple.Create(1, 0)] = Gf5.CreateElement(3),
+                              [Tuple.Create(0, 1)] = Gf5.CreateElement(4)
+                          },
+                          SecondOperand = new BiVariablePolynomial(Gf5),
+                          Expected = new BiVariablePolynomial(Gf5)
+                      }
+                  };
 
             var polynomialForMultiplication = new BiVariablePolynomial(Gf5)
                                               {
@@ -580,9 +581,9 @@
 
         [Theory]
         [MemberData(nameof(MultiplyPolynomialsTestsData))]
-        public void ShouldMultiplyTwoPolynomials(BiVariablePolynomial a, BiVariablePolynomial b, BiVariablePolynomial expectedResult)
+        public void ShouldMultiplyTwoPolynomials(BinaryOperationTestCase testCase)
         {
-            Assert.Equal(expectedResult, a*b, EqualityComparer<BiVariablePolynomial>.Default);
+            Assert.Equal(testCase.Expected, testCase.FirstOperand * testCase.SecondOperand, EqualityComparer<BiVariablePolynomial>.Default);
         }
 
         [Theory]
