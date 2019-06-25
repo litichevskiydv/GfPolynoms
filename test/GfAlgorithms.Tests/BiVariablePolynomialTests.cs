@@ -69,6 +69,21 @@
 
             public BiVariablePolynomial Expected { get; set; }
         }
+
+        public class HasseDerivativeCalculationTestCase
+        {
+            public BiVariablePolynomial Polynomial { get; set; }
+
+            public int R { get; set; }
+
+            public int S { get; set; }
+
+            public FieldElement XValue { get; set; }
+
+            public FieldElement YValue { get; set; }
+
+            public FieldElement Expected { get; set; }
+        }
         #endregion
 
         private static readonly GaloisField Gf5;
@@ -93,7 +108,7 @@
         [UsedImplicitly]
         public static readonly TheoryData<PartialEvaluationTestCase> EvaluateYTestsData;
         [UsedImplicitly]
-        public static readonly IEnumerable<object[]> CalculateHasseDerivativeTestsData;
+        public static readonly TheoryData<HasseDerivativeCalculationTestCase> HasseDerivativeCalculationTestsData;
 
         static BiVariablePolynomialTests()
         {
@@ -514,46 +529,56 @@
                       }
                   };
 
-            CalculateHasseDerivativeTestsData = new[]
-                                                {
-                                                    new object[]
-                                                    {
-                                                        new BiVariablePolynomial(Gf5)
-                                                        {
-                                                            [new Tuple<int, int>(0, 0)] = new FieldElement(Gf5, 2),
-                                                            [new Tuple<int, int>(1, 0)] = new FieldElement(Gf5, 2),
-                                                            [new Tuple<int, int>(0, 1)] = new FieldElement(Gf5, 2),
-                                                            [new Tuple<int, int>(2, 0)] = new FieldElement(Gf5, 1),
-                                                            [new Tuple<int, int>(0, 2)] = new FieldElement(Gf5, 1)
-                                                        },
-                                                        1, 1, Gf5.One(), Gf5.One(),
-                                                        Gf5.Zero()
-                                                    },
-                                                    new object[]
-                                                    {
-                                                        new BiVariablePolynomial(Gf5)
-                                                        {
-                                                            [new Tuple<int, int>(0, 0)] = new FieldElement(Gf5, 2),
-                                                            [new Tuple<int, int>(1, 0)] = new FieldElement(Gf5, 2),
-                                                            [new Tuple<int, int>(0, 1)] = new FieldElement(Gf5, 2),
-                                                            [new Tuple<int, int>(2, 2)] = new FieldElement(Gf5, 1)
-                                                        },
-                                                        1, 1, Gf5.One(), Gf5.One(),
-                                                        new FieldElement(Gf5, 4) 
-                                                    },
-                                                    new object[]
-                                                    {
-                                                        new BiVariablePolynomial(Gf5)
-                                                        {
-                                                            [new Tuple<int, int>(0, 0)] = new FieldElement(Gf5, 2),
-                                                            [new Tuple<int, int>(1, 0)] = new FieldElement(Gf5, 2),
-                                                            [new Tuple<int, int>(0, 1)] = new FieldElement(Gf5, 2),
-                                                            [new Tuple<int, int>(2, 2)] = new FieldElement(Gf5, 1)
-                                                        },
-                                                        2, 1, Gf5.One(), Gf5.One(),
-                                                        new FieldElement(Gf5, 2)
-                                                    }
-                                                };
+            HasseDerivativeCalculationTestsData
+                = new TheoryData<HasseDerivativeCalculationTestCase>
+                  {
+                      new HasseDerivativeCalculationTestCase
+                      {
+                          Polynomial = new BiVariablePolynomial(Gf5)
+                          {
+                              [Tuple.Create(0, 0)] = Gf5.CreateElement(2),
+                              [Tuple.Create(1, 0)] = Gf5.CreateElement(2),
+                              [Tuple.Create(0, 1)] = Gf5.CreateElement(2),
+                              [Tuple.Create(2, 0)] = Gf5.One(),
+                              [Tuple.Create(0, 2)] = Gf5.One()
+                          },
+                          R = 1,
+                          S = 1,
+                          XValue = Gf5.One(),
+                          YValue = Gf5.One(),
+                          Expected = Gf5.Zero()
+                      },
+                      new HasseDerivativeCalculationTestCase
+                      {
+                          Polynomial = new BiVariablePolynomial(Gf5)
+                          {
+                              [Tuple.Create(0, 0)] = Gf5.CreateElement(2),
+                              [Tuple.Create(1, 0)] = Gf5.CreateElement(2),
+                              [Tuple.Create(0, 1)] = Gf5.CreateElement(2),
+                              [Tuple.Create(2, 2)] = Gf5.One()
+                          },
+                          R = 1,
+                          S = 1,
+                          XValue = Gf5.One(),
+                          YValue = Gf5.One(),
+                          Expected = new FieldElement(Gf5, 4)
+                      },
+                      new HasseDerivativeCalculationTestCase
+                      {
+                          Polynomial = new BiVariablePolynomial(Gf5)
+                          {
+                              [Tuple.Create(0, 0)] = Gf5.CreateElement(2),
+                              [Tuple.Create(1, 0)] = Gf5.CreateElement(2),
+                              [Tuple.Create(0, 1)] = Gf5.CreateElement(2),
+                              [Tuple.Create(2, 2)] = Gf5.One()
+                          },
+                          R = 2,
+                          S = 1,
+                          XValue = Gf5.One(),
+                          YValue = Gf5.One(),
+                          Expected = Gf5.CreateElement(2)
+                      }
+                  };
         }
 
         public BiVariablePolynomialTests()
@@ -663,11 +688,19 @@
         }
 
         [Theory]
-        [MemberData(nameof(CalculateHasseDerivativeTestsData))]
-        public void ShouldCalculateHasseDerivative(BiVariablePolynomial polynomial, int r, int s, FieldElement xValue, FieldElement yValue,
-            FieldElement expectedValue)
+        [MemberData(nameof(HasseDerivativeCalculationTestsData))]
+        public void ShouldCalculateHasseDerivative(HasseDerivativeCalculationTestCase testCase)
         {
-            Assert.Equal(expectedValue, polynomial.CalculateHasseDerivative(r, s, xValue, yValue, _combinationsCountCalculator));
+            Assert.Equal(
+                testCase.Expected,
+                testCase.Polynomial.CalculateHasseDerivative(
+                    testCase.R,
+                    testCase.S,
+                    testCase.XValue,
+                    testCase.YValue,
+                    _combinationsCountCalculator
+                )
+            );
         }
     }
 }
