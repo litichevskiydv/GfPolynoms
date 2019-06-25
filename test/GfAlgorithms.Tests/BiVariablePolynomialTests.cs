@@ -62,6 +62,13 @@
 
             public BiVariablePolynomial Expected { get; set; }
         }
+
+        public class DivideByXDegreeTestCase
+        {
+            public BiVariablePolynomial Polynomial { get; set; }
+
+            public BiVariablePolynomial Expected { get; set; }
+        }
         #endregion
 
         private static readonly GaloisField Gf5;
@@ -80,7 +87,7 @@
         [UsedImplicitly]
         public static readonly TheoryData<SubstitutionTestCase> SubstitutionTestsData;
         [UsedImplicitly]
-        public static readonly IEnumerable<object[]> DivideByXDegreeTestsData;
+        public static readonly TheoryData<DivideByXDegreeTestCase> DivideByXDegreeTestsData;
         [UsedImplicitly]
         public static readonly TheoryData<PartialEvaluationTestCase> EvaluateXTestsData;
         [UsedImplicitly]
@@ -385,44 +392,45 @@
                       }
                   };
 
-            DivideByXDegreeTestsData = new[]
-                                       {
-                                           new object[]
-                                           {
-                                               new BiVariablePolynomial(Gf5)
-                                               {
-                                                   [new Tuple<int, int>(1, 0)] = new FieldElement(Gf5, 2),
-                                                   [new Tuple<int, int>(2, 0)] = new FieldElement(Gf5, 1),
-                                                   [new Tuple<int, int>(1, 1)] = new FieldElement(Gf5, 3)
-                                               },
-                                               new BiVariablePolynomial(Gf5)
-                                               {
-                                                   [new Tuple<int, int>(0, 0)] = new FieldElement(Gf5, 2),
-                                                   [new Tuple<int, int>(1, 0)] = new FieldElement(Gf5, 1),
-                                                   [new Tuple<int, int>(0, 1)] = new FieldElement(Gf5, 3)
-                                               }
-                                           },
-                                           new object[]
-                                           {
-                                               new BiVariablePolynomial(Gf5)
-                                               {
-                                                   [new Tuple<int, int>(1, 0)] = new FieldElement(Gf5, 2),
-                                                   [new Tuple<int, int>(2, 0)] = new FieldElement(Gf5, 1),
-                                                   [new Tuple<int, int>(0, 1)] = new FieldElement(Gf5, 3)
-                                               },
-                                               new BiVariablePolynomial(Gf5)
-                                               {
-                                                   [new Tuple<int, int>(1, 0)] = new FieldElement(Gf5, 2),
-                                                   [new Tuple<int, int>(2, 0)] = new FieldElement(Gf5, 1),
-                                                   [new Tuple<int, int>(0, 1)] = new FieldElement(Gf5, 3)
-                                               }
-                                           },
-                                           new object[]
-                                           {
-                                               new BiVariablePolynomial(Gf5),
-                                               new BiVariablePolynomial(Gf5) 
-                                           } 
-                                       };
+            DivideByXDegreeTestsData
+                = new TheoryData<DivideByXDegreeTestCase>
+                  {
+                      new DivideByXDegreeTestCase
+                      {
+                          Polynomial = new BiVariablePolynomial(Gf5)
+                          {
+                              [Tuple.Create(1, 0)] = Gf5.CreateElement(2),
+                              [Tuple.Create(2, 0)] = Gf5.One(),
+                              [Tuple.Create(1, 1)] = Gf5.CreateElement(3)
+                          },
+                          Expected = new BiVariablePolynomial(Gf5)
+                          {
+                              [Tuple.Create(0, 0)] = Gf5.CreateElement(2),
+                              [Tuple.Create(1, 0)] = Gf5.One(),
+                              [Tuple.Create(0, 1)] = Gf5.CreateElement(3)
+                          }
+                      },
+                      new DivideByXDegreeTestCase
+                      {
+                          Polynomial = new BiVariablePolynomial(Gf5)
+                          {
+                              [Tuple.Create(1, 0)] = Gf5.CreateElement(2),
+                              [Tuple.Create(2, 0)] = Gf5.One(),
+                              [Tuple.Create(0, 1)] = Gf5.CreateElement(3)
+                          },
+                          Expected = new BiVariablePolynomial(Gf5)
+                          {
+                              [Tuple.Create(1, 0)] = Gf5.CreateElement(2),
+                              [Tuple.Create(2, 0)] = Gf5.One(),
+                              [Tuple.Create(0, 1)] = Gf5.CreateElement(3)
+                          }
+                      },
+                      new DivideByXDegreeTestCase
+                      {
+                          Polynomial = new BiVariablePolynomial(Gf5),
+                          Expected = new BiVariablePolynomial(Gf5)
+                      }
+                  };
 
             EvaluateXTestsData
                 = new TheoryData<PartialEvaluationTestCase>
@@ -635,9 +643,9 @@
 
         [Theory]
         [MemberData(nameof(DivideByXDegreeTestsData))]
-        public void ShouldDivideByMaxPossibleXDegree(BiVariablePolynomial polynomial, BiVariablePolynomial expectedResult)
+        public void ShouldDivideByMaxPossibleXDegree(DivideByXDegreeTestCase testCase)
         {
-            Assert.Equal(expectedResult, polynomial.DivideByMaxPossibleXDegree(), EqualityComparer<BiVariablePolynomial>.Default);
+            Assert.Equal(testCase.Expected, testCase.Polynomial.DivideByMaxPossibleXDegree(), EqualityComparer<BiVariablePolynomial>.Default);
         }
 
         [Theory]
