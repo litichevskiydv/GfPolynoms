@@ -1,6 +1,5 @@
 ﻿namespace AppliedAlgebra.GfAlgorithms.Tests
 {
-    using System.Collections.Generic;
     using ComplementaryFilterBuilder;
     using GfPolynoms;
     using GfPolynoms.GaloisFields;
