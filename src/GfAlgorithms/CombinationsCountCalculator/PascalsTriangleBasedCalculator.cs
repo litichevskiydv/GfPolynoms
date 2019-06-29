@@ -7,7 +7,7 @@
     /// <summary>
     /// Combinations calculator contract implementation via Pascal's triangle
     /// </summary>
-    public class PascalsTriangleBasedCalcualtor : ICombinationsCountCalculator
+    public class PascalsTriangleBasedCalculator : ICombinationsCountCalculator
     {
         /// <summary>
         /// Method for calculating number of combinations from <paramref name="n"/> by <paramref name="k"/> over field <paramref name="field"/>

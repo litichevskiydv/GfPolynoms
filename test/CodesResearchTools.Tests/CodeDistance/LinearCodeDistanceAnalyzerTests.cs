@@ -36,7 +36,7 @@
                     new LiftingSchemeBasedBuilder(new GcdBasedBuilder(new RecursiveGcdFinder()), gaussSolver),
                     new RsBasedDecoder(new BerlekampWelchDecoder(gaussSolver), gaussSolver),
                     new GsBasedDecoder(
-                        new GsDecoder(new KotterAlgorithmBasedBuilder(new PascalsTriangleBasedCalcualtor()), new RrFactorizator()),
+                        new GsDecoder(new KotterAlgorithmBasedBuilder(new PascalsTriangleBasedCalculator()), new RrFactorizator()),
                         gaussSolver
                     )
                 );

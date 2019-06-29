@@ -75,7 +75,7 @@
 
         public SimplePolynomialBuilderTests()
         {
-            _polynomialBuilder = new SimplePolynomialBuilder(new PascalsTriangleBasedCalcualtor(), new GaussSolver());
+            _polynomialBuilder = new SimplePolynomialBuilder(new PascalsTriangleBasedCalculator(), new GaussSolver());
         }
 
         [Theory]

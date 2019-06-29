@@ -112,7 +112,7 @@
         public GsBasedDecoderTests()
         {
             _decoder = new GsBasedDecoder(new GsDecoder(
-                    new KotterAlgorithmBasedBuilder(new PascalsTriangleBasedCalcualtor()), 
+                    new KotterAlgorithmBasedBuilder(new PascalsTriangleBasedCalculator()), 
                     new RrFactorizator()),
                 new GaussSolver());
         }

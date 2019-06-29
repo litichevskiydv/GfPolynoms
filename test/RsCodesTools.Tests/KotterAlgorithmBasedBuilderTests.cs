@@ -75,7 +75,7 @@
 
         public KotterAlgorithmBasedBuilderTests()
         {
-            _polynomialBuilder = new KotterAlgorithmBasedBuilder(new PascalsTriangleBasedCalcualtor());
+            _polynomialBuilder = new KotterAlgorithmBasedBuilder(new PascalsTriangleBasedCalculator());
         }
 
         [Theory]

@@ -583,7 +583,7 @@
 
         public BiVariablePolynomialTests()
         {
-            _combinationsCountCalculator = new PascalsTriangleBasedCalcualtor();
+            _combinationsCountCalculator = new PascalsTriangleBasedCalculator();
         }
 
         [Theory]

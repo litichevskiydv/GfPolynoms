@@ -27,7 +27,7 @@
             var noiseGenerator = new RecursiveGenerator();
             var codesFactory = new StandardCodesFactory(
                 new BerlekampWelchDecoder(gaussSolver),
-                new GsDecoder(new KotterAlgorithmBasedBuilder(new PascalsTriangleBasedCalcualtor()), new RrFactorizator())
+                new GsDecoder(new KotterAlgorithmBasedBuilder(new PascalsTriangleBasedCalculator()), new RrFactorizator())
             );
 
             var code = codesFactory.Create(new PrimePowerOrderField(8), 7, 4);
