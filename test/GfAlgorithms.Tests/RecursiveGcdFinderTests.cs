@@ -9,75 +9,96 @@
 
     public class RecursiveGcdFinderTests
     {
+        public class GcdFinderTestCase
+        {
+            public Polynomial A { get; set; }
+
+            public Polynomial B { get; set; }
+
+            public Polynomial Expected { get; set; }
+        }
+
+        public class GcdExtendedFinderTestCase : GcdFinderTestCase
+        {
+
+            public Polynomial[] ExpectedQuotients { get; set; }
+        }
+
+
         private readonly RecursiveGcdFinder _gcdFinder;
 
         [UsedImplicitly]
-        public static readonly IEnumerable<object[]> GcdTestData;
+        public static readonly TheoryData<GcdFinderTestCase> GcdTestData;
         [UsedImplicitly]
-        public static readonly IEnumerable<object[]> GcdWithQuotientsTestData;
+        public static readonly TheoryData<GcdExtendedFinderTestCase> GcdWithQuotientsTestData;
 
         static RecursiveGcdFinderTests()
         {
             var gf3 = new PrimeOrderField(3);
 
-            GcdTestData = new[]
-                          {
-                              new object[]
-                              {
-                                  new Polynomial(gf3, 0, 1, 1),
-                                  new Polynomial(gf3, 1, 2, 1),
-                                  new Polynomial(gf3, 2, 2)
-                              },
-                              new object[]
-                              {
-                                  new Polynomial(gf3, 0, 1, 2),
-                                  new Polynomial(gf3, 1, 2, 1),
-                                  new Polynomial(gf3, 1)
-                              },
-                              new object[]
-                              {
-                                  new Polynomial(gf3, 1, 1),
-                                  new Polynomial(gf3, 0, 0, 1, 1),
-                                  new Polynomial(gf3, 1, 1)
-                              }
-                          };
+            GcdTestData
+                = new TheoryData<GcdFinderTestCase>
+                  {
+                      new GcdFinderTestCase
+                      {
+                          A = new Polynomial(gf3, 0, 1, 1),
+                          B = new Polynomial(gf3, 1, 2, 1),
+                          Expected = new Polynomial(gf3, 2, 2)
+                      },
+                      new GcdFinderTestCase
+                      {
+                          A = new Polynomial(gf3, 0, 1, 2),
+                          B = new Polynomial(gf3, 1, 2, 1),
+                          Expected = new Polynomial(gf3, 1)
+                      },
+                      new GcdFinderTestCase
+                      {
+                          A = new Polynomial(gf3, 1, 1),
+                          B = new Polynomial(gf3, 0, 0, 1, 1),
+                          Expected = new Polynomial(gf3, 1, 1)
+                      }
+                  };
 
-            GcdWithQuotientsTestData = new[]
-                                       {
-                                           new object[]
-                                           {
-                                               new Polynomial(gf3, 0, 1, 1),
-                                               new Polynomial(gf3, 1, 2, 1),
-                                               new Polynomial(gf3, 2, 2),
-                                               new[]
-                                               {
-                                                   new Polynomial(gf3, 1),
-                                                   new Polynomial(gf3, 2, 2)
-                                               }
-                                           },
-                                           new object[]
-                                           {
-                                               new Polynomial(gf3, 0, 1, 2),
-                                               new Polynomial(gf3, 1, 2, 1),
-                                               new Polynomial(gf3, 1),
-                                               new[]
-                                               {
-                                                   new Polynomial(gf3, 2),
-                                                   new Polynomial(gf3, 1, 2, 1)
-                                               }
-                                           },
-                                           new object[]
-                                           {
-                                               new Polynomial(gf3, 1, 1),
-                                               new Polynomial(gf3, 0, 0, 1, 1),
-                                               new Polynomial(gf3, 1, 1),
-                                               new[]
-                                               {
-                                                   new Polynomial(gf3),
-                                                   new Polynomial(gf3, 0, 0, 1)
-                                               }
-                                           }
-                                       };
+            GcdWithQuotientsTestData
+                = new TheoryData<GcdExtendedFinderTestCase>
+                  {
+                      new GcdExtendedFinderTestCase
+                      {
+                          A = new Polynomial(gf3, 0, 1, 1),
+                          B = new Polynomial(gf3, 1, 2, 1),
+                          Expected = new Polynomial(gf3, 2, 2),
+                          ExpectedQuotients
+                              = new[]
+                                {
+                                    new Polynomial(gf3, 1),
+                                    new Polynomial(gf3, 2, 2)
+                                }
+                      },
+                      new GcdExtendedFinderTestCase
+                      {
+                          A = new Polynomial(gf3, 0, 1, 2),
+                          B = new Polynomial(gf3, 1, 2, 1),
+                          Expected = new Polynomial(gf3, 1),
+                          ExpectedQuotients
+                              = new[]
+                                {
+                                    new Polynomial(gf3, 2),
+                                    new Polynomial(gf3, 1, 2, 1)
+                                }
+                      },
+                      new GcdExtendedFinderTestCase
+                      {
+                          A = new Polynomial(gf3, 1, 1),
+                          B = new Polynomial(gf3, 0, 0, 1, 1),
+                          Expected = new Polynomial(gf3, 1, 1),
+                          ExpectedQuotients
+                              = new[]
+                                {
+                                    new Polynomial(gf3),
+                                    new Polynomial(gf3, 0, 0, 1)
+                                }
+                      }
+                  };
         }
 
         public RecursiveGcdFinderTests()
@@ -87,33 +108,33 @@
 
         [Theory]
         [MemberData(nameof(GcdTestData))]
-        public void ShouldCalculateGcd(Polynomial a, Polynomial b, Polynomial expectedGcd)
+        public void ShouldCalculateGcd(GcdFinderTestCase testCase)
         {
-            Assert.Equal(expectedGcd, _gcdFinder.Gcd(a, b));
+            Assert.Equal(testCase.Expected, _gcdFinder.Gcd(testCase.A, testCase.B));
         }
 
         [Theory]
         [MemberData(nameof(GcdWithQuotientsTestData))]
-        public void ShouldCalculateGcdAndQuotients(Polynomial a, Polynomial b, Polynomial expectedGcd, Polynomial[] expectedQuotients)
+        public void ShouldCalculateGcdAndQuotients(GcdExtendedFinderTestCase testCase)
         {
             // When
-            var result = _gcdFinder.GcdWithQuotients(a, b);
+            var result = _gcdFinder.GcdWithQuotients(testCase.A, testCase.B);
 
             // Then
-            Assert.Equal(expectedGcd, result.Gcd);
-            Assert.Equal(expectedQuotients, result.Quotients);
+            Assert.Equal(testCase.Expected, result.Gcd);
+            Assert.Equal(testCase.ExpectedQuotients, result.Quotients);
         }
 
         [Theory]
         [MemberData(nameof(GcdTestData))]
-        public void ShouldCalculateGcdExtendedResults(Polynomial a, Polynomial b, Polynomial expectedGcd)
+        public void ShouldCalculateGcdExtendedResults(GcdFinderTestCase testCase)
         {
             // When
-            var result = _gcdFinder.GcdExtended(a, b);
+            var result = _gcdFinder.GcdExtended(testCase.A, testCase.B);
 
             //Then
-            Assert.Equal(expectedGcd, result.Gcd);
-            Assert.Equal(expectedGcd, a*result.X + b*result.Y);
+            Assert.Equal(testCase.Expected, result.Gcd);
+            Assert.Equal(testCase.Expected, testCase.A * result.X + testCase.B * result.Y);
         }
     }
 }
