@@ -1,12 +1,13 @@
 ﻿namespace AppliedAlgebra.RsCodesTools.Tests
 {
     using System;
-    using System.Collections.Generic;
     using Decoding.ListDecoder.GsDecoderDependencies.InterpolationPolynomialBuilder;
     using GfAlgorithms.CombinationsCountCalculator;
     using GfPolynoms;
+    using GfPolynoms.Extensions;
     using GfPolynoms.GaloisFields;
     using JetBrains.Annotations;
+    using TestCases;
     using Xunit;
 
     public class KotterAlgorithmBasedBuilderTests
@@ -14,9 +15,9 @@
         private readonly KotterAlgorithmBasedBuilder _polynomialBuilder;
 
         [UsedImplicitly]
-        public static readonly IEnumerable<object[]> SuccessConstructionTestsData;
+        public static readonly TheoryData<InterpolationPolynomialBuilderTestCase> SuccessConstructionTestsData;
         [UsedImplicitly]
-        public static readonly IEnumerable<object[]> FailConstructionTestsData;
+        public static readonly TheoryData<InterpolationPolynomialBuilderTestCase> FailConstructionTestsData;
 
         static KotterAlgorithmBasedBuilderTests()
         {
@@ -26,51 +27,57 @@
 
             var degreeWeight = new Tuple<int, int>(1, 2);
 
-            SuccessConstructionTestsData = new[]
-                                           {
-                                               new object[]
-                                               {
-                                                   degreeWeight, 3,
-                                                   new[]
-                                                   {
-                                                       new Tuple<FieldElement, FieldElement>(new FieldElement(gf5, 1), new FieldElement(gf5, 3)),
-                                                       new Tuple<FieldElement, FieldElement>(new FieldElement(gf5, 2), new FieldElement(gf5, 4))
-                                                   }
-                                               },
-                                               new object[]
-                                               {
-                                                   degreeWeight, 3,
-                                                   new[]
-                                                   {
-                                                       new Tuple<FieldElement, FieldElement>(new FieldElement(gf8, 3), new FieldElement(gf8, 7)),
-                                                       new Tuple<FieldElement, FieldElement>(new FieldElement(gf8, 5), new FieldElement(gf8, 4))
-                                                   }
-                                               },
-                                               new object[]
-                                               {
-                                                   degreeWeight, 3,
-                                                   new[]
-                                                   {
-                                                       new Tuple<FieldElement, FieldElement>(new FieldElement(gf27, 15), new FieldElement(gf27, 26)),
-                                                       new Tuple<FieldElement, FieldElement>(new FieldElement(gf27, 10), new FieldElement(gf27, 9))
-                                                   }
-                                               }
-                                           };
+            SuccessConstructionTestsData
+        = new TheoryData<InterpolationPolynomialBuilderTestCase>
+          {
+              new InterpolationPolynomialBuilderTestCase
+              {
+                  DegreeWeight = degreeWeight,
+                  MaxWeightedDegree = 3,
+                  Roots = new[]
+                          {
+                              Tuple.Create(gf5.One(), gf5.CreateElement(3)),
+                              Tuple.Create(gf5.CreateElement(2), gf5.CreateElement(4))
+                          }
+              },
+              new InterpolationPolynomialBuilderTestCase
+              {
+                  DegreeWeight = degreeWeight,
+                  MaxWeightedDegree = 3,
+                  Roots = new[]
+                          {
+                              Tuple.Create(gf8.CreateElement(3), gf8.CreateElement(7)),
+                              Tuple.Create(gf8.CreateElement(5), gf8.CreateElement(4))
+                          }
+              },
+              new InterpolationPolynomialBuilderTestCase
+              {
+                  DegreeWeight = degreeWeight,
+                  MaxWeightedDegree = 3,
+                  Roots = new[]
+                          {
+                              Tuple.Create(gf27.CreateElement(15), gf27.CreateElement(26)),
+                              Tuple.Create(gf27.CreateElement(10), gf27.CreateElement(9))
+                          }
+              }
+          };
 
-            FailConstructionTestsData = new[]
-                                        {
-                                            new object[]
-                                            {
-                                                degreeWeight, 2,
-                                                new[]
-                                                {
-                                                    new Tuple<FieldElement, FieldElement>(new FieldElement(gf27, 1), new FieldElement(gf27, 16)),
-                                                    new Tuple<FieldElement, FieldElement>(new FieldElement(gf27, 13), new FieldElement(gf27, 26)),
-                                                    new Tuple<FieldElement, FieldElement>(new FieldElement(gf27, 10), new FieldElement(gf27, 15)),
-                                                    new Tuple<FieldElement, FieldElement>(new FieldElement(gf27, 8), new FieldElement(gf27, 5))
-                                                }
-                                            }
-                                        };
+            FailConstructionTestsData
+                = new TheoryData<InterpolationPolynomialBuilderTestCase>
+                  {
+              new InterpolationPolynomialBuilderTestCase
+              {
+                  DegreeWeight = degreeWeight,
+                  MaxWeightedDegree = 2,
+                  Roots = new[]
+                          {
+                              Tuple.Create(gf27.One(), gf27.CreateElement(16)),
+                              Tuple.Create(gf27.CreateElement(13), gf27.CreateElement(26)),
+                              Tuple.Create(gf27.CreateElement(10), gf27.CreateElement(15)),
+                              Tuple.Create(gf27.CreateElement(8), gf27.CreateElement(5))
+                          }
+              }
+                  };
         }
 
         public KotterAlgorithmBasedBuilderTests()
@@ -80,23 +87,21 @@
 
         [Theory]
         [MemberData(nameof(SuccessConstructionTestsData))]
-        public void ShouldConstructPolynomialWithSpecifiedSingleMultiplicityRoots(Tuple<int, int> degreeWeight, int maxWeightedDegree,
-            Tuple<FieldElement, FieldElement>[] roots)
+        public void ShouldConstructPolynomialWithSpecifiedSingleMultiplicityRoots(InterpolationPolynomialBuilderTestCase testCase)
         {
             // When
-            var polynomial = _polynomialBuilder.Build(degreeWeight, maxWeightedDegree, roots, 1);
+            var polynomial = _polynomialBuilder.Build(testCase.DegreeWeight, testCase.MaxWeightedDegree, testCase.Roots, 1);
 
             // Then
-            foreach (var root in roots)
-                Assert.Equal(0, polynomial.Evaluate(root.Item1, root.Item2).Representation);
+            foreach (var (xValue, yValue) in testCase.Roots)
+                Assert.Equal(0, polynomial.Evaluate(xValue, yValue).Representation);
         }
 
         [Theory]
         [MemberData(nameof(FailConstructionTestsData))]
-        public void ShouldNotConstructPolynomialWithSpecifiedSingleMultiplicityRoots(Tuple<int, int> degreeWeight, int maxWeightedDegree,
-            Tuple<FieldElement, FieldElement>[] roots)
+        public void ShouldNotConstructPolynomialWithSpecifiedSingleMultiplicityRoots(InterpolationPolynomialBuilderTestCase testCase)
         {
-            Assert.Throws<NonTrivialPolynomialNotFoundException>(() => _polynomialBuilder.Build(degreeWeight, maxWeightedDegree, roots, 1));
+            Assert.Throws<NonTrivialPolynomialNotFoundException>(() => _polynomialBuilder.Build(testCase.DegreeWeight, testCase.MaxWeightedDegree, testCase.Roots, 1));
         }
     }
 }
