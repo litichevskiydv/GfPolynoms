@@ -13,10 +13,24 @@
 
     public class BerlekampWelchDecoderTests
     {
+        public class BerlekampWelchDecoderTestCase
+        {
+            public int N { get; set; }
+
+            public int K { get; set; }
+
+            public Tuple<FieldElement, FieldElement>[] DecodedCodeword { get; set; }
+
+            public int ErrorsCount { get; set; }
+
+
+            public  Polynomial Expected { get; set; }
+        }
+
         private readonly BerlekampWelchDecoder _decoder;
 
         [UsedImplicitly]
-        public static readonly IEnumerable<object[]> DecoderTestsData;
+        public static readonly TheoryData<BerlekampWelchDecoderTestCase> DecoderTestsData;
 
         private static Tuple<FieldElement, FieldElement>[] AddRandomNoise(Tuple<FieldElement, FieldElement>[] codeword, int errorsCount)
         {
@@ -32,25 +46,37 @@
             return codeword;
         }
 
-        private static object[] PrepareTestsWithErrors(int n, int k, IEncoder encoder, Polynomial informationPolynomial, int randomErrorsCount)
-        {
-            return new object[]
-                   {
-                       n, k,
-                       AddRandomNoise(encoder.Encode(n, informationPolynomial), randomErrorsCount), randomErrorsCount,
-                       informationPolynomial
-                   };
-        }
+        private static BerlekampWelchDecoderTestCase PrepareTestsWithErrors(
+            int n,
+            int k,
+            IEncoder encoder,
+            Polynomial informationPolynomial,
+            int randomErrorsCount
+        ) =>
+            new BerlekampWelchDecoderTestCase
+            {
+                N = n,
+                K = k,
+                DecodedCodeword = AddRandomNoise(encoder.Encode(n, informationPolynomial), randomErrorsCount),
+                ErrorsCount = randomErrorsCount,
+                Expected = informationPolynomial
+            };
 
-        private static object[] PrepareTestsDataWithoutErrors(int n, int k, IEncoder encoder, Polynomial informationPolynomial, int errorsCount)
-        {
-            return new object[]
-                   {
-                       n, k,
-                       encoder.Encode(n, informationPolynomial), errorsCount,
-                       informationPolynomial
-                   };
-        }
+        private static BerlekampWelchDecoderTestCase PrepareTestsDataWithoutErrors(
+            int n,
+            int k,
+            IEncoder encoder,
+            Polynomial informationPolynomial,
+            int errorsCount
+        ) =>
+            new BerlekampWelchDecoderTestCase
+            {
+                N = n,
+                K = k,
+                DecodedCodeword = encoder.Encode(n, informationPolynomial),
+                ErrorsCount = errorsCount,
+                Expected = informationPolynomial
+            };
 
         static BerlekampWelchDecoderTests()
         {
@@ -58,15 +84,16 @@
             var gf9 = new PrimePowerOrderField(9, new Polynomial(new PrimeOrderField(3), 1, 0, 1));
             var encoder = new Encoder();
 
-            DecoderTestsData = new[]
-                               {
-                                   PrepareTestsWithErrors(7, 3, encoder, new Polynomial(gf8, 1, 2, 3), 2),
-                                   PrepareTestsWithErrors(7, 3, encoder, new Polynomial(gf8, 7, 4, 1), 2),
-                                   PrepareTestsWithErrors(7, 3, encoder, new Polynomial(gf8, 0, 2), 1),
-                                   PrepareTestsWithErrors(7, 3, encoder, new Polynomial(gf8, 0, 0, 3), 1),
-                                   PrepareTestsWithErrors(8, 5, encoder, new Polynomial(gf9, 0, 0, 3, 1, 1), 1),
-                                   PrepareTestsDataWithoutErrors(8, 5, encoder, new Polynomial(gf9, 0, 0, 3, 1, 1), 1)
-                               };
+            DecoderTestsData
+                = new TheoryData<BerlekampWelchDecoderTestCase>
+                  {
+                      PrepareTestsWithErrors(7, 3, encoder, new Polynomial(gf8, 1, 2, 3), 2),
+                      PrepareTestsWithErrors(7, 3, encoder, new Polynomial(gf8, 7, 4, 1), 2),
+                      PrepareTestsWithErrors(7, 3, encoder, new Polynomial(gf8, 0, 2), 1),
+                      PrepareTestsWithErrors(7, 3, encoder, new Polynomial(gf8, 0, 0, 3), 1),
+                      PrepareTestsWithErrors(8, 5, encoder, new Polynomial(gf9, 0, 0, 3, 1, 1), 1),
+                      PrepareTestsDataWithoutErrors(8, 5, encoder, new Polynomial(gf9, 0, 0, 3, 1, 1), 1)
+                  };
         }
 
         public BerlekampWelchDecoderTests()
@@ -76,17 +103,17 @@
 
         [Theory]
         [MemberData(nameof(DecoderTestsData))]
-        public void ShouldPerformDecodeReceivedCodevord(int n, int k, Tuple<FieldElement, FieldElement>[] decodedCodeword, int errorsCount, Polynomial expectedInformationPolynomial)
+        public void ShouldPerformDecodeReceivedCodeword(BerlekampWelchDecoderTestCase testCase)
         {
             // When
-            var actualInformationPolynomial = _decoder.Decode(n, k, decodedCodeword, errorsCount);
+            var actualInformationPolynomial = _decoder.Decode(testCase.N, testCase.K, testCase.DecodedCodeword, testCase.ErrorsCount);
 
             // Then
-            Assert.Equal(expectedInformationPolynomial, actualInformationPolynomial);
+            Assert.Equal(testCase.Expected, actualInformationPolynomial);
         }
 
         [Fact]
-        public void ShouldNotPerformDecodeReceivedCodevord()
+        public void ShouldNotPerformDecodeReceivedCodeword()
         {
             // Given
             var gf9 = new PrimePowerOrderField(9, new Polynomial(new PrimeOrderField(3), 1, 0, 1));
