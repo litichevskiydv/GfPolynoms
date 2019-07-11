@@ -25,7 +25,7 @@
             var gf5 = new PrimeOrderField(5);
             var gf8 = new PrimePowerOrderField(8, new Polynomial(new PrimeOrderField(2), 1, 1, 0, 1));
             var gf27 = new PrimePowerOrderField(27, new Polynomial(new PrimeOrderField(3), 2, 2, 0, 1));
-            var degreeWeight = new Tuple<int, int>(1, 2);
+            var degreeWeight = Tuple.Create(1, 2);
 
             SuccessConstructionTestsData
                 = new TheoryData<InterpolationPolynomialBuilderTestCase>

@@ -11,6 +11,7 @@
     using GfPolynoms.Extensions;
     using GfPolynoms.GaloisFields;
     using JetBrains.Annotations;
+    using TestCases;
     using Xunit;
 
     public class GsDecoderTests
@@ -18,7 +19,7 @@
         private readonly GsDecoder _decoder;
 
         [UsedImplicitly]
-        public static readonly IEnumerable<object[]> DecoderTestsData;
+        public static readonly TheoryData<ListDecoderTestCase> DecoderTestsData;
 
         private static Tuple<FieldElement, FieldElement>[] AddRandomNoise(Tuple<FieldElement, FieldElement>[] codeword, int errorsCount)
         {
@@ -43,25 +44,25 @@
             return codeword;
         }
 
-        private static object[] PrepareTestsData(int n, int k, IEncoder encoder, Polynomial informationPolynomial, int randomErrorsCount)
-        {
-            return new object[]
-                   {
-                       n, k,
-                       AddRandomNoise(encoder.Encode(n, informationPolynomial), randomErrorsCount), n - randomErrorsCount,
-                       informationPolynomial
-                   };
-        }
+        private static ListDecoderTestCase PrepareTestsData(int n, int k, IEncoder encoder, Polynomial informationPolynomial, int randomErrorsCount) =>
+            new ListDecoderTestCase
+            {
+                N = n,
+                K = k,
+                DecodedCodeword = AddRandomNoise(encoder.Encode(n, informationPolynomial), randomErrorsCount),
+                MinCorrectValuesCount = n - randomErrorsCount,
+                Expected = informationPolynomial
+            };
 
-        private static object[] PrepareTestsData(int n, int k, IEncoder encoder, Polynomial informationPolynomial, params int[] errorsPositions)
-        {
-            return new object[]
-                   {
-                       n, k,
-                       AddNoise(encoder.Encode(n, informationPolynomial), errorsPositions), n - errorsPositions.Length,
-                       informationPolynomial
-                   };
-        }
+        private static ListDecoderTestCase PrepareTestsData(int n, int k, IEncoder encoder, Polynomial informationPolynomial, params int[] errorsPositions) =>
+            new ListDecoderTestCase
+            {
+                N = n,
+                K = k,
+                DecodedCodeword = AddNoise(encoder.Encode(n, informationPolynomial), errorsPositions),
+                MinCorrectValuesCount = n - errorsPositions.Length,
+                Expected = informationPolynomial
+            };
 
         static GsDecoderTests()
         {
@@ -69,15 +70,16 @@
             var gf9 = new PrimePowerOrderField(9, new Polynomial(new PrimeOrderField(3), 1, 0, 1));
             var encoder = new Encoder();
 
-            DecoderTestsData = new[]
-                               {
-                                   PrepareTestsData(7, 3, encoder, new Polynomial(gf8, 1, 2, 3), 2, 3, 6),
-                                   PrepareTestsData(7, 3, encoder, new Polynomial(gf8, 1, 2, 3), 3),
-                                   PrepareTestsData(7, 3, encoder, new Polynomial(gf8, 7, 4, 1), 3),
-                                   PrepareTestsData(7, 3, encoder, new Polynomial(gf8, 0, 2), 3),
-                                   PrepareTestsData(7, 3, encoder, new Polynomial(gf8, 0, 0, 3), 3),
-                                   PrepareTestsData(8, 5, encoder, new Polynomial(gf9, 0, 0, 3, 1, 1), 2)
-                               };
+            DecoderTestsData
+                = new TheoryData<ListDecoderTestCase>
+                  {
+                      PrepareTestsData(7, 3, encoder, new Polynomial(gf8, 1, 2, 3), 2, 3, 6),
+                      PrepareTestsData(7, 3, encoder, new Polynomial(gf8, 1, 2, 3), 3),
+                      PrepareTestsData(7, 3, encoder, new Polynomial(gf8, 7, 4, 1), 3),
+                      PrepareTestsData(7, 3, encoder, new Polynomial(gf8, 0, 2), 3),
+                      PrepareTestsData(7, 3, encoder, new Polynomial(gf8, 0, 0, 3), 3),
+                      PrepareTestsData(8, 5, encoder, new Polynomial(gf9, 0, 0, 3, 1, 1), 2)
+                  };
         }
 
         public GsDecoderTests()
@@ -87,13 +89,13 @@
 
         [Theory]
         [MemberData(nameof(DecoderTestsData))]
-        public void ShouldFindOriginalInformationWordAmongPossibleVariants(int n, int k, Tuple<FieldElement, FieldElement>[] decodedCodeword, int minCorrectValuesCount, Polynomial expectedInformationPolynomial)
+        public void ShouldFindOriginalInformationWordAmongPossibleVariants(ListDecoderTestCase testCase)
         {
             // When
-            var possibleVariants = _decoder.Decode(n, k, decodedCodeword, minCorrectValuesCount);
+            var possibleVariants = _decoder.Decode(testCase.N, testCase.K, testCase.DecodedCodeword, testCase.MinCorrectValuesCount);
 
             // Then
-            Assert.Contains(expectedInformationPolynomial, possibleVariants);
+            Assert.Contains(testCase.Expected, possibleVariants);
         }
     }
 }
