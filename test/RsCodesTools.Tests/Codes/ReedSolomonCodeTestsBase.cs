@@ -5,15 +5,16 @@
     using CodesAbstractions;
     using CodesResearchTools.NoiseGenerator;
     using GfPolynoms.Extensions;
+    using TestCases;
 
     public abstract class ReedSolomonCodeTestsBase
     {
-        protected static DecodingTestCase PrepareDecodingTestCase(
+        protected static CodewordDecodingTestCase PrepareDecodingTestCase(
             ICode code,
             INoiseGenerator noiseGenerator,
             int? errorsCount = null,
             IEnumerable<int> informationWord = null) =>
-            new DecodingTestCase
+            new CodewordDecodingTestCase
             {
                 Code = code,
                 InformationWord = informationWord?.Select(x => code.Field.CreateElement(x)).ToArray()
@@ -24,7 +25,7 @@
                     .First()
             };
 
-        protected static DecodingTestCase PrepareListDecodingTestCase(
+        protected static CodewordDecodingTestCase PrepareListDecodingTestCase(
             ICode code,
             INoiseGenerator noiseGenerator,
             IEnumerable<int> informationWord = null) =>

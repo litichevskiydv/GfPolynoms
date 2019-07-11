@@ -1,9 +1,9 @@
-﻿namespace AppliedAlgebra.RsCodesTools.Tests.Codes
+﻿namespace AppliedAlgebra.RsCodesTools.Tests.TestCases
 {
     using CodesAbstractions;
     using GfPolynoms;
 
-    public class DecodingTestCase
+    public class CodewordDecodingTestCase
     {
         public ICode Code { get; set; }
 

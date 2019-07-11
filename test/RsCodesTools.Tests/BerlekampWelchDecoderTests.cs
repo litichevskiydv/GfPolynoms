@@ -9,28 +9,15 @@
     using GfPolynoms.Extensions;
     using GfPolynoms.GaloisFields;
     using JetBrains.Annotations;
+    using TestCases;
     using Xunit;
 
     public class BerlekampWelchDecoderTests
     {
-        public class BerlekampWelchDecoderTestCase
-        {
-            public int N { get; set; }
-
-            public int K { get; set; }
-
-            public Tuple<FieldElement, FieldElement>[] DecodedCodeword { get; set; }
-
-            public int ErrorsCount { get; set; }
-
-
-            public  Polynomial Expected { get; set; }
-        }
-
         private readonly BerlekampWelchDecoder _decoder;
 
         [UsedImplicitly]
-        public static readonly TheoryData<BerlekampWelchDecoderTestCase> DecoderTestsData;
+        public static readonly TheoryData<DecoderTestCase> DecoderTestsData;
 
         private static Tuple<FieldElement, FieldElement>[] AddRandomNoise(Tuple<FieldElement, FieldElement>[] codeword, int errorsCount)
         {
@@ -46,14 +33,14 @@
             return codeword;
         }
 
-        private static BerlekampWelchDecoderTestCase PrepareTestsWithErrors(
+        private static DecoderTestCase PrepareTestsWithErrors(
             int n,
             int k,
             IEncoder encoder,
             Polynomial informationPolynomial,
             int randomErrorsCount
         ) =>
-            new BerlekampWelchDecoderTestCase
+            new DecoderTestCase
             {
                 N = n,
                 K = k,
@@ -62,14 +49,14 @@
                 Expected = informationPolynomial
             };
 
-        private static BerlekampWelchDecoderTestCase PrepareTestsDataWithoutErrors(
+        private static DecoderTestCase PrepareTestsDataWithoutErrors(
             int n,
             int k,
             IEncoder encoder,
             Polynomial informationPolynomial,
             int errorsCount
         ) =>
-            new BerlekampWelchDecoderTestCase
+            new DecoderTestCase
             {
                 N = n,
                 K = k,
@@ -85,7 +72,7 @@
             var encoder = new Encoder();
 
             DecoderTestsData
-                = new TheoryData<BerlekampWelchDecoderTestCase>
+                = new TheoryData<DecoderTestCase>
                   {
                       PrepareTestsWithErrors(7, 3, encoder, new Polynomial(gf8, 1, 2, 3), 2),
                       PrepareTestsWithErrors(7, 3, encoder, new Polynomial(gf8, 7, 4, 1), 2),
@@ -103,7 +90,7 @@
 
         [Theory]
         [MemberData(nameof(DecoderTestsData))]
-        public void ShouldPerformDecodeReceivedCodeword(BerlekampWelchDecoderTestCase testCase)
+        public void ShouldPerformDecodeReceivedCodeword(DecoderTestCase testCase)
         {
             // When
             var actualInformationPolynomial = _decoder.Decode(testCase.N, testCase.K, testCase.DecodedCodeword, testCase.ErrorsCount);

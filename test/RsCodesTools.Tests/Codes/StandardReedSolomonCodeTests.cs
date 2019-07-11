@@ -13,12 +13,13 @@
     using GfPolynoms.Comparers;
     using GfPolynoms.GaloisFields;
     using JetBrains.Annotations;
+    using TestCases;
     using Xunit;
 
     public class StandardReedSolomonCodeTests : ReedSolomonCodeTestsBase
     {
-        [UsedImplicitly] public static TheoryData<DecodingTestCase> DecodingTestsData;
-        [UsedImplicitly] public static TheoryData<DecodingTestCase> ListDecodingTestsData;
+        [UsedImplicitly] public static TheoryData<CodewordDecodingTestCase> DecodingTestsData;
+        [UsedImplicitly] public static TheoryData<CodewordDecodingTestCase> ListDecodingTestsData;
         [UsedImplicitly] public static TheoryData<(ICode code, string stringRepresentation)> ToStringTestsData;
 
         static StandardReedSolomonCodeTests()
@@ -32,7 +33,7 @@
 
             var code = codesFactory.Create(new PrimePowerOrderField(8), 7, 4);
             DecodingTestsData
-                = new TheoryData<DecodingTestCase>
+                = new TheoryData<CodewordDecodingTestCase>
                   {
                       PrepareDecodingTestCase(code, noiseGenerator),
                       PrepareDecodingTestCase(code, noiseGenerator, informationWord: new[] {1, 1, 1, 1}),
@@ -40,7 +41,7 @@
                       PrepareDecodingTestCase(code, noiseGenerator, informationWord: new[] {7, 3, 2, 5})
                   };
             ListDecodingTestsData
-                = new TheoryData<DecodingTestCase>
+                = new TheoryData<CodewordDecodingTestCase>
                   {
                       PrepareListDecodingTestCase(code, noiseGenerator),
                       PrepareListDecodingTestCase(code, noiseGenerator, new[] {1, 1, 1, 1}),
@@ -56,7 +57,7 @@
 
         [Theory]
         [MemberData(nameof(DecodingTestsData))]
-        public void ShouldTestDecoding(DecodingTestCase testCase)
+        public void ShouldTestDecoding(CodewordDecodingTestCase testCase)
         {
             // Given
             var noisyCodeword = testCase.Code.Encode(testCase.InformationWord).AddNoise(testCase.AdditiveNoise);
@@ -70,7 +71,7 @@
 
         [Theory]
         [MemberData(nameof(ListDecodingTestsData))]
-        public void ShouldTestListDecoding(DecodingTestCase testCase)
+        public void ShouldTestListDecoding(CodewordDecodingTestCase testCase)
         {
             // Given
             var noisyCodeword = testCase.Code.Encode(testCase.InformationWord).AddNoise(testCase.AdditiveNoise);
