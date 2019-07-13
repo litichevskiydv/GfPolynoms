@@ -3,28 +3,11 @@
     using System;
     using GaloisFields;
     using JetBrains.Annotations;
+    using TestCases.PrimePowerOrderField;
     using Xunit;
 
     public class PrimePowerOrderFieldTests
     {
-        public class IncorrectFieldCreationTestCase
-        {
-            public int FieldOrder { get; set; }
-
-            public Polynomial IrreduciblePolynomial { get; set; }
-        }
-
-        public class BinaryOperationTestCase
-        {
-            public PrimePowerOrderField Field { get; set; }
-
-            public int FirstOperand { get; set; }
-
-            public int SecondOperand { get; set; }
-
-            public int Expected { get; set; }
-        }
-
         private static readonly PrimePowerOrderField Gf8;
         private static readonly PrimePowerOrderField Gf27;
 
