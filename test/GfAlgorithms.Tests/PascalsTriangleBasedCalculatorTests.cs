@@ -6,21 +6,11 @@
     using GfPolynoms.Extensions;
     using GfPolynoms.GaloisFields;
     using JetBrains.Annotations;
+    using TestCases;
     using Xunit;
 
     public class PascalsTriangleBasedCalculatorTests
     {
-        public class CombinationsCountCalculatorTestCase
-        {
-            public GaloisField Field { get; set; }
-
-            public int N { get; set; }
-
-            public int K { get; set; }
-
-            public FieldElement Expected { get; set; }
-        }
-
         private static readonly PrimePowerOrderField Gf27;
         private readonly PascalsTriangleBasedCalculator _calculator;
         

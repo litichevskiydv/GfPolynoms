@@ -9,82 +9,11 @@
     using GfPolynoms.Extensions;
     using GfPolynoms.GaloisFields;
     using JetBrains.Annotations;
+    using TestCases.BiVariablePolynomial;
     using Xunit;
 
     public class BiVariablePolynomialTests
     {
-        #region TestCases
-        public class EvaluationTestCase
-        {
-            public BiVariablePolynomial Polynomial { get; set; }
-
-            public FieldElement XValue { get; set; }
-
-            public FieldElement YValue { get; set; }
-
-            public FieldElement Expected { get; set; }
-        }
-
-        public class PartialEvaluationTestCase
-        {
-            public BiVariablePolynomial Polynomial { get; set; }
-
-            public FieldElement VariableValue { get; set; }
-
-            public Polynomial Expected { get; set; }
-        }
-
-        public class BinaryOperationTestCase
-        { 
-            public BiVariablePolynomial FirstOperand { get; set; }
-
-            public BiVariablePolynomial SecondOperand { get; set; }
-
-            public BiVariablePolynomial Expected { get; set; }
-        }
-
-        public class MultiplicationByFieldElementTestCase
-        {
-            public BiVariablePolynomial Polynomial { get; set; }
-
-            public FieldElement Multiplier { get; set; }
-
-            public BiVariablePolynomial Expected { get; set; }
-        }
-
-        public class SubstitutionTestCase
-        {
-            public BiVariablePolynomial Polynomial { get; set; }
-
-            public BiVariablePolynomial XSubstitution { get; set; }
-
-            public BiVariablePolynomial YSubstitution { get; set; }
-
-            public BiVariablePolynomial Expected { get; set; }
-        }
-
-        public class DivideByXDegreeTestCase
-        {
-            public BiVariablePolynomial Polynomial { get; set; }
-
-            public BiVariablePolynomial Expected { get; set; }
-        }
-
-        public class HasseDerivativeCalculationTestCase
-        {
-            public BiVariablePolynomial Polynomial { get; set; }
-
-            public int R { get; set; }
-
-            public int S { get; set; }
-
-            public FieldElement XValue { get; set; }
-
-            public FieldElement YValue { get; set; }
-
-            public FieldElement Expected { get; set; }
-        }
-        #endregion
 
         private static readonly GaloisField Gf5;
         private readonly ICombinationsCountCalculator _combinationsCountCalculator;

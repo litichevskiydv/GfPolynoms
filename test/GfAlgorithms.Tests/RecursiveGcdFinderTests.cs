@@ -4,26 +4,11 @@
     using GfPolynoms.GaloisFields;
     using JetBrains.Annotations;
     using PolynomialsGcdFinder;
+    using TestCases;
     using Xunit;
 
     public class RecursiveGcdFinderTests
     {
-        public class GcdFinderTestCase
-        {
-            public Polynomial A { get; set; }
-
-            public Polynomial B { get; set; }
-
-            public Polynomial Expected { get; set; }
-        }
-
-        public class GcdExtendedFinderTestCase : GcdFinderTestCase
-        {
-
-            public Polynomial[] ExpectedQuotients { get; set; }
-        }
-
-
         private readonly RecursiveGcdFinder _gcdFinder;
 
         [UsedImplicitly]

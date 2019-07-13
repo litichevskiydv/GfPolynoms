@@ -7,29 +7,21 @@
     using GfPolynoms.GaloisFields;
     using JetBrains.Annotations;
     using LinearSystemSolver;
+    using TestCases;
     using Xunit;
 
     public class GaussSolverTests
     {
-        public class GaussSolverTestCase
-        {
-            public FieldElement[,] A { get; set; }
-
-            public FieldElement[] B { get; set; }
-
-            public SystemSolution Expected { get; set; }
-        }
-
         private readonly ILinearSystemSolver _gaussSolver;
 
         [UsedImplicitly]
-        public static readonly TheoryData<GaussSolverTestCase> EmptySolutionTestsData;
+        public static readonly TheoryData<LinearSystemSolverTestCase> EmptySolutionTestsData;
         [UsedImplicitly]
-        public static readonly TheoryData<GaussSolverTestCase> OneSolutionTestsData;
+        public static readonly TheoryData<LinearSystemSolverTestCase> OneSolutionTestsData;
         [UsedImplicitly]
-        public static readonly TheoryData<GaussSolverTestCase> InfiniteSolutionTestsData;
+        public static readonly TheoryData<LinearSystemSolverTestCase> InfiniteSolutionTestsData;
 
-        private static GaussSolverTestCase PrepareTestCase(GaloisField field, int[,] a, IEnumerable<int> b, SystemSolution expectedSolution)
+        private static LinearSystemSolverTestCase PrepareTestCase(GaloisField field, int[,] a, IEnumerable<int> b, SystemSolution expectedSolution)
         {
             var matrix = new FieldElement[a.GetLength(0), a.GetLength(1)];
             for (var i = 0; i < a.GetLength(0); i++)
@@ -38,23 +30,23 @@
 
             var remainders = b.Select(field.CreateElement).ToArray();
 
-            return new GaussSolverTestCase {A = matrix, B = remainders, Expected = expectedSolution};
+            return new LinearSystemSolverTestCase {A = matrix, B = remainders, Expected = expectedSolution};
         }
 
-        private static GaussSolverTestCase PrepareTestCaseForEmptySolution(GaloisField field, int[,] a, IEnumerable<int> b) =>
+        private static LinearSystemSolverTestCase PrepareTestCaseForEmptySolution(GaloisField field, int[,] a, IEnumerable<int> b) =>
             PrepareTestCase(field, a, b, SystemSolution.EmptySolution());
 
-        private static GaussSolverTestCase PrepareTestCaseForOneSolution(GaloisField field, int[,] a, IEnumerable<int> b, IEnumerable<int> variablesValues) =>
+        private static LinearSystemSolverTestCase PrepareTestCaseForOneSolution(GaloisField field, int[,] a, IEnumerable<int> b, IEnumerable<int> variablesValues) =>
             PrepareTestCase(field, a, b, SystemSolution.OneSolution(variablesValues.Select(field.CreateElement).ToArray()));
 
-        private static GaussSolverTestCase PrepareTestCaseForInfiniteSolution(GaloisField field, int[,] a, IEnumerable<int> b, IEnumerable<int> variablesValues) =>
+        private static LinearSystemSolverTestCase PrepareTestCaseForInfiniteSolution(GaloisField field, int[,] a, IEnumerable<int> b, IEnumerable<int> variablesValues) =>
             PrepareTestCase(field, a, b, SystemSolution.InfiniteSolution(variablesValues.Select(field.CreateElement).ToArray()));
 
         static GaussSolverTests()
         {
             var gf27 = new PrimePowerOrderField(27, new Polynomial(new PrimeOrderField(3), 2, 2, 0, 1));
             OneSolutionTestsData
-                = new TheoryData<GaussSolverTestCase>
+                = new TheoryData<LinearSystemSolverTestCase>
                   {
                       PrepareTestCaseForOneSolution(
                           gf27,
@@ -70,7 +62,7 @@
                       )
                   };
             EmptySolutionTestsData
-                = new TheoryData<GaussSolverTestCase>
+                = new TheoryData<LinearSystemSolverTestCase>
                   {
                       PrepareTestCaseForEmptySolution(
                           gf27,
@@ -79,7 +71,7 @@
                       )
                   };
             InfiniteSolutionTestsData
-                = new TheoryData<GaussSolverTestCase>
+                = new TheoryData<LinearSystemSolverTestCase>
                   {
                       PrepareTestCaseForInfiniteSolution(
                           gf27,
@@ -103,7 +95,7 @@
 
         [Theory]
         [MemberData(nameof(EmptySolutionTestsData))]
-        public void ShouldFindEmptySolution(GaussSolverTestCase testCase)
+        public void ShouldFindEmptySolution(LinearSystemSolverTestCase testCase)
         {
             // When
             var actualSolution = _gaussSolver.Solve(testCase.A, testCase.B);
@@ -114,7 +106,7 @@
 
         [Theory]
         [MemberData(nameof(OneSolutionTestsData))]
-        public void ShouldFindOneSolution(GaussSolverTestCase testCase)
+        public void ShouldFindOneSolution(LinearSystemSolverTestCase testCase)
         {
             // When
             var actualSolution = _gaussSolver.Solve(testCase.A, testCase.B);
@@ -125,7 +117,7 @@
 
         [Theory]
         [MemberData(nameof(InfiniteSolutionTestsData))]
-        public void ShouldFindInfiniteSolution(GaussSolverTestCase testCase)
+        public void ShouldFindInfiniteSolution(LinearSystemSolverTestCase testCase)
         {
             // When
             var actualSolution = _gaussSolver.Solve(testCase.A, testCase.B);

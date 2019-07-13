@@ -5,19 +5,11 @@
     using GfPolynoms.GaloisFields;
     using JetBrains.Annotations;
     using PolynomialsGcdFinder;
+    using TestCases;
     using Xunit;
 
     public class GcdBasedBuilderTests
     {
-        public class ComplementaryPolynomialBuildingTestCase
-        {
-            public Polynomial SourceFilter { get; set; }
-
-            public int MaxFilterLength { get; set; }
-
-            public Polynomial Expected { get; set; }
-        }
-
         private readonly GcdBasedBuilder _builder;
 
         [UsedImplicitly]
