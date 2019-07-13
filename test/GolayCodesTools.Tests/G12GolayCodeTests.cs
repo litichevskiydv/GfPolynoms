@@ -9,11 +9,13 @@
     using GfPolynoms.Extensions;
     using GfPolynoms.GaloisFields;
     using JetBrains.Annotations;
+    using TestCases;
     using Xunit;
 
     public class G12GolayCodeTests
     {
-        [UsedImplicitly] public static readonly IEnumerable<object[]> DecodeTestsData;
+        [UsedImplicitly]
+        public static readonly TheoryData<GolayCodeTestCase> DecodeTestsData;
 
         private readonly G12GolayCode _code;
         private readonly INoiseGenerator _noiseGenerator;
@@ -24,13 +26,13 @@
             FieldElement[] InformationWordBuilder(IEnumerable<int> array) => array.Select(x => gf3.CreateElement(x)).ToArray();
 
             DecodeTestsData
-                = new[]
+                = new TheoryData<GolayCodeTestCase>
                   {
-                      new object[] {InformationWordBuilder(new[] {1, 2, 0, 0, 1, 2})},
-                      new object[] {InformationWordBuilder(new[] {0, 1, 2, 1, 2, 2})},
-                      new object[] {InformationWordBuilder(new[] {0, 0, 0, 2, 1, 1})},
-                      new object[] {InformationWordBuilder(new[] {0, 0, 0, 0, 0, 0})},
-                      new object[] {InformationWordBuilder(new[] {2, 2, 2, 2, 2, 2})},
+                      new GolayCodeTestCase {InformationWord = InformationWordBuilder(new[] {1, 2, 0, 0, 1, 2})},
+                      new GolayCodeTestCase {InformationWord = InformationWordBuilder(new[] {0, 1, 2, 1, 2, 2})},
+                      new GolayCodeTestCase {InformationWord = InformationWordBuilder(new[] {0, 0, 0, 2, 1, 1})},
+                      new GolayCodeTestCase {InformationWord = InformationWordBuilder(new[] {0, 0, 0, 0, 0, 0})},
+                      new GolayCodeTestCase {InformationWord = InformationWordBuilder(new[] {2, 2, 2, 2, 2, 2})},
                   };
         }
 
@@ -42,10 +44,10 @@
 
         [Theory]
         [MemberData(nameof(DecodeTestsData))]
-        public void ShouldTestDecodeMethod(FieldElement[] expectedInformationWord)
+        public void ShouldTestDecodeMethod(GolayCodeTestCase testCase)
         {
             // Given
-            var codeword = _code.Encode(expectedInformationWord);
+            var codeword = _code.Encode(testCase.InformationWord);
             var noisyCodeword =
                 codeword.AddNoise(
                     _noiseGenerator.VariatePositionsAndValues(_code.Field, _code.CodewordLength, (_code.CodeDistance - 1) / 2)
@@ -57,15 +59,15 @@
             var actualInformationWord = _code.Decode(noisyCodeword);
 
             // Then
-            Assert.Equal(expectedInformationWord, actualInformationWord);
+            Assert.Equal(testCase.InformationWord, actualInformationWord);
         }
 
         [Theory]
         [MemberData(nameof(DecodeTestsData))]
-        public void ShouldTestDecodeViaListMethod(FieldElement[] expectedInformationWord)
+        public void ShouldTestDecodeViaListMethod(GolayCodeTestCase testCase)
         {
             // Given
-            var codeword = _code.Encode(expectedInformationWord);
+            var codeword = _code.Encode(testCase.InformationWord);
             var noisyCodeword =
                 codeword.AddNoise(
                     _noiseGenerator.VariatePositionsAndValues(_code.Field, _code.CodewordLength, (_code.CodeDistance - 1) / 2 + 1)
@@ -77,7 +79,7 @@
             var actualInformationWords = _code.DecodeViaList(noisyCodeword);
 
             // Then
-            Assert.Contains(expectedInformationWord, actualInformationWords, new FieldElementsArraysComparer());
+            Assert.Contains(testCase.InformationWord, actualInformationWords, new FieldElementsArraysComparer());
         }
 
         [Fact]
