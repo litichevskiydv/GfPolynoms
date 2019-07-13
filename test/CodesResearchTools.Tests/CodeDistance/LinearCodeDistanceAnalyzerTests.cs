@@ -17,6 +17,7 @@
     using RsCodesTools.Decoding.ListDecoder.GsDecoderDependencies.InterpolationPolynomialBuilder;
     using RsCodesTools.Decoding.ListDecoder.GsDecoderDependencies.InterpolationPolynomialFactorisator;
     using RsCodesTools.Decoding.StandartDecoder;
+    using TestCases;
     using WaveletCodesTools;
     using WaveletCodesTools.Decoding.ListDecoderForFixedDistanceCodes;
     using WaveletCodesTools.Decoding.StandartDecoderForFixedDistanceCodes;
@@ -26,7 +27,7 @@
 
     public class LinearCodeDistanceAnalyzerTests
     {
-        [UsedImplicitly] public static TheoryData<CodeDistanceAnalyzerTestCase> CodeDistanceAnalyzysTestCases;
+        [UsedImplicitly] public static TheoryData<CodeDistanceAnalyzerTestCase> CodeDistanceAnalysisTestCases;
 
         static LinearCodeDistanceAnalyzerTests()
         {
@@ -44,7 +45,7 @@
             var wN8K4D4First = new WaveletCode(8, 4, 4, new Polynomial(new PrimePowerOrderField(9), 2, 0, 1, 2, 1, 1));
             var wN8K4D4Second = new WaveletCode(8, 4, 4, new Polynomial(new PrimePowerOrderField(9), 2, 2, 1, 2, 0, 1));
 
-            CodeDistanceAnalyzysTestCases
+            CodeDistanceAnalysisTestCases
                 = new TheoryData<CodeDistanceAnalyzerTestCase>
                   {
                       new CodeDistanceAnalyzerTestCase
@@ -52,21 +53,21 @@
                           Field = wN7K3D4.Field,
                           InformationWordLength = wN7K3D4.InformationWordLength,
                           EncodingProcedure = x => wN7K3D4.Encode(x.Select(value => wN7K3D4.Field.CreateElement(value)).ToArray()),
-                          ExpectedCodeDistance = wN7K3D4.CodeDistance
+                          Expected = wN7K3D4.CodeDistance
                       },
                       new CodeDistanceAnalyzerTestCase
                       {
                           Field = wN8K4D4First.Field,
                           InformationWordLength = wN8K4D4First.InformationWordLength,
                           EncodingProcedure = x => wN8K4D4First.Encode(x.Select(value => wN8K4D4First.Field.CreateElement(value)).ToArray()),
-                          ExpectedCodeDistance = wN8K4D4First.CodeDistance
+                          Expected = wN8K4D4First.CodeDistance
                       },
                       new CodeDistanceAnalyzerTestCase
                       {
                           Field = wN8K4D4Second.Field,
                           InformationWordLength = wN8K4D4Second.InformationWordLength,
                           EncodingProcedure = x => wN8K4D4Second.Encode(x.Select(value => wN8K4D4Second.Field.CreateElement(value)).ToArray()),
-                          ExpectedCodeDistance = wN8K4D4Second.CodeDistance
+                          Expected = wN8K4D4Second.CodeDistance
                       }
                   };
         }
@@ -81,11 +82,11 @@
         }
 
         [Theory]
-        [MemberData(nameof(CodeDistanceAnalyzysTestCases))]
+        [MemberData(nameof(CodeDistanceAnalysisTestCases))]
         public void ShouldAnalyzeCodeDistance(CodeDistanceAnalyzerTestCase testCase)
         {
             Assert.Equal(
-                testCase.ExpectedCodeDistance,
+                testCase.Expected,
                 _analyzer.Analyze(
                     testCase.Field, testCase.InformationWordLength, testCase.EncodingProcedure,
                     new CodeDistanceAnalyzerOptions {LoggingResolution = 100}

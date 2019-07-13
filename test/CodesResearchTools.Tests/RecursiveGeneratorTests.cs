@@ -1,18 +1,19 @@
 ﻿namespace AppliedAlgebra.CodesResearchTools.Tests
 {
-    using System.Collections.Generic;
     using System.Linq;
-    using GfPolynoms;
     using GfPolynoms.Extensions;
     using GfPolynoms.GaloisFields;
     using JetBrains.Annotations;
     using NoiseGenerator;
+    using TestCases;
     using Xunit;
 
     public class RecursiveGeneratorTests
     {
-        [UsedImplicitly] public static readonly IEnumerable<object[]> VariatePositionsAndValuesTestsData;
-        [UsedImplicitly] public static readonly IEnumerable<object[]> VariateValuesTestsData;
+        [UsedImplicitly]
+        public static readonly TheoryData<NoisePositionsAndValuesVariationTestCase> VariatePositionsAndValuesTestsData;
+        [UsedImplicitly]
+        public static readonly TheoryData<NoiseValuesVariationTestCase> VariateValuesTestsData;
 
         private readonly RecursiveGenerator _noiseGenerator;
 
@@ -21,58 +22,66 @@
             var gf3 = new PrimeOrderField(3);
 
             VariatePositionsAndValuesTestsData
-                = new[]
+                = new TheoryData<NoisePositionsAndValuesVariationTestCase>
                   {
-                      new object[]
+                      new NoisePositionsAndValuesVariationTestCase
                       {
-                          gf3, 3, 2, null,
-                          new[]
-                          {
-                              new[] {gf3.CreateElement(1), gf3.CreateElement(1), gf3.Zero()},
-                              new[] {gf3.CreateElement(1), gf3.CreateElement(2), gf3.Zero()},
-                              new[] {gf3.CreateElement(2), gf3.CreateElement(1), gf3.Zero()},
-                              new[] {gf3.CreateElement(2), gf3.CreateElement(2), gf3.Zero()},
+                          Field = gf3,
+                          CodewordLength = 3,
+                          ErrorsCount = 2,
+                          Expected
+                              = new[]
+                                {
+                                    new[] {gf3.CreateElement(1), gf3.CreateElement(1), gf3.Zero()},
+                                    new[] {gf3.CreateElement(1), gf3.CreateElement(2), gf3.Zero()},
+                                    new[] {gf3.CreateElement(2), gf3.CreateElement(1), gf3.Zero()},
+                                    new[] {gf3.CreateElement(2), gf3.CreateElement(2), gf3.Zero()},
 
-                              new[] {gf3.CreateElement(1), gf3.Zero(), gf3.CreateElement(1)},
-                              new[] {gf3.CreateElement(1), gf3.Zero(), gf3.CreateElement(2)},
-                              new[] {gf3.CreateElement(2), gf3.Zero(), gf3.CreateElement(1)},
-                              new[] {gf3.CreateElement(2), gf3.Zero(), gf3.CreateElement(2)},
+                                    new[] {gf3.CreateElement(1), gf3.Zero(), gf3.CreateElement(1)},
+                                    new[] {gf3.CreateElement(1), gf3.Zero(), gf3.CreateElement(2)},
+                                    new[] {gf3.CreateElement(2), gf3.Zero(), gf3.CreateElement(1)},
+                                    new[] {gf3.CreateElement(2), gf3.Zero(), gf3.CreateElement(2)},
 
-                              new[] {gf3.Zero(), gf3.CreateElement(1), gf3.CreateElement(1)},
-                              new[] {gf3.Zero(), gf3.CreateElement(1), gf3.CreateElement(2)},
-                              new[] {gf3.Zero(), gf3.CreateElement(2), gf3.CreateElement(1)},
-                              new[] {gf3.Zero(), gf3.CreateElement(2), gf3.CreateElement(2)}
-                          }
+                                    new[] {gf3.Zero(), gf3.CreateElement(1), gf3.CreateElement(1)},
+                                    new[] {gf3.Zero(), gf3.CreateElement(1), gf3.CreateElement(2)},
+                                    new[] {gf3.Zero(), gf3.CreateElement(2), gf3.CreateElement(1)},
+                                    new[] {gf3.Zero(), gf3.CreateElement(2), gf3.CreateElement(2)}
+                                }
                       },
-                      new object[]
+                      new NoisePositionsAndValuesVariationTestCase
                       {
-                          gf3, 3, 2, new[] {gf3.CreateElement(1), gf3.Zero(), gf3.CreateElement(2)},
-                          new[]
-                          {
-                              new[] {gf3.CreateElement(1), gf3.Zero(), gf3.CreateElement(2)},
-                              new[] {gf3.CreateElement(2), gf3.Zero(), gf3.CreateElement(1)},
-                              new[] {gf3.CreateElement(2), gf3.Zero(), gf3.CreateElement(2)},
+                          Field = gf3,
+                          CodewordLength = 3,
+                          ErrorsCount = 2,
+                          InitialNoiseValue = new[] {gf3.CreateElement(1), gf3.Zero(), gf3.CreateElement(2)},
+                          Expected
+                              = new[]
+                                {
+                                    new[] {gf3.CreateElement(1), gf3.Zero(), gf3.CreateElement(2)},
+                                    new[] {gf3.CreateElement(2), gf3.Zero(), gf3.CreateElement(1)},
+                                    new[] {gf3.CreateElement(2), gf3.Zero(), gf3.CreateElement(2)},
 
-                              new[] {gf3.Zero(), gf3.CreateElement(1), gf3.CreateElement(1)},
-                              new[] {gf3.Zero(), gf3.CreateElement(1), gf3.CreateElement(2)},
-                              new[] {gf3.Zero(), gf3.CreateElement(2), gf3.CreateElement(1)},
-                              new[] {gf3.Zero(), gf3.CreateElement(2), gf3.CreateElement(2)}
-                          }
+                                    new[] {gf3.Zero(), gf3.CreateElement(1), gf3.CreateElement(1)},
+                                    new[] {gf3.Zero(), gf3.CreateElement(1), gf3.CreateElement(2)},
+                                    new[] {gf3.Zero(), gf3.CreateElement(2), gf3.CreateElement(1)},
+                                    new[] {gf3.Zero(), gf3.CreateElement(2), gf3.CreateElement(2)}
+                                }
                       }
                   };
             VariateValuesTestsData
-                = new[]
+                = new TheoryData<NoiseValuesVariationTestCase>
                   {
-                      new object[]
+                      new NoiseValuesVariationTestCase
                       {
-                          new[] {gf3.Zero(), gf3.CreateElement(1), gf3.CreateElement(1)},
-                          new[]
-                          {
-                              new[] {gf3.Zero(), gf3.CreateElement(1), gf3.CreateElement(1)},
-                              new[] {gf3.Zero(), gf3.CreateElement(1), gf3.CreateElement(2)},
-                              new[] {gf3.Zero(), gf3.CreateElement(2), gf3.CreateElement(1)},
-                              new[] {gf3.Zero(), gf3.CreateElement(2), gf3.CreateElement(2)}
-                          }
+                          InitialNoiseValue = new[] {gf3.Zero(), gf3.CreateElement(1), gf3.CreateElement(1)},
+                          Expected
+                              = new[]
+                                {
+                                    new[] {gf3.Zero(), gf3.CreateElement(1), gf3.CreateElement(1)},
+                                    new[] {gf3.Zero(), gf3.CreateElement(1), gf3.CreateElement(2)},
+                                    new[] {gf3.Zero(), gf3.CreateElement(2), gf3.CreateElement(1)},
+                                    new[] {gf3.Zero(), gf3.CreateElement(2), gf3.CreateElement(2)}
+                                }
                       }
                   };
         }
@@ -84,33 +93,28 @@
 
         [Theory]
         [MemberData(nameof(VariatePositionsAndValuesTestsData))]
-        public void ShouldTestVariatePositionsAndValues(
-            GaloisField field,
-            int codewordLength,
-            int errorsCount,
-            FieldElement[] initialNoiseValue,
-            FieldElement[][] expected)
+        public void ShouldTestVariatePositionsAndValues(NoisePositionsAndValuesVariationTestCase testCase)
         {
             // When
-            var actual = _noiseGenerator.VariatePositionsAndValues(field, codewordLength, errorsCount, initialNoiseValue).ToArray();
+            var actual = _noiseGenerator
+                .VariatePositionsAndValues(testCase.Field, testCase.CodewordLength, testCase.ErrorsCount, testCase.InitialNoiseValue)
+                .ToArray();
 
             // Then
-            Assert.Equal(expected.Length, actual.Length);
-            Assert.All(actual, x => Assert.Contains(expected, y => y.SequenceEqual(x)));
+            Assert.Equal(testCase.Expected.Length, actual.Length);
+            Assert.All(actual, x => Assert.Contains(testCase.Expected, y => y.SequenceEqual(x)));
         }
 
         [Theory]
         [MemberData(nameof(VariateValuesTestsData))]
-        public void ShouldTestVariateValues(
-            FieldElement[] initialNoiseValue,
-            FieldElement[][] expected)
+        public void ShouldTestVariateValues(NoiseValuesVariationTestCase testCase)
         {
             // When
-            var actual = _noiseGenerator.VariateValues(initialNoiseValue).ToArray();
+            var actual = _noiseGenerator.VariateValues(testCase.InitialNoiseValue).ToArray();
 
             // Then
-            Assert.Equal(expected.Length, actual.Length);
-            Assert.All(actual, x => Assert.Contains(expected, y => y.SequenceEqual(x)));
+            Assert.Equal(testCase.Expected.Length, actual.Length);
+            Assert.All(actual, x => Assert.Contains(testCase.Expected, y => y.SequenceEqual(x)));
         }
     }
 }

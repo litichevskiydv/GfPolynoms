@@ -1,4 +1,4 @@
-﻿namespace AppliedAlgebra.CodesResearchTools.Tests.CodeDistance
+﻿namespace AppliedAlgebra.CodesResearchTools.Tests.TestCases
 {
     using System;
     using GfPolynoms;
@@ -7,8 +7,11 @@
     public class CodeDistanceAnalyzerTestCase
     {
         public GaloisField Field { get; set; }
+
         public int InformationWordLength { get; set; }
-        public Func<int[], FieldElement[]> EncodingProcedure;
-        public int ExpectedCodeDistance { get; set; }
+
+        public Func<int[], FieldElement[]> EncodingProcedure { get; set; }
+
+        public int Expected { get; set; }
     }
 }
