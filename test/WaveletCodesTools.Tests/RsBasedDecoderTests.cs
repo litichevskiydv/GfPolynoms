@@ -10,6 +10,7 @@
     using GfPolynoms.GaloisFields;
     using JetBrains.Annotations;
     using RsCodesTools.Decoding.StandartDecoder;
+    using TestCases;
     using Xunit;
     using InformationPolynomialWasNotFoundException = Decoding.StandartDecoderForFixedDistanceCodes.InformationPolynomialWasNotFoundException;
 
@@ -18,7 +19,7 @@
         private readonly RsBasedDecoder _decoder;
 
         [UsedImplicitly]
-        public static readonly IEnumerable<object[]> DecoderTestsData;
+        public static readonly TheoryData<DecoderTestCase> DecoderTestsData;
 
         private static Tuple<FieldElement, FieldElement>[] AddRandomNoise(Tuple<FieldElement, FieldElement>[] codeword, int errorsCount)
         {
@@ -34,29 +35,31 @@
             return codeword;
         }
 
-        private static object[] PrepareDataWithErrors(int n, int k, int d, Polynomial generationPolynomial, 
-            IEncoder encoder, Polynomial informationPolynomial, int randomErrorsCount)
-        {
-            return new object[]
-                   {
-                       n, k, d, generationPolynomial,
-                       AddRandomNoise(encoder.Encode(n, generationPolynomial, informationPolynomial), randomErrorsCount),
-                       randomErrorsCount,
-                       informationPolynomial
-                   };
-        }
+        private static DecoderTestCase PrepareDataWithErrors(int n, int k, int d, Polynomial generationPolynomial,
+            IEncoder encoder, Polynomial informationPolynomial, int randomErrorsCount) =>
+            new DecoderTestCase
+            {
+                N = n,
+                K = k,
+                D = d,
+                GenerationPolynomial = generationPolynomial,
+                DecodedCodeword = AddRandomNoise(encoder.Encode(n, generationPolynomial, informationPolynomial), randomErrorsCount),
+                MinCorrectValuesCount = randomErrorsCount,
+                Expected = informationPolynomial
+            };
 
-        private static object[] PrepareDataWithoutErrors(int n, int k, int d, Polynomial generationPolynomial,
-            IEncoder encoder, Polynomial informationPolynomial, int errorsCount)
-        {
-            return new object[]
-                   {
-                       n, k, d, generationPolynomial,
-                       encoder.Encode(n, generationPolynomial, informationPolynomial),
-                       errorsCount,
-                       informationPolynomial
-                   };
-        }
+        private static DecoderTestCase PrepareDataWithoutErrors(int n, int k, int d, Polynomial generationPolynomial,
+            IEncoder encoder, Polynomial informationPolynomial, int errorsCount) =>
+            new DecoderTestCase
+            {
+                N = n,
+                K = k,
+                D = d,
+                GenerationPolynomial = generationPolynomial,
+                DecodedCodeword = encoder.Encode(n, generationPolynomial, informationPolynomial),
+                MinCorrectValuesCount = errorsCount,
+                Expected = informationPolynomial
+            };
 
         static RsBasedDecoderTests()
         {
@@ -82,27 +85,28 @@
                 23, 26, 15, 6, 25, 18, 22, 8, 4, 17, 20, 19, 18, 8, 6, 23, 12, 20, 22, 8, 7, 0, 7, 6, 3, 11);
 
             var encoder = new Encoder();
-            DecoderTestsData = new[]
-                               {
-                                   PrepareDataWithErrors(6, 3, 3, generationPolynomial1, encoder, new Polynomial(gf7, 4, 0, 2), 1),
-                                   PrepareDataWithErrors(6, 3, 3, generationPolynomial1, encoder, new Polynomial(gf7, 1, 2, 3), 1),
-                                   PrepareDataWithErrors(6, 3, 3, generationPolynomial1, encoder, new Polynomial(gf7, 6, 4, 1), 1),
-                                   PrepareDataWithErrors(6, 3, 3, generationPolynomial1, encoder, new Polynomial(gf7, 0, 2), 1),
-                                   PrepareDataWithErrors(6, 3, 3, generationPolynomial1, encoder, new Polynomial(gf7, 0, 0, 3), 1),
-                                   PrepareDataWithErrors(7, 3, 3, generationPolynomial2, encoder, new Polynomial(gf8, 0, 0, 3), 1),
-                                   PrepareDataWithErrors(7, 3, 3, generationPolynomial2, encoder, new Polynomial(gf8, 1), 1),
-                                   PrepareDataWithErrors(7, 3, 3, generationPolynomial2, encoder, new Polynomial(gf8, 0, 0, 1), 1),
-                                   PrepareDataWithErrors(8, 4, 4, generationPolynomial3, encoder, new Polynomial(gf9, 0, 0, 3), 1),
-                                   PrepareDataWithErrors(8, 4, 4, generationPolynomial3, encoder, new Polynomial(gf9, 1, 2, 3, 4), 1),
-                                   PrepareDataWithErrors(8, 4, 4, generationPolynomial3, encoder, new Polynomial(gf9, 1, 2), 1),
-                                   PrepareDataWithErrors(8, 4, 4, generationPolynomial3, encoder, new Polynomial(gf9, 0, 0, 0, 6), 1),
-                                   PrepareDataWithErrors(10, 5, 6, generationPolynomial4, encoder, new Polynomial(gf11, 1, 2, 3, 4, 5), 2),
-                                   PrepareDataWithErrors(10, 5, 5, generationPolynomial5, encoder, new Polynomial(gf11, 1, 2, 3, 4, 5), 2),
-                                   PrepareDataWithErrors(12, 6, 6, generationPolynomial6, encoder, new Polynomial(gf13, 1, 2, 3, 4, 5, 6), 2),
-                                   PrepareDataWithErrors(12, 6, 6, generationPolynomial6, encoder, new Polynomial(gf13, 0, 2, 0, 2, 11), 2),
-                                   PrepareDataWithErrors(26, 13, 12, generationPolynomial7, encoder, new Polynomial(gf27, 0, 2, 0, 2, 11), 5),
-                                   PrepareDataWithoutErrors(26, 13, 12, generationPolynomial7, encoder, new Polynomial(gf27, 0, 2, 0, 2, 11), 5)
-                               };
+            DecoderTestsData
+                = new TheoryData<DecoderTestCase>
+                  {
+                      PrepareDataWithErrors(6, 3, 3, generationPolynomial1, encoder, new Polynomial(gf7, 4, 0, 2), 1),
+                      PrepareDataWithErrors(6, 3, 3, generationPolynomial1, encoder, new Polynomial(gf7, 1, 2, 3), 1),
+                      PrepareDataWithErrors(6, 3, 3, generationPolynomial1, encoder, new Polynomial(gf7, 6, 4, 1), 1),
+                      PrepareDataWithErrors(6, 3, 3, generationPolynomial1, encoder, new Polynomial(gf7, 0, 2), 1),
+                      PrepareDataWithErrors(6, 3, 3, generationPolynomial1, encoder, new Polynomial(gf7, 0, 0, 3), 1),
+                      PrepareDataWithErrors(7, 3, 3, generationPolynomial2, encoder, new Polynomial(gf8, 0, 0, 3), 1),
+                      PrepareDataWithErrors(7, 3, 3, generationPolynomial2, encoder, new Polynomial(gf8, 1), 1),
+                      PrepareDataWithErrors(7, 3, 3, generationPolynomial2, encoder, new Polynomial(gf8, 0, 0, 1), 1),
+                      PrepareDataWithErrors(8, 4, 4, generationPolynomial3, encoder, new Polynomial(gf9, 0, 0, 3), 1),
+                      PrepareDataWithErrors(8, 4, 4, generationPolynomial3, encoder, new Polynomial(gf9, 1, 2, 3, 4), 1),
+                      PrepareDataWithErrors(8, 4, 4, generationPolynomial3, encoder, new Polynomial(gf9, 1, 2), 1),
+                      PrepareDataWithErrors(8, 4, 4, generationPolynomial3, encoder, new Polynomial(gf9, 0, 0, 0, 6), 1),
+                      PrepareDataWithErrors(10, 5, 6, generationPolynomial4, encoder, new Polynomial(gf11, 1, 2, 3, 4, 5), 2),
+                      PrepareDataWithErrors(10, 5, 5, generationPolynomial5, encoder, new Polynomial(gf11, 1, 2, 3, 4, 5), 2),
+                      PrepareDataWithErrors(12, 6, 6, generationPolynomial6, encoder, new Polynomial(gf13, 1, 2, 3, 4, 5, 6), 2),
+                      PrepareDataWithErrors(12, 6, 6, generationPolynomial6, encoder, new Polynomial(gf13, 0, 2, 0, 2, 11), 2),
+                      PrepareDataWithErrors(26, 13, 12, generationPolynomial7, encoder, new Polynomial(gf27, 0, 2, 0, 2, 11), 5),
+                      PrepareDataWithoutErrors(26, 13, 12, generationPolynomial7, encoder, new Polynomial(gf27, 0, 2, 0, 2, 11), 5)
+                  };
         }
 
         public RsBasedDecoderTests()
@@ -113,14 +117,20 @@
 
         [Theory]
         [MemberData(nameof(DecoderTestsData))]
-        public void ShouldFindOriginalInformationWordAmongPossibleVariants(int n, int k, int d, Polynomial generationPolynomial,
-            Tuple<FieldElement, FieldElement>[] decodedCodeword, int minCorrectValuesCount, Polynomial expectedInformationPolynomial)
+        public void ShouldFindOriginalInformationWordAmongPossibleVariants(DecoderTestCase testCase)
         {
             // When
-            var actualInformationPolynomial = _decoder.Decode(n, k, d, generationPolynomial, decodedCodeword, minCorrectValuesCount);
+            var actualInformationPolynomial = _decoder.Decode(
+                testCase.N,
+                testCase.K,
+                testCase.D,
+                testCase.GenerationPolynomial,
+                testCase.DecodedCodeword,
+                testCase.MinCorrectValuesCount
+            );
 
             // Then
-            Assert.Equal(expectedInformationPolynomial, actualInformationPolynomial);
+            Assert.Equal(testCase.Expected, actualInformationPolynomial);
         }
 
         [Fact]
