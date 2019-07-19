@@ -42,7 +42,7 @@
                 N = n,
                 K = k,
                 D = d,
-                GenerationPolynomial = generationPolynomial,
+                GeneratingPolynomial = generationPolynomial,
                 DecodedCodeword = AddRandomNoise(encoder.Encode(n, generationPolynomial, informationPolynomial), randomErrorsCount),
                 MinCorrectValuesCount = randomErrorsCount,
                 Expected = informationPolynomial
@@ -55,7 +55,7 @@
                 N = n,
                 K = k,
                 D = d,
-                GenerationPolynomial = generationPolynomial,
+                GeneratingPolynomial = generationPolynomial,
                 DecodedCodeword = encoder.Encode(n, generationPolynomial, informationPolynomial),
                 MinCorrectValuesCount = errorsCount,
                 Expected = informationPolynomial
@@ -124,7 +124,7 @@
                 testCase.N,
                 testCase.K,
                 testCase.D,
-                testCase.GenerationPolynomial,
+                testCase.GeneratingPolynomial,
                 testCase.DecodedCodeword,
                 testCase.MinCorrectValuesCount
             );

@@ -3,7 +3,7 @@
     using System;
     using GfPolynoms;
 
-    public class DecoderTestCase
+    public class ListDecoderTestCase
     {
         public int N { get; set; }
 
