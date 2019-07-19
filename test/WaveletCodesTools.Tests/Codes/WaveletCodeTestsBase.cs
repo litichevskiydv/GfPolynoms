@@ -5,6 +5,7 @@
     using CodesAbstractions;
     using CodesResearchTools.NoiseGenerator;
     using GfPolynoms.Extensions;
+    using TestCases;
 
     public abstract class WaveletCodeTestsBase
     {

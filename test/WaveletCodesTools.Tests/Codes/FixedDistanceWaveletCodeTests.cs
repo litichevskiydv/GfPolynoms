@@ -17,6 +17,7 @@
     using RsCodesTools.Decoding.ListDecoder.GsDecoderDependencies.InterpolationPolynomialBuilder;
     using RsCodesTools.Decoding.ListDecoder.GsDecoderDependencies.InterpolationPolynomialFactorisator;
     using RsCodesTools.Decoding.StandartDecoder;
+    using TestCases;
     using Xunit;
 
     [UsedImplicitly]

@@ -7,6 +7,7 @@
     using GfPolynoms.Comparers;
     using GfPolynoms.GaloisFields;
     using JetBrains.Annotations;
+    using TestCases;
     using Xunit;
 
     public class WaveletCodeTests : WaveletCodeTestsBase

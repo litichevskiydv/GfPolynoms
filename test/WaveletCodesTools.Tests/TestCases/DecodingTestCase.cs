@@ -1,4 +1,4 @@
-﻿namespace AppliedAlgebra.WaveletCodesTools.Tests.Codes
+﻿namespace AppliedAlgebra.WaveletCodesTools.Tests.TestCases
 {
     using CodesAbstractions;
     using GfPolynoms;
