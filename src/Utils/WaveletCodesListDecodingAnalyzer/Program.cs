@@ -133,6 +133,11 @@
         private static void AnalyzeCodeDistanceForN26K13() =>
             AnalyzeCodeDistance(26, 13, new Polynomial(new PrimePowerOrderField(27), 2, 0, 1, 2, 1, 1));
 
+        private static void AnalyzeCodeDistanceForN24K12() =>
+            AnalyzeCodeDistance(24, 12,
+                new Polynomial(new PrimeOrderField(2), 1, 1, 0, 1, 1, 1, 0, 1, 0, 1, 0, 0, 1)
+            );
+
         private static void AnalyzeMinimalSphereCoveringForN8K4D4() =>
             AnalyzeMinimalSphereCovering(
                 new WaveletCode(
