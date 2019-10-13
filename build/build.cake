@@ -74,7 +74,8 @@ Task("Clean")
                 {
                     Configuration = configuration,
                     VersionSuffix = versionSuffix,
-                    MSBuildSettings = new DotNetCoreMSBuildSettings()
+                    MSBuildSettings = new DotNetCoreMSBuildSettings(),
+                    ArgumentCustomization = args => args.Append("--configfile ./NuGet.config")
                 };
         if(buildNumber != 0)
             settings.MSBuildSettings.Properties["Build"] = new[] {buildNumber.ToString()};
@@ -159,7 +160,11 @@ Task("CalculateCoverage")
             OpenCover(
                 x => x.DotNetCoreTest(
                      project.FullPath,
-                     new DotNetCoreTestSettings { Configuration = "Debug" }
+                     new DotNetCoreTestSettings 
+                     { 
+                        Configuration = "Debug",
+                        ArgumentCustomization = args => args.Append("--configfile ./NuGet.config")
+                     }
                 ),
                 resultsFile,
                 settings
