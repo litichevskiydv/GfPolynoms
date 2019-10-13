@@ -7,6 +7,9 @@
     using GfPolynoms.Extensions;
     using GfPolynoms.GaloisFields;
 
+    /// <summary>
+    /// Objects iterator recursive implementation
+    /// </summary>
     public class RecursiveIterator : IVariantsIterator
     {
         private static IEnumerable<TResult> Iterate<TResult>(GaloisField field, int currentPosition, int[] values, Func<int[], TResult> resultProducer)
@@ -25,6 +28,7 @@
             }
         }
 
+        /// <inheritdoc/>
         public IEnumerable<FieldElement[]> IterateVectors(GaloisField field, int length)
         {
             if (field == null)
@@ -35,6 +39,7 @@
             return Iterate(field, length - 1, new int[length], values => values.Select(field.CreateElement).ToArray());
         }
 
+        /// <inheritdoc />
         public IEnumerable<Polynomial> IteratePolynomials(GaloisField field, int maxDegree)
         {
             if (field == null)
