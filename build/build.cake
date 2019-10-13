@@ -160,11 +160,7 @@ Task("CalculateCoverage")
             OpenCover(
                 x => x.DotNetCoreTest(
                      project.FullPath,
-                     new DotNetCoreTestSettings 
-                     { 
-                        Configuration = "Debug",
-                        ArgumentCustomization = args => args.Append("--configfile ./NuGet.config")
-                     }
+                     new DotNetCoreTestSettings { Configuration = "Debug" }
                 ),
                 resultsFile,
                 settings
