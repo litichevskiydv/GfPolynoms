@@ -1,14 +1,13 @@
 ﻿namespace AppliedAlgebra.GolayCodesAnalyzer
 {
     using System;
-    using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
     using CodesResearchTools.Analyzers.ListsSizesDistribution;
     using CodesResearchTools.NoiseGenerator;
+    using GfAlgorithms.VectorsIterator;
     using GfPolynoms;
     using GfPolynoms.Extensions;
-    using GfPolynoms.GaloisFields;
     using GolayCodesTools;
     using JetBrains.Annotations;
     using Microsoft.Extensions.Configuration;
@@ -42,52 +41,35 @@
                 );
         }
 
-        private static IEnumerable<int[]> IterateVariants(GaloisField field, int currentPosition, int[] values)
-        {
-            if (currentPosition == values.Length)
-            {
-                yield return values;
-                yield break;
-            }
-
-            for (var i = 0; i < field.Order; i++)
-            {
-                values[currentPosition] = i;
-                foreach (var computedValues in IterateVariants(field, currentPosition + 1, values))
-                    yield return computedValues;
-            }
-        }
-
-        private static void FindWaveletCodeGeneratingPolynomial(GolayCodeBase golayCode, ILogger logger)
+        private static void FindWaveletCodeGeneratingPolynomial(GolayCodeBase code, ILogger logger)
         {
             var modularPolynomial
-                = new Polynomial(golayCode.Field, 1).RightShift(golayCode.CodewordLength)
-                  + new Polynomial(golayCode.Field, golayCode.Field.InverseForAddition(1));
+                = new Polynomial(code.Field, 1).RightShift(code.CodewordLength)
+                  + new Polynomial(code.Field, code.Field.InverseForAddition(1));
 
             var processedPolynomials = 0;
-            foreach (var coefficients in IterateVariants(golayCode.Field, 0, new int[golayCode.CodewordLength]).Skip(1))
+            var variantsIterator = new RecursiveIterator();
+            foreach (var generatingPolynomial in variantsIterator.IteratePolynomials(code.Field, code.CodewordLength - 1).Skip(1))
             {
-                var generatingPolynomial = new Polynomial(golayCode.Field, coefficients.Reverse().ToArray());
-
                 var isValid = true;
-                var codeDistance = golayCode.CodewordLength;
-                foreach (var values in IterateVariants(golayCode.Field, 0, new int[golayCode.InformationWordLength]).Skip(1))
+                var codeDistance = code.CodewordLength;
+                foreach (var informationPolynomial in variantsIterator.IteratePolynomials(code.Field, code.InformationWordLength - 1).Skip(1))
                 {
-                    var codeword = generatingPolynomial * new Polynomial(golayCode.Field, values).RaiseVariableDegree(2) % modularPolynomial;
+                    var codeword = generatingPolynomial * informationPolynomial.RaiseVariableDegree(2) % modularPolynomial;
 
                     var codewordWeight = 0;
                     for(var i = 0; i<= codeword.Degree; i++)
                         if (codeword[i] != 0) codewordWeight++;
                     codeDistance = Math.Min(codeDistance, codewordWeight);
 
-                    if (codeDistance < golayCode.CodeDistance)
+                    if (codeDistance < code.CodeDistance)
                     {
                         isValid = false;
                         break;
                     }
                 }
 
-                if (isValid && codeDistance == golayCode.CodeDistance) 
+                if (isValid && codeDistance == code.CodeDistance) 
                     logger.LogInformation(generatingPolynomial.ToString());
 
                 processedPolynomials++;
@@ -100,6 +82,7 @@
         {
             BuildConfiguration();
             BuildLoggerFactory();
+
 
             var listsSizesDistributionAnalyzer = new ListsSizesDistributionAnalyzer(
                 new RecursiveGenerator(),
