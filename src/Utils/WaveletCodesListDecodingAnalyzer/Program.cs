@@ -248,13 +248,13 @@
                 new AnalyzingSample(FixedDistanceCodesFactory.CreateN31K15D15())
                 {
                     ErrorsPositions = new[] {2, 6, 8, 14, 18, 23, 27, 30},
-                    ErrorsValues = new[] {1, 1, 12, 13, 16, 12, 11, 20},
+                    ErrorsValues = new[] {1, 1, 12, 13, 18, 9, 19, 22},
                     CorrectValuesCount = 23
                 },
                 new AnalyzingSample(FixedDistanceCodesFactory.CreateN31K15D15())
                 {
                     ErrorsPositions = new[] {0, 1, 2, 3, 4, 5, 6, 7},
-                    ErrorsValues = new[] {1, 3, 1, 8, 23, 10, 27, 9},
+                    ErrorsValues = new[] {1, 3, 1, 8, 25, 5, 8, 20},
                     CorrectValuesCount = 23
                 }
             );
