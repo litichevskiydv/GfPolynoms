@@ -153,6 +153,13 @@
                 )
             );
 
+        private static void AnalyzeSpherePackingsForRsN7K4() =>
+            AnalyzeSpherePackings(new ReedSolomonCode(
+                    new PrimePowerOrderField(8, new Polynomial(new PrimeOrderField(2), 1, 1, 0, 1)),
+                    7, 4
+                )
+            );
+
         private static void AnalyzeSpherePackingsForN7K3D4() =>
             AnalyzeSpherePackings(
                 new WaveletCode(
@@ -312,7 +319,7 @@
         {
             try
             {
-                AnalyzeSpherePackingsForRsN7K3();
+                AnalyzeSpherePackingsForRsN7K4();
             }
             catch (Exception exception)
             {
