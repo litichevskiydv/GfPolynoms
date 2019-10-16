@@ -40,6 +40,10 @@
                     },
                     new GeneratingPolynomialsBuilderTestCase
                     {
+                        N = 7, D = 4, SourceFilter = new Polynomial(gf8, 0, 1, 3, 5, 7, 4, 5)
+                    },
+                    new GeneratingPolynomialsBuilderTestCase
+                    {
                         N = 8, D = 4, SourceFilter = new Polynomial(gf9, 1, 2, 3, 2, 2, 3, 2, 1)
                     },
                     new GeneratingPolynomialsBuilderTestCase
