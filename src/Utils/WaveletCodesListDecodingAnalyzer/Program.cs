@@ -181,7 +181,7 @@
                     7, 3, 4,
                     new Polynomial(
                         new PrimePowerOrderField(8, new Polynomial(new PrimeOrderField(2), 1, 1, 0, 1)),
-                        5, 2, 2, 7, 0, 5, 7
+                        1, 2, 1, 1
                     )
                 )
             );
@@ -352,7 +352,7 @@
         {
             try
             {
-                FindNotFixedDistanceWaveletCode(new PrimePowerOrderField(8, new Polynomial(new PrimeOrderField(2), 1, 1, 0, 1)), 4);
+                AnalyzeSpherePackingsForN7K3D4Second();
             }
             catch (Exception exception)
             {
