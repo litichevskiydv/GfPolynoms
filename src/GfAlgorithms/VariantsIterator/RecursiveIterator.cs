@@ -1,4 +1,4 @@
-﻿namespace AppliedAlgebra.GfAlgorithms.VectorsIterator
+﻿namespace AppliedAlgebra.GfAlgorithms.VariantsIterator
 {
     using System;
     using System.Collections.Generic;

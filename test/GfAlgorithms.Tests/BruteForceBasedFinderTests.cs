@@ -8,7 +8,7 @@
     using GfPolynoms.GaloisFields;
     using JetBrains.Annotations;
     using TestCases;
-    using VectorsIterator;
+    using VariantsIterator;
     using Xunit;
 
     public class BruteForceBasedFinderTests

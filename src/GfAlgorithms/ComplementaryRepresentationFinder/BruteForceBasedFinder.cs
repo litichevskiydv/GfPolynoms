@@ -6,7 +6,7 @@
     using Extensions;
     using GfPolynoms;
     using GfPolynoms.Extensions;
-    using VectorsIterator;
+    using VariantsIterator;
 
     /// <summary>
     /// Complementary representation finder based on brute force

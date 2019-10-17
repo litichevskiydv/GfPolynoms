@@ -16,6 +16,7 @@
     using GfAlgorithms.Extensions;
     using GfAlgorithms.LinearSystemSolver;
     using GfAlgorithms.PolynomialsGcdFinder;
+    using GfAlgorithms.VariantsIterator;
     using GfPolynoms;
     using GfPolynoms.Comparers;
     using GfPolynoms.Extensions;
@@ -51,7 +52,7 @@
 
         private static readonly ILogger Logger;
 
-        private static void AnalyzeCodeDistance(int codewordLength, int informationWordLength, Polynomial generatingPolynomial)
+        private static int AnalyzeCodeDistance(int codewordLength, int informationWordLength, Polynomial generatingPolynomial)
         {
             var field = generatingPolynomial.Field;
             var modularPolynomial = new Polynomial(field, 1).RightShift(codewordLength) + new Polynomial(field, field.InverseForAddition(1));
@@ -63,12 +64,15 @@
                 new CodeDistanceAnalyzerOptions { LoggingResolution = 1000000000L}
             );
             Logger.LogInformation("Code distance: {codeDistance}", codeDistance);
+            return codeDistance;
 
         }
 
-        private static void AnalyzeMinimalSphereCovering(ICode code)
+        private static int AnalyzeMinimalSphereCovering(ICode code)
         {
-            Logger.LogInformation("Minimal radius: {minimalRadius}", MinimalSphereCoveringAnalyzer.Analyze(code));
+            var minimalRadius = MinimalSphereCoveringAnalyzer.Analyze(code);
+            Logger.LogInformation("Minimal radius: {minimalRadius}", minimalRadius);
+            return minimalRadius;
         }
 
         private static void AnalyzeSpherePackings(ICode code)
@@ -324,13 +328,31 @@
                 }
             );
 
+        private static Polynomial FindNotFixedDistanceWaveletCode(GaloisField field, int codeDistance)
+        {
+            var codewordLength = field.Order - 1;
+            var informationWordLength = codewordLength / 2;
+
+
+            var variantsIterator = new RecursiveIterator();
+            foreach (var generatingPolynomial in variantsIterator.IteratePolynomials(field, field.Order - 1).Skip(1))
+                if (AnalyzeCodeDistance(codewordLength, informationWordLength, generatingPolynomial) == codeDistance
+                    && generatingPolynomial.GetSpectrum().Count(x => x.Representation == 0) == 0)
+                {
+                    Logger.LogInformation("Generating polynomial: {generatingPolynomial}", generatingPolynomial);
+                    return generatingPolynomial;
+                }
+
+            return null;
+        }
+
 
         [UsedImplicitly]
         public static void Main()
         {
             try
             {
-                AnalyzeSpherePackingsForN7K3D4Second();
+                FindNotFixedDistanceWaveletCode(new PrimePowerOrderField(8, new Polynomial(new PrimeOrderField(2), 1, 1, 0, 1)), 4);
             }
             catch (Exception exception)
             {

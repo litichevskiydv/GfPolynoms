@@ -5,7 +5,7 @@
     using System.Reflection;
     using CodesResearchTools.Analyzers.ListsSizesDistribution;
     using CodesResearchTools.NoiseGenerator;
-    using GfAlgorithms.VectorsIterator;
+    using GfAlgorithms.VariantsIterator;
     using GfPolynoms;
     using GfPolynoms.Extensions;
     using GolayCodesTools;

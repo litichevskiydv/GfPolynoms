@@ -7,7 +7,7 @@
     using GfPolynoms.Extensions;
     using GfPolynoms.GaloisFields;
     using JetBrains.Annotations;
-    using VectorsIterator;
+    using VariantsIterator;
     using Xunit;
 
     public class RecursiveIteratorTests
