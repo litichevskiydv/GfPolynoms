@@ -352,7 +352,7 @@
         {
             try
             {
-                AnalyzeSpherePackingsForN7K3D4Second();
+                AnalyzeSamplesForN31K15D15Code();
             }
             catch (Exception exception)
             {
