@@ -1,6 +1,5 @@
 ﻿namespace AppliedAlgebra.CodesResearchTools.Tests.CodeDistance
 {
-    using System;
     using System.Linq;
     using Analyzers.CodeDistance;
     using GfAlgorithms.CombinationsCountCalculator;
