@@ -124,16 +124,9 @@
             Assert.Contains("0,1,1,4", _analyzer.Messages);
             Assert.Contains("1,1,1,3", _analyzer.Messages);
 
-            _mockLogger.Verify(
-                x => x.Log(
-                    It.Is<LogLevel>(l => l == LogLevel.Information),
-                    It.IsAny<EventId>(),
-                    It.IsAny<object>(),
-                    It.IsAny<Exception>(),
-                    It.IsAny<Func<object, Exception, string>>()
-                ),
-                Times.Exactly(4)
-            );
+
+            Assert.All(_mockLogger.Invocations, x => Assert.Equal(LogLevel.Information, x.Arguments[0]));
+            Assert.Equal(4, _mockLogger.Invocations.Count);
         }
     }
 }

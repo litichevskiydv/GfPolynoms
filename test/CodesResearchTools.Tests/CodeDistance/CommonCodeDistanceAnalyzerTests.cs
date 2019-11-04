@@ -90,16 +90,8 @@
                 _analyzer.Analyze(testCase.Field, testCase.InformationWordLength, testCase.EncodingProcedure)
             );
 
-            _mockLogger.Verify(
-                x => x.Log(
-                    It.Is<LogLevel>(l => l == LogLevel.Information),
-                    It.IsAny<EventId>(),
-                    It.IsAny<object>(),
-                    It.IsAny<Exception>(),
-                    It.IsAny<Func<object, Exception, string>>()
-                ),
-                Times.AtLeastOnce
-            );
+            Assert.All(_mockLogger.Invocations, x => Assert.Equal(LogLevel.Information, x.Arguments[0]));
+            Assert.True(_mockLogger.Invocations.Count >= 1);
         }
     }
 }
