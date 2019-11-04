@@ -141,31 +141,37 @@ Task("CalculateCoverage")
         var buildProps = GetFiles("../src/Directory.Build.props").Single();
         TransformTextFile(buildProps.FullPath, ">", "<").WithToken("portable", ">full<").Save(buildProps.FullPath);
 
-        var projects = GetFiles("../test/**/*.csproj");
-        var resultsFile = artifactsDirectory.CombineWithFilePath("coverage.xml");
-        var settings = new OpenCoverSettings
+        var buildSettings =  new DotNetCoreBuildSettings
+                {
+                    Configuration = "Debug",
+                    ArgumentCustomization = args => args.Append("--configfile ./NuGet.config")
+                };
+        var testSettings = new DotNetCoreTestSettings 
+                { 
+                    Configuration = "Debug",
+                    NoRestore = true,
+                    NoBuild = true,
+                };
+        var openCoverSettings = new OpenCoverSettings
                 {
                     ArgumentCustomization = args => args
                         .Append("-threshold:100")
                         .Append("-returntargetcode"),
                     Register = "Path64",
                     OldStyle = true,
-                    MergeOutput = true,
-                    LogLevel = OpenCoverLogLevel.All
+                    MergeOutput = true
                 }
                 .WithFilter("+[*]*")
                 .WithFilter("-[xunit*]*")
                 .WithFilter("-[*.Tests]*");
+        var resultsFile = artifactsDirectory.CombineWithFilePath("coverage.xml");
 
+        var projects = GetFiles("../test/**/*.csproj");
         foreach(var project in projects)
-            OpenCover(
-                x => x.DotNetCoreTest(
-                     project.FullPath,
-                     new DotNetCoreTestSettings { Configuration = "Debug" }
-                ),
-                resultsFile,
-                settings
-            );
+        {
+            DotNetCoreBuild(project.GetDirectory().FullPath, buildSettings);
+            OpenCover(x => x.DotNetCoreTest(project.FullPath, testSettings), resultsFile, openCoverSettings);
+        }
 
         Codecov(resultsFile.FullPath);
     });
