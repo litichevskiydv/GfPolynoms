@@ -9,7 +9,7 @@ env:
   global:
     - Configuration=Release
 mono: none
-dotnet: 2.2.100
+dotnet: 3.0.100
 branches:
   only:
   - master
