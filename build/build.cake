@@ -148,7 +148,7 @@ Task("CalculateCoverage")
                     ArgumentCustomization = args => args
                         .Append("-threshold:100")
                         .Append("-returntargetcode"),
-                    Register = null,
+                    Register = "Path64",
                     OldStyle = true,
                     MergeOutput = true
                 }
