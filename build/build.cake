@@ -150,7 +150,8 @@ Task("CalculateCoverage")
                         .Append("-returntargetcode"),
                     Register = "Path64",
                     OldStyle = true,
-                    MergeOutput = true
+                    MergeOutput = true,
+                    LogLevel = OpenCoverLogLevel.All
                 }
                 .WithFilter("+[*]*")
                 .WithFilter("-[xunit*]*")
