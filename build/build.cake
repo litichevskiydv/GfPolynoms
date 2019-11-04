@@ -156,13 +156,13 @@ Task("CalculateCoverage")
                 {
                     ArgumentCustomization = args => args
                         .Append("-threshold:100")
-                        .Append("-returntargetcode"),
+                        .Append("-returntargetcode")
+                        .Append("-log:All"),
                     Register = "Path64",
                     OldStyle = true,
                     MergeOutput = true
                 }
-                .WithFilter("+[*]*")
-                .WithFilter("-[xunit*]*")
+                .WithFilter("+[*]AppliedAlgebra.*")
                 .WithFilter("-[*.Tests]*");
         var resultsFile = artifactsDirectory.CombineWithFilePath("coverage.xml");
 
