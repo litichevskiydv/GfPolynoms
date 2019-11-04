@@ -25,15 +25,11 @@ for:
     matrix:
       only:
         - image: Visual Studio 2019
-    environment:
-        APPVEYOR_RDP_PASSWORD: VY34976hk
-    init:
-        - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
     build_script:
       - ps: >-
           cd build
 
-          .\build.ps1 -target CalculateCoverage --settings_skipverification=true -verbosity Diagnostic
+          .\build.ps1 -target CalculateCoverage --settings_skipverification=true
         
   -
     matrix:
