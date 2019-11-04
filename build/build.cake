@@ -148,7 +148,7 @@ Task("CalculateCoverage")
                     ArgumentCustomization = args => args
                         .Append("-threshold:100")
                         .Append("-returntargetcode"),
-                    Register = "user",
+                    Register = null,
                     OldStyle = true,
                     MergeOutput = true
                 }
