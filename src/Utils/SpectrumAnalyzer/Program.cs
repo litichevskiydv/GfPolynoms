@@ -2,123 +2,187 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Diagnostics;
     using System.Linq;
-    using System.Threading.Tasks;
+    using System.Reflection;
+    using CodesResearchTools.Analyzers.Spectrum;
+    using GfAlgorithms.VariantsIterator;
     using GfPolynoms;
     using GfPolynoms.Extensions;
     using GfPolynoms.GaloisFields;
     using JetBrains.Annotations;
+    using Microsoft.Extensions.Configuration;
+    using Microsoft.Extensions.Logging;
+    using Serilog;
+    using ILogger = Microsoft.Extensions.Logging.ILogger;
 
     [UsedImplicitly]
-    public static class Program
+    public class Program
     {
-        private static void CalculateCodeWords(int fieldOrder, int[] informationWord, int informationWordPosition, Func<int[], int[]> codeWordCalculator, ICollection<int[]> codeWords)
+        private static readonly ISpectrumAnalyzer SpectrumAnalyzer;
+        private static readonly ILogger Logger;
+
+        private static void LogSpectrum(IReadOnlyDictionary<int, long> spectrum) =>
+            Logger.LogInformation(
+                "Calculated spectrum: {spectrum}",
+                string.Join(", ", spectrum.OrderBy(x=>x.Key).Select(x => $"(W: {x.Key}, C: {x.Value})"))
+            );
+
+        private static IReadOnlyDictionary<int, long> AnalyzeSpectrumForRsCode(
+            GaloisField field,
+            int codewordLength,
+            int informationWordLength
+        )
         {
-            if (informationWordPosition == informationWord.Length)
-                codeWords.Add(codeWordCalculator(informationWord).ToArray());
-            else
-                for (var i = 0; i < fieldOrder; i++)
+            Logger.LogInformation(
+                "Spectrum analysis for RS[{codewordLength}, {informationWordLength}] over {field}",
+                codewordLength, informationWordLength, field
+            );
+
+            var spectrum = SpectrumAnalyzer.Analyze(
+                field,
+                informationWordLength,
+                informationWord =>
                 {
-                    informationWord[informationWordPosition] = i;
-                    CalculateCodeWords(fieldOrder, informationWord, informationWordPosition + 1, codeWordCalculator, codeWords);
+                    var informationPolynomial = new Polynomial(informationWord);
+                    return Enumerable.Range(0, codewordLength)
+                        .Select(x => field.CreateElement(informationPolynomial.Evaluate(field.GetGeneratingElementPower(x))))
+                        .ToArray();
                 }
+            );
+            LogSpectrum(spectrum);
+            return spectrum;
         }
 
-        private static IEnumerable<int[]> GenerateCodeWords(int fieldOrder, int informationWordLength, Func<int[], int[]> codeWordCalculator)
+        private static IReadOnlyDictionary<int, long> AnalyzeSpectrumForWaveletCode(
+            int codewordLength,
+            int informationWordLength,
+            int codeDistance,
+            Polynomial generatingPolynomial
+        )
         {
-            var informationWord = new int[informationWordLength];
-            var codeWords = new List<int[]>();
+            var field = generatingPolynomial.Field;
+            Logger.LogInformation(
+                "Spectrum analysis for W[{codewordLength}, {informationWordLength}, {codeDistance}] over {field}, generating polynomial {generatingPolynomial}",
+                codewordLength, informationWordLength, codeDistance, field, generatingPolynomial
+            );
 
-            CalculateCodeWords(fieldOrder, informationWord, 0, codeWordCalculator, codeWords);
-            return codeWords;
+            var modularPolynomial
+                = new Polynomial(field, 1).RightShift(codewordLength)
+                  + new Polynomial(field, field.InverseForAddition(1));
+            var spectrum = SpectrumAnalyzer.Analyze(
+                generatingPolynomial.Field,
+                informationWordLength,
+                informationWord =>
+                    (new Polynomial(informationWord).RaiseVariableDegree(2) * generatingPolynomial % modularPolynomial)
+                    .GetCoefficients(codewordLength - 1)
+            );
+            LogSpectrum(spectrum);
+            return spectrum;
         }
 
-        private static void UpdateTaskSpectrum(IReadOnlyList<int> vector, IEnumerable<int[]> codeWords, IDictionary<int, int> spectrum)
-        {
-            var localResult = Enumerable.Range(0, vector.Count + 1).ToDictionary(x => x, x => 0);
-            foreach (var codeWord in codeWords)
-            {
-                var differencesCount = 0;
-                for (var i = 0; i < vector.Count; i++)
-                    if (vector[i] != codeWord[i])
-                        differencesCount++;
-                localResult[differencesCount]++;
-            }
-            for (var i = 0; i <= vector.Count; i++)
-                if (spectrum[i] < localResult[i])
-                    spectrum[i] = localResult[i];
-        }
+        private static void AnalyzeSpectrumForRsN7K3() =>
+            AnalyzeSpectrumForRsCode(
+                new PrimePowerOrderField(8, new Polynomial(new PrimeOrderField(2), 1, 1, 0, 1)),
+                7, 3
+            );
 
-        private static void CheckVectors(int fieldOrder, int[] vector, int position, int[][] codeWords, IDictionary<int, int> spectrum)
-        {
-            if (position == vector.Length)
-                UpdateTaskSpectrum(vector, codeWords, spectrum);
-            else
-                for (var i = 0; i < fieldOrder; i++)
-                {
-                    vector[position] = i;
-                    CheckVectors(fieldOrder, vector, position + 1, codeWords, spectrum);
-                }
-        }
+        private static void AnalyzeSpectrumForRsN7K4() =>
+            AnalyzeSpectrumForRsCode(
+                new PrimePowerOrderField(8, new Polynomial(new PrimeOrderField(2), 1, 1, 0, 1)),
+                7, 4
+            );
 
-        private static void CalculateSpectrum(int fieldOrder, int informationWordLength, int codeWordLength, Func<int[], int[]> codeWordCalculator)
-        {
-            Console.WriteLine("Start code words generation");
-            var generationTimer = Stopwatch.StartNew();
-            var codeWords = GenerateCodeWords(fieldOrder, informationWordLength, codeWordCalculator).ToArray();
-            generationTimer.Stop();
-            Console.WriteLine("Code words generated in {0} seconds", generationTimer.Elapsed.TotalSeconds);
+        private static void AnalyzeSpectrumForRsN8K4() =>
+            AnalyzeSpectrumForRsCode(
+                new PrimePowerOrderField(9, new Polynomial(new PrimeOrderField(3), 1, 0, 1)),
+                8, 4
+            );
 
-            Console.WriteLine("Start scectrum calculation");
-            var calculationTimer = Stopwatch.StartNew();
-            var masks = Enumerable.Range(0, fieldOrder)
-                .Select(x => Enumerable.Repeat(x, codeWordLength).ToArray())
-                .ToArray();
-            var results = Enumerable.Range(0, fieldOrder)
-                .ToDictionary(x => x, x => Enumerable.Range(0, codeWordLength + 1).ToDictionary(y => y, y => 0));
-            Parallel.ForEach(masks, new ParallelOptions { MaxDegreeOfParallelism = (int)(Environment.ProcessorCount * 1.5d) },
-                x => CheckVectors(fieldOrder, x, 1, codeWords, results[x[0]]));
-            var result = results
-                .SelectMany(x => x.Value)
-                .GroupBy(x => x.Key)
-                .Select(x => new Tuple<int, int>(x.Key, x.Max(y => y.Value)))
-                .ToArray();
-            calculationTimer.Stop();
-            Console.WriteLine("Scectrum calculated in {0} seconds", calculationTimer.Elapsed.TotalSeconds);
+        private static void AnalyzeSpectrumForRsN8K5() =>
+            AnalyzeSpectrumForRsCode(
+                new PrimePowerOrderField(9, new Polynomial(new PrimeOrderField(3), 1, 0, 1)),
+                8, 5
+            );
 
-            foreach (var pair in result)
-                Console.WriteLine("Errors count {0} code words {1}", pair.Item1, pair.Item2);
-        }
+        private static void AnalyzeSpectrumForWvN7K3D4First() =>
+            AnalyzeSpectrumForWaveletCode(
+                7, 3, 4,
+                new Polynomial(
+                    new PrimePowerOrderField(8, new Polynomial(new PrimeOrderField(2), 1, 1, 0, 1)),
+                    0, 0, 2, 5, 6, 0, 1
+                )
+            );
 
-        private static void CalculateSpectrumForWavelet37Code()
-        {
-            const int informationWordLength = 3;
-            const int codeWordLength = 7;
+        private static void AnalyzeSpectrumForWvN7K3D4Second() =>
+            AnalyzeSpectrumForWaveletCode(
+                7, 3, 4,
+                new Polynomial(
+                    new PrimePowerOrderField(8, new Polynomial(new PrimeOrderField(2), 1, 1, 0, 1)),
+                    1, 2, 1, 1
+                )
+            );
 
-            var field = new PrimePowerOrderField(8, new Polynomial(new PrimeOrderField(2), 1, 1, 0, 1));
-            var m = new Polynomial(field, 1).RightShift(7);
-            m[0] = 1;
-            var f = new Polynomial(field, 0, 3, 2, 0, 4, 2, 7);
+        private static void AnalyzeSpectrumForWvN8K4D4Golay() =>
+            AnalyzeSpectrumForWaveletCode(
+                8, 4, 4,
+                new Polynomial(
+                    new PrimePowerOrderField(9, new Polynomial(new PrimeOrderField(3), 1, 0, 1)),
+                    2, 0, 1, 2, 1, 1
+                )
+            );
 
-            CalculateSpectrum(field.Order, informationWordLength, codeWordLength,
-                informatonWord =>
-                {
-                    var informationPolynomial = new Polynomial(field, informatonWord);
-                    var c = (informationPolynomial.RaiseVariableDegree(2) * f) % m;
+        private static void AnalyzeSpectrumForWvN8K4D4() =>
+            AnalyzeSpectrumForWaveletCode(
+                8, 4, 4,
+                new Polynomial(
+                    new PrimePowerOrderField(9, new Polynomial(new PrimeOrderField(3), 1, 0, 1)),
+                    2, 8, 3, 8, 0, 6, 2, 7
+                )
+            );
 
-                    var codeWord = new int[field.Order - 1];
-                    for (var i = 0; i <= c.Degree; i++)
-                        codeWord[i] = c[i];
-                    return codeWord;
-                });
-        }
+        private static void AnalyzeSpectrumForWvN10K5D5() =>
+            AnalyzeSpectrumForWaveletCode(
+                10, 5, 5,
+                new Polynomial(new PrimeOrderField(11), 8, 10, 4, 6, 8, 9, 2, 10, 4, 5)
+            );
+
+        private static void AnalyzeSpectrumForWvN24K12D8() =>
+            AnalyzeSpectrumForWaveletCode(
+                24, 12, 8,
+                new Polynomial(new PrimeOrderField(2), 1, 1, 0, 1, 1, 1, 0, 1, 0, 1, 0, 0, 1)
+            );
+
 
         [UsedImplicitly]
         public static void Main()
         {
-            CalculateSpectrumForWavelet37Code();
+            try
+            {
+                AnalyzeSpectrumForWvN24K12D8();
+            }
+            catch (Exception exception)
+            {
+                Logger.LogError(exception, "Exception occurred during analysis");
+            }
             Console.ReadKey();
+        }
+
+        static Program()
+        {
+            var configuration = new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json")
+                .Build();
+            var loggerFactory = new LoggerFactory()
+                .AddSerilog(
+                    new LoggerConfiguration()
+                        .ReadFrom.Configuration(configuration)
+                        .Enrich.FromLogContext()
+                        .Enrich.WithProperty("Version", Assembly.GetEntryAssembly().GetName().Version.ToString(4))
+                        .CreateLogger()
+                );
+            Logger = loggerFactory.CreateLogger<Program>();
+
+            SpectrumAnalyzer = new CommonSpectrumAnalyzer(new RecursiveIterator(), loggerFactory.CreateLogger<CommonSpectrumAnalyzer>());
         }
     }
 
