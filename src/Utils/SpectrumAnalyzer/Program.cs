@@ -92,6 +92,18 @@
                 7, 4
             );
 
+        private static void AnalyzeSpectrumForRsN5K4() =>
+            AnalyzeSpectrumForRsCode(
+                new PrimePowerOrderField(9, new Polynomial(new PrimeOrderField(3), 1, 0, 1)),
+                6, 4
+            );
+
+        private static void AnalyzeSpectrumForRsN6K4() =>
+            AnalyzeSpectrumForRsCode(
+                new PrimePowerOrderField(9, new Polynomial(new PrimeOrderField(3), 1, 0, 1)),
+                6, 4
+            );
+
         private static void AnalyzeSpectrumForRsN8K4() =>
             AnalyzeSpectrumForRsCode(
                 new PrimePowerOrderField(9, new Polynomial(new PrimeOrderField(3), 1, 0, 1)),
@@ -102,6 +114,12 @@
             AnalyzeSpectrumForRsCode(
                 new PrimePowerOrderField(9, new Polynomial(new PrimeOrderField(3), 1, 0, 1)),
                 8, 5
+            );
+
+        private static void AnalyzeSpectrumForRsN8K6() =>
+            AnalyzeSpectrumForRsCode(
+                new PrimePowerOrderField(9, new Polynomial(new PrimeOrderField(3), 1, 0, 1)),
+                8, 6
             );
 
         private static void AnalyzeSpectrumForWvN7K3D4First() =>
@@ -140,6 +158,15 @@
                 )
             );
 
+        private static void AnalyzeSpectrumForWvN8K4D3() =>
+            AnalyzeSpectrumForWaveletCode(
+                8, 4, 3,
+                new Polynomial(
+                    new PrimePowerOrderField(9, new Polynomial(new PrimeOrderField(3), 1, 0, 1)),
+                    2, 5, 5, 1, 1, 3, 2, 2
+                )
+            );
+
         private static void AnalyzeSpectrumForWvN10K5D5() =>
             AnalyzeSpectrumForWaveletCode(
                 10, 5, 5,
@@ -158,7 +185,7 @@
         {
             try
             {
-                AnalyzeSpectrumForWvN24K12D8();
+                AnalyzeSpectrumForRsN5K4();
             }
             catch (Exception exception)
             {
