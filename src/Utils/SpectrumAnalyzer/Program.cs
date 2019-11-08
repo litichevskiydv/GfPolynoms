@@ -95,7 +95,7 @@
         private static void AnalyzeSpectrumForRsN5K4() =>
             AnalyzeSpectrumForRsCode(
                 new PrimePowerOrderField(9, new Polynomial(new PrimeOrderField(3), 1, 0, 1)),
-                6, 4
+                5, 4
             );
 
         private static void AnalyzeSpectrumForRsN6K4() =>
