@@ -1,6 +1,7 @@
 ﻿namespace AppliedAlgebra.CodesResearchTools.Analyzers.Spectrum
 {
     using System;
+    using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading;
@@ -52,7 +53,7 @@
             var opts = options ?? new SpectrumAnalyzerOptions();
 
             var processedCodewords = 0L;
-            var spectrum = new Dictionary<int, long>();
+            var spectrum = new ConcurrentDictionary<int, long>();
             Parallel.ForEach(
                 _variantsIterator.IterateVectors(field, informationWordLength).Skip(1),
                 new ParallelOptions {MaxDegreeOfParallelism = opts.MaxDegreeOfParallelism},
@@ -77,12 +78,8 @@
                 },
                 localSpectrum =>
                 {
-                    foreach (var pair in localSpectrum)
-                    {
-                        if (spectrum.ContainsKey(pair.Key) == false)
-                            spectrum[pair.Key] = 0;
-                        spectrum[pair.Key] += pair.Value;
-                    }
+                    foreach (var pair in localSpectrum) 
+                        spectrum.AddOrUpdate(pair.Key, pair.Value, (key, value) => value + pair.Value);
                 }
             );
 

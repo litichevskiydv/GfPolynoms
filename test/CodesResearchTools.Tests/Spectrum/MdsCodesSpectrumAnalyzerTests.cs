@@ -1,51 +1,31 @@
 ﻿namespace AppliedAlgebra.CodesResearchTools.Tests.Spectrum
 {
     using System;
-    using System.Collections.Generic;
     using System.Linq;
     using Analyzers.Spectrum;
-    using CodesAbstractions;
+    using GfAlgorithms.CombinationsCountCalculator;
+    using GfAlgorithms.LinearSystemSolver;
     using GfAlgorithms.VariantsIterator;
-    using GfPolynoms;
-    using GfPolynoms.Extensions;
     using GfPolynoms.GaloisFields;
     using JetBrains.Annotations;
     using Microsoft.Extensions.Logging;
     using Moq;
+    using RsCodesTools.CodesFactory;
+    using RsCodesTools.Decoding.ListDecoder;
+    using RsCodesTools.Decoding.ListDecoder.GsDecoderDependencies.InterpolationPolynomialBuilder;
+    using RsCodesTools.Decoding.ListDecoder.GsDecoderDependencies.InterpolationPolynomialFactorisator;
+    using RsCodesTools.Decoding.StandartDecoder;
     using TestCases;
     using Xunit;
 
-    public class CommonSpectrumAnalyzerTests
+    public class MdsCodesSpectrumAnalyzerTests
     {
-        private class FakeCode : ICode
-        {
-            public GaloisField Field => new PrimeOrderField(2);
-            public int CodewordLength => 3;
-            public int InformationWordLength => 2;
-            public int CodeDistance => 1;
-
-            public FieldElement[] Encode(FieldElement[] informationWord)
-            {
-                return informationWord.Prepend(Field.Zero()).ToArray();
-            }
-
-            public FieldElement[] Decode(FieldElement[] noisyCodeword)
-            {
-                throw new NotImplementedException();
-            }
-
-            public IReadOnlyList<FieldElement[]> DecodeViaList(FieldElement[] noisyCodeword, int? listDecodingRadius = null)
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        [UsedImplicitly] 
+        [UsedImplicitly]
         public static TheoryData<SpectrumAnalyzerConstructorParametersValidationTestCase> ConstructorParametersValidationTestCases;
         [UsedImplicitly]
         public static TheoryData<AnalyzeSpectrumParametersValidationTestCase> AnalyzeParametersValidationTestCases;
 
-        static CommonSpectrumAnalyzerTests()
+        static MdsCodesSpectrumAnalyzerTests()
         {
             ConstructorParametersValidationTestCases
                 = new TheoryData<SpectrumAnalyzerConstructorParametersValidationTestCase>
@@ -62,13 +42,18 @@
                   };
         }
 
-        private readonly Mock<ILogger<CommonSpectrumAnalyzer>> _mockLogger;
-        private readonly CommonSpectrumAnalyzer _analyzer;
+        private readonly StandardCodesFactory _rsCodesFactory;
+        private readonly CommonSpectrumAnalyzer _commonAnalyzer;
+        private readonly MdsCodesSpectrumAnalyzer _mdsCodesAnalyzer;
 
-        public CommonSpectrumAnalyzerTests()
+        public MdsCodesSpectrumAnalyzerTests()
         {
-            _mockLogger = new Mock<ILogger<CommonSpectrumAnalyzer>>();
-            _analyzer = new CommonSpectrumAnalyzer(new RecursiveIterator(), _mockLogger.Object);
+            _rsCodesFactory = new StandardCodesFactory(
+                new BerlekampWelchDecoder(new GaussSolver()),
+                new GsDecoder(new KotterAlgorithmBasedBuilder(new PascalsTriangleBasedCalculator()), new RrFactorizator())
+            );
+            _commonAnalyzer = new CommonSpectrumAnalyzer(new RecursiveIterator(), new Mock<ILogger<CommonSpectrumAnalyzer>>().Object);
+            _mdsCodesAnalyzer = new MdsCodesSpectrumAnalyzer();
         }
 
         [Theory]
@@ -81,57 +66,46 @@
         [Fact]
         public void AnalyzeCodeSpectrumShouldValidateParameters()
         {
-            Assert.Throws<ArgumentNullException>(() => _analyzer.Analyze(null));
+            Assert.Throws<ArgumentNullException>(() => _mdsCodesAnalyzer.Analyze(null));
         }
 
         [Theory]
         [MemberData(nameof(AnalyzeParametersValidationTestCases))]
         public void AnalyzeCodingProcedureSpectrumShouldValidateParameters(AnalyzeSpectrumParametersValidationTestCase testCase)
         {
-            Assert.ThrowsAny<ArgumentException>(() => _analyzer.Analyze(testCase.Field, testCase.InformationWordLength, testCase.EncodingProcedure));
+            Assert.ThrowsAny<ArgumentException>(() => _mdsCodesAnalyzer.Analyze(testCase.Field, testCase.InformationWordLength, testCase.EncodingProcedure));
         }
 
         [Fact]
         public void ShouldAnalyzeCodeSpectrum()
         {
             // Given
-            var code = new FakeCode();
+            var code = _rsCodesFactory.Create(new PrimePowerOrderField(9), 8, 5);
 
             // When
-            var actualSpectrum = _analyzer.Analyze(code, new SpectrumAnalyzerOptions {LoggingResolution = 1})
-                .OrderBy(x => x.Key)
-                .ToArray();
+            var actualSpectrum = _mdsCodesAnalyzer.Analyze(code).OrderBy(x => x.Key).ToArray();
 
             // Then
-            var expectedSpectrum = new[] {new KeyValuePair<int, long>(1, 2), new KeyValuePair<int, long>(2, 1)};
+            var expectedSpectrum = _commonAnalyzer.Analyze(code).OrderBy(x => x.Key).ToArray();
             Assert.Equal(expectedSpectrum, actualSpectrum);
-
-            Assert.All(_mockLogger.Invocations, x => Assert.Equal(LogLevel.Information, x.Arguments[0]));
-            Assert.Equal(3, _mockLogger.Invocations.Count);
         }
 
         [Fact]
         public void ShouldAnalyzeCodingProcedureSpectrum()
         {
             // Given
-            var code = new FakeCode();
+            var code = _rsCodesFactory.Create(new PrimePowerOrderField(9), 8, 6);
 
             // When
-            var actualSpectrum = _analyzer.Analyze(
-                    code.Field,
-                    code.InformationWordLength,
-                    x => code.Encode(x),
-                    new SpectrumAnalyzerOptions {LoggingResolution = 1}
-                )
+            var actualSpectrum = _mdsCodesAnalyzer.Analyze(code.Field, code.InformationWordLength, x => code.Encode(x))
                 .OrderBy(x => x.Key)
                 .ToArray();
 
             // Then
-            var expectedSpectrum = new[] { new KeyValuePair<int, long>(1, 2), new KeyValuePair<int, long>(2, 1) };
+            var expectedSpectrum = _commonAnalyzer.Analyze(code.Field, code.InformationWordLength, x => code.Encode(x))
+                .OrderBy(x => x.Key)
+                .ToArray();
             Assert.Equal(expectedSpectrum, actualSpectrum);
-
-            Assert.All(_mockLogger.Invocations, x => Assert.Equal(LogLevel.Information, x.Arguments[0]));
-            Assert.Equal(3, _mockLogger.Invocations.Count);
         }
     }
 }
