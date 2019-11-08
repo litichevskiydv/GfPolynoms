@@ -23,6 +23,7 @@
 
             var minimalRadius = 0;
             var processedWordsCount = 0L;
+            var syncRoot = new object();
             for (var errorsCount = 0; errorsCount <= code.CodewordLength; errorsCount++)
                 Parallel.ForEach(
                     _noiseGenerator.VariatePositionsAndValues(code.Field, code.CodewordLength, errorsCount),
@@ -39,7 +40,10 @@
 
                         return Math.Max(localMinimalRadius, codewordsInLargestBall.Min(x => x.ComputeHammingDistance(word)));
                     },
-                    localMinimalRadius => minimalRadius = Math.Max(minimalRadius, localMinimalRadius)
+                    localMinimalRadius =>
+                    {
+                        lock (syncRoot) minimalRadius = Math.Max(minimalRadius, localMinimalRadius);
+                    }
                 );
 
             return minimalRadius;

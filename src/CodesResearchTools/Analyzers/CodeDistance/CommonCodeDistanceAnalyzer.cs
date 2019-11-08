@@ -19,6 +19,7 @@
         {
             var processedPairsCount = 0L;
             var codeDistance = int.MaxValue;
+            var syncRoot = new object();
             Parallel.ForEach(
                 GenerateMappings(field, encodingProcedure, new int[informationWordLength], 0),
                 new ParallelOptions {MaxDegreeOfParallelism = options.MaxDegreeOfParallelism},
@@ -35,7 +36,10 @@
 
                     return localCodeDistance;
                 },
-                localCodeDistance => { codeDistance = Math.Min(codeDistance, localCodeDistance); }
+                localCodeDistance =>
+                {
+                    lock (syncRoot) codeDistance = Math.Min(codeDistance, localCodeDistance);
+                }
             );
 
             return codeDistance;
