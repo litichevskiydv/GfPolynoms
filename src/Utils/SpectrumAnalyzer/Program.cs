@@ -18,7 +18,8 @@
     [UsedImplicitly]
     public class Program
     {
-        private static readonly ISpectrumAnalyzer SpectrumAnalyzer;
+        private static readonly MdsCodesSpectrumAnalyzer MdsCodesSpectrumAnalyzer;
+        private static readonly CommonSpectrumAnalyzer CommonSpectrumAnalyzer;
         private static readonly ILogger Logger;
 
         private static void LogSpectrum(IReadOnlyDictionary<int, long> spectrum) =>
@@ -38,7 +39,7 @@
                 codewordLength, informationWordLength, field
             );
 
-            var spectrum = SpectrumAnalyzer.Analyze(
+            var spectrum = MdsCodesSpectrumAnalyzer.Analyze(
                 field,
                 informationWordLength,
                 informationWord =>
@@ -69,7 +70,7 @@
             var modularPolynomial
                 = new Polynomial(field, 1).RightShift(codewordLength)
                   + new Polynomial(field, field.InverseForAddition(1));
-            var spectrum = SpectrumAnalyzer.Analyze(
+            var spectrum = CommonSpectrumAnalyzer.Analyze(
                 generatingPolynomial.Field,
                 informationWordLength,
                 informationWord =>
@@ -79,6 +80,12 @@
             LogSpectrum(spectrum);
             return spectrum;
         }
+        private static void AnalyzeSpectrumForRsN4K3() =>
+            AnalyzeSpectrumForRsCode(
+                new PrimePowerOrderField(8, new Polynomial(new PrimeOrderField(2), 1, 1, 0, 1)),
+                4, 3
+            );
+
 
         private static void AnalyzeSpectrumForRsN7K3() =>
             AnalyzeSpectrumForRsCode(
@@ -185,7 +192,7 @@
         {
             try
             {
-                AnalyzeSpectrumForRsN5K4();
+                AnalyzeSpectrumForWvN24K12D8();
             }
             catch (Exception exception)
             {
@@ -209,7 +216,8 @@
                 );
             Logger = loggerFactory.CreateLogger<Program>();
 
-            SpectrumAnalyzer = new CommonSpectrumAnalyzer(new RecursiveIterator(), loggerFactory.CreateLogger<CommonSpectrumAnalyzer>());
+            MdsCodesSpectrumAnalyzer = new MdsCodesSpectrumAnalyzer();
+            CommonSpectrumAnalyzer = new CommonSpectrumAnalyzer(new RecursiveIterator(), loggerFactory.CreateLogger<CommonSpectrumAnalyzer>());
         }
     }
 
