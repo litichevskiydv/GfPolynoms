@@ -39,6 +39,8 @@
             {
                 var diff = (polynomial - h).GetCoefficients(maxDegree);
                 var g = new Polynomial(diff.Skip(2).Concat(diff.Take(2)).ToArray());
+                if (h.Degree == 0 || g.Degree == 0)
+                    continue;
 
                 var (he, ho) = h.GetPolyphaseComponents();
                 var (ge, go) = g.GetPolyphaseComponents();
