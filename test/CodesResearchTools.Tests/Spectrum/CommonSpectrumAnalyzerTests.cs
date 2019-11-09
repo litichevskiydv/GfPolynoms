@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Numerics;
     using Analyzers.Spectrum;
     using CodesAbstractions;
     using GfAlgorithms.VariantsIterator;
@@ -103,7 +104,7 @@
                 .ToArray();
 
             // Then
-            var expectedSpectrum = new[] {new KeyValuePair<int, long>(1, 2), new KeyValuePair<int, long>(2, 1)};
+            var expectedSpectrum = new[] {new KeyValuePair<int, BigInteger>(1, 2), new KeyValuePair<int, BigInteger>(2, 1)};
             Assert.Equal(expectedSpectrum, actualSpectrum);
 
             Assert.All(_mockLogger.Invocations, x => Assert.Equal(LogLevel.Information, x.Arguments[0]));
@@ -127,7 +128,7 @@
                 .ToArray();
 
             // Then
-            var expectedSpectrum = new[] { new KeyValuePair<int, long>(1, 2), new KeyValuePair<int, long>(2, 1) };
+            var expectedSpectrum = new[] { new KeyValuePair<int, BigInteger>(1, 2), new KeyValuePair<int, BigInteger>(2, 1) };
             Assert.Equal(expectedSpectrum, actualSpectrum);
 
             Assert.All(_mockLogger.Invocations, x => Assert.Equal(LogLevel.Information, x.Arguments[0]));

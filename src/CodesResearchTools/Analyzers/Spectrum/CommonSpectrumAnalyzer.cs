@@ -4,6 +4,7 @@
     using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Numerics;
     using System.Threading;
     using System.Threading.Tasks;
     using CodesAbstractions;
@@ -28,7 +29,7 @@
             _logger = logger;
         }
 
-        public IReadOnlyDictionary<int, long> Analyze(ICode code, SpectrumAnalyzerOptions options = null)
+        public IReadOnlyDictionary<int, BigInteger> Analyze(ICode code, SpectrumAnalyzerOptions options = null)
         {
             if (code == null)
                 throw new ArgumentNullException(nameof(code));
@@ -36,7 +37,7 @@
             return Analyze(code.Field, code.InformationWordLength, code.Encode, options);
         }
 
-        public IReadOnlyDictionary<int, long> Analyze(
+        public IReadOnlyDictionary<int, BigInteger> Analyze(
             GaloisField field,
             int informationWordLength,
             Func<FieldElement[], FieldElement[]> encodingProcedure,
@@ -53,11 +54,11 @@
             var opts = options ?? new SpectrumAnalyzerOptions();
 
             var processedCodewords = 0L;
-            var spectrum = new ConcurrentDictionary<int, long>();
+            var spectrum = new ConcurrentDictionary<int, BigInteger>();
             Parallel.ForEach(
                 _variantsIterator.IterateVectors(field, informationWordLength).Skip(1),
                 new ParallelOptions {MaxDegreeOfParallelism = opts.MaxDegreeOfParallelism},
-                () => new Dictionary<int, long>(),
+                () => new Dictionary<int, BigInteger>(),
                 (informationWord, loopState, localSpectrum) =>
                 {
                     var codewordWeight = encodingProcedure(informationWord).Count(x => x.Representation != 0);

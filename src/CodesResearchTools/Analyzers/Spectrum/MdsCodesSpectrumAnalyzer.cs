@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Numerics;
     using CodesAbstractions;
     using GfPolynoms;
     using GfPolynoms.Extensions;
@@ -10,49 +11,35 @@
 
     public class MdsCodesSpectrumAnalyzer : ISpectrumAnalyzer
     {
-        private static long GetCombinationsCount(int n, int k)
+        private static BigInteger GetCombinationsCount(int n, int k)
         {
             if (k == 0 || n == k)
-                return 1L;
+                return BigInteger.One;
             if (n < k)
-                return 0L;
+                return BigInteger.Zero;
 
             return GetCombinationsCount(n - 1, k - 1) + GetCombinationsCount(n - 1, k);
         }
 
-        private static long GetPower(int a, int n)
+        private static IReadOnlyDictionary<int, BigInteger> Analyze(int fieldOrder, int codewordLength, int codeDistance)
         {
-            var result = 1L;
-            while (n > 0)
-            {
-                if ((n & 1) == 1)
-                    result *= a;
-
-                a *= a;
-                n >>= 1;
-            }
-
-            return result;
-        }
-
-        private static IReadOnlyDictionary<int, long> Analyze(int fieldOrder, int codewordLength, int codeDistance)
-        {
-            var result = new Dictionary<int, long>();
+            var result = new Dictionary<int, BigInteger>();
+            BigInteger q = fieldOrder;
             for (var weight = codeDistance; weight <= codewordLength; weight++)
                 result[weight]
-                    = (fieldOrder - 1)
+                    = (q - BigInteger.One)
                       * GetCombinationsCount(codewordLength, weight)
                       * Enumerable.Range(0, weight - codeDistance + 1)
-                          .Aggregate(0L,
-                              (acc, j) => acc + GetPower(-1, j)
+                          .Aggregate(BigInteger.Zero,
+                              (acc, j) => acc + BigInteger.Pow(BigInteger.MinusOne, j)
                                           * GetCombinationsCount(weight - 1, j)
-                                          * GetPower(fieldOrder, weight - codeDistance - j)
+                                          * BigInteger.Pow(q, weight - codeDistance - j)
                           );
 
             return result;
         }
 
-        public IReadOnlyDictionary<int, long> Analyze(ICode code, SpectrumAnalyzerOptions options = null)
+        public IReadOnlyDictionary<int, BigInteger> Analyze(ICode code, SpectrumAnalyzerOptions options = null)
         {
             if (code == null)
                 throw new ArgumentNullException(nameof(code));
@@ -60,7 +47,7 @@
             return Analyze(code.Field.Order, code.CodewordLength, code.CodeDistance);
         }
 
-        public IReadOnlyDictionary<int, long> Analyze(GaloisField field, int informationWordLength, Func<FieldElement[], FieldElement[]> encodingProcedure, SpectrumAnalyzerOptions options = null)
+        public IReadOnlyDictionary<int, BigInteger> Analyze(GaloisField field, int informationWordLength, Func<FieldElement[], FieldElement[]> encodingProcedure, SpectrumAnalyzerOptions options = null)
         {
             if (field == null)
                 throw new ArgumentNullException(nameof(field));
