@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Numerics;
     using System.Reflection;
     using CodesResearchTools.Analyzers.Spectrum;
     using GfAlgorithms.VariantsIterator;
@@ -22,13 +23,13 @@
         private static readonly CommonSpectrumAnalyzer CommonSpectrumAnalyzer;
         private static readonly ILogger Logger;
 
-        private static void LogSpectrum(IReadOnlyDictionary<int, long> spectrum) =>
+        private static void LogSpectrum(IReadOnlyDictionary<int, BigInteger> spectrum) =>
             Logger.LogInformation(
                 "Calculated spectrum: {spectrum}",
                 string.Join(", ", spectrum.OrderBy(x=>x.Key).Select(x => $"(W: {x.Key}, C: {x.Value})"))
             );
 
-        private static IReadOnlyDictionary<int, long> AnalyzeSpectrumForRsCode(
+        private static IReadOnlyDictionary<int, BigInteger> AnalyzeSpectrumForRsCode(
             GaloisField field,
             int codewordLength,
             int informationWordLength
@@ -54,11 +55,12 @@
             return spectrum;
         }
 
-        private static IReadOnlyDictionary<int, long> AnalyzeSpectrumForWaveletCode(
+        private static IReadOnlyDictionary<int, BigInteger> AnalyzeSpectrumForWaveletCode(
             int codewordLength,
             int informationWordLength,
             int codeDistance,
-            Polynomial generatingPolynomial
+            Polynomial generatingPolynomial,
+            SpectrumAnalyzerOptions options = null
         )
         {
             var field = generatingPolynomial.Field;
@@ -75,7 +77,8 @@
                 informationWordLength,
                 informationWord =>
                     (new Polynomial(informationWord).RaiseVariableDegree(2) * generatingPolynomial % modularPolynomial)
-                    .GetCoefficients(codewordLength - 1)
+                    .GetCoefficients(codewordLength - 1),
+                options
             );
             LogSpectrum(spectrum);
             return spectrum;
@@ -129,6 +132,30 @@
                 8, 6
             );
 
+        private static void AnalyzeSpectrumForRsN8K7() =>
+            AnalyzeSpectrumForRsCode(
+                new PrimePowerOrderField(16, new Polynomial(new PrimeOrderField(2), 1, 0, 0, 1, 1)),
+                8, 7
+            );
+
+        private static void AnalyzeSpectrumForRsN15K8() =>
+            AnalyzeSpectrumForRsCode(
+                new PrimePowerOrderField(16, new Polynomial(new PrimeOrderField(2), 1, 0, 0, 1, 1)),
+                15, 8
+            );
+
+        private static void AnalyzeSpectrumForRsN15K13() =>
+            AnalyzeSpectrumForRsCode(
+                new PrimePowerOrderField(27, new Polynomial(new PrimeOrderField(3), 2, 2, 0, 1)),
+                15, 13
+            );
+
+        private static void AnalyzeSpectrumForRsN26K15() =>
+            AnalyzeSpectrumForRsCode(
+                new PrimePowerOrderField(27, new Polynomial(new PrimeOrderField(3), 2, 2, 0, 1)),
+                26, 15
+            );
+
         private static void AnalyzeSpectrumForWvN7K3D4First() =>
             AnalyzeSpectrumForWaveletCode(
                 7, 3, 4,
@@ -180,10 +207,29 @@
                 new Polynomial(new PrimeOrderField(11), 8, 10, 4, 6, 8, 9, 2, 10, 4, 5)
             );
 
+        private static void AnalyzeSpectrumForWvN15K7D8() =>
+            AnalyzeSpectrumForWaveletCode(
+                15, 7, 8,
+                new Polynomial(
+                    new PrimePowerOrderField(16, new Polynomial(new PrimeOrderField(2), 1, 0, 0, 1, 1)),
+                    3, 3, 13, 2, 4, 5, 2, 9, 11, 11, 14, 3, 9, 11, 10
+                ),
+                new SpectrumAnalyzerOptions {LoggingResolution = 100000}
+            );
+
         private static void AnalyzeSpectrumForWvN24K12D8() =>
             AnalyzeSpectrumForWaveletCode(
                 24, 12, 8,
                 new Polynomial(new PrimeOrderField(2), 1, 1, 0, 1, 1, 1, 0, 1, 0, 1, 0, 0, 1)
+            );
+
+        private static void AnalyzeSpectrumForWvN26K13D12() =>
+            AnalyzeSpectrumForWaveletCode(
+                26, 13, 12,
+                new Polynomial(
+                    new PrimePowerOrderField(27, new Polynomial(new PrimeOrderField(3), 2, 2, 0, 1)),
+                    1, 0, 17, 18, 3, 12, 22, 15, 6, 10, 19, 15, 5, 11, 11, 15, 22, 11, 2, 6, 8, 0, 7, 4, 0, 15
+                )
             );
 
 
@@ -192,7 +238,7 @@
         {
             try
             {
-                AnalyzeSpectrumForWvN24K12D8();
+                AnalyzeSpectrumForWvN15K7D8();
             }
             catch (Exception exception)
             {
