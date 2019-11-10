@@ -24,6 +24,8 @@
             var gf11 = new PrimeOrderField(11);
             var gf13 = new PrimeOrderField(13);
             var gf16 = new PrimePowerOrderField(16, new Polynomial(new PrimeOrderField(2), 1, 0, 0, 1, 1));
+            var gf17 = new PrimeOrderField(17);
+            var gf19 = new PrimeOrderField(19);
             var gf27 = new PrimePowerOrderField(27, new Polynomial(new PrimeOrderField(3), 2, 2, 0, 1));
             var gf32 = new PrimePowerOrderField(32, new Polynomial(new PrimeOrderField(2), 1, 0, 0, 1, 0, 1));
 
@@ -69,6 +71,22 @@
                     new GeneratingPolynomialsBuilderTestCase
                     {
                         N = 15, D = 8, SourceFilter = new Polynomial(gf16, 3, 2, 7, 6, 4, 2, 11, 7, 5)
+                    },
+                    new GeneratingPolynomialsBuilderTestCase
+                    {
+                        N = 16, D = 8, SourceFilter = new Polynomial(gf17, 1, 13, 14, 5, 8, 9, 6, 14, 15, 8, 9, 1, 0, 5)
+                    },
+                    new GeneratingPolynomialsBuilderTestCase
+                    {
+                        N = 16, D = 7, SourceFilter = new Polynomial(gf17, 1, 13, 14, 5, 8, 9, 6, 14, 15, 8, 9, 1, 0, 5)
+                    },
+                    new GeneratingPolynomialsBuilderTestCase
+                    {
+                        N = 18, D = 9, SourceFilter = new Polynomial(gf19, 1, 13, 14, 5, 8, 9, 17, 15, 1, 8, 12, 5, 8)
+                    },
+                    new GeneratingPolynomialsBuilderTestCase
+                    {
+                        N = 18, D = 8, SourceFilter = new Polynomial(gf19, 1, 13, 14, 5, 8, 9, 17, 15, 1, 8, 12, 5, 8)
                     },
                     new GeneratingPolynomialsBuilderTestCase
                     {
