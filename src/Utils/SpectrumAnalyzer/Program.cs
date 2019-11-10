@@ -156,6 +156,18 @@
                 15, 13
             );
 
+        private static void AnalyzeSpectrumForRsN9K8() => AnalyzeSpectrumForRsCode(new PrimeOrderField(17), 8, 9);
+
+        private static void AnalyzeSpectrumForRsN16K8() => AnalyzeSpectrumForRsCode(new PrimeOrderField(17), 16, 8);
+
+        private static void AnalyzeSpectrumForRsN16K9() => AnalyzeSpectrumForRsCode(new PrimeOrderField(17), 16, 9);
+
+        private static void AnalyzeSpectrumForRsN10K9() => AnalyzeSpectrumForRsCode(new PrimeOrderField(19), 10, 9);
+
+        private static void AnalyzeSpectrumForRsN18K9() => AnalyzeSpectrumForRsCode(new PrimeOrderField(19), 18, 9);
+
+        private static void AnalyzeSpectrumForRsN18K10() => AnalyzeSpectrumForRsCode(new PrimeOrderField(19), 18, 10);
+
         private static void AnalyzeSpectrumForRsN26K13() =>
             AnalyzeSpectrumForRsCode(
                 new PrimePowerOrderField(27, new Polynomial(new PrimeOrderField(3), 2, 2, 0, 1)),
@@ -229,6 +241,20 @@
                 new SpectrumAnalyzerOptions {LoggingResolution = 100000}
             );
 
+        private static void AnalyzeSpectrumForWvN16K8D8() =>
+            AnalyzeSpectrumForWaveletCode(
+                16, 8, 8,
+                new Polynomial(new PrimeOrderField(17), 11, 14, 15, 16, 9, 5, 4, 14, 1, 11, 15, 11, 8, 11, 2, 6),
+                new SpectrumAnalyzerOptions { LoggingResolution = 10000000 }
+            );
+
+        private static void AnalyzeSpectrumForWvN18K9D9() =>
+            AnalyzeSpectrumForWaveletCode(
+                18, 9, 9,
+                new Polynomial(new PrimeOrderField(19), 16, 2, 1, 0, 16, 11, 0, 18, 16, 1, 8, 2, 3, 6, 0, 7, 6, 1),
+                new SpectrumAnalyzerOptions { LoggingResolution = 1000000000 }
+            );
+
         private static void AnalyzeSpectrumForWvN24K12D8() =>
             AnalyzeSpectrumForWaveletCode(
                 24, 12, 8,
@@ -250,7 +276,8 @@
         {
             try
             {
-                AnalyzeSpectrumForRsN15K7();
+                AnalyzeSpectrumForWvN16K8D8();
+                AnalyzeSpectrumForWvN18K9D9();
             }
             catch (Exception exception)
             {
