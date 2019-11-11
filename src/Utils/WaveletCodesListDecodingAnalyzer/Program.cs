@@ -134,6 +134,15 @@
             );
         }
 
+        private static void AnalyzeCodeDistanceForN3K2() =>
+            AnalyzeCodeDistance(
+                3, 2,
+                new Polynomial(
+                    new PrimePowerOrderField(4, new Polynomial(new PrimeOrderField(2), 1, 1, 1)),
+                    2, 1
+                )
+            );
+
         private static void AnalyzeCodeDistanceForN26K13() =>
             AnalyzeCodeDistance(26, 13, new Polynomial(new PrimePowerOrderField(27), 2, 0, 1, 2, 1, 1));
 
