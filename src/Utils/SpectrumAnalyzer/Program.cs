@@ -132,6 +132,13 @@
                 8, 6
             );
 
+        private static void AnalyzeSpectrumForRsN6K5() => AnalyzeSpectrumForRsCode(new PrimeOrderField(11), 6, 5);
+
+        private static void AnalyzeSpectrumForRsN10K5() => AnalyzeSpectrumForRsCode(new PrimeOrderField(11), 10, 5);
+
+        private static void AnalyzeSpectrumForRsN10K6() => AnalyzeSpectrumForRsCode(new PrimeOrderField(11), 10, 6);
+
+
         private static void AnalyzeSpectrumForRsN8K7() =>
             AnalyzeSpectrumForRsCode(
                 new PrimePowerOrderField(16, new Polynomial(new PrimeOrderField(2), 1, 0, 0, 1, 1)),
@@ -276,8 +283,7 @@
         {
             try
             {
-                AnalyzeSpectrumForWvN16K8D8();
-                AnalyzeSpectrumForWvN18K9D9();
+                AnalyzeSpectrumForRsN10K6();
             }
             catch (Exception exception)
             {
