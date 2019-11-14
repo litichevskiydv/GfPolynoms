@@ -163,7 +163,7 @@
                 15, 13
             );
 
-        private static void AnalyzeSpectrumForRsN9K8() => AnalyzeSpectrumForRsCode(new PrimeOrderField(17), 8, 9);
+        private static void AnalyzeSpectrumForRsN9K8() => AnalyzeSpectrumForRsCode(new PrimeOrderField(17), 9, 8);
 
         private static void AnalyzeSpectrumForRsN16K8() => AnalyzeSpectrumForRsCode(new PrimeOrderField(17), 16, 8);
 
@@ -283,7 +283,7 @@
         {
             try
             {
-                AnalyzeSpectrumForRsN10K6();
+                AnalyzeSpectrumForRsN9K8();
             }
             catch (Exception exception)
             {
