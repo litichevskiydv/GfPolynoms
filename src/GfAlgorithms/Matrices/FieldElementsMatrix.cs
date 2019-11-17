@@ -357,6 +357,31 @@
         }
 
         /// <summary>
+        /// Calculates degree <paramref name="degree"/> of the current matrix
+        /// </summary>
+        /// <param name="degree">Matrix degree</param>
+        public FieldElementsMatrix Pow(int degree)
+        {
+            if (degree < 0)
+                throw new ArgumentException($"{nameof(degree)} must not be negative");
+            if (RowsCount != ColumnsCount)
+                throw new InvalidOperationException("Matrix must be square");
+
+            var result = IdentityMatrix(Field, RowsCount);
+            while (degree > 0)
+            {
+                if ((degree & 1) == 1)
+                    result.Multiply(this);
+
+                Multiply(this);
+                degree >>= 1;
+            }
+
+            _elements = result._elements;
+            return this;
+        }
+
+        /// <summary>
         /// Creates square zero matrix with size <paramref name="size"/>
         /// whose elements must belong to the <paramref name="field"/>
         /// </summary>
@@ -422,6 +447,13 @@
         /// <param name="a">First factor</param>
         /// <param name="b">Second factor</param>
         public static FieldElementsMatrix Multiply(FieldElementsMatrix a, FieldElementsMatrix b) => new FieldElementsMatrix(a).Multiply(b);
+
+        /// <summary>
+        /// Calculates degree <paramref name="degree"/> of the matrix <paramref name="a"/>
+        /// </summary>
+        /// <param name="a">Degree basis</param>
+        /// <param name="degree">Matrix degree</param>
+        public static FieldElementsMatrix Pow(FieldElementsMatrix a, int degree) => new FieldElementsMatrix(a).Pow(degree);
 
         public static FieldElementsMatrix operator +(FieldElementsMatrix a, FieldElementsMatrix b) => Add(a, b);
 
