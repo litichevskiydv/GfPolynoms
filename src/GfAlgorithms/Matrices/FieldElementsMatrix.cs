@@ -41,13 +41,15 @@
         }
 
         /// <summary>
-        /// Creates zero matrix <paramref name="rowsCount"/>*<paramref name="columnsCount"/>
-        /// whose elements must belong to the <paramref name="field"/>
+        /// Creates matrix <paramref name="rowsCount"/>*<paramref name="columnsCount"/>
+        /// whose elements must belong to the <paramref name="field"/> and initialized
+        /// via <paramref name="elementInitializer"/>
         /// </summary>
         /// <param name="field">Field from which the elements of the matrix</param>
         /// <param name="rowsCount">New matrix rows count</param>
         /// <param name="columnsCount">New matrix columns count</param>
-        public FieldElementsMatrix(GaloisField field, int rowsCount, int columnsCount)
+        /// <param name="elementInitializer">Element initializer</param>
+        public FieldElementsMatrix(GaloisField field, int rowsCount, int columnsCount, Func<int, int, FieldElement> elementInitializer = null)
         {
             if (field == null)
                 throw new ArgumentException(nameof(field));
@@ -59,7 +61,7 @@
             Field = field;
 
             _elements = new FieldElement[rowsCount, columnsCount];
-            InitializeElements((i, j) => field.Zero());
+            InitializeElements(elementInitializer ?? ((i, j) => field.Zero()));
         }
 
         /// <summary>
