@@ -357,6 +357,38 @@
         }
 
         /// <summary>
+        /// Creates square zero matrix with size <paramref name="size"/>
+        /// whose elements must belong to the <paramref name="field"/>
+        /// </summary>
+        /// <param name="field">Field from which the elements of the matrix</param>
+        /// <param name="size">Matrix size</param>
+        public static FieldElementsMatrix ZeroMatrix(GaloisField field, int size)
+        {
+            if(field == null)
+                throw new ArgumentNullException(nameof(field));
+            if (size <= 0)
+                throw new ArgumentException("Matrix size must be positive");
+
+            return new FieldElementsMatrix(field, size, size);
+        }
+
+        /// <summary>
+        /// Creates square identity matrix with size <paramref name="size"/>
+        /// whose elements must belong to the <paramref name="field"/>
+        /// </summary>
+        /// <param name="field">Field from which the elements of the matrix</param>
+        /// <param name="size">Matrix size</param>
+        public static FieldElementsMatrix IdentityMatrix(GaloisField field, int size)
+        {
+            if (field == null)
+                throw new ArgumentNullException(nameof(field));
+            if (size <= 0)
+                throw new ArgumentException("Matrix size must be positive");
+
+            return new FieldElementsMatrix(field, size, size, (i, j) => i == j ? field.One() : field.Zero());
+        }
+
+        /// <summary>
         /// Adds matrix <paramref name="b"/> to <paramref name="a"/>
         /// </summary>
         /// <param name="a">First term</param>
