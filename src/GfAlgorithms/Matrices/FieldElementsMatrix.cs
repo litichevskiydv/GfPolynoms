@@ -32,9 +32,9 @@
             {
                 var element = elementInitializer(i, j);
                 if(element == null)
-                    throw new InvalidOperationException("Matrix's elements must not be null");
+                    throw new ArgumentException("Matrix's elements must not be null");
                 if(Field.Equals(element.Field) == false)
-                    throw new InvalidOperationException("Incorrect field");
+                    throw new ArgumentException("Incorrect field");
 
                 _elements[i, j] = element;
             }
