@@ -44,6 +44,13 @@
             public  FieldElement Element { get; set; }
         }
 
+        public class BinaryOperationParametersValidationTestCase
+        {
+            public FieldElementsMatrix FirstArgument { get; set; }
+
+            public FieldElementsMatrix SecondArgument { get; set; }
+        }
+
         #endregion
 
         [UsedImplicitly]
@@ -56,11 +63,14 @@
         public static TheoryData<ElementsGetterParametersValidationTestCase> ElementsGetterParametersValidationTestCases;
         [UsedImplicitly]
         public static TheoryData<ElementsSetterParametersValidationTestCase> ElementsSetterParametersValidationTestCases;
+        [UsedImplicitly]
+        public static TheoryData<BinaryOperationParametersValidationTestCase> AdditionParametersValidationTestCases;
 
         static FieldElementsMatrixTests()
         {
             var gf2 = new PrimeOrderField(2);
             var gf3 = new PrimeOrderField(3);
+            var matrix = new FieldElementsMatrix(gf2, 3, 3);
 
             FromInitializerConstructorParametersValidationTestCases 
                 = new TheoryData<FromInitializerConstructorParametersValidationTestCase>
@@ -86,7 +96,6 @@
                           Field = gf2, RowsCount = 2, ColumnsCount = 2, ElementInitializer = (i, j) => gf3.One()
                       }
                   };
-
             FromNumbersArrayConstructorParametersValidationTestCases
                 = new TheoryData<FromNumbersArrayConstructorParametersValidationTestCase>
                   {
@@ -107,7 +116,6 @@
                           Field = gf2, Elements = new[,] {{1, 2}, { 0, 1} }
                       }
                   };
-
             FromFieldElementsArrayConstructorParametersValidationTestCases
                 = new TheoryData<FieldElement[,]>
                   {
@@ -117,8 +125,6 @@
                       new[,] {{gf2.One(), null}, {null, gf2.One()}},
                       new[,] {{gf2.One(), gf3.Zero()}, {gf3.Zero(), gf2.One()}}
                   };
-
-            var matrix = new FieldElementsMatrix(gf2, 3, 3);
             ElementsGetterParametersValidationTestCases 
                 = new TheoryData<ElementsGetterParametersValidationTestCase>
                   {
@@ -165,7 +171,31 @@
                       new ElementsSetterParametersValidationTestCase
                       {
                           Matrix = matrix, RowNumber = 0, ColumnNumber = 0, Element = gf3.One()
+                      }
+                  };
+            AdditionParametersValidationTestCases
+                = new TheoryData<BinaryOperationParametersValidationTestCase>
+                  {
+                      new BinaryOperationParametersValidationTestCase
+                      {
+                          FirstArgument = matrix
                       },
+                      new BinaryOperationParametersValidationTestCase
+                      {
+                          SecondArgument = matrix
+                      },
+                      new BinaryOperationParametersValidationTestCase
+                      {
+                          FirstArgument = matrix, SecondArgument = new FieldElementsMatrix(gf3, 3, 3)
+                      },
+                      new BinaryOperationParametersValidationTestCase
+                      {
+                          FirstArgument = matrix, SecondArgument = new FieldElementsMatrix(gf2, 2, 3)
+                      },
+                      new BinaryOperationParametersValidationTestCase
+                      {
+                          FirstArgument = matrix, SecondArgument = new FieldElementsMatrix(gf2, 3, 2)
+                      }
                   };
         }
 
@@ -207,9 +237,24 @@
 
         [Theory]
         [MemberData(nameof(ElementsSetterParametersValidationTestCases))]
+
         public void ElementsSetterMustValidateParameters(ElementsSetterParametersValidationTestCase testCase)
         {
             Assert.ThrowsAny<ArgumentException>(() => testCase.Matrix[testCase.RowNumber, testCase.ColumnNumber] = testCase.Element);
+        }
+
+        [Theory]
+        [MemberData(nameof(AdditionParametersValidationTestCases))]
+        public void AddMustValidateParameters(BinaryOperationParametersValidationTestCase testCase)
+        {
+            Assert.ThrowsAny<ArgumentException>(() => testCase.FirstArgument + testCase.SecondArgument);
+        }
+
+        [Theory]
+        [MemberData(nameof(AdditionParametersValidationTestCases))]
+        public void SubtractMustValidateParameters(BinaryOperationParametersValidationTestCase testCase)
+        {
+            Assert.ThrowsAny<ArgumentException>(() => testCase.FirstArgument - testCase.SecondArgument);
         }
     }
 }
