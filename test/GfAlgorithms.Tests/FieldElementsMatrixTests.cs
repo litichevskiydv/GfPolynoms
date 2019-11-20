@@ -58,6 +58,13 @@
             public FieldElementsMatrix SecondArgument { get; set; }
         }
 
+        public class PowParametersValidationTestCase
+        {
+            public FieldElementsMatrix Matrix { get; set; }
+
+            public int Degree { get; set; }
+        }
+
         #endregion
 
         [UsedImplicitly]
@@ -76,6 +83,8 @@
         public static TheoryData<MultiplyByFieldElementParametersValidationTestCase> MultiplyByFieldElementParametersValidationTestCases;
         [UsedImplicitly]
         public static TheoryData<BinaryOperationParametersValidationTestCase> MultiplyByMatrixParametersValidationTestCases;
+        [UsedImplicitly]
+        public static TheoryData<PowParametersValidationTestCase> PowParametersValidationTestCases;
 
         static FieldElementsMatrixTests()
         {
@@ -244,6 +253,22 @@
                           FirstArgument = matrix, SecondArgument = new FieldElementsMatrix(gf3, 2, 3)
                       }
                   };
+            PowParametersValidationTestCases 
+                = new TheoryData<PowParametersValidationTestCase>
+                  {
+                      new PowParametersValidationTestCase
+                      {
+                          Degree = 1
+                      },
+                      new PowParametersValidationTestCase
+                      {
+                          Matrix = matrix, Degree = -1
+                      },
+                      new PowParametersValidationTestCase
+                      {
+                          Matrix = new FieldElementsMatrix(gf2, 2, 3), Degree = 2
+                      }
+                  };
         }
 
         [Theory]
@@ -316,6 +341,13 @@
         public void MultiplyByMatrixMustValidateParameters(BinaryOperationParametersValidationTestCase testCase)
         {
             Assert.ThrowsAny<ArgumentException>(() => testCase.FirstArgument * testCase.SecondArgument);
+        }
+
+        [Theory]
+        [MemberData(nameof(PowParametersValidationTestCases))]
+        public void PowMustValidateParameters(PowParametersValidationTestCase testCase)
+        {
+            Assert.ThrowsAny<ArgumentException>(() => FieldElementsMatrix.Pow(testCase.Matrix, testCase.Degree));
         }
     }
 }
