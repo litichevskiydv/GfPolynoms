@@ -349,5 +349,85 @@
         {
             Assert.ThrowsAny<ArgumentException>(() => FieldElementsMatrix.Pow(testCase.Matrix, testCase.Degree));
         }
+
+        [Fact]
+        public void MustAddTwoMatrices()
+        {
+            // Given
+            var gf5 = new PrimeOrderField(5);
+            var first = new FieldElementsMatrix(gf5, new[,] {{1, 2}, {3, 4}});
+            var second = new FieldElementsMatrix(gf5, new[,] {{1, 3}, {2, 4}});
+
+            // When
+            var actualResult = first + second;
+
+            // Then
+            var expectedResult = new FieldElementsMatrix(gf5, new[,] {{2, 0}, {0, 3}});
+            Assert.Equal(expectedResult, actualResult);
+        }
+
+        [Fact]
+        public void MustSubtractTwoMatrices()
+        {
+            // Given
+            var gf5 = new PrimeOrderField(5);
+            var first = new FieldElementsMatrix(gf5, new[,] {{1, 2}, {3, 4}});
+            var second = new FieldElementsMatrix(gf5, new[,] {{1, 3}, {2, 4}});
+
+            // When
+            var actualResult = first - second;
+
+            // Then
+            var expectedResult = new FieldElementsMatrix(gf5, new[,] {{0, 4}, {1, 0}});
+            Assert.Equal(expectedResult, actualResult);
+        }
+
+        [Fact]
+        public void MustMultiplyMatrixByFieldElement()
+        {
+            // Given
+            var gf5 = new PrimeOrderField(5);
+            var fieldElement = gf5.CreateElement(3);
+            var matrix = new FieldElementsMatrix(gf5, new[,] {{1, 2}, {3, 4}});
+
+            // When
+            var actualResult = fieldElement * matrix;
+
+            // Then
+            var expectedResult = new FieldElementsMatrix(gf5, new[,] {{3, 1}, {4, 2}});
+            Assert.Equal(expectedResult, actualResult);
+        }
+
+        [Fact]
+        public void MustMultiplyTwoMatrices()
+        {
+            // Given
+            var gf5 = new PrimeOrderField(5);
+            var first = new FieldElementsMatrix(gf5, new[,] {{1, 2}, {3, 4}});
+            var second = new FieldElementsMatrix(gf5, new[,] {{1, 3}, {2, 4}});
+
+            // When
+            var actualResult = first * second;
+
+            // Then
+            var expectedResult = new FieldElementsMatrix(gf5, new[,] {{0, 1}, {1, 0}});
+            Assert.Equal(expectedResult, actualResult);
+        }
+
+        [Fact]
+        public void MustCalculateMatrixDegree()
+        {
+            // Given
+            var gf5 = new PrimeOrderField(5);
+            var matrix = new FieldElementsMatrix(gf5, new[,] { { 1, 2 }, { 3, 4 } });
+            const int degree = 3;
+
+            // When
+            var actualResult = FieldElementsMatrix.Pow(matrix, degree);
+
+            // Then
+            var expectedResult = new FieldElementsMatrix(gf5, new[,] {{2, 4}, {1, 3}});
+            Assert.Equal(expectedResult, actualResult);
+        }
     }
 }
