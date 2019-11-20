@@ -129,10 +129,10 @@
         /// <param name="i">Row number</param>
         private void ValidateRowNumber(int i)
         {
-            if (i <= 0)
-                throw new ArgumentNullException($"{nameof(i)} must be positive");
-            if (i > RowsCount)
-                throw new ArgumentException($"{nameof(i)} mustn't be greater than matrix rows count");
+            if (i < 0)
+                throw new ArgumentNullException($"{nameof(i)} must be not negative");
+            if (i >= RowsCount)
+                throw new ArgumentException($"{nameof(i)} must be less than matrix rows count");
         }
 
         /// <summary>
@@ -141,10 +141,10 @@
         /// <param name="j">Column number</param>
         private void ValidateColumnNumber(int j)
         {
-            if (j <= 0)
-                throw new ArgumentException($"{nameof(j)} must be positive");
-            if (j > ColumnsCount)
-                throw new ArgumentException($"{nameof(j)} mustn't be greater than matrix columns count");
+            if (j < 0)
+                throw new ArgumentException($"{nameof(j)} must be not negative");
+            if (j >= ColumnsCount)
+                throw new ArgumentException($"{nameof(j)} must be less than matrix columns count");
         }
 
         /// <summary>
@@ -179,7 +179,7 @@
                 if (value == null)
                     throw new ArgumentNullException(nameof(value));
                 if (Field.Equals(value.Field) == false)
-                    throw new AggregateException("Incorrect field");
+                    throw new ArgumentException("Incorrect field");
 
                 _elements[i, j] = value;
             }
@@ -253,7 +253,7 @@
                 {
                     if (j != 0) builder.Append("&");
                     builder.Append(_elements[i, j]);
-                    builder.Append(j == ColumnsCount - 1 ? "\\" : " ");
+                    builder.Append(j == ColumnsCount - 1 ? "\\\\" : " ");
                 }
 
                 builder.AppendLine();
