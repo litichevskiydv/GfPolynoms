@@ -83,111 +83,120 @@
             LogSpectrum(spectrum);
             return spectrum;
         }
-        private static void AnalyzeSpectrumForRsN4K3() =>
+        private static IReadOnlyDictionary<int, BigInteger> AnalyzeSpectrumForRsN4K3() =>
             AnalyzeSpectrumForRsCode(
                 new PrimePowerOrderField(8, new Polynomial(new PrimeOrderField(2), 1, 1, 0, 1)),
                 4, 3
             );
 
 
-        private static void AnalyzeSpectrumForRsN7K3() =>
+        private static IReadOnlyDictionary<int, BigInteger> AnalyzeSpectrumForRsN7K3() =>
             AnalyzeSpectrumForRsCode(
                 new PrimePowerOrderField(8, new Polynomial(new PrimeOrderField(2), 1, 1, 0, 1)),
                 7, 3
             );
 
-        private static void AnalyzeSpectrumForRsN7K4() =>
+        private static IReadOnlyDictionary<int, BigInteger> AnalyzeSpectrumForRsN7K4() =>
             AnalyzeSpectrumForRsCode(
                 new PrimePowerOrderField(8, new Polynomial(new PrimeOrderField(2), 1, 1, 0, 1)),
                 7, 4
             );
 
-        private static void AnalyzeSpectrumForRsN5K4() =>
+        private static IReadOnlyDictionary<int, BigInteger> AnalyzeSpectrumForRsN5K4() =>
             AnalyzeSpectrumForRsCode(
                 new PrimePowerOrderField(9, new Polynomial(new PrimeOrderField(3), 1, 0, 1)),
                 5, 4
             );
 
-        private static void AnalyzeSpectrumForRsN6K4() =>
+        private static IReadOnlyDictionary<int, BigInteger> AnalyzeSpectrumForRsN6K4() =>
             AnalyzeSpectrumForRsCode(
                 new PrimePowerOrderField(9, new Polynomial(new PrimeOrderField(3), 1, 0, 1)),
                 6, 4
             );
 
-        private static void AnalyzeSpectrumForRsN8K4() =>
+        private static IReadOnlyDictionary<int, BigInteger> AnalyzeSpectrumForRsN8K4() =>
             AnalyzeSpectrumForRsCode(
                 new PrimePowerOrderField(9, new Polynomial(new PrimeOrderField(3), 1, 0, 1)),
                 8, 4
             );
 
-        private static void AnalyzeSpectrumForRsN8K5() =>
+        private static IReadOnlyDictionary<int, BigInteger> AnalyzeSpectrumForRsN8K5() =>
             AnalyzeSpectrumForRsCode(
                 new PrimePowerOrderField(9, new Polynomial(new PrimeOrderField(3), 1, 0, 1)),
                 8, 5
             );
 
-        private static void AnalyzeSpectrumForRsN8K6() =>
+        private static IReadOnlyDictionary<int, BigInteger> AnalyzeSpectrumForRsN8K6() =>
             AnalyzeSpectrumForRsCode(
                 new PrimePowerOrderField(9, new Polynomial(new PrimeOrderField(3), 1, 0, 1)),
                 8, 6
             );
 
-        private static void AnalyzeSpectrumForRsN6K5() => AnalyzeSpectrumForRsCode(new PrimeOrderField(11), 6, 5);
+        private static IReadOnlyDictionary<int, BigInteger> AnalyzeSpectrumForRsN6K5() =>
+            AnalyzeSpectrumForRsCode(new PrimeOrderField(11), 6, 5);
 
-        private static void AnalyzeSpectrumForRsN10K5() => AnalyzeSpectrumForRsCode(new PrimeOrderField(11), 10, 5);
+        private static IReadOnlyDictionary<int, BigInteger> AnalyzeSpectrumForRsN10K5() =>
+            AnalyzeSpectrumForRsCode(new PrimeOrderField(11), 10, 5);
 
-        private static void AnalyzeSpectrumForRsN10K6() => AnalyzeSpectrumForRsCode(new PrimeOrderField(11), 10, 6);
+        private static IReadOnlyDictionary<int, BigInteger> AnalyzeSpectrumForRsN10K6() =>
+            AnalyzeSpectrumForRsCode(new PrimeOrderField(11), 10, 6);
 
 
-        private static void AnalyzeSpectrumForRsN8K7() =>
+        private static IReadOnlyDictionary<int, BigInteger> AnalyzeSpectrumForRsN8K7() =>
             AnalyzeSpectrumForRsCode(
                 new PrimePowerOrderField(16, new Polynomial(new PrimeOrderField(2), 1, 0, 0, 1, 1)),
                 8, 7
             );
 
-        private static void AnalyzeSpectrumForRsN15K7() =>
+        private static IReadOnlyDictionary<int, BigInteger> AnalyzeSpectrumForRsN15K7() =>
             AnalyzeSpectrumForRsCode(
                 new PrimePowerOrderField(16, new Polynomial(new PrimeOrderField(2), 1, 0, 0, 1, 1)),
                 15, 7
             );
 
-        private static void AnalyzeSpectrumForRsN15K8() =>
+        private static IReadOnlyDictionary<int, BigInteger> AnalyzeSpectrumForRsN15K8() =>
             AnalyzeSpectrumForRsCode(
                 new PrimePowerOrderField(16, new Polynomial(new PrimeOrderField(2), 1, 0, 0, 1, 1)),
                 15, 8
             );
 
-        private static void AnalyzeSpectrumForRsN15K13() =>
+        private static IReadOnlyDictionary<int, BigInteger> AnalyzeSpectrumForRsN15K13() =>
             AnalyzeSpectrumForRsCode(
                 new PrimePowerOrderField(27, new Polynomial(new PrimeOrderField(3), 2, 2, 0, 1)),
                 15, 13
             );
 
-        private static void AnalyzeSpectrumForRsN9K8() => AnalyzeSpectrumForRsCode(new PrimeOrderField(17), 9, 8);
+        private static IReadOnlyDictionary<int, BigInteger> AnalyzeSpectrumForRsN9K8() =>
+            AnalyzeSpectrumForRsCode(new PrimeOrderField(17), 9, 8);
 
-        private static void AnalyzeSpectrumForRsN16K8() => AnalyzeSpectrumForRsCode(new PrimeOrderField(17), 16, 8);
+        private static IReadOnlyDictionary<int, BigInteger> AnalyzeSpectrumForRsN16K8() =>
+            AnalyzeSpectrumForRsCode(new PrimeOrderField(17), 16, 8);
 
-        private static void AnalyzeSpectrumForRsN16K9() => AnalyzeSpectrumForRsCode(new PrimeOrderField(17), 16, 9);
+        private static IReadOnlyDictionary<int, BigInteger> AnalyzeSpectrumForRsN16K9() =>
+            AnalyzeSpectrumForRsCode(new PrimeOrderField(17), 16, 9);
 
-        private static void AnalyzeSpectrumForRsN10K9() => AnalyzeSpectrumForRsCode(new PrimeOrderField(19), 10, 9);
+        private static IReadOnlyDictionary<int, BigInteger> AnalyzeSpectrumForRsN10K9() =>
+            AnalyzeSpectrumForRsCode(new PrimeOrderField(19), 10, 9);
 
-        private static void AnalyzeSpectrumForRsN18K9() => AnalyzeSpectrumForRsCode(new PrimeOrderField(19), 18, 9);
+        private static IReadOnlyDictionary<int, BigInteger> AnalyzeSpectrumForRsN18K9() =>
+            AnalyzeSpectrumForRsCode(new PrimeOrderField(19), 18, 9);
 
-        private static void AnalyzeSpectrumForRsN18K10() => AnalyzeSpectrumForRsCode(new PrimeOrderField(19), 18, 10);
+        private static IReadOnlyDictionary<int, BigInteger> AnalyzeSpectrumForRsN18K10() =>
+            AnalyzeSpectrumForRsCode(new PrimeOrderField(19), 18, 10);
 
-        private static void AnalyzeSpectrumForRsN26K13() =>
+        private static IReadOnlyDictionary<int, BigInteger> AnalyzeSpectrumForRsN26K13() =>
             AnalyzeSpectrumForRsCode(
                 new PrimePowerOrderField(27, new Polynomial(new PrimeOrderField(3), 2, 2, 0, 1)),
                 26, 13
             );
 
-        private static void AnalyzeSpectrumForRsN26K15() =>
+        private static IReadOnlyDictionary<int, BigInteger> AnalyzeSpectrumForRsN26K15() =>
             AnalyzeSpectrumForRsCode(
                 new PrimePowerOrderField(27, new Polynomial(new PrimeOrderField(3), 2, 2, 0, 1)),
                 26, 15
             );
 
-        private static void AnalyzeSpectrumForWvN7K3D4First() =>
+        private static IReadOnlyDictionary<int, BigInteger> AnalyzeSpectrumForWvN7K3D4First() =>
             AnalyzeSpectrumForWaveletCode(
                 7, 3, 4,
                 new Polynomial(
@@ -196,7 +205,7 @@
                 )
             );
 
-        private static void AnalyzeSpectrumForWvN7K3D4Second() =>
+        private static IReadOnlyDictionary<int, BigInteger> AnalyzeSpectrumForWvN7K3D4Second() =>
             AnalyzeSpectrumForWaveletCode(
                 7, 3, 4,
                 new Polynomial(
@@ -205,7 +214,7 @@
                 )
             );
 
-        private static void AnalyzeSpectrumForWvN8K4D4Golay() =>
+        private static IReadOnlyDictionary<int, BigInteger> AnalyzeSpectrumForWvN8K4D4Golay() =>
             AnalyzeSpectrumForWaveletCode(
                 8, 4, 4,
                 new Polynomial(
@@ -214,7 +223,7 @@
                 )
             );
 
-        private static void AnalyzeSpectrumForWvN8K4D4() =>
+        private static IReadOnlyDictionary<int, BigInteger> AnalyzeSpectrumForWvN8K4D4() =>
             AnalyzeSpectrumForWaveletCode(
                 8, 4, 4,
                 new Polynomial(
@@ -223,7 +232,7 @@
                 )
             );
 
-        private static void AnalyzeSpectrumForWvN8K4D3() =>
+        private static IReadOnlyDictionary<int, BigInteger> AnalyzeSpectrumForWvN8K4D3() =>
             AnalyzeSpectrumForWaveletCode(
                 8, 4, 3,
                 new Polynomial(
@@ -232,13 +241,13 @@
                 )
             );
 
-        private static void AnalyzeSpectrumForWvN10K5D5() =>
+        private static IReadOnlyDictionary<int, BigInteger> AnalyzeSpectrumForWvN10K5D5() =>
             AnalyzeSpectrumForWaveletCode(
                 10, 5, 5,
                 new Polynomial(new PrimeOrderField(11), 8, 10, 4, 6, 8, 9, 2, 10, 4, 5)
             );
 
-        private static void AnalyzeSpectrumForWvN15K7D8() =>
+        private static IReadOnlyDictionary<int, BigInteger> AnalyzeSpectrumForWvN15K7D8() =>
             AnalyzeSpectrumForWaveletCode(
                 15, 7, 8,
                 new Polynomial(
@@ -248,27 +257,27 @@
                 new SpectrumAnalyzerOptions {LoggingResolution = 100000}
             );
 
-        private static void AnalyzeSpectrumForWvN16K8D8() =>
+        private static IReadOnlyDictionary<int, BigInteger> AnalyzeSpectrumForWvN16K8D8() =>
             AnalyzeSpectrumForWaveletCode(
                 16, 8, 8,
                 new Polynomial(new PrimeOrderField(17), 11, 14, 15, 16, 9, 5, 4, 14, 1, 11, 15, 11, 8, 11, 2, 6),
                 new SpectrumAnalyzerOptions { LoggingResolution = 10000000 }
             );
 
-        private static void AnalyzeSpectrumForWvN18K9D9() =>
+        private static IReadOnlyDictionary<int, BigInteger> AnalyzeSpectrumForWvN18K9D9() =>
             AnalyzeSpectrumForWaveletCode(
                 18, 9, 9,
                 new Polynomial(new PrimeOrderField(19), 16, 2, 1, 0, 16, 11, 0, 18, 16, 1, 8, 2, 3, 6, 0, 7, 6, 1),
                 new SpectrumAnalyzerOptions { LoggingResolution = 1000000000 }
             );
 
-        private static void AnalyzeSpectrumForWvN24K12D8() =>
+        private static IReadOnlyDictionary<int, BigInteger> AnalyzeSpectrumForWvN24K12D8() =>
             AnalyzeSpectrumForWaveletCode(
                 24, 12, 8,
                 new Polynomial(new PrimeOrderField(2), 1, 1, 0, 1, 1, 1, 0, 1, 0, 1, 0, 0, 1)
             );
 
-        private static void AnalyzeSpectrumForWvN26K13D12() =>
+        private static IReadOnlyDictionary<int, BigInteger> AnalyzeSpectrumForWvN26K13D12() =>
             AnalyzeSpectrumForWaveletCode(
                 26, 13, 12,
                 new Polynomial(
