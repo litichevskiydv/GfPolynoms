@@ -51,6 +51,13 @@
             public FieldElementsMatrix SecondArgument { get; set; }
         }
 
+        public class MultiplyByFieldElementParametersValidationTestCase
+        {
+            public FieldElement FirstArgument { get; set; }
+
+            public FieldElementsMatrix SecondArgument { get; set; }
+        }
+
         #endregion
 
         [UsedImplicitly]
@@ -65,6 +72,10 @@
         public static TheoryData<ElementsSetterParametersValidationTestCase> ElementsSetterParametersValidationTestCases;
         [UsedImplicitly]
         public static TheoryData<BinaryOperationParametersValidationTestCase> AdditionParametersValidationTestCases;
+        [UsedImplicitly]
+        public static TheoryData<MultiplyByFieldElementParametersValidationTestCase> MultiplyByFieldElementParametersValidationTestCases;
+        [UsedImplicitly]
+        public static TheoryData<BinaryOperationParametersValidationTestCase> MultiplyByMatrixParametersValidationTestCases;
 
         static FieldElementsMatrixTests()
         {
@@ -197,6 +208,42 @@
                           FirstArgument = matrix, SecondArgument = new FieldElementsMatrix(gf2, 3, 2)
                       }
                   };
+            MultiplyByFieldElementParametersValidationTestCases
+                = new TheoryData<MultiplyByFieldElementParametersValidationTestCase>
+                  {
+                    new MultiplyByFieldElementParametersValidationTestCase
+                    {
+                        FirstArgument = gf2.One()
+                    },
+                    new MultiplyByFieldElementParametersValidationTestCase
+                    {
+                        SecondArgument = matrix
+                    },
+                    new MultiplyByFieldElementParametersValidationTestCase
+                    {
+                        FirstArgument = gf3.CreateElement(2), SecondArgument = matrix
+                    }
+                  };
+            MultiplyByMatrixParametersValidationTestCases
+                = new TheoryData<BinaryOperationParametersValidationTestCase>
+                  {
+                      new BinaryOperationParametersValidationTestCase
+                      {
+                          FirstArgument = matrix
+                      },
+                      new BinaryOperationParametersValidationTestCase
+                      {
+                          SecondArgument = matrix
+                      },
+                      new BinaryOperationParametersValidationTestCase
+                      {
+                          FirstArgument = matrix, SecondArgument = new FieldElementsMatrix(gf3, 3, 3)
+                      },
+                      new BinaryOperationParametersValidationTestCase
+                      {
+                          FirstArgument = matrix, SecondArgument = new FieldElementsMatrix(gf3, 2, 3)
+                      }
+                  };
         }
 
         [Theory]
@@ -255,6 +302,20 @@
         public void SubtractMustValidateParameters(BinaryOperationParametersValidationTestCase testCase)
         {
             Assert.ThrowsAny<ArgumentException>(() => testCase.FirstArgument - testCase.SecondArgument);
+        }
+
+        [Theory]
+        [MemberData(nameof(MultiplyByFieldElementParametersValidationTestCases))]
+        public void MultiplyByFieldElementMustValidateParameters(MultiplyByFieldElementParametersValidationTestCase testCase)
+        {
+            Assert.ThrowsAny<ArgumentException>(() => testCase.FirstArgument * testCase.SecondArgument);
+        }
+
+        [Theory]
+        [MemberData(nameof(MultiplyByMatrixParametersValidationTestCases))]
+        public void MultiplyByMatrixMustValidateParameters(BinaryOperationParametersValidationTestCase testCase)
+        {
+            Assert.ThrowsAny<ArgumentException>(() => testCase.FirstArgument * testCase.SecondArgument);
         }
     }
 }
