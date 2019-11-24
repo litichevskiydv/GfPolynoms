@@ -382,6 +382,21 @@
         }
 
         /// <summary>
+        /// Transposes the current matrix
+        /// </summary>
+        /// <returns></returns>
+        public FieldElementsMatrix Transpose()
+        {
+            var newElements = new FieldElement[ColumnsCount, RowsCount];
+            for (var i = 0; i < RowsCount; i++)
+            for (var j = 0; j < ColumnsCount; j++)
+                newElements[j, i] = _elements[i, j];
+
+            _elements = newElements;
+            return this;
+        }
+
+        /// <summary>
         /// Creates square zero matrix with size <paramref name="size"/>
         /// whose elements must belong to the <paramref name="field"/>
         /// </summary>
@@ -439,6 +454,12 @@
         /// <param name="a">Degree basis</param>
         /// <param name="degree">Matrix degree</param>
         public static FieldElementsMatrix Pow(FieldElementsMatrix a, int degree) => new FieldElementsMatrix(a).Pow(degree);
+
+        /// <summary>
+        /// Transposes matrix <paramref name="a"/>
+        /// </summary>
+        /// <param name="a">Transposable matrix</param>
+        public static FieldElementsMatrix Transpose(FieldElementsMatrix a) => new FieldElementsMatrix(a).Transpose();
 
         public static FieldElementsMatrix operator +(FieldElementsMatrix a, FieldElementsMatrix b) => Add(a, b);
 

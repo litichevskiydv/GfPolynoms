@@ -429,5 +429,20 @@
             var expectedResult = new FieldElementsMatrix(gf5, new[,] {{2, 4}, {1, 3}});
             Assert.Equal(expectedResult, actualResult);
         }
+
+        [Fact]
+        public void MustTransposeMatrix()
+        {
+            // Given
+            var gf5 = new PrimeOrderField(5);
+            var matrix = new FieldElementsMatrix(gf5, new[,] {{1, 2, 3}, {4, 0, 1}});
+
+            // When
+            var actualResult = FieldElementsMatrix.Transpose(matrix);
+
+            // Then
+            var expectedResult = new FieldElementsMatrix(gf5, new[,] {{1, 4}, {2, 0}, {3, 1}});
+            Assert.Equal(expectedResult, actualResult);
+        }
     }
 }
