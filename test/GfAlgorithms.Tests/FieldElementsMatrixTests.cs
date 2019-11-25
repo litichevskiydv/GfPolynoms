@@ -65,6 +65,13 @@
             public int Degree { get; set; }
         }
 
+        public class DiagonalizationTestCase
+        {
+            public FieldElementsMatrix Matrix { get; set; }
+
+            public FieldElementsMatrix ExpectedTriangularMatrix { get; set; }
+        }
+
         #endregion
 
         [UsedImplicitly]
@@ -85,6 +92,8 @@
         public static TheoryData<BinaryOperationParametersValidationTestCase> MultiplyByMatrixParametersValidationTestCases;
         [UsedImplicitly]
         public static TheoryData<PowParametersValidationTestCase> PowParametersValidationTestCases;
+        [UsedImplicitly] 
+        public static TheoryData<DiagonalizationTestCase> DiagonalizationTestCases;
 
         static FieldElementsMatrixTests()
         {
@@ -269,6 +278,20 @@
                           Matrix = new FieldElementsMatrix(gf2, 2, 3), Degree = 2
                       }
                   };
+            DiagonalizationTestCases
+                = new TheoryData<DiagonalizationTestCase>
+                  {
+                      new DiagonalizationTestCase
+                      {
+                          Matrix = new FieldElementsMatrix(gf3, new[,] {{1, 2, 1}, {2, 1, 1}, {0, 1, 2}}),
+                          ExpectedTriangularMatrix = new FieldElementsMatrix(gf3, new[,] {{1, 0, 0}, {0, 1, 0}, {0, 0, 2}})
+                      },
+                      new DiagonalizationTestCase
+                      {
+                          Matrix = new FieldElementsMatrix(gf3, new[,] {{1, 2, 1}, {2, 1, 1}, {0, 0, 2}}),
+                          ExpectedTriangularMatrix = new FieldElementsMatrix(gf3, new[,] {{1, 2, 0}, {0, 0, 2}, {0, 0, 0}})
+                      }
+                  };
         }
 
         [Theory]
@@ -443,6 +466,17 @@
             // Then
             var expectedResult = new FieldElementsMatrix(gf5, new[,] {{1, 4}, {2, 0}, {3, 1}});
             Assert.Equal(expectedResult, actualResult);
+        }
+
+        [Theory]
+        [MemberData(nameof(DiagonalizationTestCases))]
+        public void MustDiagonalizeMatrix(DiagonalizationTestCase testCase)
+        {
+            // When
+            var actualTriangularMatrix = FieldElementsMatrix.Diagonalize(testCase.Matrix);
+
+            // Then
+            Assert.Equal(testCase.ExpectedTriangularMatrix, actualTriangularMatrix);
         }
     }
 }

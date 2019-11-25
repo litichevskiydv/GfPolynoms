@@ -384,7 +384,6 @@
         /// <summary>
         /// Transposes the current matrix
         /// </summary>
-        /// <returns></returns>
         public FieldElementsMatrix Transpose()
         {
             var newElements = new FieldElement[ColumnsCount, RowsCount];
@@ -393,6 +392,46 @@
                 newElements[j, i] = _elements[i, j];
 
             _elements = newElements;
+            return this;
+        }
+
+        /// <summary>
+        /// Swaps elements from rows number <paramref name="firstRowIndex"/> and <paramref name="secondRowsIndex"/> within column <paramref name="columnIndex"/>
+        /// </summary>
+        private void SwapColumnElements(int firstRowIndex, int secondRowsIndex, int columnIndex)
+        {
+            var tmp = _elements[firstRowIndex, columnIndex];
+            _elements[firstRowIndex, columnIndex] = _elements[secondRowsIndex, columnIndex];
+            _elements[secondRowsIndex, columnIndex] = tmp;
+        }
+
+        /// <summary>
+        /// Transforms the current matrix to an diagonal view
+        /// </summary>
+        public FieldElementsMatrix Diagonalize()
+        {
+            for (int col = 0, row = 0; col < ColumnsCount && row < RowsCount; ++col)
+            {
+                var selectedRow = row;
+                for (; selectedRow < RowsCount && _elements[selectedRow, col].Representation == 0; ++selectedRow) ;
+                if (selectedRow == RowsCount)
+                    continue;
+
+                if (selectedRow != row)
+                    for (var j = col; j < ColumnsCount; ++j)
+                        SwapColumnElements(selectedRow, row, j);
+
+                for (var i = 0; i < RowsCount; ++i)
+                    if (i != row)
+                    {
+                        var c = _elements[i, col] / _elements[row, col];
+                        for (var j = col; j < ColumnsCount; ++j)
+                            _elements[i, j] -= _elements[row, j] * c;
+                    }
+
+                ++row;
+            }
+
             return this;
         }
 
@@ -460,6 +499,11 @@
         /// </summary>
         /// <param name="a">Transposable matrix</param>
         public static FieldElementsMatrix Transpose(FieldElementsMatrix a) => new FieldElementsMatrix(a).Transpose();
+
+        /// <summary>
+        /// Transforms the matrix <paramref name="a"/> to an diagonal view
+        /// </summary>
+        public static FieldElementsMatrix Diagonalize(FieldElementsMatrix a) => new FieldElementsMatrix(a).Diagonalize();
 
         public static FieldElementsMatrix operator +(FieldElementsMatrix a, FieldElementsMatrix b) => Add(a, b);
 
