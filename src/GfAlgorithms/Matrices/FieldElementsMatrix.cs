@@ -468,6 +468,23 @@
         }
 
         /// <summary>
+        /// Calculates determinant of the current matrix
+        /// </summary>
+        public FieldElement CalculateDeterminant()
+        {
+            if(RowsCount != ColumnsCount)
+                throw new InvalidOperationException("Determinant can be calculated only for square matrices");
+
+            var determinant = Field.One();
+            var copiedMatrix = new FieldElementsMatrix(this);
+            var diagonalizationSummary = copiedMatrix.DiagonalizeInternal();
+            for (var i = 0; i < RowsCount; i++)
+                determinant *= copiedMatrix[i, i];
+
+            return diagonalizationSummary.PermutationsCount % 2 == 0 ? determinant : determinant.InverseForAddition();
+        }
+
+        /// <summary>
         /// Creates square zero matrix with size <paramref name="size"/>
         /// whose elements must belong to the <paramref name="field"/>
         /// </summary>

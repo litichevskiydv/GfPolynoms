@@ -478,5 +478,20 @@
             // Then
             Assert.Equal(testCase.ExpectedTriangularMatrix, actualTriangularMatrix);
         }
+
+        [Fact]
+        public void MustCalculateDeterminant()
+        {
+            // Given
+            var gf3 = new PrimeOrderField(3);
+            var matrix = new FieldElementsMatrix(gf3, new[,] {{1, 2, 1}, {2, 1, 1}, {0, 1, 2}});
+
+            // When
+            var actualDeterminant = matrix.CalculateDeterminant();
+
+            // Then
+            var expectedDeterminant = gf3.One();
+            Assert.Equal(expectedDeterminant, actualDeterminant);
+        }
     }
 }
