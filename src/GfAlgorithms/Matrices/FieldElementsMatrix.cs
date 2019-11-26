@@ -11,6 +11,22 @@
     /// </summary>
     public class FieldElementsMatrix
     {
+        private class DiagonalizationSummary
+        {
+            public int PermutationsCount { get; }
+
+            public int?[] SelectedRowsByColumns { get; }
+
+            public DiagonalizationSummary(int permutationsCount, int?[] selectedRowsByColumns)
+            {
+                if (selectedRowsByColumns == null)
+                    throw new ArgumentNullException(nameof(selectedRowsByColumns));
+
+                PermutationsCount = permutationsCount;
+                SelectedRowsByColumns = selectedRowsByColumns;
+            }
+        }
+
         /// <summary>
         /// Field from which the elements of the matrix
         /// </summary>
@@ -406,10 +422,13 @@
         }
 
         /// <summary>
-        /// Transforms the current matrix to an diagonal view
+        /// Transforms the current matrix to an diagonal view and returns process summary
         /// </summary>
-        public FieldElementsMatrix Diagonalize()
+        private DiagonalizationSummary DiagonalizeInternal()
         {
+            var permutationsCount = 0;
+            var selectedRowsByColumns = new int?[ColumnsCount];
+
             for (int col = 0, row = 0; col < ColumnsCount && row < RowsCount; ++col)
             {
                 var selectedRow = row;
@@ -418,8 +437,11 @@
                     continue;
 
                 if (selectedRow != row)
+                {
                     for (var j = col; j < ColumnsCount; ++j)
                         SwapColumnElements(selectedRow, row, j);
+                    ++permutationsCount;
+                }
 
                 for (var i = 0; i < RowsCount; ++i)
                     if (i != row)
@@ -429,9 +451,19 @@
                             _elements[i, j] -= _elements[row, j] * c;
                     }
 
+                selectedRowsByColumns[col] = row;
                 ++row;
             }
 
+            return new DiagonalizationSummary(permutationsCount, selectedRowsByColumns);
+        }
+
+        /// <summary>
+        /// Transforms the current matrix to an diagonal view
+        /// </summary>
+        public FieldElementsMatrix Diagonalize()
+        {
+            DiagonalizeInternal();
             return this;
         }
 
