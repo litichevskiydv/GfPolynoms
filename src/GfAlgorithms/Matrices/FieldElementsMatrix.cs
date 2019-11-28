@@ -11,19 +11,24 @@
     /// </summary>
     public class FieldElementsMatrix
     {
-        private class DiagonalizationSummary
+        public class DiagonalizationSummary
         {
             public int PermutationsCount { get; }
 
             public int?[] SelectedRowsByColumns { get; }
 
-            public DiagonalizationSummary(int permutationsCount, int?[] selectedRowsByColumns)
+            public FieldElementsMatrix Result { get; }
+
+            public DiagonalizationSummary(int permutationsCount, int?[] selectedRowsByColumns, FieldElementsMatrix result)
             {
                 if (selectedRowsByColumns == null)
                     throw new ArgumentNullException(nameof(selectedRowsByColumns));
+                if(result == null)
+                    throw new ArgumentNullException(nameof(result));
 
                 PermutationsCount = permutationsCount;
                 SelectedRowsByColumns = selectedRowsByColumns;
+                Result = result;
             }
         }
 
@@ -424,7 +429,7 @@
         /// <summary>
         /// Transforms the current matrix to an diagonal view and returns process summary
         /// </summary>
-        private DiagonalizationSummary DiagonalizeInternal()
+        public DiagonalizationSummary DiagonalizeExtended()
         {
             var permutationsCount = 0;
             var selectedRowsByColumns = new int?[ColumnsCount];
@@ -455,17 +460,13 @@
                 ++row;
             }
 
-            return new DiagonalizationSummary(permutationsCount, selectedRowsByColumns);
+            return new DiagonalizationSummary(permutationsCount, selectedRowsByColumns, this);
         }
 
         /// <summary>
         /// Transforms the current matrix to an diagonal view
         /// </summary>
-        public FieldElementsMatrix Diagonalize()
-        {
-            DiagonalizeInternal();
-            return this;
-        }
+        public FieldElementsMatrix Diagonalize() => DiagonalizeExtended().Result;
 
         /// <summary>
         /// Calculates determinant of the current matrix
@@ -476,10 +477,9 @@
                 throw new InvalidOperationException("Determinant can be calculated only for square matrices");
 
             var determinant = Field.One();
-            var copiedMatrix = new FieldElementsMatrix(this);
-            var diagonalizationSummary = copiedMatrix.DiagonalizeInternal();
+            var diagonalizationSummary = DiagonalizeExtended(this);
             for (var i = 0; i < RowsCount; i++)
-                determinant *= copiedMatrix[i, i];
+                determinant *= diagonalizationSummary.Result[i, i];
 
             return diagonalizationSummary.PermutationsCount % 2 == 0 ? determinant : determinant.InverseForAddition();
         }
@@ -553,6 +553,11 @@
         /// Transforms the matrix <paramref name="a"/> to an diagonal view
         /// </summary>
         public static FieldElementsMatrix Diagonalize(FieldElementsMatrix a) => new FieldElementsMatrix(a).Diagonalize();
+
+        /// <summary>
+        /// Transforms the matrix <paramref name="a"/> to an diagonal view and returns process summary
+        /// </summary>
+        public static DiagonalizationSummary DiagonalizeExtended(FieldElementsMatrix a) => new FieldElementsMatrix(a).DiagonalizeExtended();
 
         public static FieldElementsMatrix operator +(FieldElementsMatrix a, FieldElementsMatrix b) => Add(a, b);
 
