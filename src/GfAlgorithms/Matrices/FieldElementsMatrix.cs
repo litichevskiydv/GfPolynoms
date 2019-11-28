@@ -1,6 +1,7 @@
 ﻿namespace AppliedAlgebra.GfAlgorithms.Matrices
 {
     using System;
+    using System.Linq;
     using System.Text;
     using GfPolynoms;
     using GfPolynoms.Extensions;
@@ -483,6 +484,11 @@
 
             return diagonalizationSummary.PermutationsCount % 2 == 0 ? determinant : determinant.InverseForAddition();
         }
+
+        /// <summary>
+        /// Calculates determinant of the current matrix
+        /// </summary>
+        public int CalculateRank() => DiagonalizeExtended(this).SelectedRowsByColumns.Count(x => x.HasValue);
 
         /// <summary>
         /// Creates square zero matrix with size <paramref name="size"/>

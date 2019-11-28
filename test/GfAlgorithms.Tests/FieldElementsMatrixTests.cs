@@ -493,5 +493,20 @@
             var expectedDeterminant = gf3.One();
             Assert.Equal(expectedDeterminant, actualDeterminant);
         }
+
+        [Fact]
+        public void MustCalculateRank()
+        {
+            // Given
+            var gf3 = new PrimeOrderField(3);
+            var matrix = new FieldElementsMatrix(gf3, new[,] { { 1, 2, 1 }, { 2, 1, 1 }, { 0, 0, 2 } });
+
+            // When
+            var actualRank = matrix.CalculateRank();
+
+            // Then
+            const int expectedRank = 2;
+            Assert.Equal(expectedRank, actualRank);
+        }
     }
 }
