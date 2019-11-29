@@ -94,6 +94,8 @@
         public static TheoryData<PowParametersValidationTestCase> PowParametersValidationTestCases;
         [UsedImplicitly] 
         public static TheoryData<DiagonalizationTestCase> DiagonalizationTestCases;
+        [UsedImplicitly]
+        public static TheoryData<FieldElement[]> CirculantMatrixFromFieldElementsArrayConstructorParametersValidationTestCases;
 
         static FieldElementsMatrixTests()
         {
@@ -291,6 +293,12 @@
                           Matrix = new FieldElementsMatrix(gf3, new[,] {{1, 2, 1}, {2, 1, 1}, {0, 0, 2}}),
                           ExpectedTriangularMatrix = new FieldElementsMatrix(gf3, new[,] {{1, 2, 0}, {0, 0, 2}, {0, 0, 0}})
                       }
+                  };
+            CirculantMatrixFromFieldElementsArrayConstructorParametersValidationTestCases
+                = new TheoryData<FieldElement[]>
+                  {
+                      null,
+                      new FieldElement[0]
                   };
         }
 
@@ -508,5 +516,68 @@
             const int expectedRank = 2;
             Assert.Equal(expectedRank, actualRank);
         }
+
+        [Fact]
+        public void CirculantMatrixFromNumbersArrayConstructorMustValidateParameters()
+        {
+            Assert.Throws<ArgumentNullException>(() => FieldElementsMatrix.CirculantMatrix(new PrimeOrderField(3), null));
+        }
+
+        [Fact]
+        public void MustCreateCirculantMatrixFromNumbersArray()
+        {
+            // Given
+            var gf5 = new PrimeOrderField(5);
+            var firstRow = new[] {0, 1, 2, 3, 4};
+
+            // When
+            var actualMatrix = FieldElementsMatrix.CirculantMatrix(gf5, firstRow);
+
+            // Then
+            var expectedMatrix = new FieldElementsMatrix(
+                gf5,
+                new[,]
+                {
+                    {0, 1, 2, 3, 4},
+                    {4, 0, 1, 2, 3},
+                    {3, 4, 0, 1, 2},
+                    {2, 3, 4, 0, 1},
+                    {1, 2, 3, 4, 0}
+                }
+            );
+            Assert.Equal(expectedMatrix, actualMatrix);
+        }
+
+        [Theory]
+        [MemberData(nameof(CirculantMatrixFromFieldElementsArrayConstructorParametersValidationTestCases))]
+        public void CirculantMatrixFromFieldElementsArrayConstructorMustValidateParameters(FieldElement[] firstRow)
+        {
+            Assert.ThrowsAny<ArgumentException>(() => FieldElementsMatrix.CirculantMatrix(firstRow));
+        }
+        [Fact]
+        public void MustCreateCirculantMatrixFromFieldElementsArray()
+        {
+            // Given
+            var gf5 = new PrimeOrderField(5);
+            var firstRow = new[] {gf5.Zero(), gf5.One(), gf5.CreateElement(2), gf5.CreateElement(3), gf5.CreateElement(4)};
+
+            // When
+            var actualMatrix = FieldElementsMatrix.CirculantMatrix(firstRow);
+
+            // Then
+            var expectedMatrix = new FieldElementsMatrix(
+                gf5,
+                new[,]
+                {
+                    {0, 1, 2, 3, 4},
+                    {4, 0, 1, 2, 3},
+                    {3, 4, 0, 1, 2},
+                    {2, 3, 4, 0, 1},
+                    {1, 2, 3, 4, 0}
+                }
+            );
+            Assert.Equal(expectedMatrix, actualMatrix);
+        }
+
     }
 }

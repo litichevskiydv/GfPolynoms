@@ -508,6 +508,38 @@
             new FieldElementsMatrix(field, size, size, (i, j) => i == j ? field.One() : field.Zero());
 
         /// <summary>
+        /// Creates circulant matrix defined by first row <paramref name="firstRow"/>
+        /// whose elements must belong to the <paramref name="field"/>
+        /// </summary>
+        /// <param name="field">Field from which the elements of the matrix</param>
+        /// <param name="firstRow">Matrix first row</param>
+        public static FieldElementsMatrix CirculantMatrix(GaloisField field, int[] firstRow)
+        {
+            if(firstRow == null)
+                throw new ArgumentNullException(nameof(firstRow));
+
+            var n = firstRow.Length;
+            return new FieldElementsMatrix(field, n, n, (i, j) => field.CreateElement(firstRow[(n - i + j) % n]));
+        }
+
+        /// <summary>
+        /// Creates circulant matrix defined by first row <paramref name="firstRow"/>
+        /// </summary>
+        /// <param name="firstRow">Matrix first row</param>
+        public static FieldElementsMatrix CirculantMatrix(FieldElement[] firstRow)
+        {
+            if (firstRow == null)
+                throw new ArgumentNullException(nameof(firstRow));
+            if(firstRow.Length == 0)
+                throw new ArgumentException($"{nameof(firstRow)} must have elements");
+
+            
+            var n = firstRow.Length;
+            var field = firstRow[0].Field;
+            return new FieldElementsMatrix(field, n, n, (i, j) => firstRow[(n - i + j) % n]);
+        }
+
+        /// <summary>
         /// Adds matrix <paramref name="b"/> to <paramref name="a"/>
         /// </summary>
         /// <param name="a">First term</param>
