@@ -469,26 +469,6 @@
         /// </summary>
         public FieldElementsMatrix Diagonalize() => DiagonalizeExtended().Result;
 
-        /// <summary>
-        /// Calculates determinant of the current matrix
-        /// </summary>
-        public FieldElement CalculateDeterminant()
-        {
-            if(RowsCount != ColumnsCount)
-                throw new InvalidOperationException("Determinant can be calculated only for square matrices");
-
-            var determinant = Field.One();
-            var diagonalizationSummary = DiagonalizeExtended(this);
-            for (var i = 0; i < RowsCount; i++)
-                determinant *= diagonalizationSummary.Result[i, i];
-
-            return diagonalizationSummary.PermutationsCount % 2 == 0 ? determinant : determinant.InverseForAddition();
-        }
-
-        /// <summary>
-        /// Calculates determinant of the current matrix
-        /// </summary>
-        public int CalculateRank() => DiagonalizeExtended(this).SelectedRowsByColumns.Count(x => x.HasValue);
 
         /// <summary>
         /// Creates square zero matrix with size <paramref name="size"/>
