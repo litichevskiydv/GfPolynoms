@@ -505,7 +505,7 @@
             if(n % shiftSize != 0)
                 throw new ArgumentException("Matrix first row length must be a multiple of the shift size");
 
-            return new FieldElementsMatrix(field, n, n / shiftSize, (i, j) => field.CreateElement(firstRow[(n - i * shiftSize + j) % n]));
+            return new FieldElementsMatrix(field, n / shiftSize, n, (i, j) => field.CreateElement(firstRow[(n - i * shiftSize + j) % n]));
         }
 
         /// <summary>
@@ -527,7 +527,7 @@
                 throw new ArgumentException("Matrix first row length must be a multiple of the shift size");
 
             var field = firstRow[0].Field;
-            return new FieldElementsMatrix(field, n, n / shiftSize, (i, j) => new FieldElement(firstRow[(n - i * shiftSize + j) % n]));
+            return new FieldElementsMatrix(field, n / shiftSize, n, (i, j) => new FieldElement(firstRow[(n - i * shiftSize + j) % n]));
         }
 
         /// <summary>
@@ -545,6 +545,22 @@
         /// <param name="firstRow">Matrix first row</param>
         public static FieldElementsMatrix CirculantMatrix(FieldElement[] firstRow) =>
             FromFirstRow(firstRow);
+
+        /// <summary>
+        /// Creates double circulant matrix defined by first row <paramref name="firstRow"/>
+        /// whose elements must belong to the <paramref name="field"/>
+        /// </summary>
+        /// <param name="field">Field from which the elements of the matrix</param>
+        /// <param name="firstRow">Matrix first row</param>
+        public static FieldElementsMatrix DoubleCirculantMatrix(GaloisField field, int[] firstRow) =>
+            FromFirstRow(field, firstRow, 2);
+
+        /// <summary>
+        /// Creates double circulant matrix defined by first row <paramref name="firstRow"/>
+        /// </summary>
+        /// <param name="firstRow">Matrix first row</param>
+        public static FieldElementsMatrix DoubleCirculantMatrix(FieldElement[] firstRow) =>
+            FromFirstRow(firstRow, 2);
 
         /// <summary>
         /// Adds matrix <paramref name="b"/> to <paramref name="a"/>

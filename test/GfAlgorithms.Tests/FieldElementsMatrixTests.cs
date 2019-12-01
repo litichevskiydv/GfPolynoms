@@ -579,5 +579,63 @@
             Assert.Equal(expectedMatrix, actualMatrix);
         }
 
+        [Fact]
+        public void MustNotCreateDoubleCirculantMatrixFromNumbersArray()
+        {
+            Assert.Throws<ArgumentException>(() => FieldElementsMatrix.DoubleCirculantMatrix(new PrimeOrderField(3), new[] {0, 1, 2}));
+        }
+
+        [Fact]
+        public void MustCreateDoubleCirculantMatrixFromNumbersArray()
+        {
+            // Given
+            var gf5 = new PrimeOrderField(5);
+            var firstRow = new[] { 0, 1, 2, 3, 4, 0};
+
+            // When
+            var actualMatrix = FieldElementsMatrix.DoubleCirculantMatrix(gf5, firstRow);
+
+            // Then
+            var expectedMatrix = new FieldElementsMatrix(
+                gf5,
+                new[,]
+                {
+                    {0, 1, 2, 3, 4, 0},
+                    {4, 0, 0, 1, 2, 3},
+                    {2, 3, 4, 0, 0, 1}
+                }
+            );
+            Assert.Equal(expectedMatrix, actualMatrix);
+        }
+
+        [Fact]
+        public void MustNotCreateDoubleCirculantMatrixFromFieldElementsArray()
+        {
+            var gf3 = new PrimeOrderField(3);
+            Assert.Throws<ArgumentException>(() => FieldElementsMatrix.DoubleCirculantMatrix(new[] { gf3.Zero(), gf3.Zero(), gf3.Zero() }));
+        }
+
+        [Fact]
+        public void MustCreateDoubleCirculantMatrixFromFieldElementsArray()
+        {
+            // Given
+            var gf5 = new PrimeOrderField(5);
+            var firstRow = new[] {gf5.Zero(), gf5.One(), gf5.CreateElement(2), gf5.CreateElement(3), gf5.CreateElement(4), gf5.Zero()};
+
+            // When
+            var actualMatrix = FieldElementsMatrix.DoubleCirculantMatrix(firstRow);
+
+            // Then
+            var expectedMatrix = new FieldElementsMatrix(
+                gf5,
+                new[,]
+                {
+                    {0, 1, 2, 3, 4, 0},
+                    {4, 0, 0, 1, 2, 3},
+                    {2, 3, 4, 0, 0, 1}
+                }
+            );
+            Assert.Equal(expectedMatrix, actualMatrix);
+        }
     }
 }
