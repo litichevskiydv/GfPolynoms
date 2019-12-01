@@ -488,36 +488,63 @@
             new FieldElementsMatrix(field, size, size, (i, j) => i == j ? field.One() : field.Zero());
 
         /// <summary>
-        /// Creates circulant matrix defined by first row <paramref name="firstRow"/>
+        /// Creates matrix defined by first row <paramref name="firstRow"/>
+        /// cyclically shifted to the right by <paramref name="shift"/>
         /// whose elements must belong to the <paramref name="field"/>
         /// </summary>
         /// <param name="field">Field from which the elements of the matrix</param>
         /// <param name="firstRow">Matrix first row</param>
-        public static FieldElementsMatrix CirculantMatrix(GaloisField field, int[] firstRow)
+        /// <param name="shift">First row shift</param>
+        public static FieldElementsMatrix FromFirstRow(GaloisField field, int[] firstRow, int? shift = null)
         {
             if(firstRow == null)
                 throw new ArgumentNullException(nameof(firstRow));
 
             var n = firstRow.Length;
-            return new FieldElementsMatrix(field, n, n, (i, j) => field.CreateElement(firstRow[(n - i + j) % n]));
+            var shiftSize = shift ?? 1;
+            if(n % shiftSize != 0)
+                throw new ArgumentException("Matrix first row length must be a multiple of the shift size");
+
+            return new FieldElementsMatrix(field, n, n / shiftSize, (i, j) => field.CreateElement(firstRow[(n - i * shiftSize + j) % n]));
         }
+
+        /// <summary>
+        /// Creates matrix defined by first row <paramref name="firstRow"/>
+        /// cyclically shifted to the right by <paramref name="shift"/>
+        /// </summary>
+        /// <param name="firstRow">Matrix first row</param>
+        /// <param name="shift">First row shift</param>
+        public static FieldElementsMatrix FromFirstRow(FieldElement[] firstRow, int? shift = null)
+        {
+            if (firstRow == null)
+                throw new ArgumentNullException(nameof(firstRow));
+            if (firstRow.Length == 0)
+                throw new ArgumentException($"{nameof(firstRow)} must have elements");
+
+            var n = firstRow.Length;
+            var shiftSize = shift ?? 1;
+            if (n % shiftSize != 0)
+                throw new ArgumentException("Matrix first row length must be a multiple of the shift size");
+
+            var field = firstRow[0].Field;
+            return new FieldElementsMatrix(field, n, n / shiftSize, (i, j) => new FieldElement(firstRow[(n - i * shiftSize + j) % n]));
+        }
+
+        /// <summary>
+        /// Creates circulant matrix defined by first row <paramref name="firstRow"/>
+        /// whose elements must belong to the <paramref name="field"/>
+        /// </summary>
+        /// <param name="field">Field from which the elements of the matrix</param>
+        /// <param name="firstRow">Matrix first row</param>
+        public static FieldElementsMatrix CirculantMatrix(GaloisField field, int[] firstRow) =>
+            FromFirstRow(field, firstRow);
 
         /// <summary>
         /// Creates circulant matrix defined by first row <paramref name="firstRow"/>
         /// </summary>
         /// <param name="firstRow">Matrix first row</param>
-        public static FieldElementsMatrix CirculantMatrix(FieldElement[] firstRow)
-        {
-            if (firstRow == null)
-                throw new ArgumentNullException(nameof(firstRow));
-            if(firstRow.Length == 0)
-                throw new ArgumentException($"{nameof(firstRow)} must have elements");
-
-            
-            var n = firstRow.Length;
-            var field = firstRow[0].Field;
-            return new FieldElementsMatrix(field, n, n, (i, j) => firstRow[(n - i + j) % n]);
-        }
+        public static FieldElementsMatrix CirculantMatrix(FieldElement[] firstRow) =>
+            FromFirstRow(firstRow);
 
         /// <summary>
         /// Adds matrix <paramref name="b"/> to <paramref name="a"/>
