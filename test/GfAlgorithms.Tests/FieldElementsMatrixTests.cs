@@ -637,5 +637,38 @@
             );
             Assert.Equal(expectedMatrix, actualMatrix);
         }
+
+        [Fact]
+        public void MustCreateSumatrixWithSelectedRows()
+        {
+            // Given
+            var gf5 = new PrimeOrderField(5);
+            var matrix = new FieldElementsMatrix(
+                gf5,
+                new[,]
+                {
+                    {0, 1, 2, 3, 4},
+                    {4, 0, 1, 2, 3},
+                    {3, 4, 0, 1, 2},
+                    {2, 3, 4, 0, 1},
+                    {1, 2, 3, 4, 0}
+                }
+            );
+
+            // When
+            var actualSubmatrix = matrix.CreateSubmatrix(4, 2, 0);
+
+            // Then
+            var expectedSubmatrix = new FieldElementsMatrix(
+                gf5,
+                new[,]
+                {
+                    {0, 1, 2, 3, 4},
+                    {3, 4, 0, 1, 2},
+                    {1, 2, 3, 4, 0}
+                }
+            );
+            Assert.Equal(expectedSubmatrix, actualSubmatrix);
+        }
     }
 }
