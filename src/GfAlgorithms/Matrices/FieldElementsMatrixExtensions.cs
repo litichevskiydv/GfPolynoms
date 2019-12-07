@@ -53,22 +53,52 @@
         /// <summary>
         /// Creates submatrix of the matrix <paramref name="matrix"/>
         /// consisted of the rows <paramref name="includedRowsIndices"/>
+        /// and columns <paramref name="includedColumnsIndices"/>
         /// </summary>
         /// <param name="matrix">Matrix whose rank will be created</param>
         /// <param name="includedRowsIndices">Rows to be included in the submatrix</param>
-        /// <returns></returns>
-        public static FieldElementsMatrix CreateSubmatrixFromRows(this FieldElementsMatrix matrix, params int[] includedRowsIndices)
+        /// <param name="includedColumnsIndices">Columns to be included in the submatrix</param>
+        public static FieldElementsMatrix CreateSubmatrix(this FieldElementsMatrix matrix, int[] includedRowsIndices, int[] includedColumnsIndices)
         {
-            if(matrix == null)
+            if (matrix == null)
                 throw new ArgumentNullException(nameof(matrix));
             ValidateIndices(includedRowsIndices, matrix.RowsCount - 1);
+            ValidateIndices(includedColumnsIndices, matrix.ColumnsCount - 1);
 
             return new FieldElementsMatrix(
                 matrix.Field,
                 includedRowsIndices.Length,
-                matrix.ColumnsCount,
-                (i, j) => new FieldElement(matrix[includedRowsIndices[i], j])
+                includedColumnsIndices.Length,
+                (i, j) => new FieldElement(matrix[includedRowsIndices[i], includedColumnsIndices[j]])
             );
+        }
+
+        /// <summary>
+        /// Creates submatrix of the matrix <paramref name="matrix"/>
+        /// consisted of the rows <paramref name="includedRowsIndices"/>
+        /// </summary>
+        /// <param name="matrix">Matrix whose rank will be created</param>
+        /// <param name="includedRowsIndices">Rows to be included in the submatrix</param>
+        public static FieldElementsMatrix CreateSubmatrixFromRows(this FieldElementsMatrix matrix, params int[] includedRowsIndices)
+        {
+            if(matrix == null)
+                throw new ArgumentNullException(nameof(matrix));
+
+            return matrix.CreateSubmatrix(includedRowsIndices, Enumerable.Range(0, matrix.ColumnsCount).ToArray());
+        }
+
+        /// <summary>
+        /// Creates submatrix of the matrix <paramref name="matrix"/>
+        /// consisted of the columns <paramref name="includedColumnsIndices"/>
+        /// </summary>
+        /// <param name="matrix">Matrix whose rank will be created</param>
+        /// <param name="includedColumnsIndices">Columns to be included in the submatrix</param>
+        public static FieldElementsMatrix CreateSubmatrixFromColumns(this FieldElementsMatrix matrix, params int[] includedColumnsIndices)
+        {
+            if (matrix == null)
+                throw new ArgumentNullException(nameof(matrix));
+
+            return matrix.CreateSubmatrix(Enumerable.Range(0, matrix.RowsCount).ToArray(), includedColumnsIndices);
         }
     }
 }

@@ -107,6 +107,8 @@
         public static TheoryData<FieldElement[]> CirculantMatrixFromFieldElementsArrayConstructorParametersValidationTestCases;
         [UsedImplicitly]
         public static TheoryData<SubmatrixCreationParametersValidationTestCase> SubmatrixFromRowsCreationParametersValidationTestCases;
+        [UsedImplicitly]
+        public static TheoryData<SubmatrixCreationParametersValidationTestCase> SubmatrixFromColumnsCreationParametersValidationTestCases;
 
         static FieldElementsMatrixTests()
         {
@@ -322,6 +324,17 @@
                       new SubmatrixCreationParametersValidationTestCase {Matrix = matrix, IncludedRowsIndices = new[] {-1}},
                       new SubmatrixCreationParametersValidationTestCase {Matrix = matrix, IncludedRowsIndices = new[] {5}}
                   };
+            SubmatrixFromColumnsCreationParametersValidationTestCases
+                = new TheoryData<SubmatrixCreationParametersValidationTestCase>
+                  {
+                      new SubmatrixCreationParametersValidationTestCase {IncludedColumnsIndices = new[] {0, 2}},
+                      new SubmatrixCreationParametersValidationTestCase {Matrix = matrix},
+                      new SubmatrixCreationParametersValidationTestCase {Matrix = matrix, IncludedColumnsIndices = new int[0]},
+                      new SubmatrixCreationParametersValidationTestCase {Matrix = matrix, IncludedColumnsIndices = new[] {0, 0}},
+                      new SubmatrixCreationParametersValidationTestCase {Matrix = matrix, IncludedColumnsIndices = new[] {-1}},
+                      new SubmatrixCreationParametersValidationTestCase {Matrix = matrix, IncludedColumnsIndices = new[] {5}}
+                  };
+
         }
 
         [Theory]
@@ -695,6 +708,91 @@
                     {1, 2, 3, 4, 0},
                     {3, 4, 0, 1, 2},
                     {0, 1, 2, 3, 4}
+
+                }
+            );
+            Assert.Equal(expectedSubmatrix, actualSubmatrix);
+        }
+
+        [Theory]
+        [MemberData(nameof(SubmatrixFromColumnsCreationParametersValidationTestCases))]
+        public void MustValidateParametersDuringSubmatrixCreationFromColumns(SubmatrixCreationParametersValidationTestCase testCase)
+        {
+            Assert.ThrowsAny<ArgumentException>(() => testCase.Matrix.CreateSubmatrixFromColumns(testCase.IncludedColumnsIndices));
+        }
+
+        [Fact]
+        public void MustCreateSumatrixFromColumns()
+        {
+            // Given
+            var gf5 = new PrimeOrderField(5);
+            var matrix = new FieldElementsMatrix(
+                gf5,
+                new[,]
+                {
+                    {0, 1, 2, 3, 4},
+                    {4, 0, 1, 2, 3},
+                    {3, 4, 0, 1, 2},
+                    {2, 3, 4, 0, 1},
+                    {1, 2, 3, 4, 0}
+                }
+            );
+
+            // When
+            var actualSubmatrix = matrix.CreateSubmatrixFromColumns(4, 2, 0);
+
+            // Then
+            var expectedSubmatrix = new FieldElementsMatrix(
+                gf5,
+                new[,]
+                {
+                    {4, 2, 0},
+                    {3, 1, 4},
+                    {2, 0, 3},
+                    {1, 4, 2},
+                    {0, 3, 1}
+
+                }
+            );
+            Assert.Equal(expectedSubmatrix, actualSubmatrix);
+        }
+
+        [Theory]
+        [MemberData(nameof(SubmatrixFromRowsCreationParametersValidationTestCases))]
+        [MemberData(nameof(SubmatrixFromColumnsCreationParametersValidationTestCases))]
+        public void MustValidateParametersDuringSubmatrixCreation(SubmatrixCreationParametersValidationTestCase testCase)
+        {
+            Assert.ThrowsAny<ArgumentException>(() => testCase.Matrix.CreateSubmatrix(testCase.IncludedRowsIndices, testCase.IncludedColumnsIndices));
+        }
+
+        [Fact]
+        public void MustCreateSumatrix()
+        {
+            // Given
+            var gf5 = new PrimeOrderField(5);
+            var matrix = new FieldElementsMatrix(
+                gf5,
+                new[,]
+                {
+                    {0, 1, 2, 3, 4},
+                    {4, 0, 1, 2, 3},
+                    {3, 4, 0, 1, 2},
+                    {2, 3, 4, 0, 1},
+                    {1, 2, 3, 4, 0}
+                }
+            );
+
+            // When
+            var actualSubmatrix = matrix.CreateSubmatrix(new[] {4, 2, 0}, new[] {4, 2, 0});
+
+            // Then
+            var expectedSubmatrix = new FieldElementsMatrix(
+                gf5,
+                new[,]
+                {
+                    {0, 3, 1},
+                    {2, 0, 3},
+                    {4, 2, 0}
 
                 }
             );
