@@ -72,6 +72,15 @@
             public FieldElementsMatrix ExpectedTriangularMatrix { get; set; }
         }
 
+        public class SubmatrixCreationParametersValidationTestCase
+        {
+            public FieldElementsMatrix Matrix { get; set; }
+
+            public int[] IncludedRowsIndexes { get; set; }
+
+            public int[] IncludedColumnsIndexes { get; set; }
+        }
+
         #endregion
 
         [UsedImplicitly]
@@ -96,6 +105,8 @@
         public static TheoryData<DiagonalizationTestCase> DiagonalizationTestCases;
         [UsedImplicitly]
         public static TheoryData<FieldElement[]> CirculantMatrixFromFieldElementsArrayConstructorParametersValidationTestCases;
+        [UsedImplicitly]
+        public static TheoryData<SubmatrixCreationParametersValidationTestCase> SubmatrixFromRowsCreationParametersValidationTestCases;
 
         static FieldElementsMatrixTests()
         {
@@ -299,6 +310,17 @@
                   {
                       null,
                       new FieldElement[0]
+                  };
+
+            SubmatrixFromRowsCreationParametersValidationTestCases
+                = new TheoryData<SubmatrixCreationParametersValidationTestCase>
+                  {
+                      new SubmatrixCreationParametersValidationTestCase {IncludedRowsIndexes = new[] {0, 2}},
+                      new SubmatrixCreationParametersValidationTestCase {Matrix = matrix},
+                      new SubmatrixCreationParametersValidationTestCase {Matrix = matrix, IncludedRowsIndexes = new int[0]},
+                      new SubmatrixCreationParametersValidationTestCase {Matrix = matrix, IncludedRowsIndexes = new[] {0, 0}},
+                      new SubmatrixCreationParametersValidationTestCase {Matrix = matrix, IncludedRowsIndexes = new[] {-1}},
+                      new SubmatrixCreationParametersValidationTestCase {Matrix = matrix, IncludedRowsIndexes = new[] {5}}
                   };
         }
 
@@ -636,6 +658,13 @@
                 }
             );
             Assert.Equal(expectedMatrix, actualMatrix);
+        }
+
+        [Theory]
+        [MemberData(nameof(SubmatrixFromRowsCreationParametersValidationTestCases))]
+        public void MustValidateParametersDuringSubmatrixCreationFromRows(SubmatrixCreationParametersValidationTestCase testCase)
+        {
+            Assert.ThrowsAny<ArgumentException>(() => testCase.Matrix.CreateSubmatrix(testCase.IncludedRowsIndexes));
         }
 
         [Fact]
