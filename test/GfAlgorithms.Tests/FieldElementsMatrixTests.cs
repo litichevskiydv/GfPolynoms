@@ -76,9 +76,9 @@
         {
             public FieldElementsMatrix Matrix { get; set; }
 
-            public int[] IncludedRowsIndexes { get; set; }
+            public int[] IncludedRowsIndices { get; set; }
 
-            public int[] IncludedColumnsIndexes { get; set; }
+            public int[] IncludedColumnsIndices { get; set; }
         }
 
         #endregion
@@ -315,12 +315,12 @@
             SubmatrixFromRowsCreationParametersValidationTestCases
                 = new TheoryData<SubmatrixCreationParametersValidationTestCase>
                   {
-                      new SubmatrixCreationParametersValidationTestCase {IncludedRowsIndexes = new[] {0, 2}},
+                      new SubmatrixCreationParametersValidationTestCase {IncludedRowsIndices = new[] {0, 2}},
                       new SubmatrixCreationParametersValidationTestCase {Matrix = matrix},
-                      new SubmatrixCreationParametersValidationTestCase {Matrix = matrix, IncludedRowsIndexes = new int[0]},
-                      new SubmatrixCreationParametersValidationTestCase {Matrix = matrix, IncludedRowsIndexes = new[] {0, 0}},
-                      new SubmatrixCreationParametersValidationTestCase {Matrix = matrix, IncludedRowsIndexes = new[] {-1}},
-                      new SubmatrixCreationParametersValidationTestCase {Matrix = matrix, IncludedRowsIndexes = new[] {5}}
+                      new SubmatrixCreationParametersValidationTestCase {Matrix = matrix, IncludedRowsIndices = new int[0]},
+                      new SubmatrixCreationParametersValidationTestCase {Matrix = matrix, IncludedRowsIndices = new[] {0, 0}},
+                      new SubmatrixCreationParametersValidationTestCase {Matrix = matrix, IncludedRowsIndices = new[] {-1}},
+                      new SubmatrixCreationParametersValidationTestCase {Matrix = matrix, IncludedRowsIndices = new[] {5}}
                   };
         }
 
@@ -664,11 +664,11 @@
         [MemberData(nameof(SubmatrixFromRowsCreationParametersValidationTestCases))]
         public void MustValidateParametersDuringSubmatrixCreationFromRows(SubmatrixCreationParametersValidationTestCase testCase)
         {
-            Assert.ThrowsAny<ArgumentException>(() => testCase.Matrix.CreateSubmatrix(testCase.IncludedRowsIndexes));
+            Assert.ThrowsAny<ArgumentException>(() => testCase.Matrix.CreateSubmatrixFromRows(testCase.IncludedRowsIndices));
         }
 
         [Fact]
-        public void MustCreateSumatrixWithSelectedRows()
+        public void MustCreateSumatrixFromSelectedRows()
         {
             // Given
             var gf5 = new PrimeOrderField(5);
@@ -685,16 +685,17 @@
             );
 
             // When
-            var actualSubmatrix = matrix.CreateSubmatrix(4, 2, 0);
+            var actualSubmatrix = matrix.CreateSubmatrixFromRows(4, 2, 0);
 
             // Then
             var expectedSubmatrix = new FieldElementsMatrix(
                 gf5,
                 new[,]
                 {
-                    {0, 1, 2, 3, 4},
+                    {1, 2, 3, 4, 0},
                     {3, 4, 0, 1, 2},
-                    {1, 2, 3, 4, 0}
+                    {0, 1, 2, 3, 4}
+
                 }
             );
             Assert.Equal(expectedSubmatrix, actualSubmatrix);

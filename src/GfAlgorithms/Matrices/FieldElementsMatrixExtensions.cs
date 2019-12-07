@@ -34,32 +34,40 @@
             FieldElementsMatrix.DiagonalizeExtended(matrix).SelectedRowsByColumns.Count(x => x.HasValue);
 
         /// <summary>
+        /// Validates indices <paramref name="indices"/> used for sumbatrix creation
+        /// </summary>
+        private static void ValidateIndices(int[] indices, int maxIndex)
+        {
+            if (indices == null)
+                throw new ArgumentNullException(nameof(indices));
+            if (indices.Length == 0)
+                throw new ArgumentException($"{nameof(indices)} must contain at least one index");
+
+            var orderedIndexes = indices.Distinct().OrderBy(x => x).ToArray();
+            if (orderedIndexes.Length != indices.Length)
+                throw new ArgumentException($"{nameof(indices)} must not contain duplicate indices");
+            if (orderedIndexes[0] < 0 || orderedIndexes[orderedIndexes.Length - 1] > maxIndex)
+                throw new ArgumentException($"Indexes in {nameof(indices)} must be consistent with source matrix size");
+        }
+
+        /// <summary>
         /// Creates submatrix of the matrix <paramref name="matrix"/>
-        /// consisted of the rows <paramref name="includedRowsIndexes"/>
+        /// consisted of the rows <paramref name="includedRowsIndices"/>
         /// </summary>
         /// <param name="matrix">Matrix whose rank will be created</param>
-        /// <param name="includedRowsIndexes">Rows to be included in the submatrix</param>
+        /// <param name="includedRowsIndices">Rows to be included in the submatrix</param>
         /// <returns></returns>
-        public static FieldElementsMatrix CreateSubmatrix(this FieldElementsMatrix matrix, params int[] includedRowsIndexes)
+        public static FieldElementsMatrix CreateSubmatrixFromRows(this FieldElementsMatrix matrix, params int[] includedRowsIndices)
         {
             if(matrix == null)
                 throw new ArgumentNullException(nameof(matrix));
-            if (includedRowsIndexes == null)
-                throw new ArgumentNullException(nameof(includedRowsIndexes));
-            if(includedRowsIndexes.Length == 0)
-                throw new ArgumentException($"{nameof(includedRowsIndexes)} must contain at least one index");
-
-            var orderedRowsIndexes = includedRowsIndexes.Distinct().OrderBy(x => x).ToArray();
-            if(orderedRowsIndexes.Length != includedRowsIndexes.Length)
-                throw new ArgumentException($"{nameof(includedRowsIndexes)} must not contain duplicate indices");
-            if(orderedRowsIndexes[0] < 0 || orderedRowsIndexes[orderedRowsIndexes.Length - 1] >= matrix.RowsCount)
-                throw new ArgumentException($"Indexes in {nameof(includedRowsIndexes)} must be consistent with source matrix size");
+            ValidateIndices(includedRowsIndices, matrix.RowsCount - 1);
 
             return new FieldElementsMatrix(
                 matrix.Field,
-                orderedRowsIndexes.Length,
+                includedRowsIndices.Length,
                 matrix.ColumnsCount,
-                (i, j) => new FieldElement(matrix[orderedRowsIndexes[i], j])
+                (i, j) => new FieldElement(matrix[includedRowsIndices[i], j])
             );
         }
     }
