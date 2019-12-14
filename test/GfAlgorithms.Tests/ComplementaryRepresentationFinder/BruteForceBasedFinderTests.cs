@@ -1,8 +1,8 @@
-﻿namespace AppliedAlgebra.GfAlgorithms.Tests
+﻿namespace AppliedAlgebra.GfAlgorithms.Tests.ComplementaryRepresentationFinder
 {
     using System;
     using System.Linq;
-    using ComplementaryRepresentationFinder;
+    using GfAlgorithms.ComplementaryRepresentationFinder;
     using GfPolynoms;
     using GfPolynoms.Extensions;
     using GfPolynoms.GaloisFields;
