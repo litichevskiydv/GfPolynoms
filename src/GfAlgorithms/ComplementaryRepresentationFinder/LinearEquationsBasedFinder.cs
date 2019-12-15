@@ -110,6 +110,8 @@
                 throw new ArgumentException($"{nameof(maxDegree)} must be positive");
             if (maxDegree < polynomial.Degree)
                 throw new ArgumentException($"{nameof(maxDegree)} must not be less than {nameof(polynomial)} degree");
+            if(maxDegree != polynomial.Field.Order - 2)
+                throw new ArgumentException($"{nameof(maxDegree)} must be correlated with {nameof(polynomial)} field order");
 
             var (heValues, hoValues, geValues, goValues) = ComputePolyphaseComponentsValues(polynomial, maxDegree, polynomial.Field.One());
 

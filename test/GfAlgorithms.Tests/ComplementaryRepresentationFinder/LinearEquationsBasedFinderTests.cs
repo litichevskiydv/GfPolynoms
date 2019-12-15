@@ -28,7 +28,8 @@
                   {
                       new ComplementaryRepresentationFinderTestCase {MaxDegree = 1},
                       new ComplementaryRepresentationFinderTestCase {Polynomial = new Polynomial(new PrimeOrderField(2)), MaxDegree = 0},
-                      new ComplementaryRepresentationFinderTestCase {Polynomial = new Polynomial(new PrimeOrderField(2), 1, 1, 1), MaxDegree = 1}
+                      new ComplementaryRepresentationFinderTestCase {Polynomial = new Polynomial(new PrimeOrderField(2), 1, 1, 1), MaxDegree = 1},
+                      new ComplementaryRepresentationFinderTestCase {Polynomial = new Polynomial(new PrimeOrderField(2), 1, 1, 1), MaxDegree = 2}
                   };
             ComplementaryRepresentationSearchTestCases
                 = new TheoryData<ComplementaryRepresentationFinderTestCase>
