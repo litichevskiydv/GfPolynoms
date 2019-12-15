@@ -23,29 +23,39 @@
 
         static LinearEquationsBasedFinderTests()
         {
+            var gf2 = new PrimeOrderField(2);
+            var gf3 = new PrimeOrderField(3);
+            var gf9 = new PrimePowerOrderField(9, new Polynomial(gf3, 1, 0, 1));
+            var gf11 = new PrimeOrderField(11);
+
             FindParametersValidationTestCases
                 = new TheoryData<ComplementaryRepresentationFinderTestCase>
                   {
                       new ComplementaryRepresentationFinderTestCase {MaxDegree = 1},
-                      new ComplementaryRepresentationFinderTestCase {Polynomial = new Polynomial(new PrimeOrderField(2)), MaxDegree = 0},
-                      new ComplementaryRepresentationFinderTestCase {Polynomial = new Polynomial(new PrimeOrderField(2), 1, 1, 1), MaxDegree = 1},
-                      new ComplementaryRepresentationFinderTestCase {Polynomial = new Polynomial(new PrimeOrderField(2), 1, 1, 1), MaxDegree = 2}
+                      new ComplementaryRepresentationFinderTestCase {Polynomial = new Polynomial(gf2), MaxDegree = 0},
+                      new ComplementaryRepresentationFinderTestCase {Polynomial = new Polynomial(gf2, 1, 1, 1), MaxDegree = 1},
+                      new ComplementaryRepresentationFinderTestCase {Polynomial = new Polynomial(gf2, 1, 1, 1), MaxDegree = 2},
+                      new ComplementaryRepresentationFinderTestCase
+                      {
+                          Polynomial = new Polynomial(gf2, 1, 1, 1),
+                          MaxDegree = 2,
+                          Lambda = new FieldElement(gf3, 2)
+                      }
                   };
             ComplementaryRepresentationSearchTestCases
                 = new TheoryData<ComplementaryRepresentationFinderTestCase>
                   {
                       new ComplementaryRepresentationFinderTestCase
                       {
-                          Polynomial = new Polynomial(
-                              new PrimePowerOrderField(9, new Polynomial(new PrimeOrderField(3), 1, 0, 1)),
-                              2, 8, 3, 8, 0, 6, 2, 7
-                          ),
-                          MaxDegree = 7
+                          Polynomial = new Polynomial(gf9, 2, 8, 3, 8, 0, 6, 2, 7),
+                          MaxDegree = 7,
+                          Lambda = gf9.CreateElement(2)
                       },
                       new ComplementaryRepresentationFinderTestCase
                       {
-                          Polynomial = new Polynomial(new PrimeOrderField(11), 8, 10, 4, 6, 8, 9, 2, 10, 4, 5),
-                          MaxDegree = 9
+                          Polynomial = new Polynomial(gf11, 8, 10, 4, 6, 8, 9, 2, 10, 4, 5),
+                          MaxDegree = 9,
+                          Lambda = gf11.CreateElement(2)
                       }
                   };
         }
@@ -67,11 +77,12 @@
         public void ShouldFindComplementaryRepresentations(ComplementaryRepresentationFinderTestCase testCase)
         {
             // When
-            var actualComplementaryRepresentations = _representationFinder.Find(testCase.Polynomial, testCase.MaxDegree);
+            var actualComplementaryRepresentations = _representationFinder.Find(testCase.Polynomial, testCase.MaxDegree, testCase.Lambda);
 
             // Then
             var field = testCase.Polynomial.Field;
             var one = new Polynomial(field.One());
+            var lambda = (testCase.Lambda ?? field.One()).Representation;
             var modularPolynomial
                 = new Polynomial(field.One()).RightShift(testCase.MaxDegree + 1)
                   + new Polynomial(field.One().InverseForAddition());
@@ -83,7 +94,7 @@
                 x =>
                 {
                     var (h, g) = x;
-                    Assert.Equal(testCase.Polynomial, (h + Polynomial.RightShift(g, 2)) % modularPolynomial);
+                    Assert.Equal(testCase.Polynomial, (h + lambda * Polynomial.RightShift(g, 2)) % modularPolynomial);
 
                     var (he, ho) = h.GetPolyphaseComponents();
                     var (ge, go) = g.GetPolyphaseComponents();

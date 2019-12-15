@@ -138,7 +138,8 @@
             return new Polynomial(systemSolution.VariablesValues);
         }
 
-        public IEnumerable<(Polynomial h, Polynomial g)> Find(Polynomial polynomial, int maxDegree)
+        /// <inheritdoc />
+        public IEnumerable<(Polynomial h, Polynomial g)> Find(Polynomial polynomial, int maxDegree, FieldElement lambda = null)
         {
             if (polynomial == null)
                 throw new ArgumentNullException(nameof(polynomial));
@@ -148,8 +149,10 @@
                 throw new ArgumentException($"{nameof(maxDegree)} must not be less than {nameof(polynomial)} degree");
             if(maxDegree != polynomial.Field.Order - 2)
                 throw new ArgumentException($"{nameof(maxDegree)} must be correlated with {nameof(polynomial)} field order");
+            if (lambda != null && polynomial.Field.Equals(lambda.Field) == false)
+                throw new ArgumentException($"{nameof(lambda)} must belong to the field of the polynomial {nameof(polynomial)}");
 
-            return ComputePolyphaseComponentsValues(polynomial, maxDegree, polynomial.Field.One())
+            return ComputePolyphaseComponentsValues(polynomial, maxDegree, lambda ?? polynomial.Field.One())
                 .Select(x =>
                         {
                             var (heValues, hoValues, geValues, goValues) = x;

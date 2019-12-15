@@ -13,7 +13,8 @@
         /// </summary>
         /// <param name="polynomial">Polynomial for which complementary representations should be found</param>
         /// <param name="maxDegree">Maximum possible degree of the complementary polynomials</param>
+        /// <param name="lambda">Lambda value for complementary representation</param>
         /// <returns>Enumeration consisting of the complementary representation</returns>
-        IEnumerable<(Polynomial h, Polynomial g)> Find(Polynomial polynomial, int maxDegree);
+        IEnumerable<(Polynomial h, Polynomial g)> Find(Polynomial polynomial, int maxDegree, FieldElement lambda = null);
     }
 }

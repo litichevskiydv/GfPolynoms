@@ -7,5 +7,7 @@
         public Polynomial Polynomial { get; set; }
 
         public int MaxDegree { get; set; }
+
+        public FieldElement Lambda { get; set; }
     }
 }
