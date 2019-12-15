@@ -34,7 +34,10 @@
             if(maxDegree < polynomial.Degree)
                 throw new ArgumentException($"{nameof(maxDegree)} must not be less than {nameof(polynomial)} degree");
 
-            var one = new Polynomial(polynomial.Field.One());
+            var field = polynomial.Field;
+            var one = new Polynomial(field.One());
+            var componentsModularPolynomial = new Polynomial(field.One()).RightShift((maxDegree + 1) / 2)
+                                              + new Polynomial(field.One().InverseForAddition());
             foreach (var h in _variantsIterator.IteratePolynomials(polynomial.Field, maxDegree).Skip(1))
             {
                 var diff = (polynomial - h).GetCoefficients(maxDegree);
@@ -44,7 +47,7 @@
 
                 var (he, ho) = h.GetPolyphaseComponents();
                 var (ge, go) = g.GetPolyphaseComponents();
-                if (Equals(he * go - ge * ho, one))
+                if (Equals(one, (he * go - ge * ho) % componentsModularPolynomial))
                     yield return (h, g);
             }
         }
