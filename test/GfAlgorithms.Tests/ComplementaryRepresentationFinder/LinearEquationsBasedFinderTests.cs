@@ -41,6 +41,11 @@
                               2, 8, 3, 8, 0, 6, 2, 7
                           ),
                           MaxDegree = 7
+                      },
+                      new ComplementaryRepresentationFinderTestCase
+                      {
+                          Polynomial = new Polynomial(new PrimeOrderField(11), 8, 10, 4, 6, 8, 9, 2, 10, 4, 5),
+                          MaxDegree = 9
                       }
                   };
         }

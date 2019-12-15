@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using Extensions;
     using GfPolynoms;
     using GfPolynoms.Extensions;
@@ -19,7 +20,81 @@
             _linearSystemSolver = linearSystemSolver;
         }
 
-        private static (FieldElement[], FieldElement[], FieldElement[], FieldElement[]) ComputePolyphaseComponentsValues(
+        private static IEnumerable<(FieldElement[], FieldElement[], FieldElement[], FieldElement[])> ComputePolyphaseComponentsValues(
+            Polynomial fe,
+            Polynomial fo,
+            FieldElement lambda,
+            FieldElement argument,
+            FieldElement argumentMultiplier,
+            int index,
+            FieldElement[] heValues,
+            FieldElement[] hoValues,
+            FieldElement[] geValues,
+            FieldElement[] goValues
+        )
+        {
+            if (index == heValues.Length)
+            {
+                yield return (heValues, hoValues, geValues, goValues);
+                yield break;
+            }
+
+            var field = fe.Field;
+            var feValue = field.CreateElement(fe.Evaluate(argument.Representation));
+            var foValue = field.CreateElement(fo.Evaluate(argument.Representation));
+
+            if (feValue.Representation == 0 && foValue.Representation == 0)
+            {
+                for (var denominatorValue = 1; denominatorValue < field.Order; denominatorValue++)
+                {
+                    var denominator = field.CreateElement(denominatorValue);
+                    var generatingElementPower = field.CreateElement(field.GetGeneratingElementPower(index));
+
+                    for (var goValue = 1; goValue < field.Order; goValue++)
+                    {
+                        goValues[index] = field.CreateElement(goValue);
+                        geValues[index] = denominator - generatingElementPower * goValues[index];
+
+                        hoValues[index] = lambda.InverseForAddition() * argument * goValues[index] + field.One().InverseForAddition() / denominator;
+                        heValues[index] = lambda.InverseForAddition() * argument * geValues[index] +
+                                      generatingElementPower.InverseForAddition() / denominator;
+
+                        foreach (var componentsValues in ComputePolyphaseComponentsValues(fe, fo, lambda, argument * argumentMultiplier,
+                            argumentMultiplier, index + 1, heValues, hoValues, geValues, goValues))
+                            yield return componentsValues;
+                    }
+                }
+            }
+            else
+                for (var componentValue = 0; componentValue < field.Order; componentValue++)
+                {
+                    if (feValue.Representation == 0)
+                    {
+                        goValues[index] = field.CreateElement(componentValue);
+                        geValues[index] = field.One().InverseForAddition() / foValue;
+                    }
+                    else if (foValue.Representation == 0)
+                    {
+                        goValues[index] = feValue.InverseForMultiplication();
+                        geValues[index] = field.CreateElement(componentValue);
+
+                    }
+                    else
+                    {
+                        goValues[index] = field.CreateElement(componentValue); 
+                        geValues[index] = (field.One().InverseForAddition() + goValues[index] * feValue) / foValue;
+                    }
+
+                    hoValues[index] = foValue - lambda * argument * goValues[index];
+                    heValues[index] = feValue - lambda * argument * geValues[index];
+
+                    foreach (var componentsValues in ComputePolyphaseComponentsValues(fe, fo, lambda, argument * argumentMultiplier,
+                        argumentMultiplier, index + 1, heValues, hoValues, geValues, goValues))
+                        yield return componentsValues;
+                }
+        }
+
+        private static IEnumerable<(FieldElement[], FieldElement[], FieldElement[], FieldElement[])> ComputePolyphaseComponentsValues(
             Polynomial polynomial,
             int maxDegree,
             FieldElement lambda
@@ -36,49 +111,10 @@
             var field = polynomial.Field;
             var argument = field.One();
             var argumentMultiplier = field.CreateElement(field.GetGeneratingElementPower(2));
-            for (var i = 0; i <= componentsMaxDegree; i++, argument.Multiply(argumentMultiplier))
-            {
-                var feValue = field.CreateElement(fe.Evaluate(argument.Representation));
-                var foValue = field.CreateElement(fo.Evaluate(argument.Representation));
 
-                if (feValue.Representation == 0 && foValue.Representation == 0)
-                {
-                    var denominator = field.One();
-                    var generatingElementPower = field.CreateElement(field.GetGeneratingElementPower(i));
-
-
-                    goValues[i] = field.One();
-                    geValues[i] = denominator - generatingElementPower * goValues[i];
-
-                    hoValues[i] = lambda.InverseForAddition() * argument * goValues[i] + field.One().InverseForAddition() / denominator;
-                    heValues[i] = lambda.InverseForAddition() * argument * geValues[i] +
-                                  generatingElementPower.InverseForAddition() / denominator;
-                }
-                else
-                {
-                    if (feValue.Representation == 0)
-                    {
-                        goValues[i] = field.One();
-                        geValues[i] = field.One().InverseForAddition() / foValue;
-                    }
-                    else if (foValue.Representation == 0)
-                    {
-                        goValues[i] = feValue.InverseForMultiplication();
-                        geValues[i] = field.One();
-
-                    }
-                    else
-                    {
-                        goValues[i] = field.One();
-                        geValues[i] = (field.One().InverseForAddition() + goValues[i] * feValue) / foValue;
-                    }
-
-                    hoValues[i] = foValue - lambda * argument * goValues[i];
-                    heValues[i] = feValue - lambda * argument * geValues[i];
-                }
-            }
-
-            return (heValues, hoValues, geValues, goValues);
+            foreach (var componentsValues in ComputePolyphaseComponentsValues(fe, fo, lambda, argument, argumentMultiplier, 0,
+                heValues, hoValues, geValues, goValues))
+                yield return componentsValues;
         }
 
         private Polynomial ReconstructPolynomialByValues(FieldElement[] values)
@@ -95,7 +131,7 @@
                     a[i, j] = argument * a[i, j - 1];
             }
 
-            var systemSolution = _linearSystemSolver.Solve(a, values);
+            var systemSolution = _linearSystemSolver.Solve(a, values.Select(x => new FieldElement(x)).ToArray());
             if (systemSolution.IsCorrect == false)
                 throw new InvalidOperationException("Can't reconstruct polynomial by values");
 
@@ -113,20 +149,23 @@
             if(maxDegree != polynomial.Field.Order - 2)
                 throw new ArgumentException($"{nameof(maxDegree)} must be correlated with {nameof(polynomial)} field order");
 
-            var (heValues, hoValues, geValues, goValues) = ComputePolyphaseComponentsValues(polynomial, maxDegree, polynomial.Field.One());
+            return ComputePolyphaseComponentsValues(polynomial, maxDegree, polynomial.Field.One())
+                .Select(x =>
+                        {
+                            var (heValues, hoValues, geValues, goValues) = x;
 
-            var he = ReconstructPolynomialByValues(heValues);
-            var ho = ReconstructPolynomialByValues(hoValues);
-            var ge = ReconstructPolynomialByValues(geValues);
-            var go = ReconstructPolynomialByValues(goValues);
+                            var he = ReconstructPolynomialByValues(heValues);
+                            var ho = ReconstructPolynomialByValues(hoValues);
+                            var ge = ReconstructPolynomialByValues(geValues);
+                            var go = ReconstructPolynomialByValues(goValues);
 
-            return new[]
-                   {
-                       (
-                           PolynomialsAlgorithmsExtensions.CreateFormPolyphaseComponents(he, ho),
-                           PolynomialsAlgorithmsExtensions.CreateFormPolyphaseComponents(ge, go)
-                       )
-                   };
+                            return
+                            (
+                                PolynomialsAlgorithmsExtensions.CreateFormPolyphaseComponents(he, ho),
+                                PolynomialsAlgorithmsExtensions.CreateFormPolyphaseComponents(ge, go)
+                            );
+                        }
+                );
         }
     }
 }
