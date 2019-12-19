@@ -96,34 +96,33 @@
 
         private static IEnumerable<(FieldElement[], FieldElement[], FieldElement[], FieldElement[])> ComputePolyphaseComponentsValues(
             Polynomial polynomial,
-            int maxDegree,
             FieldElement lambda
         )
         {
+            var field = polynomial.Field;
             var (fe, fo) = polynomial.GetPolyphaseComponents();
 
-            var componentsMaxDegree = (maxDegree + 1) / 2 - 1;
-            var heValues = new FieldElement[componentsMaxDegree + 1];
-            var hoValues = new FieldElement[componentsMaxDegree + 1];
-            var geValues = new FieldElement[componentsMaxDegree + 1];
-            var goValues = new FieldElement[componentsMaxDegree + 1];
+            var valuesCount = (field.Order - 1) / 2;
+            var heValues = new FieldElement[valuesCount];
+            var hoValues = new FieldElement[valuesCount];
+            var geValues = new FieldElement[valuesCount];
+            var goValues = new FieldElement[valuesCount];
 
-            var field = polynomial.Field;
+            
             var argument = field.One();
             var argumentMultiplier = field.CreateElement(field.GetGeneratingElementPower(2));
-
             foreach (var componentsValues in ComputePolyphaseComponentsValues(fe, fo, lambda, argument, argumentMultiplier, 0,
                 heValues, hoValues, geValues, goValues))
                 yield return componentsValues;
         }
 
-        private Polynomial ReconstructPolynomialByValues(FieldElement[] values)
+        private Polynomial ReconstructPolynomialByValues(FieldElement[] values, int coefficientsCount)
         {
             var field = values[0].Field;
             var argument = field.One();
             var argumentMultiplier = field.CreateElement(field.GetGeneratingElementPower(2));
 
-            var a = new FieldElement[values.Length, values.Length];
+            var a = new FieldElement[values.Length, coefficientsCount];
             for (var i = 0; i < a.GetLength(0); i++, argument.Multiply(argumentMultiplier))
             {
                 a[i, 0] = field.One();
@@ -152,15 +151,18 @@
             if (lambda != null && polynomial.Field.Equals(lambda.Field) == false)
                 throw new ArgumentException($"{nameof(lambda)} must belong to the field of the polynomial {nameof(polynomial)}");
 
-            return ComputePolyphaseComponentsValues(polynomial, maxDegree, lambda ?? polynomial.Field.One())
+            var field = polynomial.Field;
+            return ComputePolyphaseComponentsValues(polynomial, lambda ?? field.One())
                 .Select(x =>
                         {
                             var (heValues, hoValues, geValues, goValues) = x;
+                            var evenComponentCoefficientsCount = (field.Order - 1) / 2;
+                            var oddComponentCoefficientsCount = (field.Order - 1) / 2;
 
-                            var he = ReconstructPolynomialByValues(heValues);
-                            var ho = ReconstructPolynomialByValues(hoValues);
-                            var ge = ReconstructPolynomialByValues(geValues);
-                            var go = ReconstructPolynomialByValues(goValues);
+                            var he = ReconstructPolynomialByValues(heValues, evenComponentCoefficientsCount);
+                            var ho = ReconstructPolynomialByValues(hoValues, oddComponentCoefficientsCount);
+                            var ge = ReconstructPolynomialByValues(geValues, evenComponentCoefficientsCount);
+                            var go = ReconstructPolynomialByValues(goValues, oddComponentCoefficientsCount);
 
                             return
                             (
