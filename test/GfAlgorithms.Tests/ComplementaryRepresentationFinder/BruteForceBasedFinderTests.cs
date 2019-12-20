@@ -72,10 +72,10 @@
 
             // Then
             var field = testCase.Polynomial.Field;
+            var one = new Polynomial(field.One());
+            var modularPolynomial = (one >> (testCase.MaxDegree + 1)) - one;
+
             var lambda = (testCase.Lambda ?? field.One()).Representation;
-            var modularPolynomial
-                = new Polynomial(field.One()).RightShift(testCase.MaxDegree + 1)
-                  + new Polynomial(field.One().InverseForAddition());
             Assert.All(
                 actualComplementaryRepresentations,
                 x => Assert.Equal(testCase.Polynomial, (x.h + lambda * Polynomial.RightShift(x.g, 2)) % modularPolynomial)

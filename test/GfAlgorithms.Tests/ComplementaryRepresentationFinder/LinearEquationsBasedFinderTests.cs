@@ -83,12 +83,10 @@
             var field = testCase.Polynomial.Field;
             var one = new Polynomial(field.One());
             var lambda = (testCase.Lambda ?? field.One()).Representation;
-            var modularPolynomial
-                = new Polynomial(field.One()).RightShift(testCase.MaxDegree + 1)
-                  + new Polynomial(field.One().InverseForAddition());
-            var componentsModularPolynomial
-                = new Polynomial(field.One()).RightShift((testCase.MaxDegree + 1) / 2)
-                  + new Polynomial(field.One().InverseForAddition());
+            var modularPolynomial = (one >> (field.Order - 1)) - one;
+            var componentsModularPolynomial = (one >> ((field.Order - 1) / 2)) - one;
+
+            var complementaryRepresentationsCount = 0;
             Assert.All(
                 actualComplementaryRepresentations,
                 x =>
@@ -99,8 +97,11 @@
                     var (he, ho) = h.GetPolyphaseComponents();
                     var (ge, go) = g.GetPolyphaseComponents();
                     Assert.Equal(one, (he * go - ge * ho) % componentsModularPolynomial);
+
+                    complementaryRepresentationsCount++;
                 }
             );
+            Assert.True(complementaryRepresentationsCount > 0);
         }
     }
 }
