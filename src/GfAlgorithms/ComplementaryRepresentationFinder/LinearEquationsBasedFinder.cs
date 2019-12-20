@@ -6,6 +6,7 @@
     using Extensions;
     using GfPolynoms;
     using GfPolynoms.Extensions;
+    using GfPolynoms.GaloisFields;
     using LinearSystemSolver;
 
     public class LinearEquationsBasedFinder : IComplementaryRepresentationFinder
@@ -116,16 +117,13 @@
                 yield return componentsValues;
         }
 
-        private Polynomial ReconstructPolynomialByValues(FieldElement[] values, int coefficientsCount)
+        private Polynomial ReconstructPolynomialByValues(FieldElement argumentMultiplier, FieldElement[] values, int coefficientsCount)
         {
-            var field = values[0].Field;
-            var argument = field.One();
-            var argumentMultiplier = field.CreateElement(field.GetGeneratingElementPower(2));
-
+            var argument = argumentMultiplier.Field.One();
             var a = new FieldElement[values.Length, coefficientsCount];
             for (var i = 0; i < a.GetLength(0); i++, argument.Multiply(argumentMultiplier))
             {
-                a[i, 0] = field.One();
+                a[i, 0] = argumentMultiplier.Field.One();
                 for (var j = 1; j < a.GetLength(1); j++)
                     a[i, j] = argument * a[i, j - 1];
             }
@@ -135,6 +133,24 @@
                 throw new InvalidOperationException("Can't reconstruct polynomial by values");
 
             return new Polynomial(systemSolution.VariablesValues);
+        }
+
+        private (Polynomial h, Polynomial g) ReconstructComplementaryRepresentation(GaloisField field,
+            FieldElement[] heValues, FieldElement[] hoValues, FieldElement[] geValues, FieldElement[] goValues
+        )
+        {
+            var componentsDegree = (field.Order - 1) / 2;
+            var argumentMultiplier = field.CreateElement(field.GetGeneratingElementPower(2));
+            var he = ReconstructPolynomialByValues(argumentMultiplier, heValues, componentsDegree);
+            var ho = ReconstructPolynomialByValues(argumentMultiplier, hoValues, componentsDegree);
+            var ge = ReconstructPolynomialByValues(argumentMultiplier, geValues, componentsDegree);
+            var go = ReconstructPolynomialByValues(argumentMultiplier, goValues, componentsDegree);
+
+            return
+            (
+                PolynomialsAlgorithmsExtensions.CreateFormPolyphaseComponents(he, ho),
+                PolynomialsAlgorithmsExtensions.CreateFormPolyphaseComponents(ge, go)
+            );
         }
 
         /// <inheritdoc />
@@ -152,25 +168,8 @@
                 throw new ArgumentException($"{nameof(lambda)} must belong to the field of the polynomial {nameof(polynomial)}");
 
             var field = polynomial.Field;
-            return ComputePolyphaseComponentsValues(polynomial, lambda ?? field.One())
-                .Select(x =>
-                        {
-                            var (heValues, hoValues, geValues, goValues) = x;
-                            var evenComponentCoefficientsCount = (field.Order - 1) / 2;
-                            var oddComponentCoefficientsCount = (field.Order - 1) / 2;
-
-                            var he = ReconstructPolynomialByValues(heValues, evenComponentCoefficientsCount);
-                            var ho = ReconstructPolynomialByValues(hoValues, oddComponentCoefficientsCount);
-                            var ge = ReconstructPolynomialByValues(geValues, evenComponentCoefficientsCount);
-                            var go = ReconstructPolynomialByValues(goValues, oddComponentCoefficientsCount);
-
-                            return
-                            (
-                                PolynomialsAlgorithmsExtensions.CreateFormPolyphaseComponents(he, ho),
-                                PolynomialsAlgorithmsExtensions.CreateFormPolyphaseComponents(ge, go)
-                            );
-                        }
-                );
+            foreach (var (heValues, hoValues, geValues, goValues) in ComputePolyphaseComponentsValues(polynomial, lambda ?? field.One()))
+                yield return ReconstructComplementaryRepresentation(field, heValues, hoValues, geValues, goValues);
         }
     }
 }
