@@ -292,7 +292,7 @@
         {
             try
             {
-                AnalyzeSpectrumForRsN9K8();
+                AnalyzeSpectrumForWvN18K9D9();
             }
             catch (Exception exception)
             {
