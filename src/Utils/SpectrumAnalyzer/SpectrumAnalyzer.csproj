@@ -5,6 +5,7 @@
     <TargetFramework>netcoreapp3.0</TargetFramework>
     <AssemblyName>AppliedAlgebra.SpectrumAnalyzer</AssemblyName>
     <RootNamespace>AppliedAlgebra.SpectrumAnalyzer</RootNamespace>
+    <ServerGarbageCollection>true</ServerGarbageCollection>
     <OutputType>Exe</OutputType>
   </PropertyGroup>
 
