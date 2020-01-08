@@ -48,35 +48,58 @@
             );
         }
 
+        private void ProcessBallCenter(
+            ICode code,
+            ListsSizesDistributionAnalyzerOptions options,
+            ref long processedCentersCount,
+            IReadOnlyList<ListsSizesDistribution> listsSizesDistributions,
+            FieldElement[] ballCenter
+        )
+        {
+            var lists = listsSizesDistributions.Select(x => new List<FieldElement[]>()).ToArray();
+            var codewordsForLargestBall = code.DecodeViaList(ballCenter, code.CodewordLength - 1).Select(code.Encode);
+            foreach (var codeword in codewordsForLargestBall)
+                for (var i = Math.Max(0, ballCenter.ComputeHammingDistance(codeword) - 1); i < lists.Length; i++)
+                    lists[i].Add(codeword);
+
+            for (var i = 0; i < lists.Length; i++)
+            {
+                listsSizesDistributions[i].CollectInformation(ballCenter, lists[i]);
+                LogListSize(options.FullLogsPath, code, i + 1, ballCenter, lists[i].Count);
+            }
+
+            if (Interlocked.Increment(ref processedCentersCount) % options.LoggingResolution == 0)
+                _logger.LogInformation("Processed {processedCentersCount} centers", processedCentersCount);
+        }
+
         public IReadOnlyList<ListsSizesDistribution> Analyze(ICode code, ListsSizesDistributionAnalyzerOptions options = null)
         {
             if(code == null)
                 throw new ArgumentNullException(nameof(code));
 
             var opts = options ?? new ListsSizesDistributionAnalyzerOptions();
+            var firstPortionLength = Math.Min(
+                Math.Max((int) Math.Ceiling(Math.Log(opts.MaxDegreeOfParallelism, code.Field.Order)), 1),
+                code.CodewordLength
+            );
+            var secondPortionLength = code.CodewordLength - firstPortionLength;
             PrepareLogFiles(opts.FullLogsPath, code);
 
             var processedCentersCount = 0L;
             var result = Enumerable.Range(1, code.CodewordLength - 1).Select(x => new ListsSizesDistribution(x)).ToArray();
             Parallel.ForEach(
-                _variantsIterator.IterateVectors(code.Field, code.CodewordLength),
+                _variantsIterator.IterateVectors(code.Field, firstPortionLength),
                 new ParallelOptions {MaxDegreeOfParallelism = opts.MaxDegreeOfParallelism},
-                ballCenter =>
+                ballCenterFirstPart =>
                 {
-                    var lists = result.Select(x => new List<FieldElement[]>()).ToArray();
-                    var codewordsForLargestBall = code.DecodeViaList(ballCenter, code.CodewordLength - 1).Select(code.Encode);
-                    foreach (var codeword in codewordsForLargestBall)
-                        for (var i = Math.Max(0, ballCenter.ComputeHammingDistance(codeword) - 1); i < lists.Length; i++)
-                            lists[i].Add(codeword);
-
-                    for (var i = 0; i < lists.Length; i++)
-                    {
-                        result[i].CollectInformation(ballCenter, lists[i]);
-                        LogListSize(opts.FullLogsPath, code, i + 1, ballCenter, lists[i].Count);
-                    }
-
-                    if (Interlocked.Increment(ref processedCentersCount) % opts.LoggingResolution == 0)
-                        _logger.LogInformation("Processed {processedCentersCount} centers", processedCentersCount);
+                    if (secondPortionLength == 0)
+                        ProcessBallCenter(code, opts, ref processedCentersCount, result, ballCenterFirstPart);
+                    else
+                        foreach (var ballCenterSecondPart in _variantsIterator.IterateVectors(code.Field, secondPortionLength))
+                        {
+                            var ballCenter = ballCenterFirstPart.Concat(ballCenterSecondPart).ToArray();
+                            ProcessBallCenter(code, opts, ref processedCentersCount, result, ballCenter);
+                        }
                 }
             );
 
