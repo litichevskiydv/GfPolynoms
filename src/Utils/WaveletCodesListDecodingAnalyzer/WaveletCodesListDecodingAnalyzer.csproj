@@ -4,6 +4,7 @@
     <TargetFramework>netcoreapp3.0</TargetFramework>
     <AssemblyName>AppliedAlgebra.WaveletCodesListDecodingAnalyzer</AssemblyName>
     <RootNamespace>AppliedAlgebra.WaveletCodesListDecodingAnalyzer</RootNamespace>
+    <ServerGarbageCollection>true</ServerGarbageCollection>
     <OutputType>Exe</OutputType>
   </PropertyGroup>
 
