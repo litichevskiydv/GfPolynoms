@@ -4,11 +4,10 @@
     using System.Linq;
     using Analyzers.ListsSizesDistribution;
     using CodesAbstractions;
+    using GfAlgorithms.VariantsIterator;
     using Microsoft.Extensions.Logging;
     using Moq;
-    using NoiseGenerator;
     using Stubs;
-    using TestCases;
     using Xunit;
 
     public class ListsSizesDistributionAnalyzerTests
@@ -20,8 +19,8 @@
             public IReadOnlyList<string> Messages => _messages;
 
             public ListsSizesDistributionAnalyzerForTests(
-                INoiseGenerator noiseGenerator,
-                ILogger<ListsSizesDistributionAnalyzer> logger) : base(noiseGenerator, logger)
+                IVariantsIterator variantsIterator,
+                ILogger<ListsSizesDistributionAnalyzer> logger) : base(variantsIterator, logger)
             {
                 _messages = new List<string>();
             }
@@ -38,7 +37,7 @@
         public ListsSizesDistributionAnalyzerTests()
         {
             _mockLogger = new Mock<ILogger<ListsSizesDistributionAnalyzer>>();
-            _analyzer = new ListsSizesDistributionAnalyzerForTests(new RecursiveGenerator(), _mockLogger.Object);
+            _analyzer = new ListsSizesDistributionAnalyzerForTests(new RecursiveIterator(), _mockLogger.Object);
         }
 
         [Fact]

@@ -42,6 +42,7 @@
     [UsedImplicitly]
     public class Program
     {
+        private static readonly IVariantsIterator VariantsIterator;
         private static readonly INoiseGenerator NoiseGenerator;
         private static readonly LinearCodeDistanceAnalyzer LinearCodeDistanceAnalyzer;
         private static readonly MinimalSphereCoveringAnalyzer MinimalSphereCoveringAnalyzer;
@@ -385,12 +386,13 @@
                 );
             Logger = loggerFactory.CreateLogger<Program>();
 
+            VariantsIterator = new RecursiveIterator();
             NoiseGenerator = new RecursiveGenerator();
             WordsComparer = new FieldElementsArraysComparer();
 
             LinearCodeDistanceAnalyzer = new LinearCodeDistanceAnalyzer(loggerFactory.CreateLogger<LinearCodeDistanceAnalyzer>());
             MinimalSphereCoveringAnalyzer = new MinimalSphereCoveringAnalyzer(NoiseGenerator, loggerFactory.CreateLogger<MinimalSphereCoveringAnalyzer>());
-            ListsSizesDistributionAnalyzer = new ListsSizesDistributionAnalyzer(NoiseGenerator, loggerFactory.CreateLogger<ListsSizesDistributionAnalyzer>());
+            ListsSizesDistributionAnalyzer = new ListsSizesDistributionAnalyzer(VariantsIterator, loggerFactory.CreateLogger<ListsSizesDistributionAnalyzer>());
 
             var gaussSolver = new GaussSolver();
             TelemetryCollector = new GsBasedDecoderTelemetryCollectorForGsBasedDecoder();

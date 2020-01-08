@@ -8,13 +8,13 @@
     using System.Threading.Tasks;
     using CodesAbstractions;
     using GfAlgorithms.Extensions;
+    using GfAlgorithms.VariantsIterator;
     using GfPolynoms;
     using Microsoft.Extensions.Logging;
-    using NoiseGenerator;
 
     public class ListsSizesDistributionAnalyzer : IListsSizesDistributionAnalyzer
     {
-        private readonly INoiseGenerator _noiseGenerator;
+        private readonly IVariantsIterator _variantsIterator;
         private readonly ILogger _logger;
 
         internal virtual void WriteLineToLog(string fullLogsPath, ICode code, int listDecodingRadius, string line, bool append = true)
@@ -58,40 +58,39 @@
 
             var processedCentersCount = 0L;
             var result = Enumerable.Range(1, code.CodewordLength - 1).Select(x => new ListsSizesDistribution(x)).ToArray();
-            for (var errorsCount = 0; errorsCount <= code.CodewordLength; errorsCount++)
-                Parallel.ForEach(
-                    _noiseGenerator.VariatePositionsAndValues(code.Field, code.CodewordLength, errorsCount),
-                    new ParallelOptions {MaxDegreeOfParallelism = opts.MaxDegreeOfParallelism},
-                    ballCenter =>
+            Parallel.ForEach(
+                _variantsIterator.IterateVectors(code.Field, code.CodewordLength),
+                new ParallelOptions {MaxDegreeOfParallelism = opts.MaxDegreeOfParallelism},
+                ballCenter =>
+                {
+                    var lists = result.Select(x => new List<FieldElement[]>()).ToArray();
+                    var codewordsForLargestBall = code.DecodeViaList(ballCenter, code.CodewordLength - 1).Select(code.Encode);
+                    foreach (var codeword in codewordsForLargestBall)
+                        for (var i = Math.Max(0, ballCenter.ComputeHammingDistance(codeword) - 1); i < lists.Length; i++)
+                            lists[i].Add(codeword);
+
+                    for (var i = 0; i < lists.Length; i++)
                     {
-                        var lists = result.Select(x => new List<FieldElement[]>()).ToArray();
-                        var codewordsForLargestBall = code.DecodeViaList(ballCenter, code.CodewordLength - 1).Select(code.Encode);
-                        foreach (var codeword in codewordsForLargestBall)
-                            for (var i = Math.Max(0, ballCenter.ComputeHammingDistance(codeword) - 1); i < lists.Length; i++)
-                                lists[i].Add(codeword);
-
-                        for (var i = 0; i < lists.Length; i++)
-                        {
-                            result[i].CollectInformation(ballCenter, lists[i]);
-                            LogListSize(opts.FullLogsPath, code, i + 1, ballCenter, lists[i].Count);
-                        }
-
-                        if (Interlocked.Increment(ref processedCentersCount) % opts.LoggingResolution == 0)
-                            _logger.LogInformation("Processed {processedCentersCount} centers", processedCentersCount);
+                        result[i].CollectInformation(ballCenter, lists[i]);
+                        LogListSize(opts.FullLogsPath, code, i + 1, ballCenter, lists[i].Count);
                     }
-                );
+
+                    if (Interlocked.Increment(ref processedCentersCount) % opts.LoggingResolution == 0)
+                        _logger.LogInformation("Processed {processedCentersCount} centers", processedCentersCount);
+                }
+            );
 
             return result;
         }
 
-        public ListsSizesDistributionAnalyzer(INoiseGenerator noiseGenerator, ILogger<ListsSizesDistributionAnalyzer> logger)
+        public ListsSizesDistributionAnalyzer(IVariantsIterator variantsIterator, ILogger<ListsSizesDistributionAnalyzer> logger)
         {
-            if (noiseGenerator == null)
-                throw new ArgumentNullException(nameof(noiseGenerator));
+            if (variantsIterator == null)
+                throw new ArgumentNullException(nameof(variantsIterator));
             if (logger == null)
                 throw new ArgumentNullException(nameof(logger));
 
-            _noiseGenerator = noiseGenerator;
+            _variantsIterator = variantsIterator;
             _logger = logger;
         }
     }

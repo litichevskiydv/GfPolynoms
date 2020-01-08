@@ -4,7 +4,6 @@
     using System.Linq;
     using System.Reflection;
     using CodesResearchTools.Analyzers.ListsSizesDistribution;
-    using CodesResearchTools.NoiseGenerator;
     using GfAlgorithms.VariantsIterator;
     using GfPolynoms;
     using GfPolynoms.Extensions;
@@ -85,7 +84,7 @@
 
 
             var listsSizesDistributionAnalyzer = new ListsSizesDistributionAnalyzer(
-                new RecursiveGenerator(),
+                new RecursiveIterator(), 
                 _loggerFactory.CreateLogger<ListsSizesDistributionAnalyzer>()
             );
             var logger = _loggerFactory.CreateLogger<Program>();
