@@ -80,7 +80,10 @@
                 throw new ArgumentNullException(nameof(encodingProcedure));
 
             var opts = options ?? new SpectrumAnalyzerOptions();
-            var firstPortionLength = Math.Min((int) Math.Ceiling(Math.Log(opts.MaxDegreeOfParallelism, field.Order)), informationWordLength);
+            var firstPortionLength = Math.Min(
+                Math.Max((int) Math.Ceiling(Math.Log(opts.MaxDegreeOfParallelism, field.Order)), 1),
+                informationWordLength
+            );
             var secondPortionLength = informationWordLength - firstPortionLength;
 
             var processedInformationWords = 0L;
