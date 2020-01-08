@@ -1,11 +1,10 @@
 ﻿namespace AppliedAlgebra.CodesResearchTools.Tests
 {
     using Analyzers.CodeSpaceCovering;
+    using GfAlgorithms.VariantsIterator;
     using Microsoft.Extensions.Logging;
     using Moq;
-    using NoiseGenerator;
     using Stubs;
-    using TestCases;
     using Xunit;
 
     public class MinimalSphereCoveringAnalyzerTests
@@ -16,7 +15,7 @@
         public MinimalSphereCoveringAnalyzerTests()
         {
             _mockLogger = new Mock<ILogger<MinimalSphereCoveringAnalyzer>>();
-            _analyzer = new MinimalSphereCoveringAnalyzer(new RecursiveGenerator(), _mockLogger.Object);
+            _analyzer = new MinimalSphereCoveringAnalyzer(new RecursiveIterator(), _mockLogger.Object);
         }
 
         [Fact]

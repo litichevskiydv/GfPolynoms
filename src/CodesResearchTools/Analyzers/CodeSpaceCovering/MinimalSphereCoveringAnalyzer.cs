@@ -6,12 +6,12 @@
     using System.Threading.Tasks;
     using CodesAbstractions;
     using GfAlgorithms.Extensions;
+    using GfAlgorithms.VariantsIterator;
     using Microsoft.Extensions.Logging;
-    using NoiseGenerator;
 
     public class MinimalSphereCoveringAnalyzer : IMinimalSphereCoveringAnalyzer
     {
-        private readonly INoiseGenerator _noiseGenerator;
+        private readonly IVariantsIterator _variantsIterator;
         private readonly ILogger _logger;
 
         public int Analyze(ICode code, MinimalSphereCoveringAnalyzerOptions options = null)
@@ -24,39 +24,38 @@
             var minimalRadius = 0;
             var processedWordsCount = 0L;
             var syncRoot = new object();
-            for (var errorsCount = 0; errorsCount <= code.CodewordLength; errorsCount++)
-                Parallel.ForEach(
-                    _noiseGenerator.VariatePositionsAndValues(code.Field, code.CodewordLength, errorsCount),
-                    new ParallelOptions {MaxDegreeOfParallelism = opts.MaxDegreeOfParallelism},
-                    () => 0,
-                    (word, loopState, localMinimalRadius) =>
-                    {
-                        var codewordsInLargestBall = code.DecodeViaList(word, code.CodewordLength - 1).Select(code.Encode);
-                        if (Interlocked.Increment(ref processedWordsCount) % opts.LoggingResolution == 0)
-                            _logger.LogInformation(
-                                "Thread [{managedThreadId}]: processed {processedWordsCount} words, local minimal radius {localMinimalRadius}",
-                                Thread.CurrentThread.ManagedThreadId, processedWordsCount, localMinimalRadius
-                            );
+            Parallel.ForEach(
+                _variantsIterator.IterateVectors(code.Field, code.CodewordLength),
+                new ParallelOptions {MaxDegreeOfParallelism = opts.MaxDegreeOfParallelism},
+                () => 0,
+                (word, loopState, localMinimalRadius) =>
+                {
+                    var codewordsInLargestBall = code.DecodeViaList(word, code.CodewordLength - 1).Select(code.Encode);
+                    if (Interlocked.Increment(ref processedWordsCount) % opts.LoggingResolution == 0)
+                        _logger.LogInformation(
+                            "Thread [{managedThreadId}]: processed {processedWordsCount} words, local minimal radius {localMinimalRadius}",
+                            Thread.CurrentThread.ManagedThreadId, processedWordsCount, localMinimalRadius
+                        );
 
-                        return Math.Max(localMinimalRadius, codewordsInLargestBall.Min(x => x.ComputeHammingDistance(word)));
-                    },
-                    localMinimalRadius =>
-                    {
-                        lock (syncRoot) minimalRadius = Math.Max(minimalRadius, localMinimalRadius);
-                    }
-                );
+                    return Math.Max(localMinimalRadius, codewordsInLargestBall.Min(x => x.ComputeHammingDistance(word)));
+                },
+                localMinimalRadius =>
+                {
+                    lock (syncRoot) minimalRadius = Math.Max(minimalRadius, localMinimalRadius);
+                }
+            );
 
             return minimalRadius;
         }
 
-        public MinimalSphereCoveringAnalyzer(INoiseGenerator noiseGenerator, ILogger<MinimalSphereCoveringAnalyzer> logger)
+        public MinimalSphereCoveringAnalyzer(IVariantsIterator variantsIterator, ILogger<MinimalSphereCoveringAnalyzer> logger)
         {
-            if(noiseGenerator == null)
-                throw  new ArgumentNullException(nameof(noiseGenerator));
+            if(variantsIterator == null)
+                throw  new ArgumentNullException(nameof(variantsIterator));
             if(logger == null)
                 throw new ArgumentNullException(nameof(logger));
 
-            _noiseGenerator = noiseGenerator;
+            _variantsIterator = variantsIterator;
             _logger = logger;
         }
     }

@@ -391,7 +391,7 @@
             WordsComparer = new FieldElementsArraysComparer();
 
             LinearCodeDistanceAnalyzer = new LinearCodeDistanceAnalyzer(loggerFactory.CreateLogger<LinearCodeDistanceAnalyzer>());
-            MinimalSphereCoveringAnalyzer = new MinimalSphereCoveringAnalyzer(NoiseGenerator, loggerFactory.CreateLogger<MinimalSphereCoveringAnalyzer>());
+            MinimalSphereCoveringAnalyzer = new MinimalSphereCoveringAnalyzer(VariantsIterator, loggerFactory.CreateLogger<MinimalSphereCoveringAnalyzer>());
             ListsSizesDistributionAnalyzer = new ListsSizesDistributionAnalyzer(VariantsIterator, loggerFactory.CreateLogger<ListsSizesDistributionAnalyzer>());
 
             var gaussSolver = new GaussSolver();
