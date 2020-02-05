@@ -1,6 +1,8 @@
 ﻿namespace AppliedAlgebra.GfAlgorithms.Tests
 {
+    using System;
     using ComplementaryFilterBuilder;
+    using Extensions;
     using GfPolynoms;
     using GfPolynoms.GaloisFields;
     using JetBrains.Annotations;
@@ -28,32 +30,27 @@
                       new ComplementaryPolynomialBuildingTestCase
                       {
                           SourceFilter = new Polynomial(gf2, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1),
-                          MaxFilterLength = 24,
-                          Expected = new Polynomial(gf2, 1, 0, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1)
+                          MaxFilterLength = 24
                       },
                       new ComplementaryPolynomialBuildingTestCase
                       {
                           SourceFilter = new Polynomial(gf7, 3, 2, 5, 0, 4),
-                          MaxFilterLength = 6,
-                          Expected = new Polynomial(gf7, 3)
+                          MaxFilterLength = 6
                       },
                       new ComplementaryPolynomialBuildingTestCase
                       {
                           SourceFilter = new Polynomial(gf7, 4, 2, 6, 4, 3, 4),
-                          MaxFilterLength = 6,
-                          Expected = new Polynomial(gf7, 0, 2, 2, 5)
+                          MaxFilterLength = 6
                       },
                       new ComplementaryPolynomialBuildingTestCase
                       {
                           SourceFilter = new Polynomial(gf11, 0, 0, 0, 0, 0, 10, 5, 4, 3, 4),
-                          MaxFilterLength = 10,
-                          Expected = new Polynomial(gf11, 0, 0, 0, 0, 0, 0, 1, 1, 10, 6)
+                          MaxFilterLength = 10
                       },
                       new ComplementaryPolynomialBuildingTestCase
                       {
                           SourceFilter = new Polynomial(gf17, 10, 16, 5, 0, 0, 0, 0, 16),
-                          MaxFilterLength = 16,
-                          Expected = new Polynomial(gf17, 12, 4, 0, 15, 0, 1)
+                          MaxFilterLength = 16
                       }
                   };
         }
@@ -67,7 +64,18 @@
         [MemberData(nameof(BuildTestsData))]
         public void ShouldBuildComplementaryFilter(ComplementaryPolynomialBuildingTestCase testCase)
         {
-            Assert.Equal(testCase.Expected, _builder.Build(testCase.SourceFilter, testCase.MaxFilterLength));
+            // When
+            var actualFilter = _builder.Build(testCase.SourceFilter, testCase.MaxFilterLength);
+
+            // Then
+            var field = testCase.SourceFilter.Field;
+            var one = new Polynomial(field, 1);
+            var modularPolynomial = (one >> (testCase.MaxFilterLength / 2)) - one;
+            var (he, ho) = testCase.SourceFilter.GetPolyphaseComponents();
+            var (ge, go) = actualFilter.GetPolyphaseComponents();
+
+           
+            Assert.Equal(one, (he * go - ho * ge) % modularPolynomial);
         }
     }
 }
