@@ -4,6 +4,7 @@
     using ComplementaryFilterBuilder;
     using Extensions;
     using GfPolynoms;
+    using GfPolynoms.Extensions;
     using GfPolynoms.GaloisFields;
     using JetBrains.Annotations;
     using PolynomialsGcdFinder;
@@ -15,16 +16,21 @@
         private readonly GcdBasedBuilder _builder;
 
         [UsedImplicitly]
-        public static readonly TheoryData<ComplementaryPolynomialBuildingTestCase> BuildTestsData;
+        public static readonly TheoryData<ComplementaryPolynomialBuildingTestCase> ComplementaryFilterEvenLengthBuildingTestsData;
+        [UsedImplicitly]
+        public static readonly TheoryData<ComplementaryPolynomialBuildingTestCase> ComplementaryFilterOddLengthBuildingTestsData;
+        [UsedImplicitly]
+        public static readonly TheoryData<ComplementaryPolynomialBuildingTestCase> ComplementaryFilterBuildingFailTestsData;
 
         static GcdBasedBuilderTests()
         {
             var gf2 = new PrimeOrderField(2);
             var gf7 = new PrimeOrderField(7);
+            var gf8 = new PrimePowerOrderField(8, new Polynomial(new PrimeOrderField(2), 1, 1, 0, 1));
             var gf11 = new PrimeOrderField(11);
             var gf17 = new PrimeOrderField(17);
 
-            BuildTestsData
+            ComplementaryFilterEvenLengthBuildingTestsData
                 = new TheoryData<ComplementaryPolynomialBuildingTestCase>
                   {
                       new ComplementaryPolynomialBuildingTestCase
@@ -53,6 +59,29 @@
                           MaxFilterLength = 16
                       }
                   };
+            ComplementaryFilterOddLengthBuildingTestsData
+                = new TheoryData<ComplementaryPolynomialBuildingTestCase>
+                  {
+                      new ComplementaryPolynomialBuildingTestCase
+                      {
+                          SourceFilter = new Polynomial(gf8, 3, 2, 7, 6, 4, 2, 1),
+                          MaxFilterLength = 7
+                      }
+                  };
+            ComplementaryFilterBuildingFailTestsData
+                = new TheoryData<ComplementaryPolynomialBuildingTestCase>
+                  {
+                      new ComplementaryPolynomialBuildingTestCase
+                      {
+                          SourceFilter = new Polynomial(gf7, 0, 0, 6, 6, 2, 2),
+                          MaxFilterLength = 6
+                      },
+                      new ComplementaryPolynomialBuildingTestCase
+                      {
+                          SourceFilter = new Polynomial(gf8, 0, 0, 7, 6, 4, 2, 1),
+                          MaxFilterLength = 7
+                      }
+                  };
         }
 
         public GcdBasedBuilderTests()
@@ -61,8 +90,8 @@
         }
 
         [Theory]
-        [MemberData(nameof(BuildTestsData))]
-        public void ShouldBuildComplementaryFilter(ComplementaryPolynomialBuildingTestCase testCase)
+        [MemberData(nameof(ComplementaryFilterEvenLengthBuildingTestsData))]
+        public void ShouldBuildComplementaryFilterEvenLength(ComplementaryPolynomialBuildingTestCase testCase)
         {
             // When
             var actualFilter = _builder.Build(testCase.SourceFilter, testCase.MaxFilterLength);
@@ -76,6 +105,31 @@
 
            
             Assert.Equal(one, (he * go - ho * ge) % modularPolynomial);
+        }
+
+        [Theory]
+        [MemberData(nameof(ComplementaryFilterOddLengthBuildingTestsData))]
+        public void ShouldBuildComplementaryFilterOddLength(ComplementaryPolynomialBuildingTestCase testCase)
+        {
+            // When
+            var actualFilter = _builder.Build(testCase.SourceFilter, testCase.MaxFilterLength);
+
+            // Then
+            var field = testCase.SourceFilter.Field;
+            var one = new Polynomial(field, 1);
+            var modularPolynomial = (one >> testCase.MaxFilterLength) - one;
+            var (he, ho) = testCase.SourceFilter.GetPolyphaseComponents();
+            var (ge, go) = actualFilter.GetPolyphaseComponents();
+
+
+            Assert.Equal(one, (he.RaiseVariableDegree(2) * go.RaiseVariableDegree(2) - ho.RaiseVariableDegree(2) * ge.RaiseVariableDegree(2)) % modularPolynomial);
+        }
+
+        [Theory]
+        [MemberData(nameof(ComplementaryFilterBuildingFailTestsData))]
+        public void ShouldNotBuildComplementaryFilter(ComplementaryPolynomialBuildingTestCase testCase)
+        {
+            Assert.Throws<InvalidOperationException>(() => _builder.Build(testCase.SourceFilter, testCase.MaxFilterLength));
         }
     }
 }

@@ -34,13 +34,13 @@
 
             var polythaseComponents = sourceFilter.GetPolyphaseComponents();
             var gcdWithQuotients = _gcdFinder.GcdWithQuotients(polythaseComponents.Item1, polythaseComponents.Item2);
-            if (gcdWithQuotients.Gcd.IsMonomial() == false)
+            if (gcdWithQuotients.Gcd.IsMonomial() == false || maxFilterLength % 2 == 1 && gcdWithQuotients.Gcd.Degree > 0)
                 throw new InvalidOperationException($"{sourceFilter} polyphase components is not relatively prime");
 
             var field = sourceFilter.Field;
             var complementaryFilterEvenComponent = new Polynomial(field);
             var complementaryFilterOddComponent = field.Pow(field.InverseForAddition(1), gcdWithQuotients.Quotients.Length)
-                                                  * InvertGcdInPolynomialsRing(gcdWithQuotients.Gcd, (maxFilterLength + 1) / 2);
+                                                  * InvertGcdInPolynomialsRing(gcdWithQuotients.Gcd, maxFilterLength / 2);
             for (var i = gcdWithQuotients.Quotients.Length - 1; i > -1; i--)
             {
                 var complementaryFilterEvenComponentOld = complementaryFilterEvenComponent;
