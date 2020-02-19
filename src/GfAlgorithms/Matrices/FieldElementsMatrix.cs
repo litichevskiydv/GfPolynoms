@@ -536,14 +536,14 @@
         /// </summary>
         /// <param name="field">Field from which the elements of the matrix</param>
         /// <param name="firstRow">Matrix first row</param>
-        public static FieldElementsMatrix CirculantMatrix(GaloisField field, int[] firstRow) =>
+        public static FieldElementsMatrix CirculantMatrix(GaloisField field, params int[] firstRow) =>
             FromFirstRow(field, firstRow);
 
         /// <summary>
         /// Creates circulant matrix defined by first row <paramref name="firstRow"/>
         /// </summary>
         /// <param name="firstRow">Matrix first row</param>
-        public static FieldElementsMatrix CirculantMatrix(FieldElement[] firstRow) =>
+        public static FieldElementsMatrix CirculantMatrix(params FieldElement[] firstRow) =>
             FromFirstRow(firstRow);
 
         /// <summary>
@@ -552,14 +552,14 @@
         /// </summary>
         /// <param name="field">Field from which the elements of the matrix</param>
         /// <param name="firstRow">Matrix first row</param>
-        public static FieldElementsMatrix DoubleCirculantMatrix(GaloisField field, int[] firstRow) =>
+        public static FieldElementsMatrix DoubleCirculantMatrix(GaloisField field, params int[] firstRow) =>
             FromFirstRow(field, firstRow, 2);
 
         /// <summary>
         /// Creates double circulant matrix defined by first row <paramref name="firstRow"/>
         /// </summary>
         /// <param name="firstRow">Matrix first row</param>
-        public static FieldElementsMatrix DoubleCirculantMatrix(FieldElement[] firstRow) =>
+        public static FieldElementsMatrix DoubleCirculantMatrix(params FieldElement[] firstRow) =>
             FromFirstRow(firstRow, 2);
 
         /// <summary>

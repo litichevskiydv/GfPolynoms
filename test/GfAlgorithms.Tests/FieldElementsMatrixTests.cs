@@ -617,7 +617,7 @@
         [Fact]
         public void MustNotCreateDoubleCirculantMatrixFromNumbersArray()
         {
-            Assert.Throws<ArgumentException>(() => FieldElementsMatrix.DoubleCirculantMatrix(new PrimeOrderField(3), new[] {0, 1, 2}));
+            Assert.Throws<ArgumentException>(() => FieldElementsMatrix.DoubleCirculantMatrix(new PrimeOrderField(3), 0, 1, 2));
         }
 
         [Fact]
@@ -647,7 +647,7 @@
         public void MustNotCreateDoubleCirculantMatrixFromFieldElementsArray()
         {
             var gf3 = new PrimeOrderField(3);
-            Assert.Throws<ArgumentException>(() => FieldElementsMatrix.DoubleCirculantMatrix(new[] { gf3.Zero(), gf3.Zero(), gf3.Zero() }));
+            Assert.Throws<ArgumentException>(() => FieldElementsMatrix.DoubleCirculantMatrix(gf3.Zero(), gf3.Zero(), gf3.Zero()));
         }
 
         [Fact]
