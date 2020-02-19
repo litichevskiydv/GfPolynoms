@@ -27,6 +27,7 @@
             var gf2 = new PrimeOrderField(2);
             var gf7 = new PrimeOrderField(7);
             var gf8 = new PrimePowerOrderField(8, new Polynomial(new PrimeOrderField(2), 1, 1, 0, 1));
+            var gf9 = new PrimePowerOrderField(9, new Polynomial(new PrimeOrderField(3), 1, 0, 1));
             var gf11 = new PrimeOrderField(11);
             var gf17 = new PrimeOrderField(17);
 
@@ -47,6 +48,11 @@
                       {
                           SourceFilter = new Polynomial(gf7, 4, 2, 6, 4, 3, 4),
                           MaxFilterLength = 6
+                      },
+                      new ComplementaryPolynomialBuildingTestCase
+                      {
+                          SourceFilter = new Polynomial(gf9, 2, 7, 5, 1, 8, 3, 2, 5),
+                          MaxFilterLength = 8
                       },
                       new ComplementaryPolynomialBuildingTestCase
                       {
