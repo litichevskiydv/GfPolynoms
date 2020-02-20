@@ -1,7 +1,6 @@
 ﻿namespace AppliedAlgebra.GfAlgorithms.Matrices
 {
     using System;
-    using System.Linq;
     using System.Text;
     using GfPolynoms;
     using GfPolynoms.Extensions;
@@ -469,6 +468,66 @@
         /// </summary>
         public FieldElementsMatrix Diagonalize() => DiagonalizeExtended().Result;
 
+
+        /// <summary>
+        /// Creates column vector whose elements must belong to the <paramref name="field"/>
+        /// </summary>
+        /// <param name="field">Field from which the elements of the vector</param>
+        /// <param name="elements">Vector elements</param>
+        public static FieldElementsMatrix ColumnVector(GaloisField field, params int[] elements)
+        {
+            if (field == null)
+                throw new ArgumentNullException(nameof(field));
+            if (elements == null)
+                throw new ArgumentNullException(nameof(elements));
+
+            return new FieldElementsMatrix(field, elements.Length, 1, (i, j) => field.CreateElement(elements[i]));
+        }
+
+        /// <summary>
+        /// Creates column vector
+        /// </summary>
+        /// <param name="elements">Vector elements</param>
+        public static FieldElementsMatrix ColumnVector(params FieldElement[] elements)
+        {
+            if (elements == null)
+                throw new ArgumentNullException(nameof(elements));
+            if (elements.Length == 0)
+                throw new ArgumentException($"{nameof(elements)} must have elements");
+
+            var field = elements[0].Field;
+            return new FieldElementsMatrix(field, elements.Length, 1, (i, j) => elements[i]);
+        }
+
+        /// <summary>
+        /// Creates row vector whose elements must belong to the <paramref name="field"/>
+        /// </summary>
+        /// <param name="field">Field from which the elements of the vector</param>
+        /// <param name="elements">Vector elements</param>
+        public static FieldElementsMatrix RowVector(GaloisField field, params int[] elements)
+        {
+            if (field == null)
+                throw new ArgumentNullException(nameof(field));
+            if (elements == null)
+                throw new ArgumentNullException(nameof(elements));
+
+            return new FieldElementsMatrix(field, 1, elements.Length, (i, j) => field.CreateElement(elements[j]));
+        }
+
+        /// <summary>
+        /// Creates row vector
+        /// </summary>
+        /// <param name="elements">Vector elements</param>
+        public static FieldElementsMatrix RowVector(params FieldElement[] elements)
+        {
+            if (elements == null)
+                throw new ArgumentNullException(nameof(elements));
+            if (elements.Length == 0)
+                throw new ArgumentException($"{nameof(elements)} must have elements");
+
+            var field = elements[0].Field;
+            return new FieldElementsMatrix(field, 1, elements.Length, (i, j) => elements[j]);
+        }
 
         /// <summary>
         /// Creates square zero matrix with size <paramref name="size"/>
