@@ -6,6 +6,7 @@
     using System.Numerics;
     using System.Reflection;
     using CodesResearchTools.Analyzers.Spectrum;
+    using GfAlgorithms.Matrices;
     using GfAlgorithms.VariantsIterator;
     using GfPolynoms;
     using GfPolynoms.Extensions;
@@ -83,6 +84,29 @@
             LogSpectrum(spectrum);
             return spectrum;
         }
+
+        private static IReadOnlyDictionary<int, BigInteger> AnalyzeSpectrumForArbitraryRateWaveletCode()
+        {
+            var field = new PrimePowerOrderField(9, new Polynomial(new PrimeOrderField(3), 1, 0, 1));
+
+            var informationWordLength = 5;
+            var h = FieldElementsMatrix.DoubleCirculantMatrix(field, 2, 7, 5, 1, 8, 3, 2, 5);
+            var g = FieldElementsMatrix.DoubleCirculantMatrix(field, 1, 4, 4, 1, 4, 2, 0, 0);
+
+            var spectrum = CommonSpectrumAnalyzer.Analyze(
+                field,
+                informationWordLength,
+                informationWord =>
+                (
+                    FieldElementsMatrix.RowVector(informationWord[0], field.Zero(), informationWord[2], informationWord[4]) * h
+                    + FieldElementsMatrix.RowVector(informationWord[1], field.Zero(), field.Zero(), informationWord[3]) * g
+                ).GetRow(0),
+                new SpectrumAnalyzerOptions {MaxDegreeOfParallelism = 1}
+            );
+            LogSpectrum(spectrum);
+            return spectrum;
+        }
+
         private static IReadOnlyDictionary<int, BigInteger> AnalyzeSpectrumForRsN4K3() =>
             AnalyzeSpectrumForRsCode(
                 new PrimePowerOrderField(8, new Polynomial(new PrimeOrderField(2), 1, 1, 0, 1)),
@@ -292,7 +316,7 @@
         {
             try
             {
-                AnalyzeSpectrumForWvN18K9D9();
+                AnalyzeSpectrumForArbitraryRateWaveletCode();
             }
             catch (Exception exception)
             {
