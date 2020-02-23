@@ -8,6 +8,46 @@
     public static class FieldElementsMatrixExtensions
     {
         /// <summary>
+        /// Returns matrix <paramref name="matrix"/> row number <paramref name="rowNumber"/>
+        /// </summary>
+        /// <param name="matrix">Source matrix</param>
+        /// <param name="rowNumber">Row number</param>
+        /// <returns>Source matrix row</returns>
+        public static FieldElement[] GetRow(this FieldElementsMatrix matrix, int rowNumber)
+        {
+            if(matrix == null)
+                throw new ArgumentNullException(nameof(matrix));
+            if(rowNumber < 0 || rowNumber >= matrix.RowsCount)
+                throw new ArgumentException($"{nameof(rowNumber)} must be consistent with source matrix size");
+
+            var matrixRow = new FieldElement[matrix.ColumnsCount];
+            for (var j = 0; j < matrixRow.Length; j++)
+                matrixRow[j] = matrix[rowNumber, j];
+
+            return matrixRow;
+        }
+
+        /// <summary>
+        /// Returns matrix <paramref name="matrix"/> column number <paramref name="columnNumber"/>
+        /// </summary>
+        /// <param name="matrix">Source matrix</param>
+        /// <param name="columnNumber">Column number</param>
+        /// <returns>Source matrix column</returns>
+        public static FieldElement[] GetColumn(this FieldElementsMatrix matrix, int columnNumber)
+        {
+            if (matrix == null)
+                throw new ArgumentNullException(nameof(matrix));
+            if (columnNumber < 0 || columnNumber >= matrix.ColumnsCount)
+                throw new ArgumentException($"{nameof(columnNumber)} must be consistent with source matrix size");
+
+            var matrixColumn = new FieldElement[matrix.RowsCount];
+            for (var i = 0; i < matrixColumn.Length; i++)
+                matrixColumn[i] = matrix[i, columnNumber];
+
+            return matrixColumn;
+        }
+
+        /// <summary>
         /// Calculates determinant of the matrix <paramref name="matrix"/>
         /// <param name="matrix">Matrix whose determinant will be calculated</param>
         /// </summary>
