@@ -158,6 +158,8 @@
         {
             if (polynomial == null)
                 throw new ArgumentNullException(nameof(polynomial));
+            if(polynomial.Field.Characteristic == 2)
+                throw new ArgumentException($"{nameof(polynomial)} must be over the field with odd characteristic");
             if (maxDegree <= 0)
                 throw new ArgumentException($"{nameof(maxDegree)} must be positive");
             if (maxDegree < polynomial.Degree)

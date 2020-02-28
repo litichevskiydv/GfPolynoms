@@ -32,14 +32,20 @@
                 = new TheoryData<ComplementaryRepresentationFinderTestCase>
                   {
                       new ComplementaryRepresentationFinderTestCase {MaxDegree = 1},
-                      new ComplementaryRepresentationFinderTestCase {Polynomial = new Polynomial(gf2), MaxDegree = 0},
-                      new ComplementaryRepresentationFinderTestCase {Polynomial = new Polynomial(gf2, 1, 1, 1), MaxDegree = 1},
-                      new ComplementaryRepresentationFinderTestCase {Polynomial = new Polynomial(gf2, 1, 1, 1), MaxDegree = 2},
+                      new ComplementaryRepresentationFinderTestCase {Polynomial = new Polynomial(gf3), MaxDegree = 0},
+                      new ComplementaryRepresentationFinderTestCase {Polynomial = new Polynomial(gf3, 1, 1, 1), MaxDegree = 1},
+                      new ComplementaryRepresentationFinderTestCase {Polynomial = new Polynomial(gf3, 1, 1, 1), MaxDegree = 2},
+                      new ComplementaryRepresentationFinderTestCase
+                      {
+                          Polynomial = new Polynomial(gf3, 1, 1, 1),
+                          MaxDegree = 2,
+                          Lambda = new FieldElement(gf9, 2)
+                      },
                       new ComplementaryRepresentationFinderTestCase
                       {
                           Polynomial = new Polynomial(gf2, 1, 1, 1),
                           MaxDegree = 2,
-                          Lambda = new FieldElement(gf3, 2)
+                          Lambda = new FieldElement(gf2, 1)
                       }
                   };
             ComplementaryRepresentationSearchTestCases
