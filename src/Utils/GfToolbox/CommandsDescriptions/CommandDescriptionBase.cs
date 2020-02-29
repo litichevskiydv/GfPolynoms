@@ -11,11 +11,10 @@
     {
         protected readonly IConfiguration Configuration;
         protected readonly ILoggerFactory LoggerFactory;
-        protected readonly List<Option> CommandLineOptions;
+        protected readonly List<Option> Options;
 
-        public abstract string Name { get; }
-        public abstract string Description { get; }
-        public IReadOnlyList<Option> Options => CommandLineOptions;
+        protected abstract string Name { get; }
+        protected abstract string Description { get; }
 
         protected CommandDescriptionBase(IConfiguration configuration, ILoggerFactory loggerFactory)
         {
@@ -27,7 +26,7 @@
             Configuration = configuration;
             LoggerFactory = loggerFactory;
 
-            CommandLineOptions
+            Options
                 = new List<Option>
                   {
                       new Option<int>("--field-order", "Finite field order") {Required = true},

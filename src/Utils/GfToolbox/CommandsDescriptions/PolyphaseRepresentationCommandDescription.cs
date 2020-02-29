@@ -1,6 +1,7 @@
 ﻿namespace AppliedAlgebra.GfToolbox.CommandsDescriptions
 {
     using System.CommandLine;
+    using GfPolynoms.GaloisFields;
     using JetBrains.Annotations;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.Logging;
@@ -14,11 +15,11 @@
         {
             _logger = LoggerFactory.CreateLogger<PolyphaseRepresentationCommandDescription>();
 
-            CommandLineOptions.Add(new Option<int>("--max-degree", "Maximum possible degree of the complementary polynomials") {Required = true});
+            Options.Add(new Option<int>("--max-degree", "Maximum possible degree of the complementary polynomials") {Required = true});
         }
 
-        public override string Name => "polyphase-representation";
-        public override string Description => "Computes polyphase representation for the given polynomial";
+        protected override string Name => "polyphase-representation";
+        protected override string Description => "Computes polyphase representation for the given polynomial";
 
         [UsedImplicitly]
         public void Execute(int fieldOrder, int[] fieldIrreduciblePolynomial, int maxDegree)
