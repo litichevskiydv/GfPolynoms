@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
 
     public abstract class GaloisField
     {
@@ -184,6 +185,36 @@
             if (degree == 0)
                 return 1;
             return element == 0 ? 0 : GetGeneratingElementPower(PowersByElements[element]*degree);
+        }
+
+        /// <summary>
+        /// Creates prime order field or prime power order field depends on given <paramref name="order"/>
+        /// </summary>
+        /// <param name="order">Field order</param>
+        /// <param name="irreduciblePolynomialCoefficients">Irreducible polynomial coefficients</param>
+        /// <returns>Galois field</returns>
+        public static GaloisField Create(int order, int[] irreduciblePolynomialCoefficients = null)
+        {
+            if(order <= 1)
+                throw new ArgumentNullException($"{nameof(order)} must be greater than one");
+
+            var orderAnalysisResult = AnalyzeOrder(order);
+            if(orderAnalysisResult.Count != 1)
+                throw new ArgumentException($"{nameof(order)} must be a prime number or a prime power");
+
+            if (orderAnalysisResult.Values.First() == 1)
+            {
+                if(irreduciblePolynomialCoefficients != null)
+                    throw new ArgumentException("An irreducible polynomial must be specified only for fields whose order is a prime power");
+
+                return new PrimeOrderField(order);
+            }
+
+            if (irreduciblePolynomialCoefficients == null)
+                return new PrimePowerOrderField(order);
+
+            var characteristic = orderAnalysisResult.Keys.First();
+            return new PrimePowerOrderField(order, new Polynomial(new PrimeOrderField(characteristic), irreduciblePolynomialCoefficients));
         }
     }
 }

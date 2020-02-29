@@ -274,7 +274,7 @@
         /// Inverts field element
         /// </summary>
         /// <param name="a">Invetible element</param>
-        /// <returns>Inverse osite element</returns>
+        /// <returns>Inverse element</returns>
         public override int InverseForAddition(int a)
         {
             if (IsFieldElement(a) == false)

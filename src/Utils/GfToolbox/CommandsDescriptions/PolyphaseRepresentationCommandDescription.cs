@@ -22,13 +22,9 @@
         protected override string Description => "Computes polyphase representation for the given polynomial";
 
         [UsedImplicitly]
-        public void Execute(int fieldOrder, int[] fieldIrreduciblePolynomial, int maxDegree)
+        public void Execute(GaloisField field, int maxDegree)
         {
-            _logger.LogInformation($"Field order: {fieldOrder}");
-            var coeffs = fieldIrreduciblePolynomial != null
-                ? string.Join(", ", fieldIrreduciblePolynomial)
-                : "";
-            _logger.LogInformation($"Field irreducible polynomial coefficients: {coeffs}");
+            _logger.LogInformation($"Field: {field}");
             _logger.LogInformation($"Max degree: {maxDegree}");
         }
     }

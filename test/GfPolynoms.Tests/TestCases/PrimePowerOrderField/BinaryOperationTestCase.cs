@@ -4,7 +4,7 @@
 
     public class BinaryOperationTestCase
     {
-        public PrimePowerOrderField Field { get; set; }
+        public GaloisField Field { get; set; }
 
         public int FirstOperand { get; set; }
 

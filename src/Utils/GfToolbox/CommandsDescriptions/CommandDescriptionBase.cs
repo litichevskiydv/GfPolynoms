@@ -4,6 +4,8 @@
     using System.Collections.Generic;
     using System.CommandLine;
     using System.CommandLine.Invocation;
+    using System.Linq;
+    using GfPolynoms.GaloisFields;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.Logging;
 
@@ -29,10 +31,30 @@
             Options
                 = new List<Option>
                   {
-                      new Option<int>("--field-order", "Finite field order") {Required = true},
-                      new Option<int[]>("--field-irreducible-polynomial", "Finite field irreducible polynomial coefficients")
+                      new Option<GaloisField>("--field")
                       {
-                          Argument = new Argument<int[]> {Arity = ArgumentArity.OneOrMore}
+                          Required = true,
+                          Description = "Finite field, format <field-order>:[irreducible polynomial coefficients comma separated]",
+                          Argument = new Argument<GaloisField>(
+                                         result =>
+                                         {
+                                             var parts = result.Tokens[0].Value.Split(new[] {':'}, StringSplitOptions.RemoveEmptyEntries);
+                                             if (parts.Length == 0 || parts.Length > 2)
+                                                 throw new ArgumentException("Field option format is incorrect");
+
+                                             return GaloisField.Create(
+                                                 int.Parse(parts[0]),
+                                                 parts.Length == 2
+                                                     ? parts[1].Split(new[] {","}, StringSplitOptions.RemoveEmptyEntries)
+                                                         .Select(x => int.Parse(x.Trim())).ToArray()
+                                                     : null
+                                             );
+                                         }
+                                     )
+                                     {
+                                         Arity = ArgumentArity.ExactlyOne
+                                     }
+
                       }
                   };
         }

@@ -6,11 +6,11 @@
 
     public class PrimeOrderFieldTests
     {
-        private readonly PrimeOrderField _gf5;
+        private readonly GaloisField _gf5;
 
         public PrimeOrderFieldTests()
         {
-            _gf5 = new PrimeOrderField(5);
+            _gf5 = GaloisField.Create(5);
         }
 
         [Theory]
