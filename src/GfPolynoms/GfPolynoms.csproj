@@ -13,7 +13,12 @@
     <RootNamespace>AppliedAlgebra.GfPolynoms</RootNamespace>
     <PackageId>AppliedAlgebra.GfPolynoms</PackageId>
     <PackageTags>Applied algebra;Finite fields;Polynoms</PackageTags>
-    
   </PropertyGroup>
+
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute ">
+      <_Parameter1>AppliedAlgebra.GfPolynoms.Tests</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
 
 </Project>
