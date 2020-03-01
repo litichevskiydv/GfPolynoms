@@ -14,7 +14,7 @@
         /// Method for performing brute force search of irreducible polynomial
         /// </summary>
         /// <param name="templatePolynomial">Polynomial on which search is performed</param>
-        /// <param name="position">Analysed monomial degree</param>
+        /// <param name="position">Analyzed monomial degree</param>
         /// <param name="onCompleteAction">Results checker</param>
         /// <returns>Search status</returns>
         private static bool Generate(Polynomial templatePolynomial, int position, Func<Polynomial, bool> onCompleteAction)
@@ -48,18 +48,13 @@
             return templatePolynomial;
         }
 
-        /// <summary>
-        /// Method for finding irreducible polynomial degree <paramref name="degree"/> with coefficients from field with order <paramref name="fieldOrder"/>
-        /// </summary>
-        /// <param name="fieldOrder">Field order from which irreducible polynomials coefficients come</param>
-        /// <param name="degree">Irreducible polynomial degree</param>
-        /// <returns>Irreducible polynomial with specified properties</returns>
-        public Polynomial Find(int fieldOrder, int degree)
+        /// <inheritdoc />
+        public Polynomial Find(GaloisField field, int degree)
         {
+            if(field == null)
+                throw new ArgumentNullException(nameof(field));
             if (degree < 2)
                 throw new ArgumentException(nameof(degree));
-
-            var field = new PrimeOrderField(fieldOrder);
 
             var possibleDivisors = new List<Polynomial>();
             for (var i = 1; i*i <= degree; i++)

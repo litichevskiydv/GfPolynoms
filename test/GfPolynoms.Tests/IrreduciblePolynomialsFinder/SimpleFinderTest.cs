@@ -21,7 +21,7 @@
             var finder = new SimpleFinder();
 
             // When
-            var polynomial = finder.Find(fieldOrder, degree);
+            var polynomial = finder.Find(GaloisField.Create(fieldOrder), degree);
 
             // Then
             Assert.Equal(degree, polynomial.Degree);
