@@ -14,11 +14,11 @@
         }
 
         [Theory]
+        [InlineData(1)]
         [InlineData(6)]
-        [InlineData(8)]
         public void ShouldNotCreateFieldWithNotPrimeOrder(int fieldOrder)
         {
-            Assert.Throws<ArgumentException>(() => new PrimeOrderField(fieldOrder));
+            Assert.Throws<ArgumentException>(() => GaloisField.Create(fieldOrder));
         }
 
         [Theory]

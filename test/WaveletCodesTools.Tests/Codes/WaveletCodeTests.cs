@@ -20,7 +20,7 @@
         {
             var code = new WaveletCode(7, 3, 4,
                 new Polynomial(
-                    new PrimePowerOrderField(8, new Polynomial(new PrimeOrderField(2), 1, 1, 0, 1)),
+                    new PrimePowerOrderField(8, new Polynomial(GaloisField.Create(2), 1, 1, 0, 1)),
                     0, 0, 2, 5, 6, 0, 1
                 )
             );

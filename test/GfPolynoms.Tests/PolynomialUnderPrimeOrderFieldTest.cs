@@ -9,8 +9,8 @@
 
     public class PolynomialUnderPrimeOrderFieldTest
     {
-        private static readonly PrimeOrderField Gf2;
-        private static readonly PrimeOrderField Gf3;
+        private static readonly GaloisField Gf2;
+        private static readonly GaloisField Gf3;
 
         [UsedImplicitly]
         public static readonly TheoryData<BinaryOperationTestCase> DevideTestsData;
@@ -19,8 +19,8 @@
 
         static PolynomialUnderPrimeOrderFieldTest()
         {
-            Gf2 = new PrimeOrderField(2);
-            Gf3 = new PrimeOrderField(3);
+            Gf2 = GaloisField.Create(2);
+            Gf3 = GaloisField.Create(3);
 
             DevideTestsData
                 = new TheoryData<BinaryOperationTestCase>

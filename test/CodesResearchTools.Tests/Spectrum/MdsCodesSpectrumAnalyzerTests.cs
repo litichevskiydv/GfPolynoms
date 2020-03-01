@@ -37,8 +37,8 @@
                 = new TheoryData<AnalyzeSpectrumParametersValidationTestCase>
                   {
                       new AnalyzeSpectrumParametersValidationTestCase {InformationWordLength = 2, EncodingProcedure = x => x},
-                      new AnalyzeSpectrumParametersValidationTestCase {Field = new PrimeOrderField(2), EncodingProcedure = x => x},
-                      new AnalyzeSpectrumParametersValidationTestCase {Field = new PrimeOrderField(2), InformationWordLength = 2}
+                      new AnalyzeSpectrumParametersValidationTestCase {Field = GaloisField.Create(2), EncodingProcedure = x => x},
+                      new AnalyzeSpectrumParametersValidationTestCase {Field = GaloisField.Create(2), InformationWordLength = 2}
                   };
         }
 

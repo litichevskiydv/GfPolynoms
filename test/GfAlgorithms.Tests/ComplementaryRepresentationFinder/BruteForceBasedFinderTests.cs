@@ -22,9 +22,9 @@
 
         static BruteForceBasedFinderTests()
         {
-            var gf2 = new PrimeOrderField(2);
-            var gf3 = new PrimeOrderField(3);
-            var gf5 = new PrimeOrderField(5);
+            var gf2 = GaloisField.Create(2);
+            var gf3 = GaloisField.Create(3);
+            var gf5 = GaloisField.Create(5);
 
             FindParametersValidationTestCases
                 = new TheoryData<ComplementaryRepresentationFinderTestCase>
@@ -44,7 +44,7 @@
                   {
                       new ComplementaryRepresentationFinderTestCase
                       {
-                          Polynomial = new Polynomial(new PrimeOrderField(5), 2, 4, 3, 4),
+                          Polynomial = new Polynomial(GaloisField.Create(5), 2, 4, 3, 4),
                           MaxDegree = 3,
                           Lambda = gf5.CreateElement(2)
                       }

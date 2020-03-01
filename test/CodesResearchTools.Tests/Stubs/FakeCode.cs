@@ -8,9 +8,7 @@
 
     public class FakeCode : ICode
     {
-        private readonly PrimeOrderField _gf2 = new PrimeOrderField(2);
-
-        public GaloisField Field => _gf2;
+        public GaloisField Field { get; } = GaloisField.Create(2);
         public int CodewordLength => 3;
         public int InformationWordLength => 2;
         public int CodeDistance => 0;
@@ -22,7 +20,7 @@
 
         public FieldElement[] Decode(FieldElement[] noisyCodeword)
         {
-            return new[] { _gf2.One(), _gf2.One() };
+            return new[] { Field.One(), Field.One() };
         }
 
         public IReadOnlyList<FieldElement[]> DecodeViaList(FieldElement[] noisyCodeword, int? listDecodingRadius = null)
@@ -31,12 +29,12 @@
 
             if (Equals(noisyCodeword[0] + noisyCodeword[1], noisyCodeword[2]) == false || listDecodingRadius == 2)
             {
-                list.Add(new[] { noisyCodeword[0] + _gf2.One(), noisyCodeword[1] });
-                list.Add(new[] { noisyCodeword[0], noisyCodeword[1] + _gf2.One() });
+                list.Add(new[] { noisyCodeword[0] + Field.One(), noisyCodeword[1] });
+                list.Add(new[] { noisyCodeword[0], noisyCodeword[1] + Field.One() });
             }
 
             if (Equals(noisyCodeword[0] + noisyCodeword[1], noisyCodeword[2]) && listDecodingRadius == 2)
-                list.Add(new[] { noisyCodeword[0] + _gf2.One(), noisyCodeword[1] + _gf2.One() });
+                list.Add(new[] { noisyCodeword[0] + Field.One(), noisyCodeword[1] + Field.One() });
 
 
             return list;

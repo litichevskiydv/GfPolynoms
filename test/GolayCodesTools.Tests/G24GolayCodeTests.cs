@@ -22,7 +22,7 @@
 
         static G24GolayCodeTests()
         {
-            var gf2 = new PrimeOrderField(2);
+            var gf2 = GaloisField.Create(2);
             FieldElement[] InformationWordBuilder(IEnumerable<int> array) => array.Select(x => gf2.CreateElement(x)).ToArray();
 
             DecodeTestsData

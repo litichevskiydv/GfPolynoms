@@ -26,36 +26,6 @@
         public int Characteristic { get; private set; }
 
         /// <summary>
-        /// Method for analyzing field order factors
-        /// </summary>
-        /// <param name="order">Field order </param>
-        /// <returns>First field order factor and its degree</returns>
-        protected static Dictionary<int, int> AnalyzeOrder(int order)
-        {
-            var fractions = new Dictionary<int, int>();
-
-            for (var i = 2; i*i <= order && order > 1; i++)
-            {
-                if(order % i != 0)
-                    continue;
-
-                fractions[i] = 0;
-                if (fractions.Count > 1)
-                    return fractions;
-
-                while (order % i == 0)
-                {
-                    fractions[i]++;
-                    order /= i;
-                }
-            }
-
-            if (order != 1)
-                fractions[order] = 1;
-            return fractions;
-        }
-
-        /// <summary>
         /// Method for initializing field's object internal structures
         /// </summary>
         /// <param name="order">Field order</param>
@@ -188,6 +158,36 @@
         }
 
         /// <summary>
+        /// Method for analyzing field order factors
+        /// </summary>
+        /// <param name="order">Field order </param>
+        /// <returns>First field order factor and its degree</returns>
+        protected static Dictionary<int, int> AnalyzeOrder(int order)
+        {
+            var fractions = new Dictionary<int, int>();
+
+            for (var i = 2; i * i <= order && order > 1; i++)
+            {
+                if (order % i != 0)
+                    continue;
+
+                fractions[i] = 0;
+                if (fractions.Count > 1)
+                    return fractions;
+
+                while (order % i == 0)
+                {
+                    fractions[i]++;
+                    order /= i;
+                }
+            }
+
+            if (order != 1)
+                fractions[order] = 1;
+            return fractions;
+        }
+
+        /// <summary>
         /// Creates prime order field or prime power order field depends on given <paramref name="order"/>
         /// </summary>
         /// <param name="order">Field order</param>
@@ -196,7 +196,7 @@
         public static GaloisField Create(int order, int[] irreduciblePolynomialCoefficients = null)
         {
             if(order <= 1)
-                throw new ArgumentNullException($"{nameof(order)} must be greater than one");
+                throw new ArgumentException($"{nameof(order)} must be greater than one");
 
             var orderAnalysisResult = AnalyzeOrder(order);
             if(orderAnalysisResult.Count != 1)

@@ -41,7 +41,7 @@
 
         static BiVariablePolynomialTests()
         {
-            Gf5 = new PrimeOrderField(5);
+            Gf5 = GaloisField.Create(5);
 
             var polynomialForEvoluation = new BiVariablePolynomial(Gf5)
                                           {

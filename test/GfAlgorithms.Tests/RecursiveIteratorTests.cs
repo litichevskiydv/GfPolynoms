@@ -43,14 +43,14 @@
                 = new TheoryData<IterateVectorsParametersValidationTestCase>
                   {
                       new IterateVectorsParametersValidationTestCase {Length = 1},
-                      new IterateVectorsParametersValidationTestCase {Field = new PrimeOrderField(2), Length = 0}
+                      new IterateVectorsParametersValidationTestCase {Field = GaloisField.Create(2), Length = 0}
                   };
 
             IteratePolynomialsParametersValidationTestCases
                 = new TheoryData<IteratePolynomialsParametersValidationTestCase>
                   {
                       new IteratePolynomialsParametersValidationTestCase {MaxDegree = 0},
-                      new IteratePolynomialsParametersValidationTestCase {Field = new PrimeOrderField(2), MaxDegree = -1}
+                      new IteratePolynomialsParametersValidationTestCase {Field = GaloisField.Create(2), MaxDegree = -1}
                   };
         }
 
@@ -77,7 +77,7 @@
         public void ShouldIterateVectors()
         {
             // Given
-            var field = new PrimeOrderField(2);
+            var field = GaloisField.Create(2);
             const int length = 2;
 
             // When
@@ -99,7 +99,7 @@
         public void ShouldIteratePolynomials()
         {
             // Given
-            var field = new PrimeOrderField(2);
+            var field = GaloisField.Create(2);
             const int maxDegree = 1;
 
             // When

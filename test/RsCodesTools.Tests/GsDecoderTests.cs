@@ -66,8 +66,8 @@
 
         static GsDecoderTests()
         {
-            var gf8 = new PrimePowerOrderField(8, new Polynomial(new PrimeOrderField(2), 1, 1, 0, 1));
-            var gf9 = new PrimePowerOrderField(9, new Polynomial(new PrimeOrderField(3), 1, 0, 1));
+            var gf8 = new PrimePowerOrderField(8, new Polynomial(GaloisField.Create(2), 1, 1, 0, 1));
+            var gf9 = new PrimePowerOrderField(9, new Polynomial(GaloisField.Create(3), 1, 0, 1));
             var encoder = new Encoder();
 
             DecoderTestsData

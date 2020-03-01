@@ -139,7 +139,7 @@
             AnalyzeCodeDistance(
                 3, 2,
                 new Polynomial(
-                    new PrimePowerOrderField(4, new Polynomial(new PrimeOrderField(2), 1, 1, 1)),
+                    new PrimePowerOrderField(4, new Polynomial(GaloisField.Create(2), 1, 1, 1)),
                     2, 1
                 )
             );
@@ -149,7 +149,7 @@
 
         private static void AnalyzeCodeDistanceForN24K12() =>
             AnalyzeCodeDistance(24, 12,
-                new Polynomial(new PrimeOrderField(2), 1, 1, 0, 1, 1, 1, 0, 1, 0, 1, 0, 0, 1)
+                new Polynomial(GaloisField.Create(2), 1, 1, 0, 1, 1, 1, 0, 1, 0, 1, 0, 0, 1)
             );
 
         private static void AnalyzeMinimalSphereCoveringForN8K4D4() =>
@@ -162,14 +162,14 @@
 
         private static void AnalyzeSpherePackingsForRsN7K3() =>
             AnalyzeSpherePackings(new ReedSolomonCode(
-                    new PrimePowerOrderField(8, new Polynomial(new PrimeOrderField(2), 1, 1, 0, 1)),
+                    new PrimePowerOrderField(8, new Polynomial(GaloisField.Create(2), 1, 1, 0, 1)),
                     7, 3
                 )
             );
 
         private static void AnalyzeSpherePackingsForRsN7K4() =>
             AnalyzeSpherePackings(new ReedSolomonCode(
-                    new PrimePowerOrderField(8, new Polynomial(new PrimeOrderField(2), 1, 1, 0, 1)),
+                    new PrimePowerOrderField(8, new Polynomial(GaloisField.Create(2), 1, 1, 0, 1)),
                     7, 4
                 )
             );
@@ -179,7 +179,7 @@
                 new WaveletCode(
                     7, 3, 4,
                     new Polynomial(
-                        new PrimePowerOrderField(8, new Polynomial(new PrimeOrderField(2), 1, 1, 0, 1)),
+                        new PrimePowerOrderField(8, new Polynomial(GaloisField.Create(2), 1, 1, 0, 1)),
                         0, 0, 2, 5, 6, 0, 1
                     )
                 )
@@ -190,7 +190,7 @@
                 new WaveletCode(
                     7, 3, 4,
                     new Polynomial(
-                        new PrimePowerOrderField(8, new Polynomial(new PrimeOrderField(2), 1, 1, 0, 1)),
+                        new PrimePowerOrderField(8, new Polynomial(GaloisField.Create(2), 1, 1, 0, 1)),
                         1, 2, 1, 1
                     )
                 )
@@ -222,7 +222,7 @@
             AnalyzeSpherePackings(
                 new WaveletCode(
                     10, 5, 5,
-                    new Polynomial(new PrimeOrderField(11), 8, 10, 4, 6, 8, 9, 2, 10, 4, 5)
+                    new Polynomial(GaloisField.Create(11), 8, 10, 4, 6, 8, 9, 2, 10, 4, 5)
                 )
             );
 
@@ -230,7 +230,7 @@
             AnalyzeSpherePackings(
                 new WaveletCode(
                     24, 12, 8,
-                    new Polynomial(new PrimeOrderField(2), 1, 1, 0, 1, 1, 1, 0, 1, 0, 1, 0, 0, 1)
+                    new Polynomial(GaloisField.Create(2), 1, 1, 0, 1, 1, 1, 0, 1, 0, 1, 0, 0, 1)
                 )
             );
 

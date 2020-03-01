@@ -112,8 +112,8 @@
 
         static FieldElementsMatrixTests()
         {
-            var gf2 = new PrimeOrderField(2);
-            var gf3 = new PrimeOrderField(3);
+            var gf2 = GaloisField.Create(2);
+            var gf3 = GaloisField.Create(3);
             var matrix = new FieldElementsMatrix(gf2, 3, 3);
 
             FromInitializerConstructorParametersValidationTestCases 
@@ -420,7 +420,7 @@
         public void MustAddTwoMatrices()
         {
             // Given
-            var gf5 = new PrimeOrderField(5);
+            var gf5 = GaloisField.Create(5);
             var first = new FieldElementsMatrix(gf5, new[,] {{1, 2}, {3, 4}});
             var second = new FieldElementsMatrix(gf5, new[,] {{1, 3}, {2, 4}});
 
@@ -436,7 +436,7 @@
         public void MustSubtractTwoMatrices()
         {
             // Given
-            var gf5 = new PrimeOrderField(5);
+            var gf5 = GaloisField.Create(5);
             var first = new FieldElementsMatrix(gf5, new[,] {{1, 2}, {3, 4}});
             var second = new FieldElementsMatrix(gf5, new[,] {{1, 3}, {2, 4}});
 
@@ -452,7 +452,7 @@
         public void MustMultiplyMatrixByFieldElement()
         {
             // Given
-            var gf5 = new PrimeOrderField(5);
+            var gf5 = GaloisField.Create(5);
             var fieldElement = gf5.CreateElement(3);
             var matrix = new FieldElementsMatrix(gf5, new[,] {{1, 2}, {3, 4}});
 
@@ -468,7 +468,7 @@
         public void MustMultiplyTwoMatrices()
         {
             // Given
-            var gf5 = new PrimeOrderField(5);
+            var gf5 = GaloisField.Create(5);
             var first = new FieldElementsMatrix(gf5, new[,] {{1, 2}, {3, 4}});
             var second = new FieldElementsMatrix(gf5, new[,] {{1, 3}, {2, 4}});
 
@@ -484,7 +484,7 @@
         public void MustCalculateMatrixDegree()
         {
             // Given
-            var gf5 = new PrimeOrderField(5);
+            var gf5 = GaloisField.Create(5);
             var matrix = new FieldElementsMatrix(gf5, new[,] { { 1, 2 }, { 3, 4 } });
             const int degree = 3;
 
@@ -500,7 +500,7 @@
         public void MustTransposeMatrix()
         {
             // Given
-            var gf5 = new PrimeOrderField(5);
+            var gf5 = GaloisField.Create(5);
             var matrix = new FieldElementsMatrix(gf5, new[,] {{1, 2, 3}, {4, 0, 1}});
 
             // When
@@ -526,7 +526,7 @@
         public void MustCalculateDeterminant()
         {
             // Given
-            var gf3 = new PrimeOrderField(3);
+            var gf3 = GaloisField.Create(3);
             var matrix = new FieldElementsMatrix(gf3, new[,] {{1, 2, 1}, {2, 1, 1}, {0, 1, 2}});
 
             // When
@@ -541,7 +541,7 @@
         public void MustCalculateRank()
         {
             // Given
-            var gf3 = new PrimeOrderField(3);
+            var gf3 = GaloisField.Create(3);
             var matrix = new FieldElementsMatrix(gf3, new[,] { { 1, 2, 1 }, { 2, 1, 1 }, { 0, 0, 2 } });
 
             // When
@@ -555,14 +555,14 @@
         [Fact]
         public void CirculantMatrixFromNumbersArrayConstructorMustValidateParameters()
         {
-            Assert.Throws<ArgumentNullException>(() => FieldElementsMatrix.CirculantMatrix(new PrimeOrderField(3), null));
+            Assert.Throws<ArgumentNullException>(() => FieldElementsMatrix.CirculantMatrix(GaloisField.Create(3), null));
         }
 
         [Fact]
         public void MustCreateCirculantMatrixFromNumbersArray()
         {
             // Given
-            var gf5 = new PrimeOrderField(5);
+            var gf5 = GaloisField.Create(5);
             var firstRow = new[] {0, 1, 2, 3, 4};
 
             // When
@@ -593,7 +593,7 @@
         public void MustCreateCirculantMatrixFromFieldElementsArray()
         {
             // Given
-            var gf5 = new PrimeOrderField(5);
+            var gf5 = GaloisField.Create(5);
             var firstRow = new[] {gf5.Zero(), gf5.One(), gf5.CreateElement(2), gf5.CreateElement(3), gf5.CreateElement(4)};
 
             // When
@@ -617,14 +617,14 @@
         [Fact]
         public void MustNotCreateDoubleCirculantMatrixFromNumbersArray()
         {
-            Assert.Throws<ArgumentException>(() => FieldElementsMatrix.DoubleCirculantMatrix(new PrimeOrderField(3), 0, 1, 2));
+            Assert.Throws<ArgumentException>(() => FieldElementsMatrix.DoubleCirculantMatrix(GaloisField.Create(3), 0, 1, 2));
         }
 
         [Fact]
         public void MustCreateDoubleCirculantMatrixFromNumbersArray()
         {
             // Given
-            var gf5 = new PrimeOrderField(5);
+            var gf5 = GaloisField.Create(5);
             var firstRow = new[] { 0, 1, 2, 3, 4, 0};
 
             // When
@@ -646,7 +646,7 @@
         [Fact]
         public void MustNotCreateDoubleCirculantMatrixFromFieldElementsArray()
         {
-            var gf3 = new PrimeOrderField(3);
+            var gf3 = GaloisField.Create(3);
             Assert.Throws<ArgumentException>(() => FieldElementsMatrix.DoubleCirculantMatrix(gf3.Zero(), gf3.Zero(), gf3.Zero()));
         }
 
@@ -654,7 +654,7 @@
         public void MustCreateDoubleCirculantMatrixFromFieldElementsArray()
         {
             // Given
-            var gf5 = new PrimeOrderField(5);
+            var gf5 = GaloisField.Create(5);
             var firstRow = new[] {gf5.Zero(), gf5.One(), gf5.CreateElement(2), gf5.CreateElement(3), gf5.CreateElement(4), gf5.Zero()};
 
             // When
@@ -684,7 +684,7 @@
         public void MustCreateSumatrixFromSelectedRows()
         {
             // Given
-            var gf5 = new PrimeOrderField(5);
+            var gf5 = GaloisField.Create(5);
             var matrix = new FieldElementsMatrix(
                 gf5,
                 new[,]
@@ -725,7 +725,7 @@
         public void MustCreateSumatrixFromColumns()
         {
             // Given
-            var gf5 = new PrimeOrderField(5);
+            var gf5 = GaloisField.Create(5);
             var matrix = new FieldElementsMatrix(
                 gf5,
                 new[,]
@@ -769,7 +769,7 @@
         public void MustCreateSumatrix()
         {
             // Given
-            var gf5 = new PrimeOrderField(5);
+            var gf5 = GaloisField.Create(5);
             var matrix = new FieldElementsMatrix(
                 gf5,
                 new[,]

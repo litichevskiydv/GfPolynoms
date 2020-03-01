@@ -20,8 +20,8 @@
 
         static RrFactorizatorTests()
         {
-            var gf19 = new PrimeOrderField(19);
-            var gf8 = new PrimePowerOrderField(8, new Polynomial(new PrimeOrderField(2), 1, 1, 0, 1));
+            var gf19 = GaloisField.Create(19);
+            var gf8 = new PrimePowerOrderField(8, new Polynomial(GaloisField.Create(2), 1, 1, 0, 1));
 
             FactorizationTestsData
                 = new TheoryData<InterpolationPolynomialFactorizatorTestCase>

@@ -34,17 +34,17 @@
                       new IncorrectFieldCreationTestCase
                       {
                           FieldOrder = 8,
-                          IrreduciblePolynomial = new Polynomial(new PrimeOrderField(3), 1)
+                          IrreduciblePolynomial = new Polynomial(GaloisField.Create(3), 1)
                       },
                       new IncorrectFieldCreationTestCase
                       {
                           FieldOrder = 8,
-                          IrreduciblePolynomial = new Polynomial(new PrimeOrderField(2), 1)
+                          IrreduciblePolynomial = new Polynomial(GaloisField.Create(2), 1)
                       },
                       new IncorrectFieldCreationTestCase
                       {
                           FieldOrder = 8,
-                          IrreduciblePolynomial = new Polynomial(new PrimeOrderField(2), 0, 0, 0, 1)
+                          IrreduciblePolynomial = new Polynomial(GaloisField.Create(2), 0, 0, 0, 1)
                       }
                   };
 

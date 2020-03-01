@@ -18,7 +18,7 @@
 
         static RecursiveGcdFinderTests()
         {
-            var gf3 = new PrimeOrderField(3);
+            var gf3 = GaloisField.Create(3);
 
             GcdTestData
                 = new TheoryData<GcdFinderTestCase>

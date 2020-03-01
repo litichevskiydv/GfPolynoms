@@ -24,12 +24,12 @@
 
         static GcdBasedBuilderTests()
         {
-            var gf2 = new PrimeOrderField(2);
-            var gf7 = new PrimeOrderField(7);
-            var gf8 = new PrimePowerOrderField(8, new Polynomial(new PrimeOrderField(2), 1, 1, 0, 1));
-            var gf9 = new PrimePowerOrderField(9, new Polynomial(new PrimeOrderField(3), 1, 0, 1));
-            var gf11 = new PrimeOrderField(11);
-            var gf17 = new PrimeOrderField(17);
+            var gf2 = GaloisField.Create(2);
+            var gf7 = GaloisField.Create(7);
+            var gf8 = new PrimePowerOrderField(8, new Polynomial(GaloisField.Create(2), 1, 1, 0, 1));
+            var gf9 = new PrimePowerOrderField(9, new Polynomial(GaloisField.Create(3), 1, 0, 1));
+            var gf11 = GaloisField.Create(11);
+            var gf17 = GaloisField.Create(17);
 
             ComplementaryFilterEvenLengthBuildingTestsData
                 = new TheoryData<ComplementaryPolynomialBuildingTestCase>

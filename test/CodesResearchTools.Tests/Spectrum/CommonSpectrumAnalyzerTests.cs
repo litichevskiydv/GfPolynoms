@@ -20,7 +20,7 @@
     {
         private class FakeCode : ICode
         {
-            public GaloisField Field => new PrimeOrderField(2);
+            public GaloisField Field => GaloisField.Create(2);
             public int CodewordLength => 3;
             public int InformationWordLength => 2;
             public int CodeDistance => 1;
@@ -58,8 +58,8 @@
                 = new TheoryData<AnalyzeSpectrumParametersValidationTestCase>
                   {
                       new AnalyzeSpectrumParametersValidationTestCase {InformationWordLength = 2, EncodingProcedure = x => x},
-                      new AnalyzeSpectrumParametersValidationTestCase {Field = new PrimeOrderField(2), EncodingProcedure = x => x},
-                      new AnalyzeSpectrumParametersValidationTestCase {Field = new PrimeOrderField(2), InformationWordLength = 2}
+                      new AnalyzeSpectrumParametersValidationTestCase {Field = GaloisField.Create(2), EncodingProcedure = x => x},
+                      new AnalyzeSpectrumParametersValidationTestCase {Field = GaloisField.Create(2), InformationWordLength = 2}
                   };
         }
 

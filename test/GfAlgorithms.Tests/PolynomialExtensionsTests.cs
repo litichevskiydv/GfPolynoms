@@ -13,7 +13,7 @@
 
         public PolynomialExtensionsTests()
         {
-            _field = new PrimeOrderField(7);
+            _field = GaloisField.Create(7);
         }
 
         [Theory]
@@ -78,7 +78,7 @@
         public void ShouldGetPolynomialSpectrum()
         {
             // Given
-            var gf5 = new PrimeOrderField(5);
+            var gf5 = GaloisField.Create(5);
             var polynomial = new Polynomial(gf5, 1, 1, 1);
 
             // When

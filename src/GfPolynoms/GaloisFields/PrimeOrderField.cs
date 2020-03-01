@@ -2,12 +2,11 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
 
     /// <summary>
     /// Field with prime number order
     /// </summary>
-    public class PrimeOrderField : GaloisField
+    internal class PrimeOrderField : GaloisField
     {
         /// <summary>
         /// Method for calculating elements of field multiplicative group
@@ -46,10 +45,6 @@
         /// <param name="order">Field order, should be a prime number</param>
         public PrimeOrderField(int order)
         {
-            var analysisResult = AnalyzeOrder(order);
-            if(analysisResult.Count != 1 || analysisResult.First().Value != 1)
-                throw new ArgumentException("Field order isn't a prime number");
-
             Initialize(order, order);
             BuildMultiplicativeGroup();
         }

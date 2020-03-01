@@ -23,10 +23,10 @@
 
         static LinearEquationsBasedFinderTests()
         {
-            var gf2 = new PrimeOrderField(2);
-            var gf3 = new PrimeOrderField(3);
+            var gf2 = GaloisField.Create(2);
+            var gf3 = GaloisField.Create(3);
             var gf9 = new PrimePowerOrderField(9, new Polynomial(gf3, 1, 0, 1));
-            var gf11 = new PrimeOrderField(11);
+            var gf11 = GaloisField.Create(11);
 
             FindParametersValidationTestCases
                 = new TheoryData<ComplementaryRepresentationFinderTestCase>

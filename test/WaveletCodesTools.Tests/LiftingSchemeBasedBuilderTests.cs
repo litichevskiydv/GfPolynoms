@@ -19,15 +19,17 @@
 
         static LiftingSchemeBasedBuilderTests()
         {
-            var gf8 = new PrimePowerOrderField(8, new Polynomial(new PrimeOrderField(2), 1, 1, 0, 1));
-            var gf9 = new PrimePowerOrderField(9, new Polynomial(new PrimeOrderField(3), 1, 0, 1));
-            var gf11 = new PrimeOrderField(11);
-            var gf13 = new PrimeOrderField(13);
-            var gf16 = new PrimePowerOrderField(16, new Polynomial(new PrimeOrderField(2), 1, 0, 0, 1, 1));
-            var gf17 = new PrimeOrderField(17);
-            var gf19 = new PrimeOrderField(19);
-            var gf27 = new PrimePowerOrderField(27, new Polynomial(new PrimeOrderField(3), 2, 2, 0, 1));
-            var gf32 = new PrimePowerOrderField(32, new Polynomial(new PrimeOrderField(2), 1, 0, 0, 1, 0, 1));
+            var gf2 = GaloisField.Create(2);
+            var gf3 = GaloisField.Create(3);
+            var gf8 = new PrimePowerOrderField(8, new Polynomial(gf2, 1, 1, 0, 1));
+            var gf9 = new PrimePowerOrderField(9, new Polynomial(gf3, 1, 0, 1));
+            var gf11 = GaloisField.Create(11);
+            var gf13 = GaloisField.Create(13);
+            var gf16 = new PrimePowerOrderField(16, new Polynomial(gf2, 1, 0, 0, 1, 1));
+            var gf17 = GaloisField.Create(17);
+            var gf19 = GaloisField.Create(19);
+            var gf27 = new PrimePowerOrderField(27, new Polynomial(gf3, 2, 2, 0, 1));
+            var gf32 = new PrimePowerOrderField(32, new Polynomial(gf2, 1, 0, 0, 1, 0, 1));
 
             BuildTestsData =
                 new TheoryData<GeneratingPolynomialsBuilderTestCase>
