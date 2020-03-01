@@ -5,11 +5,11 @@
 
     public class PolynomialUnderPrimePowerOrderFieldTest
     {
-        private readonly PrimePowerOrderField _gf8;
+        private readonly GaloisField _gf8;
 
         public PolynomialUnderPrimePowerOrderFieldTest()
         {
-            _gf8 = new PrimePowerOrderField(8, new Polynomial(GaloisField.Create(2), 1, 1, 0, 1));
+            _gf8 = GaloisField.Create(8, new[] {1, 1, 0, 1});
         }
 
         [Theory]

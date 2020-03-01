@@ -1,6 +1,7 @@
 ﻿namespace AppliedAlgebra.GfPolynoms.Tests.IrreduciblePolynomialsFinder
 {
     using System;
+    using System.Linq;
     using GaloisFields;
     using GfPolynoms.IrreduciblePolynomialsFinder;
     using Xunit;
@@ -25,7 +26,12 @@
 
             // Then
             Assert.Equal(degree, polynomial.Degree);
-            Assert.NotNull(new PrimePowerOrderField((int)Math.Pow(fieldOrder, degree), polynomial));
+            Assert.NotNull(
+                GaloisField.Create(
+                    (int) Math.Pow(fieldOrder, degree),
+                    Enumerable.Range(0, polynomial.Degree + 1).Select(x => polynomial[x]).ToArray()
+                )
+            );
         }
     }
 }
