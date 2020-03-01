@@ -3,7 +3,6 @@
     using System;
     using Decoding.ListDecoder.GsDecoderDependencies.InterpolationPolynomialBuilder;
     using GfAlgorithms.CombinationsCountCalculator;
-    using GfPolynoms;
     using GfPolynoms.Extensions;
     using GfPolynoms.GaloisFields;
     using JetBrains.Annotations;
@@ -22,8 +21,8 @@
         static KotterAlgorithmBasedBuilderTests()
         {
             var gf5 = GaloisField.Create(5);
-            var gf8 = new PrimePowerOrderField(8, new Polynomial(GaloisField.Create(2), 1, 1, 0, 1));
-            var gf27 = new PrimePowerOrderField(27, new Polynomial(GaloisField.Create(3), 2, 2, 0, 1));
+            var gf8 = GaloisField.Create(8, new[] {1, 1, 0, 1});
+            var gf27 = GaloisField.Create(27, new[] {2, 2, 0, 1});
 
             var degreeWeight = new Tuple<int, int>(1, 2);
 

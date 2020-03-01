@@ -25,7 +25,7 @@
         {
             var gf2 = GaloisField.Create(2);
             var gf3 = GaloisField.Create(3);
-            var gf9 = new PrimePowerOrderField(9, new Polynomial(gf3, 1, 0, 1));
+            var gf9 = GaloisField.Create(9, new[] { 1, 0, 1 });
             var gf11 = GaloisField.Create(11);
 
             FindParametersValidationTestCases

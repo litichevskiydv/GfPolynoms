@@ -3,12 +3,12 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using IrreduciblePolynomialsFinder;
+    using System.Numerics;
 
     /// <summary>
     /// Field in which order is the power of prime number
     /// </summary>
-    public class PrimePowerOrderField : GaloisField
+    internal class PrimePowerOrderField : GaloisField
     {
         /// <summary>
         /// Polynomial representations of current field elements, ordered by their number representations
@@ -139,56 +139,20 @@
 
         /// <summary>
         /// Constructor for creating field with order <paramref name="order"/>
-        /// </summary>
-        /// <param name="order">Field order</param>
-        public PrimePowerOrderField(int order) : this(order, new SimpleFinder())
-        {
-        }
-
-        /// <summary>
-        /// Constructor for creating field with order <paramref name="order"/> and irreducible polynomials generator <paramref name="irreduciblePolynomialsFinder"/>
-        /// </summary>
-        /// <param name="order">Field order</param>
-        /// <param name="irreduciblePolynomialsFinder">Irreducible polynomials generator </param>
-        public PrimePowerOrderField(int order, IIrreduciblePolynomialsFinder irreduciblePolynomialsFinder)
-        {
-            var analysisResult = AnalyzeOrder(order);
-            if (analysisResult.Count != 1)
-                throw new ArgumentException("Field order isn't a prime number power");
-            if (analysisResult.First().Value == 1)
-                throw new ArgumentException("Field order is a prime number");
-
-            if (irreduciblePolynomialsFinder == null)
-                throw new ArgumentNullException(nameof(irreduciblePolynomialsFinder));
-
-            Initialize(order, analysisResult.First().Key);
-            IrreduciblePolynomial = irreduciblePolynomialsFinder.Find(Characteristic, analysisResult.First().Value);
-            InitializeAdditionalStructures();
-        }
-
-        /// <summary>
-        /// Constructor for creating field with order <paramref name="order"/> and irreducible polynomial <paramref name="irreduciblePolynomial"/>
+        /// and irreducible polynomial <paramref name="irreduciblePolynomial"/>
         /// </summary>
         /// <param name="order">Field order</param>
         /// <param name="irreduciblePolynomial">Field irreducible polynomial</param>
         public PrimePowerOrderField(int order, Polynomial irreduciblePolynomial)
         {
-            var analysisResult = AnalyzeOrder(order);
-            if (analysisResult.Count != 1)
-                throw new ArgumentException("Field order isn't a prime number power");
-            if (analysisResult.First().Value == 1)
-                throw new ArgumentException("Field order is a prime number");
+            var characteristic = irreduciblePolynomial.Field.Order;
 
-            if (irreduciblePolynomial == null)
-                throw new ArgumentNullException(nameof(irreduciblePolynomial));
-            if(irreduciblePolynomial.Field.Order != analysisResult.First().Key)
-                throw new ArgumentException("Irreducible polynomial isn't declared over properly field");
-            if (irreduciblePolynomial.Degree != analysisResult.First().Value)
+            if (BigInteger.Pow(characteristic, irreduciblePolynomial.Degree) != order)
                 throw new ArgumentException("Irreducible polynomial degree isn't correct");
-            if (Enumerable.Range(0, analysisResult.First().Key).Any(x => irreduciblePolynomial.Evaluate(x) == 0))
+            if (Enumerable.Range(0, characteristic).Any(x => irreduciblePolynomial.Evaluate(x) == 0))
                 throw new ArgumentException($"Polynomial {irreduciblePolynomial} isn't irreducible");
 
-            Initialize(order, analysisResult.First().Key);
+            Initialize(order, characteristic);
             IrreduciblePolynomial = irreduciblePolynomial;
             InitializeAdditionalStructures();
         }

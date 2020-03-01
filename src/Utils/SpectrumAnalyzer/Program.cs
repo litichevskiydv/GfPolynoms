@@ -87,7 +87,7 @@
 
         private static IReadOnlyDictionary<int, BigInteger> AnalyzeSpectrumForArbitraryRateWaveletCode()
         {
-            var field = new PrimePowerOrderField(9, new Polynomial(GaloisField.Create(3), 1, 0, 1));
+            var field = GaloisField.Create(9, new[] {1, 0, 1});
 
             var informationWordLength = 5;
             var h = FieldElementsMatrix.DoubleCirculantMatrix(field, 2, 7, 5, 1, 8, 3, 2, 5);
@@ -108,53 +108,29 @@
         }
 
         private static IReadOnlyDictionary<int, BigInteger> AnalyzeSpectrumForRsN4K3() =>
-            AnalyzeSpectrumForRsCode(
-                new PrimePowerOrderField(8, new Polynomial(GaloisField.Create(2), 1, 1, 0, 1)),
-                4, 3
-            );
+            AnalyzeSpectrumForRsCode(GaloisField.Create(8, new[] {1, 1, 0, 1}), 4, 3);
 
 
         private static IReadOnlyDictionary<int, BigInteger> AnalyzeSpectrumForRsN7K3() =>
-            AnalyzeSpectrumForRsCode(
-                new PrimePowerOrderField(8, new Polynomial(GaloisField.Create(2), 1, 1, 0, 1)),
-                7, 3
-            );
+            AnalyzeSpectrumForRsCode(GaloisField.Create(8, new[] {1, 1, 0, 1}), 7, 3);
 
         private static IReadOnlyDictionary<int, BigInteger> AnalyzeSpectrumForRsN7K4() =>
-            AnalyzeSpectrumForRsCode(
-                new PrimePowerOrderField(8, new Polynomial(GaloisField.Create(2), 1, 1, 0, 1)),
-                7, 4
-            );
+            AnalyzeSpectrumForRsCode(GaloisField.Create(8, new[] {1, 1, 0, 1}), 7, 4);
 
         private static IReadOnlyDictionary<int, BigInteger> AnalyzeSpectrumForRsN5K4() =>
-            AnalyzeSpectrumForRsCode(
-                new PrimePowerOrderField(9, new Polynomial(GaloisField.Create(3), 1, 0, 1)),
-                5, 4
-            );
+            AnalyzeSpectrumForRsCode(GaloisField.Create(9, new[] {1, 0, 1}), 5, 4);
 
         private static IReadOnlyDictionary<int, BigInteger> AnalyzeSpectrumForRsN6K4() =>
-            AnalyzeSpectrumForRsCode(
-                new PrimePowerOrderField(9, new Polynomial(GaloisField.Create(3), 1, 0, 1)),
-                6, 4
-            );
+            AnalyzeSpectrumForRsCode(GaloisField.Create(9, new[] {1, 0, 1}), 6, 4);
 
         private static IReadOnlyDictionary<int, BigInteger> AnalyzeSpectrumForRsN8K4() =>
-            AnalyzeSpectrumForRsCode(
-                new PrimePowerOrderField(9, new Polynomial(GaloisField.Create(3), 1, 0, 1)),
-                8, 4
-            );
+            AnalyzeSpectrumForRsCode(GaloisField.Create(9, new[] {1, 0, 1}), 8, 4);
 
         private static IReadOnlyDictionary<int, BigInteger> AnalyzeSpectrumForRsN8K5() =>
-            AnalyzeSpectrumForRsCode(
-                new PrimePowerOrderField(9, new Polynomial(GaloisField.Create(3), 1, 0, 1)),
-                8, 5
-            );
+            AnalyzeSpectrumForRsCode(GaloisField.Create(9, new[] {1, 0, 1}), 8, 5);
 
         private static IReadOnlyDictionary<int, BigInteger> AnalyzeSpectrumForRsN8K6() =>
-            AnalyzeSpectrumForRsCode(
-                new PrimePowerOrderField(9, new Polynomial(GaloisField.Create(3), 1, 0, 1)),
-                8, 6
-            );
+            AnalyzeSpectrumForRsCode(GaloisField.Create(9, new[] {1, 0, 1}), 8, 6);
 
         private static IReadOnlyDictionary<int, BigInteger> AnalyzeSpectrumForRsN6K5() =>
             AnalyzeSpectrumForRsCode(GaloisField.Create(11), 6, 5);
@@ -167,28 +143,16 @@
 
 
         private static IReadOnlyDictionary<int, BigInteger> AnalyzeSpectrumForRsN8K7() =>
-            AnalyzeSpectrumForRsCode(
-                new PrimePowerOrderField(16, new Polynomial(GaloisField.Create(2), 1, 0, 0, 1, 1)),
-                8, 7
-            );
+            AnalyzeSpectrumForRsCode(GaloisField.Create(16, new[] {1, 0, 0, 1, 1}), 8, 7);
 
         private static IReadOnlyDictionary<int, BigInteger> AnalyzeSpectrumForRsN15K7() =>
-            AnalyzeSpectrumForRsCode(
-                new PrimePowerOrderField(16, new Polynomial(GaloisField.Create(2), 1, 0, 0, 1, 1)),
-                15, 7
-            );
+            AnalyzeSpectrumForRsCode(GaloisField.Create(16, new[] {1, 0, 0, 1, 1}), 15, 7);
 
         private static IReadOnlyDictionary<int, BigInteger> AnalyzeSpectrumForRsN15K8() =>
-            AnalyzeSpectrumForRsCode(
-                new PrimePowerOrderField(16, new Polynomial(GaloisField.Create(2), 1, 0, 0, 1, 1)),
-                15, 8
-            );
+            AnalyzeSpectrumForRsCode(GaloisField.Create(16, new[] {1, 0, 0, 1, 1}), 15, 8);
 
         private static IReadOnlyDictionary<int, BigInteger> AnalyzeSpectrumForRsN15K13() =>
-            AnalyzeSpectrumForRsCode(
-                new PrimePowerOrderField(27, new Polynomial(GaloisField.Create(3), 2, 2, 0, 1)),
-                15, 13
-            );
+            AnalyzeSpectrumForRsCode(GaloisField.Create(27, new[] {2, 2, 0, 1}), 15, 13);
 
         private static IReadOnlyDictionary<int, BigInteger> AnalyzeSpectrumForRsN9K8() =>
             AnalyzeSpectrumForRsCode(GaloisField.Create(17), 9, 8);
@@ -209,60 +173,39 @@
             AnalyzeSpectrumForRsCode(GaloisField.Create(19), 18, 10);
 
         private static IReadOnlyDictionary<int, BigInteger> AnalyzeSpectrumForRsN26K13() =>
-            AnalyzeSpectrumForRsCode(
-                new PrimePowerOrderField(27, new Polynomial(GaloisField.Create(3), 2, 2, 0, 1)),
-                26, 13
-            );
+            AnalyzeSpectrumForRsCode(GaloisField.Create(27, new[] {2, 2, 0, 1}), 26, 13);
 
         private static IReadOnlyDictionary<int, BigInteger> AnalyzeSpectrumForRsN26K15() =>
-            AnalyzeSpectrumForRsCode(
-                new PrimePowerOrderField(27, new Polynomial(GaloisField.Create(3), 2, 2, 0, 1)),
-                26, 15
-            );
+            AnalyzeSpectrumForRsCode(GaloisField.Create(27, new[] {2, 2, 0, 1}), 26, 15);
 
         private static IReadOnlyDictionary<int, BigInteger> AnalyzeSpectrumForWvN7K3D4First() =>
             AnalyzeSpectrumForWaveletCode(
                 7, 3, 4,
-                new Polynomial(
-                    new PrimePowerOrderField(8, new Polynomial(GaloisField.Create(2), 1, 1, 0, 1)),
-                    0, 0, 2, 5, 6, 0, 1
-                )
+                new Polynomial(GaloisField.Create(8, new[] {1, 1, 0, 1}), 0, 0, 2, 5, 6, 0, 1)
             );
 
         private static IReadOnlyDictionary<int, BigInteger> AnalyzeSpectrumForWvN7K3D4Second() =>
             AnalyzeSpectrumForWaveletCode(
                 7, 3, 4,
-                new Polynomial(
-                    new PrimePowerOrderField(8, new Polynomial(GaloisField.Create(2), 1, 1, 0, 1)),
-                    1, 2, 1, 1
-                )
+                new Polynomial(GaloisField.Create(8, new[] {1, 1, 0, 1}), 1, 2, 1, 1)
             );
 
         private static IReadOnlyDictionary<int, BigInteger> AnalyzeSpectrumForWvN8K4D4Golay() =>
             AnalyzeSpectrumForWaveletCode(
                 8, 4, 4,
-                new Polynomial(
-                    new PrimePowerOrderField(9, new Polynomial(GaloisField.Create(3), 1, 0, 1)),
-                    2, 0, 1, 2, 1, 1
-                )
+                new Polynomial(GaloisField.Create(9, new[] {1, 0, 1}), 2, 0, 1, 2, 1, 1)
             );
 
         private static IReadOnlyDictionary<int, BigInteger> AnalyzeSpectrumForWvN8K4D4() =>
             AnalyzeSpectrumForWaveletCode(
                 8, 4, 4,
-                new Polynomial(
-                    new PrimePowerOrderField(9, new Polynomial(GaloisField.Create(3), 1, 0, 1)),
-                    2, 8, 3, 8, 0, 6, 2, 7
-                )
+                new Polynomial(GaloisField.Create(9, new[] {1, 0, 1}), 2, 8, 3, 8, 0, 6, 2, 7)
             );
 
         private static IReadOnlyDictionary<int, BigInteger> AnalyzeSpectrumForWvN8K4D3() =>
             AnalyzeSpectrumForWaveletCode(
                 8, 4, 3,
-                new Polynomial(
-                    new PrimePowerOrderField(9, new Polynomial(GaloisField.Create(3), 1, 0, 1)),
-                    2, 5, 5, 1, 1, 3, 2, 2
-                )
+                new Polynomial(GaloisField.Create(9, new[] {1, 0, 1}), 2, 5, 5, 1, 1, 3, 2, 2)
             );
 
         private static IReadOnlyDictionary<int, BigInteger> AnalyzeSpectrumForWvN10K5D5() =>
@@ -274,10 +217,7 @@
         private static IReadOnlyDictionary<int, BigInteger> AnalyzeSpectrumForWvN15K7D8() =>
             AnalyzeSpectrumForWaveletCode(
                 15, 7, 8,
-                new Polynomial(
-                    new PrimePowerOrderField(16, new Polynomial(GaloisField.Create(2), 1, 0, 0, 1, 1)),
-                    3, 3, 13, 2, 4, 5, 2, 9, 11, 11, 14, 3, 9, 11, 10
-                ),
+                new Polynomial(GaloisField.Create(16, new[] {1, 0, 0, 1, 1}), 3, 3, 13, 2, 4, 5, 2, 9, 11, 11, 14, 3, 9, 11, 10),
                 new SpectrumAnalyzerOptions {LoggingResolution = 100000}
             );
 
@@ -305,7 +245,7 @@
             AnalyzeSpectrumForWaveletCode(
                 26, 13, 12,
                 new Polynomial(
-                    new PrimePowerOrderField(27, new Polynomial(GaloisField.Create(3), 2, 2, 0, 1)),
+                    GaloisField.Create(27, new[] {2, 2, 0, 1}),
                     1, 0, 17, 18, 3, 12, 22, 15, 6, 10, 19, 15, 5, 11, 11, 15, 22, 11, 2, 6, 8, 0, 7, 4, 0, 15
                 )
             );

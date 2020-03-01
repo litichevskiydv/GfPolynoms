@@ -63,10 +63,10 @@
             var generationPolynomial1 = new Polynomial(gf7, 4, 2, 6, 4, 3, 4)
                                         + new Polynomial(gf7, 1, 2, 1, 5, 2, 1).RightShift(2);
 
-            var gf8 = new PrimePowerOrderField(8, new Polynomial(GaloisField.Create(2), 1, 1, 0, 1));
+            var gf8 = GaloisField.Create(8, new[] {1, 1, 0, 1});
             var generationPolynomial2 = new Polynomial(gf8, 0, 0, 2, 5, 6, 0, 1);
 
-            var gf9 = new PrimePowerOrderField(9, new Polynomial(GaloisField.Create(3), 1, 0, 1));
+            var gf9 = GaloisField.Create(9, new[] {1, 0, 1});
             var generationPolynomial3 = new Polynomial(gf9, 1, 2, 7, 2, 2, 2, 1, 5, 7);
 
             var gf11 = GaloisField.Create(11);
@@ -76,14 +76,14 @@
             var gf13 = GaloisField.Create(13);
             var generationPolynomial6 = new Polynomial(gf13, 0, 0, 0, 8, 1, 12, 2, 11, 5, 6, 4, 2, 3, 12, 2, 4);
 
-            var gf16 = new PrimePowerOrderField(16, new Polynomial(GaloisField.Create(2), 1, 0, 0, 1, 1));
+            var gf16 = GaloisField.Create(16, new[] {1, 0, 0, 1, 1});
             var generationPolynomial7 = new Polynomial(gf16, 3, 3, 13, 2, 4, 5, 2, 9, 11, 11, 14, 3, 9, 11, 10);
 
-            var gf27 = new PrimePowerOrderField(27, new Polynomial(GaloisField.Create(3), 2, 2, 0, 1));
+            var gf27 = GaloisField.Create(27, new[] {2, 2, 0, 1});
             var generationPolynomial8 = new Polynomial(gf27, 0, 0, 20, 18, 14, 15, 2, 5, 2, 19, 17, 4, 23, 1, 8, 6, 5, 4, 20, 26, 6, 5, 16,
                 23, 26, 15, 6, 25, 18, 22, 8, 4, 17, 20, 19, 18, 8, 6, 23, 12, 20, 22, 8, 7, 0, 7, 6, 3, 11);
 
-            var gf32 = new PrimePowerOrderField(32, new Polynomial(GaloisField.Create(2), 1, 0, 0, 1, 0, 1));
+            var gf32 = GaloisField.Create(32, new[] {1, 0, 0, 1, 0, 1});
             var generationPolynomial9 = new Polynomial(gf32, 6, 27, 1, 17, 13, 28, 18, 23, 15, 12, 3, 8, 5, 28, 1, 5, 29, 17, 18, 10, 12,
                 18, 27, 22, 28, 22, 8, 2, 26, 18, 3);
             var generationPolynomial10 = new Polynomial(gf32, 7, 24, 2, 0, 5, 29, 2, 18, 3, 1, 15, 22, 1, 16, 29, 17, 6, 16, 17, 25, 21, 26,

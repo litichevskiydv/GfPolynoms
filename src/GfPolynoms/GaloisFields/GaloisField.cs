@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using IrreduciblePolynomialsFinder;
 
     public abstract class GaloisField
     {
@@ -162,7 +163,7 @@
         /// </summary>
         /// <param name="order">Field order </param>
         /// <returns>First field order factor and its degree</returns>
-        protected static Dictionary<int, int> AnalyzeOrder(int order)
+        private static Dictionary<int, int> AnalyzeOrder(int order)
         {
             var fractions = new Dictionary<int, int>();
 
@@ -202,19 +203,18 @@
             if(orderAnalysisResult.Count != 1)
                 throw new ArgumentException($"{nameof(order)} must be a prime number or a prime power");
 
-            if (orderAnalysisResult.Values.First() == 1)
-            {
-                if(irreduciblePolynomialCoefficients != null)
-                    throw new ArgumentException("An irreducible polynomial must be specified only for fields whose order is a prime power");
-
-                return new PrimeOrderField(order);
-            }
-
-            if (irreduciblePolynomialCoefficients == null)
-                return new PrimePowerOrderField(order);
-
             var characteristic = orderAnalysisResult.Keys.First();
-            return new PrimePowerOrderField(order, new Polynomial(new PrimeOrderField(characteristic), irreduciblePolynomialCoefficients));
+            var characteristicDegree = orderAnalysisResult.Values.First();
+
+            if (characteristicDegree != 1)
+                return irreduciblePolynomialCoefficients == null
+                    ? new PrimePowerOrderField(order, new SimpleFinder().Find(characteristic, characteristicDegree))
+                    : new PrimePowerOrderField(order, new Polynomial(new PrimeOrderField(characteristic), irreduciblePolynomialCoefficients));
+
+            if (irreduciblePolynomialCoefficients != null)
+                throw new ArgumentException("An irreducible polynomial must be specified only for fields whose order is a prime power");
+            return new PrimeOrderField(order);
+
         }
     }
 }

@@ -21,7 +21,7 @@
         static RrFactorizatorTests()
         {
             var gf19 = GaloisField.Create(19);
-            var gf8 = new PrimePowerOrderField(8, new Polynomial(GaloisField.Create(2), 1, 1, 0, 1));
+            var gf8 = GaloisField.Create(8, new[] {1, 1, 0, 1});
 
             FactorizationTestsData
                 = new TheoryData<InterpolationPolynomialFactorizatorTestCase>

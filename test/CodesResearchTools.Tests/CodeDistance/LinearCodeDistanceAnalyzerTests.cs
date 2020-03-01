@@ -1,6 +1,5 @@
 ﻿namespace AppliedAlgebra.CodesResearchTools.Tests.CodeDistance
 {
-    using System;
     using System.Linq;
     using Analyzers.CodeDistance;
     using GfAlgorithms.CombinationsCountCalculator;
@@ -42,8 +41,8 @@
                     )
                 );
             var wN7K3D4 = codesFactory.CreateN7K3D4();
-            var wN8K4D4First = new WaveletCode(8, 4, 4, new Polynomial(new PrimePowerOrderField(9), 2, 0, 1, 2, 1, 1));
-            var wN8K4D4Second = new WaveletCode(8, 4, 4, new Polynomial(new PrimePowerOrderField(9), 2, 2, 1, 2, 0, 1));
+            var wN8K4D4First = new WaveletCode(8, 4, 4, new Polynomial(GaloisField.Create(9), 2, 0, 1, 2, 1, 1));
+            var wN8K4D4Second = new WaveletCode(8, 4, 4, new Polynomial(GaloisField.Create(9), 2, 2, 1, 2, 0, 1));
 
             CodeDistanceAnalysisTestCases
                 = new TheoryData<CodeDistanceAnalyzerTestCase>

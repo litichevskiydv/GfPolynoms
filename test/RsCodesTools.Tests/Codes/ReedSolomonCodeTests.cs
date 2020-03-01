@@ -17,7 +17,7 @@
 
         static ReedSolomonCodeTests()
         {
-            var code = new ReedSolomonCode(new PrimePowerOrderField(9), 8, 4);
+            var code = new ReedSolomonCode(GaloisField.Create(9), 8, 4);
             var noiseGenerator = new RecursiveGenerator();
 
             DecodingTestsData

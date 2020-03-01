@@ -80,7 +80,7 @@
         public void ShouldAnalyzeCodeSpectrum()
         {
             // Given
-            var code = _rsCodesFactory.Create(new PrimePowerOrderField(9), 8, 5);
+            var code = _rsCodesFactory.Create(GaloisField.Create(9), 8, 5);
 
             // When
             var actualSpectrum = _mdsCodesAnalyzer.Analyze(code).OrderBy(x => x.Key).ToArray();
@@ -94,7 +94,7 @@
         public void ShouldAnalyzeCodingProcedureSpectrum()
         {
             // Given
-            var code = _rsCodesFactory.Create(new PrimePowerOrderField(9), 8, 6);
+            var code = _rsCodesFactory.Create(GaloisField.Create(9), 8, 6);
 
             // When
             var actualSpectrum = _mdsCodesAnalyzer.Analyze(code.Field, code.InformationWordLength, x => code.Encode(x))

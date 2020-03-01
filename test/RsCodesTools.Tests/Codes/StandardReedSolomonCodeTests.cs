@@ -31,7 +31,7 @@
                 new GsDecoder(new KotterAlgorithmBasedBuilder(new PascalsTriangleBasedCalculator()), new RrFactorizator())
             );
 
-            var code = codesFactory.Create(new PrimePowerOrderField(8), 7, 4);
+            var code = codesFactory.Create(GaloisField.Create(8), 7, 4);
             DecodingTestsData
                 = new TheoryData<CodewordDecodingTestCase>
                   {

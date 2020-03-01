@@ -30,7 +30,6 @@
             IncorrectFieldCreationTestsData
                 = new TheoryData<IncorrectFieldCreationTestCase>
                   {
-                      new IncorrectFieldCreationTestCase {FieldOrder = 8},
                       new IncorrectFieldCreationTestCase
                       {
                           FieldOrder = 8,
@@ -113,11 +112,10 @@
 
         [Theory]
         [InlineData(1)]
-        [InlineData(3)]
         [InlineData(6)]
         public void ShouldNotCreateFieldWithNotPrimePowerOrder(int fieldOrder)
         {
-            Assert.Throws<ArgumentException>(() => new PrimePowerOrderField(fieldOrder));
+            Assert.Throws<ArgumentException>(() => GaloisField.Create(fieldOrder));
         }
 
         [Theory]

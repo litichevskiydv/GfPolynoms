@@ -44,7 +44,7 @@
 
         static GaussSolverTests()
         {
-            var gf27 = new PrimePowerOrderField(27, new Polynomial(GaloisField.Create(3), 2, 2, 0, 1));
+            var gf27 = GaloisField.Create(27, new[] {2, 2, 0, 1});
             OneSolutionTestsData
                 = new TheoryData<LinearSystemSolverTestCase>
                   {

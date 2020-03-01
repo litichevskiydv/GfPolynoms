@@ -11,7 +11,7 @@
 
     public class PascalsTriangleBasedCalculatorTests
     {
-        private static readonly PrimePowerOrderField Gf27;
+        private static readonly GaloisField Gf27;
         private readonly PascalsTriangleBasedCalculator _calculator;
         
         [UsedImplicitly]
@@ -19,7 +19,7 @@
 
         static PascalsTriangleBasedCalculatorTests()
         {
-            Gf27 = new PrimePowerOrderField(27, new Polynomial(GaloisField.Create(3), 2, 2, 0, 1));
+            Gf27 = GaloisField.Create(27, new[] {2, 2, 0, 1});
 
             CalculatorTestsData
                 = new TheoryData<CombinationsCountCalculatorTestCase>

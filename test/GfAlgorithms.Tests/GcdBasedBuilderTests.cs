@@ -26,8 +26,8 @@
         {
             var gf2 = GaloisField.Create(2);
             var gf7 = GaloisField.Create(7);
-            var gf8 = new PrimePowerOrderField(8, new Polynomial(GaloisField.Create(2), 1, 1, 0, 1));
-            var gf9 = new PrimePowerOrderField(9, new Polynomial(GaloisField.Create(3), 1, 0, 1));
+            var gf8 = GaloisField.Create(8, new[] {1, 1, 0, 1});
+            var gf9 = GaloisField.Create(9, new[] {1, 0, 1});
             var gf11 = GaloisField.Create(11);
             var gf17 = GaloisField.Create(17);
 
