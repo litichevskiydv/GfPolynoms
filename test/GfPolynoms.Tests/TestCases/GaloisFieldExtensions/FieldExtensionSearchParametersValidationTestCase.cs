@@ -1,11 +1,6 @@
 ﻿namespace AppliedAlgebra.GfPolynoms.Tests.TestCases.GaloisFieldExtensions
 {
-    using GaloisFields;
-
-    public class FieldExtensionSearchParametersValidationTestCase
+    public class FieldExtensionSearchParametersValidationTestCase : PrimitiveRootOperationParametersValidationTestCaseBase
     {
-        public GaloisField Field { get; set; }
-
-        public int RootOrder { get; set; }
     }
 }
