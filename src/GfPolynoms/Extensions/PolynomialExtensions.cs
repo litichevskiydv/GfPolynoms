@@ -2,6 +2,7 @@
 {
     using System;
     using System.Linq;
+    using GaloisFields;
 
     /// <summary>
     /// Class with extensions for polynomial
@@ -60,6 +61,24 @@
             return Enumerable.Range(0, polynomial.Field.Order - 1)
                 .Select(x => polynomial.Field.CreateElement(polynomial.Evaluate(polynomial.Field.GetGeneratingElementPower(x))))
                 .ToArray();
+        }
+
+        /// <summary>
+        /// Changes polynomial's <paramref name="polynomial"/> field to another field <paramref name="newField"/>
+        /// with the same characteristic
+        /// </summary>
+        /// <param name="polynomial">Original polynomial</param>
+        /// <param name="newField">New field</param>
+        public static Polynomial ChangeField(this Polynomial polynomial, GaloisField newField)
+        {
+            if(polynomial == null)
+                throw new ArgumentNullException(nameof(polynomial));
+            if (newField == null)
+                throw new ArgumentNullException(nameof(newField));
+            if(polynomial.Field.Characteristic != newField.Characteristic)
+                throw new ArgumentException($"{nameof(polynomial)} field characteristic and {nameof(newField)} characteristic must be the same");
+
+            return new Polynomial(newField, Enumerable.Range(0, polynomial.Degree + 1).Select(i => polynomial[i]).ToArray());
         }
     }
 }

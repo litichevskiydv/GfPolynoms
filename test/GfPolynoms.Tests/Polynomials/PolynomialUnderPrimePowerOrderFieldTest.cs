@@ -1,4 +1,4 @@
-﻿namespace AppliedAlgebra.GfPolynoms.Tests
+﻿namespace AppliedAlgebra.GfPolynoms.Tests.Polynomials
 {
     using GaloisFields;
     using Xunit;
