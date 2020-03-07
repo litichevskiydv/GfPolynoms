@@ -13,6 +13,8 @@
         public static readonly TheoryData<FieldExtensionSearchParametersValidationTestCase> FieldExtensionSearchParametersValidationTestCases;
         [UsedImplicitly]
         public static readonly TheoryData<PrimitiveRootObtainingParametersValidationTestCase> PrimitiveRootObtainingParametersValidationTestCases;
+        [UsedImplicitly]
+        public static readonly TheoryData<GenerateConjugacyClassesParametersValidationTestCase> GenerateConjugacyClassesParametersValidationTestCases;
 
         static GaloisFieldExtensionsTests()
         {
@@ -28,6 +30,12 @@
                       new PrimitiveRootObtainingParametersValidationTestCase {RootOrder = 3},
                       new PrimitiveRootObtainingParametersValidationTestCase {Field = GaloisField.Create(3), RootOrder = -1},
                       new PrimitiveRootObtainingParametersValidationTestCase {Field = GaloisField.Create(4), RootOrder = 2}
+                  };
+            GenerateConjugacyClassesParametersValidationTestCases
+                = new TheoryData<GenerateConjugacyClassesParametersValidationTestCase>
+                  {
+                      new GenerateConjugacyClassesParametersValidationTestCase {Modulus = 7},
+                      new GenerateConjugacyClassesParametersValidationTestCase {Field = GaloisField.Create(2), Modulus = -1}
                   };
         }
 
@@ -71,6 +79,28 @@
 
             // Then
             Assert.Equal(field.One(), primitiveRoot.Pow(rootOrder));
+        }
+
+        [Theory]
+        [MemberData(nameof(GenerateConjugacyClassesParametersValidationTestCases))]
+        public void GenerateConjugacyClassesMustValidateParameters(GenerateConjugacyClassesParametersValidationTestCase testCase)
+        {
+            Assert.ThrowsAny<ArgumentException>(() => testCase.Field.GenerateConjugacyClasses(testCase.Modulus));
+        }
+
+        [Fact]
+        public void MustGenerateConjugacyClasses()
+        {
+            // Given
+            var field = GaloisField.Create(2);
+            const int modulus = 7;
+
+            // When
+            var actualConjugacyClasses = field.GenerateConjugacyClasses(modulus);
+
+            // Then
+            var expectedFirstConjugacyClasses = new[] {new[] {0}, new[] {1, 2, 4}, new[] {3, 6, 5}};
+            Assert.Equal(expectedFirstConjugacyClasses, actualConjugacyClasses);
         }
     }
 }

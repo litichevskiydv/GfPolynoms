@@ -1,6 +1,7 @@
 ﻿namespace AppliedAlgebra.GfPolynoms.Extensions
 {
     using System;
+    using System.Collections.Generic;
     using GaloisFields;
 
     public static class GaloisFieldExtensions
@@ -61,6 +62,33 @@
                 throw new ArgumentException($"Root with order {rootOrder} does not exists in the field {field}");
 
             return field.CreateElement(field.GetGeneratingElementPower((field.Order - 1) / rootOrder));
+        }
+
+
+        public static int[][] GenerateConjugacyClasses(this GaloisField field, int modulus)
+        {
+            if (field == null)
+                throw new ArgumentNullException(nameof(field));
+            if(modulus < 1)
+                throw new ArgumentException($"{nameof(modulus)} must be positive");
+
+            var conjugacyClasses = new List<int[]>();
+            var processed = new bool[modulus];
+            for (var i = 0; i < modulus; i++)
+            {
+                if(processed[i]) continue;
+
+                var conjugacyClass = new List<int>();
+                for (var j = i; processed[j] == false; j = j * field.Order % modulus)
+                {
+                    processed[j] = true;
+                    conjugacyClass.Add(j);
+                }
+
+                conjugacyClasses.Add(conjugacyClass.ToArray());
+            }
+
+            return conjugacyClasses.ToArray();
         }
     }
 }
