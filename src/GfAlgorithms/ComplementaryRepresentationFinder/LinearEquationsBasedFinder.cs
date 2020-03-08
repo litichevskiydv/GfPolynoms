@@ -116,7 +116,11 @@
                 yield return componentsValues;
         }
 
-        private Polynomial ReconstructPolynomialByValues(FieldElement argumentMultiplier, FieldElement[] values, int coefficientsCount)
+        private Polynomial ReconstructPolynomialByValues(
+            int coefficientsCount,
+            FieldElement argumentMultiplier,
+            FieldElement[] values
+        )
         {
             var argument = argumentMultiplier.Field.One();
             var a = new FieldElement[values.Length, coefficientsCount];
@@ -134,16 +138,21 @@
             return new Polynomial(systemSolution.VariablesValues);
         }
 
-        private (Polynomial h, Polynomial g) ReconstructComplementaryRepresentation(GaloisField field,
-            FieldElement[] heValues, FieldElement[] hoValues, FieldElement[] geValues, FieldElement[] goValues
+        private (Polynomial h, Polynomial g) ReconstructComplementaryRepresentation(
+            int coefficientsCount,
+            FieldElement primitiveRoot,
+            FieldElement[] heValues, 
+            FieldElement[] hoValues, 
+            FieldElement[] geValues, 
+            FieldElement[] goValues
         )
         {
-            var componentsDegree = (field.Order - 1) / 2;
-            var argumentMultiplier = field.CreateElement(field.GetGeneratingElementPower(2));
-            var he = ReconstructPolynomialByValues(argumentMultiplier, heValues, componentsDegree);
-            var ho = ReconstructPolynomialByValues(argumentMultiplier, hoValues, componentsDegree);
-            var ge = ReconstructPolynomialByValues(argumentMultiplier, geValues, componentsDegree);
-            var go = ReconstructPolynomialByValues(argumentMultiplier, goValues, componentsDegree);
+            var componentsCoefficientsCount = coefficientsCount / 2;
+            var argumentMultiplier = FieldElement.Pow(primitiveRoot, 2);
+            var he = ReconstructPolynomialByValues(componentsCoefficientsCount, argumentMultiplier, heValues);
+            var ho = ReconstructPolynomialByValues(componentsCoefficientsCount, argumentMultiplier, hoValues);
+            var ge = ReconstructPolynomialByValues(componentsCoefficientsCount, argumentMultiplier, geValues);
+            var go = ReconstructPolynomialByValues(componentsCoefficientsCount, argumentMultiplier, goValues);
 
             return
             (
@@ -169,8 +178,10 @@
                 throw new ArgumentException($"{nameof(lambda)} must belong to the field of the polynomial {nameof(polynomial)}");
 
             var field = polynomial.Field;
+            var coefficientsCount = maxDegree + 1;
+            var primitiveRoot = field.GetPrimitiveRoot(coefficientsCount);
             foreach (var (heValues, hoValues, geValues, goValues) in ComputePolyphaseComponentsValues(polynomial, lambda ?? field.One()))
-                yield return ReconstructComplementaryRepresentation(field, heValues, hoValues, geValues, goValues);
+                yield return ReconstructComplementaryRepresentation(coefficientsCount, primitiveRoot, heValues, hoValues, geValues, goValues);
         }
     }
 }
