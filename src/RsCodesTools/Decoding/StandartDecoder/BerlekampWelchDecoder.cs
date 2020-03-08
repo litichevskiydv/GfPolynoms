@@ -42,13 +42,14 @@
                     coefficient *= decodedCodeword[i].Item1;
                 }
 
-                coefficient = FieldElement.InverseForAddition(decodedCodeword[i].Item2);
+                coefficient = -decodedCodeword[i].Item2;
                 for (; j < k + 2 * errorsCount; j++)
                 {
                     a[i, j] = coefficient;
                     coefficient *= decodedCodeword[i].Item1;
                 }
-                b[i] = FieldElement.InverseForAddition(coefficient);
+
+                b[i] = -coefficient;
             }
 
             return Tuple.Create(a, b);

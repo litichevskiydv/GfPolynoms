@@ -56,9 +56,8 @@
                         goValues[index] = field.CreateElement(goValue);
                         geValues[index] = denominator - generatingElementPower * goValues[index];
 
-                        hoValues[index] = lambda.InverseForAddition() * argument * goValues[index] + field.One().InverseForAddition() / denominator;
-                        heValues[index] = lambda.InverseForAddition() * argument * geValues[index] +
-                                      generatingElementPower.InverseForAddition() / denominator;
+                        hoValues[index] = -lambda * argument * goValues[index] - FieldElement.InverseForMultiplication(denominator);
+                        heValues[index] = -lambda * argument * geValues[index] + generatingElementPower / denominator;
 
                         foreach (var componentsValues in ComputePolyphaseComponentsValues(fe, fo, lambda, argument * argumentMultiplier,
                             argumentMultiplier, index + 1, heValues, hoValues, geValues, goValues))
@@ -72,11 +71,11 @@
                     if (feValue.Representation == 0)
                     {
                         goValues[index] = field.CreateElement(componentValue);
-                        geValues[index] = field.One().InverseForAddition() / foValue;
+                        geValues[index] = -FieldElement.InverseForMultiplication(foValue);
                     }
                     else if (foValue.Representation == 0)
                     {
-                        goValues[index] = feValue.InverseForMultiplication();
+                        goValues[index] = FieldElement.InverseForMultiplication(feValue);
                         geValues[index] = field.CreateElement(componentValue);
 
                     }

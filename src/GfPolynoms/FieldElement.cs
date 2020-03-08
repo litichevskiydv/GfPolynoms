@@ -265,6 +265,11 @@
             return Add(a, b);
         }
 
+        public static FieldElement operator -(FieldElement a)
+        {
+            return InverseForAddition(a);
+        }
+
         public static FieldElement operator -(FieldElement a, FieldElement b)
         {
             return Subtract(a, b);
