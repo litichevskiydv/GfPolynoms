@@ -25,6 +25,7 @@
             Polynomial fe,
             Polynomial fo,
             FieldElement lambda,
+            FieldElement primitiveRoot,
             FieldElement argument,
             FieldElement argumentMultiplier,
             int index,
@@ -46,20 +47,20 @@
 
             if (feValue.Representation == 0 && foValue.Representation == 0)
             {
+                var primitiveRootPower = FieldElement.Pow(primitiveRoot, index);
                 for (var denominatorValue = 1; denominatorValue < field.Order; denominatorValue++)
                 {
                     var denominator = field.CreateElement(denominatorValue);
-                    var generatingElementPower = field.CreateElement(field.GetGeneratingElementPower(index));
 
                     for (var goValue = 1; goValue < field.Order; goValue++)
                     {
                         goValues[index] = field.CreateElement(goValue);
-                        geValues[index] = denominator - generatingElementPower * goValues[index];
+                        geValues[index] = denominator - primitiveRootPower * goValues[index];
 
                         hoValues[index] = -lambda * argument * goValues[index] - FieldElement.InverseForMultiplication(denominator);
-                        heValues[index] = -lambda * argument * geValues[index] + generatingElementPower / denominator;
+                        heValues[index] = -lambda * argument * geValues[index] + primitiveRootPower / denominator;
 
-                        foreach (var componentsValues in ComputePolyphaseComponentsValues(fe, fo, lambda, argument * argumentMultiplier,
+                        foreach (var componentsValues in ComputePolyphaseComponentsValues(fe, fo, lambda, primitiveRoot, argument * argumentMultiplier,
                             argumentMultiplier, index + 1, heValues, hoValues, geValues, goValues))
                             yield return componentsValues;
                     }
@@ -88,7 +89,7 @@
                     hoValues[index] = foValue - lambda * argument * goValues[index];
                     heValues[index] = feValue - lambda * argument * geValues[index];
 
-                    foreach (var componentsValues in ComputePolyphaseComponentsValues(fe, fo, lambda, argument * argumentMultiplier,
+                    foreach (var componentsValues in ComputePolyphaseComponentsValues(fe, fo, lambda, primitiveRoot, argument * argumentMultiplier,
                         argumentMultiplier, index + 1, heValues, hoValues, geValues, goValues))
                         yield return componentsValues;
                 }
@@ -96,13 +97,15 @@
 
         private static IEnumerable<(FieldElement[], FieldElement[], FieldElement[], FieldElement[])> ComputePolyphaseComponentsValues(
             Polynomial polynomial,
-            FieldElement lambda
+            int coefficientsCount,
+            FieldElement lambda,
+            FieldElement primitiveRoot
         )
         {
             var field = polynomial.Field;
             var (fe, fo) = polynomial.GetPolyphaseComponents();
 
-            var valuesCount = (field.Order - 1) / 2;
+            var valuesCount = coefficientsCount / 2;
             var heValues = new FieldElement[valuesCount];
             var hoValues = new FieldElement[valuesCount];
             var geValues = new FieldElement[valuesCount];
@@ -110,8 +113,8 @@
 
             
             var argument = field.One();
-            var argumentMultiplier = field.CreateElement(field.GetGeneratingElementPower(2));
-            foreach (var componentsValues in ComputePolyphaseComponentsValues(fe, fo, lambda, argument, argumentMultiplier, 0,
+            var argumentMultiplier = FieldElement.Pow(primitiveRoot, 2);
+            foreach (var componentsValues in ComputePolyphaseComponentsValues(fe, fo, lambda, primitiveRoot, argument, argumentMultiplier, 0,
                 heValues, hoValues, geValues, goValues))
                 yield return componentsValues;
         }
@@ -181,8 +184,9 @@
 
             var field = polynomial.Field;
             var coefficientsCount = maxDegree + 1;
+            var checkedLambda = lambda ?? field.One();
             var primitiveRoot = field.GetPrimitiveRoot(coefficientsCount);
-            foreach (var (heValues, hoValues, geValues, goValues) in ComputePolyphaseComponentsValues(polynomial, lambda ?? field.One()))
+            foreach (var (heValues, hoValues, geValues, goValues) in ComputePolyphaseComponentsValues(polynomial, coefficientsCount, checkedLambda, primitiveRoot))
                 yield return ReconstructComplementaryRepresentation(field, coefficientsCount, primitiveRoot, heValues, hoValues, geValues, goValues);
         }
     }
