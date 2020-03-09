@@ -11,14 +11,65 @@
 
     public class LinearEquationsBasedFinder : IComplementaryRepresentationFinder
     {
+        private class ValueSource
+        {
+            public int FieldOrder { get; }
+
+            public int? ReferenceValueIndex { get; }
+
+            public int? ReferenceValueDegree { get; }
+
+            public ValueSource(int fieldOrder, int? referenceValueIndex = null, int? referenceValueDegree = null)
+            {
+                FieldOrder = fieldOrder;
+                ReferenceValueIndex = referenceValueIndex;
+                ReferenceValueDegree = referenceValueDegree;
+            }
+
+            public override string ToString() =>
+                $"Field order: {FieldOrder}" +
+                (
+                    ReferenceValueIndex.HasValue
+                        ? $"; Reference value: index {ReferenceValueIndex}, degree: {ReferenceValueDegree}"
+                        : ""
+                );
+        }
+
         private readonly ILinearSystemSolver _linearSystemSolver;
 
-        public LinearEquationsBasedFinder(ILinearSystemSolver linearSystemSolver)
+        private static int GetPower(int a, int n)
         {
-            if (linearSystemSolver == null)
-                throw new ArgumentNullException(nameof(linearSystemSolver));
+            var result = 1;
+            while (n > 0)
+            {
+                if ((n & 1) == 1)
+                    result *= a;
 
-            _linearSystemSolver = linearSystemSolver;
+                a *= a;
+                n >>= 1;
+            }
+
+            return result;
+        }
+
+        private static IReadOnlyDictionary<int, ValueSource> PrepareValuesSources(GaloisField field, GaloisField fieldExtension, int coefficientsCount)
+        {
+            var valuesSources = new Dictionary<int, ValueSource>();
+            var conjugacyClasses = fieldExtension.GenerateConjugacyClasses(coefficientsCount);
+            foreach (var conjugacyClass in conjugacyClasses)
+            {
+                var fieldOrder = GetPower(field.Order, conjugacyClass.Length);
+                for (var i = 0; i < conjugacyClass.Length; i++)
+                {
+                    var valueIndex = conjugacyClass[i];
+                    if (i == 0)
+                        valuesSources[valueIndex] = new ValueSource(fieldOrder);
+                    else
+                        valuesSources[valueIndex] = new ValueSource(fieldOrder, conjugacyClass[0], GetPower(field.Order, i));
+                }
+            }
+
+            return valuesSources;
         }
 
         private static IEnumerable<(FieldElement[], FieldElement[], FieldElement[], FieldElement[])> ComputePolyphaseComponentsValues(
@@ -26,6 +77,7 @@
             Polynomial fo,
             FieldElement lambda,
             FieldElement primitiveRoot,
+            IReadOnlyDictionary<int, ValueSource> valuesSources,
             FieldElement argument,
             FieldElement argumentMultiplier,
             int index,
@@ -41,6 +93,8 @@
                 yield break;
             }
 
+            var valueSource = valuesSources[index];
+
             var field = fe.Field;
             var feValue = field.CreateElement(fe.Evaluate(argument.Representation));
             var foValue = field.CreateElement(fo.Evaluate(argument.Representation));
@@ -48,8 +102,8 @@
             if (feValue.Representation == 0 && foValue.Representation == 0)
             {
                 var primitiveRootPower = FieldElement.Pow(primitiveRoot, index);
-                for (var goValue = 1; goValue < field.Order; goValue++)
-                for (var geValue = 0; geValue < field.Order; geValue++)
+                for (var goValue = 1; goValue < valueSource.FieldOrder; goValue++)
+                for (var geValue = 0; geValue < valueSource.FieldOrder; geValue++)
                 {
                     goValues[index] = field.CreateElement(goValue);
                     geValues[index] = field.CreateElement(geValue);
@@ -61,13 +115,13 @@
                     hoValues[index] = -lambda * argument * goValues[index] - FieldElement.InverseForMultiplication(denominator);
                     heValues[index] = -lambda * argument * geValues[index] + primitiveRootPower / denominator;
 
-                    foreach (var componentsValues in ComputePolyphaseComponentsValues(fe, fo, lambda, primitiveRoot, argument * argumentMultiplier,
-                        argumentMultiplier, index + 1, heValues, hoValues, geValues, goValues))
+                    foreach (var componentsValues in ComputePolyphaseComponentsValues(fe, fo, lambda, primitiveRoot, valuesSources,
+                        argument * argumentMultiplier, argumentMultiplier, index + 1, heValues, hoValues, geValues, goValues))
                         yield return componentsValues;
                 }
             }
             else
-                for (var componentValue = 0; componentValue < field.Order; componentValue++)
+                for (var componentValue = 0; componentValue < valueSource.FieldOrder; componentValue++)
                 {
                     if (feValue.Representation == 0)
                     {
@@ -89,8 +143,8 @@
                     hoValues[index] = foValue - lambda * argument * goValues[index];
                     heValues[index] = feValue - lambda * argument * geValues[index];
 
-                    foreach (var componentsValues in ComputePolyphaseComponentsValues(fe, fo, lambda, primitiveRoot, argument * argumentMultiplier,
-                        argumentMultiplier, index + 1, heValues, hoValues, geValues, goValues))
+                    foreach (var componentsValues in ComputePolyphaseComponentsValues(fe, fo, lambda, primitiveRoot, valuesSources,
+                        argument * argumentMultiplier, argumentMultiplier, index + 1, heValues, hoValues, geValues, goValues))
                         yield return componentsValues;
                 }
         }
@@ -99,11 +153,14 @@
             Polynomial polynomial,
             int coefficientsCount,
             FieldElement lambda,
-            FieldElement primitiveRoot
+            FieldElement primitiveRoot,
+            IReadOnlyDictionary<int, ValueSource> valuesSources
         )
         {
-            var field = polynomial.Field;
             var (fe, fo) = polynomial.GetPolyphaseComponents();
+
+            var argument = polynomial.Field.One();
+            var argumentMultiplier = FieldElement.Pow(primitiveRoot, 2);
 
             var valuesCount = coefficientsCount / 2;
             var heValues = new FieldElement[valuesCount];
@@ -111,11 +168,8 @@
             var geValues = new FieldElement[valuesCount];
             var goValues = new FieldElement[valuesCount];
 
-            
-            var argument = field.One();
-            var argumentMultiplier = FieldElement.Pow(primitiveRoot, 2);
-            foreach (var componentsValues in ComputePolyphaseComponentsValues(fe, fo, lambda, primitiveRoot, argument, argumentMultiplier, 0,
-                heValues, hoValues, geValues, goValues))
+            foreach (var componentsValues in ComputePolyphaseComponentsValues(fe, fo, lambda, primitiveRoot, valuesSources,
+                argument, argumentMultiplier, 0, heValues, hoValues, geValues, goValues))
                 yield return componentsValues;
         }
 
@@ -184,10 +238,25 @@
 
             var field = polynomial.Field;
             var coefficientsCount = maxDegree + 1;
-            var checkedLambda = lambda ?? field.One();
-            var primitiveRoot = field.GetPrimitiveRoot(coefficientsCount);
-            foreach (var (heValues, hoValues, geValues, goValues) in ComputePolyphaseComponentsValues(polynomial, coefficientsCount, checkedLambda, primitiveRoot))
+
+
+            var fieldExtension = field.FindExtensionContainingPrimitiveRoot(coefficientsCount);
+            var primitiveRoot = fieldExtension.GetPrimitiveRoot(coefficientsCount);
+            var valuesReferences = PrepareValuesSources(field, fieldExtension, coefficientsCount);
+
+            var checkedPolynomial = polynomial.ChangeField(fieldExtension);
+            var checkedLambda = fieldExtension.CreateElement((lambda ?? field.One()).Representation);
+            
+            foreach (var (heValues, hoValues, geValues, goValues) in ComputePolyphaseComponentsValues(checkedPolynomial, coefficientsCount, checkedLambda, primitiveRoot, valuesReferences))
                 yield return ReconstructComplementaryRepresentation(field, coefficientsCount, primitiveRoot, heValues, hoValues, geValues, goValues);
+        }
+
+        public LinearEquationsBasedFinder(ILinearSystemSolver linearSystemSolver)
+        {
+            if (linearSystemSolver == null)
+                throw new ArgumentNullException(nameof(linearSystemSolver));
+
+            _linearSystemSolver = linearSystemSolver;
         }
     }
 }
