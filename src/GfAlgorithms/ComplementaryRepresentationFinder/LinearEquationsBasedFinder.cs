@@ -48,22 +48,22 @@
             if (feValue.Representation == 0 && foValue.Representation == 0)
             {
                 var primitiveRootPower = FieldElement.Pow(primitiveRoot, index);
-                for (var denominatorValue = 1; denominatorValue < field.Order; denominatorValue++)
+                for (var goValue = 1; goValue < field.Order; goValue++)
+                for (var geValue = 0; geValue < field.Order; geValue++)
                 {
-                    var denominator = field.CreateElement(denominatorValue);
+                    goValues[index] = field.CreateElement(goValue);
+                    geValues[index] = field.CreateElement(geValue);
 
-                    for (var goValue = 1; goValue < field.Order; goValue++)
-                    {
-                        goValues[index] = field.CreateElement(goValue);
-                        geValues[index] = denominator - primitiveRootPower * goValues[index];
+                    var denominator = geValues[index] + primitiveRootPower * goValues[index];
+                    if (denominator.Representation == 0) continue;
 
-                        hoValues[index] = -lambda * argument * goValues[index] - FieldElement.InverseForMultiplication(denominator);
-                        heValues[index] = -lambda * argument * geValues[index] + primitiveRootPower / denominator;
 
-                        foreach (var componentsValues in ComputePolyphaseComponentsValues(fe, fo, lambda, primitiveRoot, argument * argumentMultiplier,
-                            argumentMultiplier, index + 1, heValues, hoValues, geValues, goValues))
-                            yield return componentsValues;
-                    }
+                    hoValues[index] = -lambda * argument * goValues[index] - FieldElement.InverseForMultiplication(denominator);
+                    heValues[index] = -lambda * argument * geValues[index] + primitiveRootPower / denominator;
+
+                    foreach (var componentsValues in ComputePolyphaseComponentsValues(fe, fo, lambda, primitiveRoot, argument * argumentMultiplier,
+                        argumentMultiplier, index + 1, heValues, hoValues, geValues, goValues))
+                        yield return componentsValues;
                 }
             }
             else
