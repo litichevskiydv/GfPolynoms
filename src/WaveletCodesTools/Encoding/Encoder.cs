@@ -33,9 +33,9 @@
             var i = 0;
             var codeword = new Tuple<FieldElement, FieldElement>[n];
             for (; i <= codeWordPolynomial.Degree; i++)
-                codeword[i] = Tuple.Create(field.CreateElement(field.GetGeneratingElementPower(i)), field.CreateElement(codeWordPolynomial[i]));
+                codeword[i] = Tuple.Create(field.CreateElement(field.PowGeneratingElement(i)), field.CreateElement(codeWordPolynomial[i]));
             for (; i < n; i++)
-                codeword[i] = Tuple.Create(field.CreateElement(field.GetGeneratingElementPower(i)), field.Zero());
+                codeword[i] = Tuple.Create(field.CreateElement(field.PowGeneratingElement(i)), field.Zero());
 
             return codeword;
         }

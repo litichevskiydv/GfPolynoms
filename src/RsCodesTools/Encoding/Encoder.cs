@@ -22,7 +22,7 @@
 
             for (var i = 0; i < n; i++)
             {
-                var variableValue = field.GetGeneratingElementPower(i);
+                var variableValue = field.PowGeneratingElement(i);
                 codeword[i] = Tuple.Create(field.CreateElement(variableValue),
                     field.CreateElement(informationPolynomial.Evaluate(variableValue)));
             }

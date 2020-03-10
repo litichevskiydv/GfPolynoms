@@ -44,7 +44,7 @@
 
             _modularPolynomial = new Polynomial(Field, 1).RightShift(CodewordLength) + new Polynomial(Field, Field.InverseForAddition(1));
             _preparedPoints = Enumerable.Range(0, CodewordLength)
-                .Select(x => Field.CreateElement(Field.GetGeneratingElementPower(x)))
+                .Select(x => Field.CreateElement(Field.PowGeneratingElement(x)))
                 .ToArray();
             _maxListDecodingRadius = (int) Math.Ceiling(CodewordLength - Math.Sqrt(CodewordLength * (CodewordLength - CodeDistance)) - 1);
         }

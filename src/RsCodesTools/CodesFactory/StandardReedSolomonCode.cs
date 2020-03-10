@@ -39,7 +39,7 @@
             _listDecoder = listDecoder;
 
             _preparedPoints = Enumerable.Range(0, CodewordLength)
-                .Select(x => Field.CreateElement(Field.GetGeneratingElementPower(x)))
+                .Select(x => Field.CreateElement(Field.PowGeneratingElement(x)))
                 .ToArray();
             _maxListDecodingRadius = (int)Math.Ceiling(CodewordLength - Math.Sqrt(CodewordLength * (CodewordLength - CodeDistance)) - 1);
         }

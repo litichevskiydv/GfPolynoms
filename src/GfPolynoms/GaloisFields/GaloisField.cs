@@ -136,11 +136,11 @@
         /// </summary>
         /// <param name="degree">Power for exponentiation</param>
         /// <returns>Exponentiation result</returns>
-        public int GetGeneratingElementPower(int degree)
+        public int PowGeneratingElement(int degree)
         {
             return degree >= 0
                 ? ElementsByPowers[degree % (Order - 1)]
-                : InverseForMultiplication(ElementsByPowers[(-degree) % (Order - 1)]);
+                : InverseForMultiplication(ElementsByPowers[-degree % (Order - 1)]);
         }
 
         /// <summary>
@@ -155,7 +155,21 @@
 
             if (degree == 0)
                 return 1;
-            return element == 0 ? 0 : GetGeneratingElementPower(PowersByElements[element]*degree);
+            return element == 0 ? 0 : PowGeneratingElement(PowersByElements[element]*degree);
+        }
+
+        /// <summary>
+        /// Returns generating element degree corresponding to <paramref name="element"/>
+        /// </summary>
+        /// <param name="element">Generating element degree</param>
+        public int GetGeneratingElementDegree(int element)
+        {
+            if (IsFieldElement(element) == false)
+                throw new ArgumentException($"Element {element} is not field member");
+            if(element == 0)
+                throw new ArgumentException($"Element {element} must not be zero");
+
+            return PowersByElements[element];
         }
 
         /// <summary>

@@ -18,7 +18,7 @@
         { 
             var informationPolynomial = new Polynomial(informationWord);
             return Enumerable.Range(0, CodewordLength)
-                .Select(x => Field.CreateElement(informationPolynomial.Evaluate(Field.GetGeneratingElementPower(x))))
+                .Select(x => Field.CreateElement(informationPolynomial.Evaluate(Field.PowGeneratingElement(x))))
                 .ToArray();
         }
         

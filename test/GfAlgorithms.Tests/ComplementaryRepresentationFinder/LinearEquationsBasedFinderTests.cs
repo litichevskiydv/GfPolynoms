@@ -62,6 +62,18 @@
                           Polynomial = new Polynomial(gf11, 8, 10, 4, 6, 8, 9, 2, 10, 4, 5),
                           MaxDegree = 9,
                           Lambda = gf11.CreateElement(2)
+                      },
+                      new ComplementaryRepresentationFinderTestCase
+                      {
+                          Polynomial = new Polynomial(gf3, 1, 2, 1, 1, 0, 0, 2, 1, 2, 1),
+                          MaxDegree = 9,
+                          Lambda = gf3.CreateElement(2)
+                      },
+                      new ComplementaryRepresentationFinderTestCase
+                      {
+                          Polynomial = new Polynomial(gf9, 1, 4, 1, 6, 8, 0, 0, 5, 3, 1),
+                          MaxDegree = 9,
+                          Lambda = gf9.CreateElement(5)
                       }
                   };
         }
@@ -89,8 +101,8 @@
             var field = testCase.Polynomial.Field;
             var one = new Polynomial(field.One());
             var lambda = (testCase.Lambda ?? field.One()).Representation;
-            var modularPolynomial = (one >> (field.Order - 1)) - one;
-            var componentsModularPolynomial = (one >> ((field.Order - 1) / 2)) - one;
+            var modularPolynomial = (one >> (testCase.MaxDegree + 1)) - one;
+            var componentsModularPolynomial = (one >> ((testCase.MaxDegree + 1) / 2)) - one;
 
             var complementaryRepresentationsCount = 0;
             Assert.All(

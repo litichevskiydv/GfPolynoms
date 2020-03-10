@@ -61,7 +61,7 @@
             if ((field.Order - 1) % rootOrder != 0)
                 throw new ArgumentException($"Root with order {rootOrder} does not exists in the field {field}");
 
-            return field.CreateElement(field.GetGeneratingElementPower((field.Order - 1) / rootOrder));
+            return field.CreateElement(field.PowGeneratingElement((field.Order - 1) / rootOrder));
         }
 
 

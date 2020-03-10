@@ -57,7 +57,7 @@
             var fieldExtension = field.FindExtensionContainingPrimitiveRoot(rootOrder);
 
             // Then
-            Assert.Equal(1, fieldExtension.Pow(fieldExtension.GetGeneratingElementPower((fieldExtension.Order - 1) / rootOrder), rootOrder));
+            Assert.Equal(1, fieldExtension.Pow(fieldExtension.PowGeneratingElement((fieldExtension.Order - 1) / rootOrder), rootOrder));
         }
 
         [Theory]

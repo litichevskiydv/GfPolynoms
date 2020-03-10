@@ -133,8 +133,8 @@
         public void ShouldGetGeneratingElementPowerGet(int power)
         {
             // When
-            var element = _gf5.GetGeneratingElementPower(power);
-            var invertedElement = _gf5.GetGeneratingElementPower(-power);
+            var element = _gf5.PowGeneratingElement(power);
+            var invertedElement = _gf5.PowGeneratingElement(-power);
 
             // Then
             Assert.Equal(1, (element*invertedElement)%_gf5.Order);

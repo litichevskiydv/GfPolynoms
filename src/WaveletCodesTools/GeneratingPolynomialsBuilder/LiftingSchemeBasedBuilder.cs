@@ -36,7 +36,7 @@
             var linearSystemMatrix = new FieldElement[variablesCount, variablesCount];
             for (var i = 0; i < linearSystemMatrix.GetLength(0); i++)
             {
-                var sample = new FieldElement(field, field.GetGeneratingElementPower(i));
+                var sample = new FieldElement(field, field.PowGeneratingElement(i));
                 var sampleSqr = sample * sample;
                 var samplePower = field.One();
                 var correction = sampleSqr*new FieldElement(field, h.Evaluate(sample.Representation));
@@ -50,7 +50,7 @@
             var valuesVector = new FieldElement[variablesCount];
             for (var i = 0; i < valuesVector.Length; i++)
             {
-                var sample = new FieldElement(field, field.GetGeneratingElementPower(i));
+                var sample = new FieldElement(field, field.PowGeneratingElement(i));
                 valuesVector[i] = new FieldElement(field, field.InverseForAddition(h.Evaluate(sample.Representation)))
                                   + sample * sample * new FieldElement(field, field.InverseForAddition(g.Evaluate(sample.Representation)));
             }
@@ -95,12 +95,12 @@
 
             var i = 0;
             var j = n - 1;
-            for (; i < n && generatingPolynomial.Evaluate(field.GetGeneratingElementPower(i)) == 0; i++)
+            for (; i < n && generatingPolynomial.Evaluate(field.PowGeneratingElement(i)) == 0; i++)
                 zeroValuesCount++;
-            for (; j > i && generatingPolynomial.Evaluate(field.GetGeneratingElementPower(j)) == 0; j--)
+            for (; j > i && generatingPolynomial.Evaluate(field.PowGeneratingElement(j)) == 0; j--)
                 zeroValuesCount++;
             for (; i <= j; i++)
-                if (generatingPolynomial.Evaluate(field.GetGeneratingElementPower(i)) != 0)
+                if (generatingPolynomial.Evaluate(field.PowGeneratingElement(i)) != 0)
                     nonZeroValuesCount++;
 
             if (zeroValuesCount < d - 1 || n % 2 == 0 && nonZeroValuesCount < n / 2 || n % 2 == 1 && nonZeroValuesCount < (n - 1) / 2)

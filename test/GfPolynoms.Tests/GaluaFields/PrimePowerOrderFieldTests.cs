@@ -303,8 +303,8 @@
         public void ShouldGetGeneratingElementPowerGet(int power)
         {
             // When
-            var element = Gf27.GetGeneratingElementPower(power);
-            var invertedElement = Gf27.GetGeneratingElementPower(-power);
+            var element = Gf27.PowGeneratingElement(power);
+            var invertedElement = Gf27.PowGeneratingElement(-power);
             var one = new Polynomial(Gf27.IrreduciblePolynomial.Field, 1);
 
             // Then

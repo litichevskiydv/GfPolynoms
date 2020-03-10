@@ -40,7 +40,7 @@
             for (var i = 0; i < codewordLength; i++)
             {
                 var zerosCount = 0;
-                for (; i < codewordLength && generatingPolynomial.Evaluate(field.GetGeneratingElementPower(i)) == 0; i++, zerosCount++) ;
+                for (; i < codewordLength && generatingPolynomial.Evaluate(field.PowGeneratingElement(i)) == 0; i++, zerosCount++) ;
                 codeDistance = Math.Max(codeDistance, zerosCount + 1);
             }
             if (codeDistance <= 1

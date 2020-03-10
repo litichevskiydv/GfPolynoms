@@ -13,24 +13,26 @@
     {
         private class ValueSource
         {
-            public int FieldOrder { get; }
+            public int SubfieldOrder { get; }
 
-            public int? ReferenceValueIndex { get; }
+            public (int index, int degree)? Reference { get; }
 
-            public int? ReferenceValueDegree { get; }
-
-            public ValueSource(int fieldOrder, int? referenceValueIndex = null, int? referenceValueDegree = null)
+            public ValueSource(int subfieldOrder)
             {
-                FieldOrder = fieldOrder;
-                ReferenceValueIndex = referenceValueIndex;
-                ReferenceValueDegree = referenceValueDegree;
+                SubfieldOrder = subfieldOrder;
+            }
+
+            public ValueSource(int subfieldOrder, int referenceValueIndex, int referenceValueDegree)
+            {
+                SubfieldOrder = subfieldOrder;
+                Reference = (referenceValueIndex, referenceValueDegree);
             }
 
             public override string ToString() =>
-                $"Field order: {FieldOrder}" +
+                $"Field order: {SubfieldOrder}" +
                 (
-                    ReferenceValueIndex.HasValue
-                        ? $"; Reference value: index {ReferenceValueIndex}, degree: {ReferenceValueDegree}"
+                    Reference != null
+                        ? $"; Reference value: index {Reference.Value.index}, degree: {Reference.Value.degree}"
                         : ""
                 );
         }
@@ -52,25 +54,28 @@
             return result;
         }
 
-        private static IReadOnlyDictionary<int, ValueSource> PrepareValuesSources(GaloisField field, GaloisField fieldExtension, int coefficientsCount)
+        private static IReadOnlyDictionary<int, ValueSource> PrepareValuesSources(GaloisField field, int coefficientsCount)
         {
             var valuesSources = new Dictionary<int, ValueSource>();
-            var conjugacyClasses = fieldExtension.GenerateConjugacyClasses(coefficientsCount);
+            var conjugacyClasses = field.GenerateConjugacyClasses(coefficientsCount);
             foreach (var conjugacyClass in conjugacyClasses)
             {
-                var fieldOrder = GetPower(field.Order, conjugacyClass.Length);
+                var subfieldOrder = GetPower(field.Order, conjugacyClass.Length);
                 for (var i = 0; i < conjugacyClass.Length; i++)
                 {
                     var valueIndex = conjugacyClass[i];
                     if (i == 0)
-                        valuesSources[valueIndex] = new ValueSource(fieldOrder);
+                        valuesSources[valueIndex] = new ValueSource(subfieldOrder);
                     else
-                        valuesSources[valueIndex] = new ValueSource(fieldOrder, conjugacyClass[0], GetPower(field.Order, i));
+                        valuesSources[valueIndex] = new ValueSource(subfieldOrder, conjugacyClass[0], GetPower(field.Order, i));
                 }
             }
 
             return valuesSources;
         }
+
+        private static FieldElement GetSubfieldElement(GaloisField field, int subfieldOrder, int elementRepresentation) =>
+            elementRepresentation == 0 ? field.Zero() : field.GetPrimitiveRoot(subfieldOrder - 1).Pow(elementRepresentation - 1);
 
         private static IEnumerable<(FieldElement[], FieldElement[], FieldElement[], FieldElement[])> ComputePolyphaseComponentsValues(
             Polynomial fe,
@@ -94,6 +99,21 @@
             }
 
             var valueSource = valuesSources[index];
+            if (valueSource.Reference != null)
+            {
+                var (valueIndex, valueDegree) = valueSource.Reference.Value;
+
+                goValues[index] = FieldElement.Pow(goValues[valueIndex], valueDegree);
+                geValues[index] = FieldElement.Pow(geValues[valueIndex], valueDegree);
+
+                hoValues[index] = FieldElement.Pow(hoValues[valueIndex], valueDegree);
+                heValues[index] = FieldElement.Pow(heValues[valueIndex], valueDegree);
+
+                foreach (var componentsValues in ComputePolyphaseComponentsValues(fe, fo, lambda, primitiveRoot, valuesSources,
+                    argument * argumentMultiplier, argumentMultiplier, index + 1, heValues, hoValues, geValues, goValues))
+                    yield return componentsValues;
+                yield break;
+            }
 
             var field = fe.Field;
             var feValue = field.CreateElement(fe.Evaluate(argument.Representation));
@@ -102,41 +122,41 @@
             if (feValue.Representation == 0 && foValue.Representation == 0)
             {
                 var primitiveRootPower = FieldElement.Pow(primitiveRoot, index);
-                for (var goValue = 1; goValue < valueSource.FieldOrder; goValue++)
-                for (var geValue = 0; geValue < valueSource.FieldOrder; geValue++)
-                {
-                    goValues[index] = field.CreateElement(goValue);
-                    geValues[index] = field.CreateElement(geValue);
+                for (var goValue = 1; goValue < valueSource.SubfieldOrder; goValue++)
+                    for (var geValue = 0; geValue < valueSource.SubfieldOrder; geValue++)
+                    {
+                        goValues[index] = GetSubfieldElement(field, valueSource.SubfieldOrder, goValue);
+                        geValues[index] = GetSubfieldElement(field, valueSource.SubfieldOrder, geValue);
 
-                    var denominator = geValues[index] + primitiveRootPower * goValues[index];
-                    if (denominator.Representation == 0) continue;
+                        var denominator = geValues[index] + primitiveRootPower * goValues[index];
+                        if (denominator.Representation == 0) continue;
 
 
-                    hoValues[index] = -lambda * argument * goValues[index] - FieldElement.InverseForMultiplication(denominator);
-                    heValues[index] = -lambda * argument * geValues[index] + primitiveRootPower / denominator;
+                        hoValues[index] = -lambda * argument * goValues[index] - FieldElement.InverseForMultiplication(denominator);
+                        heValues[index] = -lambda * argument * geValues[index] + primitiveRootPower / denominator;
 
-                    foreach (var componentsValues in ComputePolyphaseComponentsValues(fe, fo, lambda, primitiveRoot, valuesSources,
-                        argument * argumentMultiplier, argumentMultiplier, index + 1, heValues, hoValues, geValues, goValues))
-                        yield return componentsValues;
-                }
+                        foreach (var componentsValues in ComputePolyphaseComponentsValues(fe, fo, lambda, primitiveRoot, valuesSources,
+                            argument * argumentMultiplier, argumentMultiplier, index + 1, heValues, hoValues, geValues, goValues))
+                            yield return componentsValues;
+                    }
             }
             else
-                for (var componentValue = 0; componentValue < valueSource.FieldOrder; componentValue++)
+                for (var componentValue = 0; componentValue < valueSource.SubfieldOrder; componentValue++)
                 {
                     if (feValue.Representation == 0)
                     {
-                        goValues[index] = field.CreateElement(componentValue);
+                        goValues[index] = GetSubfieldElement(field, valueSource.SubfieldOrder, componentValue);
                         geValues[index] = -FieldElement.InverseForMultiplication(foValue);
                     }
                     else if (foValue.Representation == 0)
                     {
                         goValues[index] = FieldElement.InverseForMultiplication(feValue);
-                        geValues[index] = field.CreateElement(componentValue);
+                        geValues[index] = GetSubfieldElement(field, valueSource.SubfieldOrder, componentValue);
 
                     }
                     else
                     {
-                        goValues[index] = field.CreateElement(componentValue); 
+                        goValues[index] = GetSubfieldElement(field, valueSource.SubfieldOrder, componentValue);
                         geValues[index] = (field.One().InverseForAddition() + goValues[index] * feValue) / foValue;
                     }
 
@@ -193,16 +213,25 @@
             if (systemSolution.IsCorrect == false)
                 throw new InvalidOperationException("Can't reconstruct polynomial by values");
 
-            return new Polynomial(systemSolution.VariablesValues).ChangeField(field);
+            return new Polynomial(field, systemSolution.VariablesValues
+                .Select(x =>
+                        {
+                            if (x.Representation == 0) return 0;
+
+                            var degreeDelta = (x.Field.Order - 1) / (field.Order - 1);
+                            return field.PowGeneratingElement(x.Field.GetGeneratingElementDegree(x.Representation) / degreeDelta);
+                        })
+                .ToArray()
+            );
         }
 
         private (Polynomial h, Polynomial g) ReconstructComplementaryRepresentation(
             GaloisField field,
             int coefficientsCount,
             FieldElement primitiveRoot,
-            FieldElement[] heValues, 
-            FieldElement[] hoValues, 
-            FieldElement[] geValues, 
+            FieldElement[] heValues,
+            FieldElement[] hoValues,
+            FieldElement[] geValues,
             FieldElement[] goValues
         )
         {
@@ -225,28 +254,37 @@
         {
             if (polynomial == null)
                 throw new ArgumentNullException(nameof(polynomial));
-            if(polynomial.Field.Characteristic == 2)
+            if (polynomial.Field.Characteristic == 2)
                 throw new ArgumentException($"{nameof(polynomial)} must be over the field with odd characteristic");
             if (maxDegree <= 0)
                 throw new ArgumentException($"{nameof(maxDegree)} must be positive");
             if (maxDegree < polynomial.Degree)
                 throw new ArgumentException($"{nameof(maxDegree)} must not be less than {nameof(polynomial)} degree");
-            if(maxDegree != polynomial.Field.Order - 2)
-                throw new ArgumentException($"{nameof(maxDegree)} must be correlated with {nameof(polynomial)} field order");
+            if (maxDegree % 2 == 0)
+                throw new ArgumentException($"{nameof(maxDegree)} must be odd value");
             if (lambda != null && polynomial.Field.Equals(lambda.Field) == false)
                 throw new ArgumentException($"{nameof(lambda)} must belong to the field of the polynomial {nameof(polynomial)}");
 
             var field = polynomial.Field;
             var coefficientsCount = maxDegree + 1;
 
-
             var fieldExtension = field.FindExtensionContainingPrimitiveRoot(coefficientsCount);
             var primitiveRoot = fieldExtension.GetPrimitiveRoot(coefficientsCount);
-            var valuesReferences = PrepareValuesSources(field, fieldExtension, coefficientsCount);
+            var valuesReferences = PrepareValuesSources(field, coefficientsCount / 2);
 
-            var checkedPolynomial = polynomial.ChangeField(fieldExtension);
-            var checkedLambda = fieldExtension.CreateElement((lambda ?? field.One()).Representation);
-            
+            var degreeDelta = (fieldExtension.Order - 1) / (field.Order - 1);
+            var checkedPolynomial = new Polynomial(
+                fieldExtension,
+                Enumerable.Range(0, polynomial.Degree + 1)
+                    .Select(i =>
+                            {
+                                var coefficient = polynomial[i];
+                                return coefficient == 0 ? 0 : fieldExtension.PowGeneratingElement(field.GetGeneratingElementDegree(coefficient) * degreeDelta);
+                            })
+                    .ToArray()
+            );
+            var checkedLambda = fieldExtension.CreateElement(fieldExtension.PowGeneratingElement(field.GetGeneratingElementDegree((lambda ?? field.One()).Representation) * degreeDelta));
+
             foreach (var (heValues, hoValues, geValues, goValues) in ComputePolyphaseComponentsValues(checkedPolynomial, coefficientsCount, checkedLambda, primitiveRoot, valuesReferences))
                 yield return ReconstructComplementaryRepresentation(field, coefficientsCount, primitiveRoot, heValues, hoValues, geValues, goValues);
         }

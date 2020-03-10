@@ -122,12 +122,12 @@
 
             var i = 0;
             var j = testCase.N - 1;
-            for (; i < testCase.N && generatingPolynomial.Evaluate(field.GetGeneratingElementPower(i)) == 0; i++)
+            for (; i < testCase.N && generatingPolynomial.Evaluate(field.PowGeneratingElement(i)) == 0; i++)
                 zeroValuesCount++;
-            for (; j > i && generatingPolynomial.Evaluate(field.GetGeneratingElementPower(j)) == 0; j--)
+            for (; j > i && generatingPolynomial.Evaluate(field.PowGeneratingElement(j)) == 0; j--)
                 zeroValuesCount++;
             for (; i <= j; i++)
-                if (generatingPolynomial.Evaluate(field.GetGeneratingElementPower(i)) != 0)
+                if (generatingPolynomial.Evaluate(field.PowGeneratingElement(i)) != 0)
                     nonZeroValuesCount++;
 
             Assert.True(

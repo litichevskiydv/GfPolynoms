@@ -59,7 +59,7 @@
                 throw new ArgumentNullException(nameof(polynomial));
 
             return Enumerable.Range(0, polynomial.Field.Order - 1)
-                .Select(x => polynomial.Field.CreateElement(polynomial.Evaluate(polynomial.Field.GetGeneratingElementPower(x))))
+                .Select(x => polynomial.Field.CreateElement(polynomial.Evaluate(polynomial.Field.PowGeneratingElement(x))))
                 .ToArray();
         }
 
