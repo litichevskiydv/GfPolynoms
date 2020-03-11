@@ -63,22 +63,19 @@
                 .ToArray();
         }
 
-        /// <summary>
-        /// Changes polynomial's <paramref name="polynomial"/> field to another field <paramref name="newField"/>
-        /// with the same characteristic
-        /// </summary>
-        /// <param name="polynomial">Original polynomial</param>
-        /// <param name="newField">New field</param>
-        public static Polynomial ChangeField(this Polynomial polynomial, GaloisField newField)
+        public static Polynomial TransferToSubfield(this Polynomial polynomial, GaloisField fieldExtension)
         {
             if(polynomial == null)
                 throw new ArgumentNullException(nameof(polynomial));
-            if (newField == null)
-                throw new ArgumentNullException(nameof(newField));
-            if(polynomial.Field.Characteristic != newField.Characteristic)
-                throw new ArgumentException($"{nameof(polynomial)} field characteristic and {nameof(newField)} characteristic must be the same");
+            if (fieldExtension == null)
+                throw new ArgumentNullException(nameof(fieldExtension));
 
-            return new Polynomial(newField, Enumerable.Range(0, polynomial.Degree + 1).Select(i => polynomial[i]).ToArray());
+            return new Polynomial(
+                fieldExtension,
+                Enumerable.Range(0, polynomial.Degree + 1)
+                    .Select(i => polynomial.Field.TransferElementToSubfield(polynomial[i], fieldExtension))
+                    .ToArray()
+            );
         }
     }
 }

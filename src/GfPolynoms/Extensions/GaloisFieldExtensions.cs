@@ -90,5 +90,27 @@
 
             return conjugacyClasses.ToArray();
         }
+
+        /// <summary>
+        /// Transfers element <paramref name="fieldElement"/> of the field <paramref name="field"/>
+        /// to the compatible subfield of the field extension <paramref name="fieldExtension"/>
+        /// </summary>
+        /// <param name="field">The field containing the transferred element</param>
+        /// <param name="fieldElement">Transferred element</param>
+        /// <param name="fieldExtension">The field extension containing compatible subfield</param>
+        public static int TransferElementToSubfield(this GaloisField field, int fieldElement, GaloisField fieldExtension)
+        {
+            if(field == null)
+                throw new ArgumentNullException(nameof(field));
+            if(fieldExtension == null)
+                throw new ArgumentNullException(nameof(fieldExtension));
+            if (field.Characteristic != fieldExtension.Characteristic || (fieldExtension.Order - 1) % (field.Order - 1) != 0)
+                throw new ArgumentException($"Field {fieldExtension} does not contains subfield {field}");
+
+            var degreesDelta = (fieldExtension.Order - 1) / (field.Order - 1);
+            return fieldElement == 0
+                ? 0
+                : fieldExtension.PowGeneratingElement(degreesDelta * field.GetGeneratingElementDegree(fieldElement));
+        }
     }
 }

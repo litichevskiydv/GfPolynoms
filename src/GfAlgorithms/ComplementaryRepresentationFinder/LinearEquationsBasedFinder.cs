@@ -272,18 +272,8 @@
             var primitiveRoot = fieldExtension.GetPrimitiveRoot(coefficientsCount);
             var valuesReferences = PrepareValuesSources(field, coefficientsCount / 2);
 
-            var degreeDelta = (fieldExtension.Order - 1) / (field.Order - 1);
-            var checkedPolynomial = new Polynomial(
-                fieldExtension,
-                Enumerable.Range(0, polynomial.Degree + 1)
-                    .Select(i =>
-                            {
-                                var coefficient = polynomial[i];
-                                return coefficient == 0 ? 0 : fieldExtension.PowGeneratingElement(field.GetGeneratingElementDegree(coefficient) * degreeDelta);
-                            })
-                    .ToArray()
-            );
-            var checkedLambda = fieldExtension.CreateElement(fieldExtension.PowGeneratingElement(field.GetGeneratingElementDegree((lambda ?? field.One()).Representation) * degreeDelta));
+            var checkedPolynomial = polynomial.TransferToSubfield(fieldExtension);
+            var checkedLambda = (lambda ?? field.One()).TransferToSubfield(fieldExtension);
 
             foreach (var (heValues, hoValues, geValues, goValues) in ComputePolyphaseComponentsValues(checkedPolynomial, coefficientsCount, checkedLambda, primitiveRoot, valuesReferences))
                 yield return ReconstructComplementaryRepresentation(field, coefficientsCount, primitiveRoot, heValues, hoValues, geValues, goValues);
