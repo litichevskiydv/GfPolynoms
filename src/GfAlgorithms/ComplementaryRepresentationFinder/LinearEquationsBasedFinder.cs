@@ -13,23 +13,23 @@
     {
         private class ValueSource
         {
-            public int SubfieldOrder { get; }
+            public GaloisField Field { get; }
 
             public (int index, int degree)? Reference { get; }
 
-            public ValueSource(int subfieldOrder)
+            public ValueSource(GaloisField field)
             {
-                SubfieldOrder = subfieldOrder;
+                Field = field;
             }
 
-            public ValueSource(int subfieldOrder, int referenceValueIndex, int referenceValueDegree)
+            public ValueSource(GaloisField field, int referenceValueIndex, int referenceValueDegree)
             {
-                SubfieldOrder = subfieldOrder;
+                Field = field;
                 Reference = (referenceValueIndex, referenceValueDegree);
             }
 
             public override string ToString() =>
-                $"Field order: {SubfieldOrder}" +
+                $"Subfield: {Field}" +
                 (
                     Reference != null
                         ? $"; Reference value: index {Reference.Value.index}, degree: {Reference.Value.degree}"
@@ -60,22 +60,22 @@
             var conjugacyClasses = field.GenerateConjugacyClasses(coefficientsCount);
             foreach (var conjugacyClass in conjugacyClasses)
             {
-                var subfieldOrder = GetPower(field.Order, conjugacyClass.Length);
+                var conjugacyClassField = GaloisField.Create(GetPower(field.Order, conjugacyClass.Length));
                 for (var i = 0; i < conjugacyClass.Length; i++)
                 {
                     var valueIndex = conjugacyClass[i];
                     if (i == 0)
-                        valuesSources[valueIndex] = new ValueSource(subfieldOrder);
+                        valuesSources[valueIndex] = new ValueSource(conjugacyClassField);
                     else
-                        valuesSources[valueIndex] = new ValueSource(subfieldOrder, conjugacyClass[0], GetPower(field.Order, i));
+                        valuesSources[valueIndex] = new ValueSource(conjugacyClassField, conjugacyClass[0], GetPower(field.Order, i));
                 }
             }
 
             return valuesSources;
         }
 
-        private static FieldElement GetSubfieldElement(GaloisField field, int subfieldOrder, int elementRepresentation) =>
-            elementRepresentation == 0 ? field.Zero() : field.GetPrimitiveRoot(subfieldOrder - 1).Pow(elementRepresentation - 1);
+        private static FieldElement GetSubfieldElement(GaloisField field, int fieldElement, GaloisField fieldExtension) =>
+            fieldExtension.CreateElement(field.TransferElementToSubfield(fieldElement, fieldExtension));
 
         private static IEnumerable<(FieldElement[], FieldElement[], FieldElement[], FieldElement[])> ComputePolyphaseComponentsValues(
             Polynomial fe,
@@ -115,18 +115,18 @@
                 yield break;
             }
 
-            var field = fe.Field;
-            var feValue = field.CreateElement(fe.Evaluate(argument.Representation));
-            var foValue = field.CreateElement(fo.Evaluate(argument.Representation));
+            var fieldExtension = fe.Field;
+            var feValue = fieldExtension.CreateElement(fe.Evaluate(argument.Representation));
+            var foValue = fieldExtension.CreateElement(fo.Evaluate(argument.Representation));
 
             if (feValue.Representation == 0 && foValue.Representation == 0)
             {
                 var primitiveRootPower = FieldElement.Pow(primitiveRoot, index);
-                for (var goValue = 1; goValue < valueSource.SubfieldOrder; goValue++)
-                    for (var geValue = 0; geValue < valueSource.SubfieldOrder; geValue++)
+                for (var goValue = 1; goValue < valueSource.Field.Order; goValue++)
+                    for (var geValue = 0; geValue < valueSource.Field.Order; geValue++)
                     {
-                        goValues[index] = GetSubfieldElement(field, valueSource.SubfieldOrder, goValue);
-                        geValues[index] = GetSubfieldElement(field, valueSource.SubfieldOrder, geValue);
+                        goValues[index] = GetSubfieldElement(valueSource.Field, goValue, fieldExtension);
+                        geValues[index] = GetSubfieldElement(valueSource.Field, geValue, fieldExtension);
 
                         var denominator = geValues[index] + primitiveRootPower * goValues[index];
                         if (denominator.Representation == 0) continue;
@@ -141,23 +141,23 @@
                     }
             }
             else
-                for (var componentValue = 0; componentValue < valueSource.SubfieldOrder; componentValue++)
+                for (var componentValue = 0; componentValue < valueSource.Field.Order; componentValue++)
                 {
                     if (feValue.Representation == 0)
                     {
-                        goValues[index] = GetSubfieldElement(field, valueSource.SubfieldOrder, componentValue);
+                        goValues[index] = GetSubfieldElement(valueSource.Field, componentValue, fieldExtension);
                         geValues[index] = -FieldElement.InverseForMultiplication(foValue);
                     }
                     else if (foValue.Representation == 0)
                     {
                         goValues[index] = FieldElement.InverseForMultiplication(feValue);
-                        geValues[index] = GetSubfieldElement(field, valueSource.SubfieldOrder, componentValue);
+                        geValues[index] = GetSubfieldElement(valueSource.Field, componentValue, fieldExtension);
 
                     }
                     else
                     {
-                        goValues[index] = GetSubfieldElement(field, valueSource.SubfieldOrder, componentValue);
-                        geValues[index] = (field.One().InverseForAddition() + goValues[index] * feValue) / foValue;
+                        goValues[index] = GetSubfieldElement(valueSource.Field, componentValue, fieldExtension);
+                        geValues[index] = (fieldExtension.One().InverseForAddition() + goValues[index] * feValue) / foValue;
                     }
 
                     hoValues[index] = foValue - lambda * argument * goValues[index];
