@@ -213,16 +213,7 @@
             if (systemSolution.IsCorrect == false)
                 throw new InvalidOperationException("Can't reconstruct polynomial by values");
 
-            return new Polynomial(field, systemSolution.VariablesValues
-                .Select(x =>
-                        {
-                            if (x.Representation == 0) return 0;
-
-                            var degreeDelta = (x.Field.Order - 1) / (field.Order - 1);
-                            return field.PowGeneratingElement(x.Field.GetGeneratingElementDegree(x.Representation) / degreeDelta);
-                        })
-                .ToArray()
-            );
+            return new Polynomial(systemSolution.VariablesValues.Select(x => x.TransferFromSubfield(field)).ToArray());
         }
 
         private (Polynomial h, Polynomial g) ReconstructComplementaryRepresentation(

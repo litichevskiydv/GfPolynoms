@@ -112,5 +112,32 @@
                 ? 0
                 : fieldExtension.PowGeneratingElement(degreesDelta * field.GetGeneratingElementDegree(fieldElement));
         }
+
+        /// <summary>
+        /// Transfers element <paramref name="subfieldElement"/> from subfield <paramref name="field"/>
+        /// of the field <paramref name="fieldExtension"/> to the field <paramref name="field"/>
+        /// </summary>
+        /// <param name="fieldExtension">The field extension containing compatible subfield</param>
+        /// <param name="subfieldElement">Transferred subfield element</param>
+        /// <param name="field">Destination field</param>
+        public static int TransferElementFromSubfield(this GaloisField fieldExtension, int subfieldElement, GaloisField field)
+        {
+            if (field == null)
+                throw new ArgumentNullException(nameof(field));
+            if (fieldExtension == null)
+                throw new ArgumentNullException(nameof(fieldExtension));
+            if (field.Characteristic != fieldExtension.Characteristic || (fieldExtension.Order - 1) % (field.Order - 1) != 0)
+                throw new ArgumentException($"Field {fieldExtension} does not contains subfield {field}");
+
+            if (subfieldElement == 0)
+                return 0;
+
+            var degreesDelta = (fieldExtension.Order - 1) / (field.Order - 1);
+            var generatingElementPower = fieldExtension.GetGeneratingElementDegree(subfieldElement);
+            if(generatingElementPower % degreesDelta != 0)
+                throw new ArgumentException($"{subfieldElement} does not belong to subfield {field} of {fieldExtension}");
+
+            return field.PowGeneratingElement(generatingElementPower / degreesDelta);
+        }
     }
 }

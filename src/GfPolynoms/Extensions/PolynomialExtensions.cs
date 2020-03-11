@@ -63,6 +63,12 @@
                 .ToArray();
         }
 
+        /// <summary>
+        /// Transfers polynomial <paramref name="polynomial"/> to the compatible subfield
+        /// of the field extension <paramref name="fieldExtension"/>
+        /// </summary>
+        /// <param name="polynomial">Transferred polynomial</param>
+        /// <param name="fieldExtension">The field extension containing compatible subfield</param>
         public static Polynomial TransferToSubfield(this Polynomial polynomial, GaloisField fieldExtension)
         {
             if(polynomial == null)
@@ -74,6 +80,27 @@
                 fieldExtension,
                 Enumerable.Range(0, polynomial.Degree + 1)
                     .Select(i => polynomial.Field.TransferElementToSubfield(polynomial[i], fieldExtension))
+                    .ToArray()
+            );
+        }
+
+        /// <summary>
+        /// Transfers polynomial <paramref name="polynomial"/> from subfield
+        /// to the field <paramref name="field"/>
+        /// </summary>
+        /// <param name="polynomial">Transferred polynomial</param>
+        /// <param name="field">Destination field</param>
+        public static Polynomial TransferFromSubfield(this Polynomial polynomial, GaloisField field)
+        {
+            if (polynomial == null)
+                throw new ArgumentNullException(nameof(polynomial));
+            if (field == null)
+                throw new ArgumentNullException(nameof(field));
+
+            return new Polynomial(
+                field,
+                Enumerable.Range(0, polynomial.Degree + 1)
+                    .Select(i => polynomial.Field.TransferElementFromSubfield(polynomial[i], field))
                     .ToArray()
             );
         }

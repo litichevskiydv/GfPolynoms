@@ -20,5 +20,21 @@
 
             return new FieldElement(fieldExtension, element.Field.TransferElementToSubfield(element.Representation, fieldExtension));
         }
+
+        /// <summary>
+        /// Transfers element <paramref name="subfieldElement"/> from subfield
+        /// to the field <paramref name="field"/>
+        /// </summary>
+        /// <param name="subfieldElement">Transferred subfield element</param>
+        /// <param name="field">Destination field</param>
+        public static FieldElement TransferFromSubfield(this FieldElement subfieldElement, GaloisField field)
+        {
+            if (subfieldElement == null)
+                throw new ArgumentNullException(nameof(subfieldElement));
+            if (field == null)
+                throw new ArgumentNullException(nameof(field));
+
+            return new FieldElement(field, subfieldElement.Field.TransferElementFromSubfield(subfieldElement.Representation, field));
+        }
     }
 }
