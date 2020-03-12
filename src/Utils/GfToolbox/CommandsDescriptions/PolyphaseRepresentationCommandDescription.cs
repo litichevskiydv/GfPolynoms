@@ -33,7 +33,7 @@
                                {
                                    Arity = ArgumentArity.OneOrMore
                                },
-                    Description = "Coefficients of the polynomial whose polyphase representation mus be computed"
+                    Description = "Coefficients of the polynomial whose polyphase representation must be computed"
                 }
             );
             Options.Add(new Option<int>("--max-degree", "Maximum possible degree of the polynomials in the representation") {Required = true});
@@ -49,7 +49,7 @@
             var polynomial = new Polynomial(field, polynomialCoefficients);
             var lambdaValue = lambda.HasValue ? field.CreateElement(lambda.Value) : field.One();
 
-            var (h, g) = (field.Characteristic != 2 && maxDegree == field.Order - 2 ? _linearSystemsBasedFinder : _bruteForceBasedFinder)
+            var (h, g) = (field.Characteristic != 2 && maxDegree % 2 == 1 ? _linearSystemsBasedFinder : _bruteForceBasedFinder)
                 .Find(polynomial, maxDegree, lambdaValue)
                 .First();
             _logger.LogInformation("Polyphase representation: {f}={h}+{lambda}*x^2({g})", polynomial, h, lambdaValue, g);
