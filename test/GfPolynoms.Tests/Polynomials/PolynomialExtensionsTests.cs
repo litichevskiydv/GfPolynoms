@@ -12,6 +12,8 @@
     {
         [UsedImplicitly]
         public static TheoryData<ChangeFieldParametersValidationTestCase> TransferToSubfieldParametersValidationTestCases;
+        [UsedImplicitly]
+        public static TheoryData<ChangeFieldParametersValidationTestCase> TransferFromSubfieldParametersValidationTestCases;
 
         static PolynomialExtensionsTests()
         {
@@ -30,6 +32,27 @@
                           Polynomial = new Polynomial(GaloisField.Create(3), 1, 0, 2),
                           NewField = GaloisField.Create(5)
                       }
+                  };
+            TransferFromSubfieldParametersValidationTestCases
+                = new TheoryData<ChangeFieldParametersValidationTestCase>
+                  {
+                      new ChangeFieldParametersValidationTestCase {NewField = GaloisField.Create(3)},
+                      new ChangeFieldParametersValidationTestCase {Polynomial = new Polynomial(GaloisField.Create(9), 1)},
+                      new ChangeFieldParametersValidationTestCase
+                      {
+                          Polynomial = new Polynomial(GaloisField.Create(27), 1, 0, 2),
+                          NewField = GaloisField.Create(9)
+                      },
+                      new ChangeFieldParametersValidationTestCase
+                      {
+                          Polynomial = new Polynomial(GaloisField.Create(5), 1, 0, 2),
+                          NewField = GaloisField.Create(3)
+                      },
+                      new ChangeFieldParametersValidationTestCase
+                      {
+                          Polynomial = new Polynomial(GaloisField.Create(9), 1, 7),
+                          NewField = GaloisField.Create(3)
+                      },
                   };
         }
 
@@ -54,6 +77,13 @@
         public void TransferToSubfieldMustValidateParameters(ChangeFieldParametersValidationTestCase testCase)
         {
             Assert.ThrowsAny<ArgumentException>(() => testCase.Polynomial.TransferToSubfield(testCase.NewField));
+        }
+
+        [Theory]
+        [MemberData(nameof(TransferFromSubfieldParametersValidationTestCases))]
+        public void TransferFromSubfieldMustValidateParameters(ChangeFieldParametersValidationTestCase testCase)
+        {
+            Assert.ThrowsAny<ArgumentException>(() => testCase.Polynomial.TransferFromSubfield(testCase.NewField));
         }
     }
 }
