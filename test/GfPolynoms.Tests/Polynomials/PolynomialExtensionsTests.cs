@@ -85,5 +85,21 @@
         {
             Assert.ThrowsAny<ArgumentException>(() => testCase.Polynomial.TransferFromSubfield(testCase.NewField));
         }
+
+        [Fact]
+        public void MustTransferPolynomialFromSubfield()
+        {
+            // Given
+            var gf9 = GaloisField.Create(9);
+            var gf81 = GaloisField.Create(81);
+            var polynomial = new Polynomial(gf81, 1, 0, gf81.PowGeneratingElement(20), gf81.PowGeneratingElement(40), 1);
+
+            // When
+            var actualPolynomial = polynomial.TransferFromSubfield(gf9);
+
+            // Then
+            var expectedPolynomial = new Polynomial(gf9, 1, 0, gf9.PowGeneratingElement(2), gf9.PowGeneratingElement(4), 1);
+            Assert.Equal(expectedPolynomial, actualPolynomial);
+        }
     }
 }
