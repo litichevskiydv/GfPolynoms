@@ -15,27 +15,44 @@
         public static readonly TheoryData<PrimitiveRootObtainingParametersValidationTestCase> PrimitiveRootObtainingParametersValidationTestCases;
         [UsedImplicitly]
         public static readonly TheoryData<GenerateConjugacyClassesParametersValidationTestCase> GenerateConjugacyClassesParametersValidationTestCases;
+        [UsedImplicitly]
+        public static TheoryData<TransferElementParametersValidationTestCase> TransferToSubfieldParametersValidationTestCases;
 
         static GaloisFieldExtensionsTests()
         {
+            var gf2 = GaloisField.Create(2);
+            var gf3 = GaloisField.Create(3);
+            var gf4 = GaloisField.Create(4);
+            var gf5 = GaloisField.Create(5);
+            var gf9 = GaloisField.Create(9);
+            var gf27 = GaloisField.Create(27);
             FieldExtensionSearchParametersValidationTestCases
                 = new TheoryData<FieldExtensionSearchParametersValidationTestCase>
                   {
                       new FieldExtensionSearchParametersValidationTestCase {RootOrder = 3},
-                      new FieldExtensionSearchParametersValidationTestCase {Field = GaloisField.Create(3), RootOrder = -1}
+                      new FieldExtensionSearchParametersValidationTestCase {Field = gf3, RootOrder = -1}
                   };
             PrimitiveRootObtainingParametersValidationTestCases
                 = new TheoryData<PrimitiveRootObtainingParametersValidationTestCase>
                   {
                       new PrimitiveRootObtainingParametersValidationTestCase {RootOrder = 3},
-                      new PrimitiveRootObtainingParametersValidationTestCase {Field = GaloisField.Create(3), RootOrder = -1},
-                      new PrimitiveRootObtainingParametersValidationTestCase {Field = GaloisField.Create(4), RootOrder = 2}
+                      new PrimitiveRootObtainingParametersValidationTestCase {Field = gf3, RootOrder = -1},
+                      new PrimitiveRootObtainingParametersValidationTestCase {Field = gf4, RootOrder = 2}
                   };
             GenerateConjugacyClassesParametersValidationTestCases
                 = new TheoryData<GenerateConjugacyClassesParametersValidationTestCase>
                   {
                       new GenerateConjugacyClassesParametersValidationTestCase {Modulus = 7},
-                      new GenerateConjugacyClassesParametersValidationTestCase {Field = GaloisField.Create(2), Modulus = -1}
+                      new GenerateConjugacyClassesParametersValidationTestCase {Field = gf2, Modulus = -1}
+                  };
+            TransferToSubfieldParametersValidationTestCases
+                = new TheoryData<TransferElementParametersValidationTestCase>
+                  {
+                      new TransferElementParametersValidationTestCase {FieldElement = 1, NewField = gf9},
+                      new TransferElementParametersValidationTestCase {Field = gf3, FieldElement = 1},
+                      new TransferElementParametersValidationTestCase {Field = gf3, FieldElement = 4, NewField = gf9},
+                      new TransferElementParametersValidationTestCase {Field = gf3, FieldElement = 1, NewField = gf5},
+                      new TransferElementParametersValidationTestCase {Field = gf9, FieldElement = 5, NewField = gf27}
                   };
         }
 
@@ -101,6 +118,13 @@
             // Then
             var expectedFirstConjugacyClasses = new[] {new[] {0}, new[] {1, 2, 4}, new[] {3, 6, 5}};
             Assert.Equal(expectedFirstConjugacyClasses, actualConjugacyClasses);
+        }
+
+        [Theory]
+        [MemberData(nameof(TransferToSubfieldParametersValidationTestCases))]
+        public void TransferToSubfieldMustValidateParameters(TransferElementParametersValidationTestCase testCase)
+        {
+            Assert.ThrowsAny<ArgumentException>(() => testCase.Field.TransferElementToSubfield(testCase.FieldElement, testCase.NewField));
         }
     }
 }
