@@ -11,6 +11,8 @@
     {
         [UsedImplicitly]
         public static TheoryData<TransferFieldElementParametersValidationTestCase> TransferToSubfieldParametersValidationTestCases;
+        [UsedImplicitly]
+        public static TheoryData<TransferFieldElementParametersValidationTestCase> TransferFromSubfieldParametersValidationTestCases;
 
         static FieldElementExtensionsTests()
         {
@@ -26,6 +28,19 @@
                       new TransferFieldElementParametersValidationTestCase {FieldElement = gf3.CreateElement(2), NewField = gf5},
                       new TransferFieldElementParametersValidationTestCase {FieldElement = gf9.CreateElement(7), NewField = gf27}
                   };
+            TransferFromSubfieldParametersValidationTestCases
+                = new TheoryData<TransferFieldElementParametersValidationTestCase>
+                  {
+                      new TransferFieldElementParametersValidationTestCase {NewField = gf3},
+                      new TransferFieldElementParametersValidationTestCase {FieldElement = gf9.One()},
+                      new TransferFieldElementParametersValidationTestCase {FieldElement = gf5.One(), NewField = gf3},
+                      new TransferFieldElementParametersValidationTestCase {FieldElement = gf27.CreateElement(7), NewField = gf9},
+                      new TransferFieldElementParametersValidationTestCase
+                      {
+                          FieldElement = gf9.CreateElement(gf9.PowGeneratingElement(5)),
+                          NewField = gf3
+                      }
+                  };
         }
 
         [Theory]
@@ -33,6 +48,13 @@
         public void TransferToSubfieldMustValidateParameters(TransferFieldElementParametersValidationTestCase testCase)
         {
             Assert.ThrowsAny<ArgumentException>(() => testCase.FieldElement.TransferToSubfield(testCase.NewField));
+        }
+
+        [Theory]
+        [MemberData(nameof(TransferFromSubfieldParametersValidationTestCases))]
+        public void TransferFromSubfieldMustValidateParameters(TransferFieldElementParametersValidationTestCase testCase)
+        {
+            Assert.ThrowsAny<ArgumentException>(() => testCase.FieldElement.TransferFromSubfield(testCase.NewField));
         }
     }
 }
