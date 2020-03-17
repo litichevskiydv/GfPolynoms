@@ -17,6 +17,8 @@
         public static readonly TheoryData<GenerateConjugacyClassesParametersValidationTestCase> GenerateConjugacyClassesParametersValidationTestCases;
         [UsedImplicitly]
         public static TheoryData<TransferElementParametersValidationTestCase> TransferToSubfieldParametersValidationTestCases;
+        [UsedImplicitly]
+        public static TheoryData<TransferElementParametersValidationTestCase> TransferFromSubfieldParametersValidationTestCases;
 
         static GaloisFieldExtensionsTests()
         {
@@ -53,6 +55,21 @@
                       new TransferElementParametersValidationTestCase {Field = gf3, FieldElement = 4, NewField = gf9},
                       new TransferElementParametersValidationTestCase {Field = gf3, FieldElement = 1, NewField = gf5},
                       new TransferElementParametersValidationTestCase {Field = gf9, FieldElement = 5, NewField = gf27}
+                  };
+            TransferFromSubfieldParametersValidationTestCases
+                = new TheoryData<TransferElementParametersValidationTestCase>
+                  {
+                      new TransferElementParametersValidationTestCase {FieldElement = 1, NewField = gf3},
+                      new TransferElementParametersValidationTestCase {Field = gf9, FieldElement = 1},
+                      new TransferElementParametersValidationTestCase {Field = gf9, FieldElement = 11, NewField = gf3},
+                      new TransferElementParametersValidationTestCase {Field = gf5, FieldElement = 1, NewField = gf3},
+                      new TransferElementParametersValidationTestCase {Field = gf27, FieldElement = 5, NewField = gf9},
+                      new TransferElementParametersValidationTestCase
+                      {
+                          Field = gf9, 
+                          FieldElement = gf9.PowGeneratingElement(5), 
+                          NewField = gf3
+                      }
                   };
         }
 
@@ -125,6 +142,13 @@
         public void TransferToSubfieldMustValidateParameters(TransferElementParametersValidationTestCase testCase)
         {
             Assert.ThrowsAny<ArgumentException>(() => testCase.Field.TransferElementToSubfield(testCase.FieldElement, testCase.NewField));
+        }
+
+        [Theory]
+        [MemberData(nameof(TransferFromSubfieldParametersValidationTestCases))]
+        public void TransferFromSubfieldMustValidateParameters(TransferElementParametersValidationTestCase testCase)
+        {
+            Assert.ThrowsAny<ArgumentException>(() => testCase.Field.TransferElementFromSubfield(testCase.FieldElement, testCase.NewField));
         }
     }
 }
