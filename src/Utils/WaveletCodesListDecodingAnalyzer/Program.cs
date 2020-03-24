@@ -309,7 +309,7 @@
             var variantsIterator = new RecursiveIterator();
             foreach (var generatingPolynomial in variantsIterator.IteratePolynomials(field, field.Order - 1).Skip(1))
                 if (AnalyzeCodeDistance(codewordLength, informationWordLength, generatingPolynomial) == codeDistance
-                    && generatingPolynomial.GetSpectrum().Count(x => x.Representation == 0) == 0)
+                    && generatingPolynomial.GetSpectrum(codewordLength - 1).Count(x => x.Representation == 0) == 0)
                 {
                     Logger.LogInformation("Generating polynomial: {generatingPolynomial}", generatingPolynomial);
                     return generatingPolynomial;
