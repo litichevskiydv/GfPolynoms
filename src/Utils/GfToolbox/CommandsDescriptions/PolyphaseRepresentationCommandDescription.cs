@@ -43,13 +43,22 @@
         protected override string Name => "polyphase-representation";
         protected override string Description => "Computes polyphase representation for the given polynomial";
 
+        private IComplementaryRepresentationFinder ChoseImplementation(Polynomial polynomial, int maxDegree)
+        {
+            var coefficientsCount = maxDegree + 1;
+            if (coefficientsCount % 2 == 1)
+                return _bruteForceBasedFinder;
+
+            return polynomial.Field.Characteristic == 2 ? _bruteForceBasedFinder : _linearSystemsBasedFinder;
+        }
+
         [UsedImplicitly]
         public void Execute(GaloisField field, int[] polynomialCoefficients, int maxDegree, int? lambda)
         {
             var polynomial = new Polynomial(field, polynomialCoefficients);
             var lambdaValue = lambda.HasValue ? field.CreateElement(lambda.Value) : field.One();
 
-            var (h, g) = (field.Characteristic != 2 && maxDegree % 2 == 1 ? _linearSystemsBasedFinder : _bruteForceBasedFinder)
+            var (h, g) = ChoseImplementation(polynomial, maxDegree)
                 .Find(polynomial, maxDegree, lambdaValue)
                 .First();
             _logger.LogInformation("Polyphase representation: {f}={h}+{lambda}*x^2({g})", polynomial, h, lambdaValue, g);
