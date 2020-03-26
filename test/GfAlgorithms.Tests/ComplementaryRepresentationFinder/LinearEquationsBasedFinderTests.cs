@@ -46,6 +46,11 @@
                           Polynomial = new Polynomial(gf2, 1, 1, 1),
                           MaxDegree = 2,
                           Lambda = new FieldElement(gf2, 1)
+                      },
+                      new ComplementaryRepresentationFinderTestCase
+                      {
+                          Polynomial = new Polynomial(GaloisField.Create(9), 1, 0, 1),
+                          MaxDegree = 7
                       }
                   };
             ComplementaryRepresentationSearchTestCases

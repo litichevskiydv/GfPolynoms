@@ -237,6 +237,11 @@
             var checkedPolynomial = polynomial.TransferToSubfield(fieldExtension);
             var checkedLambda = (lambda ?? field.One()).TransferToSubfield(fieldExtension);
 
+            var (checkedPolynomialEvenPart, checkedPolynomialOddPart) = checkedPolynomial.GetPolyphaseComponents();
+            for (int i = 0, argument = 1; i < componentsCoefficientsCount; i++, argument = fieldExtension.Multiply(argument, primitiveRoot.Representation))
+                if (checkedPolynomialEvenPart.Evaluate(argument) == 0 && checkedPolynomialOddPart.Evaluate(argument) == 0)
+                    throw new ArgumentException($"Even and odd component of {polynomial} can't have zero in one point simultaneously");
+
             foreach (var (heValues, hoValues, geValues, goValues) in ComputePolyphaseComponentsValues(checkedPolynomial, componentsCoefficientsCount, checkedLambda, primitiveRoot, valuesReferences))
                 yield return ReconstructComplementaryRepresentation(field, componentsCoefficientsCount, primitiveRoot, heValues, hoValues, geValues, goValues);
         }
