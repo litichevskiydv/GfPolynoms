@@ -49,7 +49,7 @@
                       },
                       new ComplementaryRepresentationFinderTestCase
                       {
-                          Polynomial = new Polynomial(GaloisField.Create(9), 1, 0, 1),
+                          Polynomial = new Polynomial(gf9, 1, 0, 1),
                           MaxDegree = 7
                       }
                   };

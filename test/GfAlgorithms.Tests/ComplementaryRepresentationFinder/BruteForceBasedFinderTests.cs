@@ -25,6 +25,7 @@
             var gf2 = GaloisField.Create(2);
             var gf3 = GaloisField.Create(3);
             var gf5 = GaloisField.Create(5);
+            var gf9 = GaloisField.Create(9, new[] { 1, 0, 1 });
 
             FindParametersValidationTestCases
                 = new TheoryData<ComplementaryRepresentationFinderTestCase>
@@ -34,9 +35,14 @@
                       new ComplementaryRepresentationFinderTestCase {Polynomial = new Polynomial(gf2, 1, 1, 1), MaxDegree = 1},
                       new ComplementaryRepresentationFinderTestCase
                       {
-                          Polynomial = new Polynomial(gf2, 1, 1, 1), 
-                          MaxDegree = 2, 
+                          Polynomial = new Polynomial(gf2, 1, 1, 1),
+                          MaxDegree = 2,
                           Lambda = new FieldElement(gf3, 2)
+                      },
+                      new ComplementaryRepresentationFinderTestCase
+                      {
+                          Polynomial = new Polynomial(gf9, 1, 0, 1),
+                          MaxDegree = 7
                       }
                   };
             ComplementaryRepresentationSearchTestCases

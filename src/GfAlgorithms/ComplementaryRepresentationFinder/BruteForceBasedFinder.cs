@@ -36,11 +36,18 @@
             if (lambda != null && polynomial.Field.Equals(lambda.Field) == false)
                 throw new ArgumentException($"{nameof(lambda)} must belong to the field of the polynomial {nameof(polynomial)}");
 
+            var componentsCoefficientsCount = (maxDegree + 1) / 2;
+            var (polynomialEvenComponent, polynomialOddComponent) = polynomial.GetPolyphaseComponents();
+            var polynomialEvenComponentSpectrum = polynomialEvenComponent.GetSpectrum(componentsCoefficientsCount - 1);
+            var polynomialOddComponentSpectrum = polynomialOddComponent.GetSpectrum(componentsCoefficientsCount - 1);
+            for (var i = 0; i < polynomialEvenComponentSpectrum.Length; i++)
+                if (polynomialEvenComponentSpectrum[i].Representation == 0 && polynomialOddComponentSpectrum[i].Representation == 0)
+                    throw new ArgumentException($"Even and odd component of {polynomial} can't have zero in one point simultaneously");
+
             var field = polynomial.Field;
             var one = new Polynomial(field.One());
             var lambdaValue = lambda ?? field.One();
-            var componentsModularPolynomial = new Polynomial(field.One()).RightShift((maxDegree + 1) / 2)
-                                              + new Polynomial(field.One().InverseForAddition());
+            var componentsModularPolynomial = (one >> componentsCoefficientsCount) - one; 
             foreach (var h in _variantsIterator.IteratePolynomials(polynomial.Field, maxDegree).Skip(1))
             {
                 var diff = (polynomial - h).GetCoefficients(maxDegree);
