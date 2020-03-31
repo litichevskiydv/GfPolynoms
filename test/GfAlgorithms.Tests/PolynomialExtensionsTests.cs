@@ -51,7 +51,7 @@
             var expectedPolynomial = new Polynomial(_field, expectedPolynomialCoefficients);
 
             // When
-            var actualPolynomial = PolynomialsAlgorithmsExtensions.CreateFormPolyphaseComponents(evenComponent, oddComponent);
+            var actualPolynomial = Extensions.PolynomialExtensions.CreateFormPolyphaseComponents(evenComponent, oddComponent);
 
             // Then
             Assert.Equal(expectedPolynomial, actualPolynomial);
@@ -72,6 +72,21 @@
 
             // Then
             Assert.Equal(expected, isMonomial);
+        }
+
+        [Fact]
+        public void MustGetPolynomialSpectrum()
+        {
+            // Given
+            var gf5 = GaloisField.Create(5);
+            var polynomial = new Polynomial(gf5, 1, 1, 1);
+
+            // When
+            var actualSpectrum = polynomial.GetSpectrum(3);
+
+            // Then
+            var expectedSpectrum = new[] { 3, 2, 1, 3 }.Select(x => gf5.CreateElement(x)).ToArray();
+            Assert.Equal(expectedSpectrum, actualSpectrum);
         }
     }
 }

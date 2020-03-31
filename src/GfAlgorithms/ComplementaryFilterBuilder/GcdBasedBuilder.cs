@@ -52,7 +52,7 @@
 
             var m = new Polynomial(field, 1).RightShift(maxFilterLength);
             m[0] = field.InverseForAddition(1);
-            return PolynomialsAlgorithmsExtensions.CreateFormPolyphaseComponents(
+            return PolynomialExtensions.CreateFormPolyphaseComponents(
                        complementaryFilterEvenComponent,
                        complementaryFilterOddComponent
                    ) % m;

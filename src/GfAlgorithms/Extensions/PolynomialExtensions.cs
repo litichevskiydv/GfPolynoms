@@ -5,7 +5,7 @@
     using GfPolynoms;
     using GfPolynoms.Extensions;
 
-    public static class PolynomialsAlgorithmsExtensions
+    public static class PolynomialExtensions
     {
         /// <summary>
         /// Converts source polynomial <paramref name="polynomial"/> to form p(x) = p_e(x^2)+x*p_o(x^2)
@@ -59,6 +59,21 @@
             for (var i = 0; i < polynomial.Degree && isMonomial; i++)
                 isMonomial = polynomial[i] == 0;
             return isMonomial;
+        }
+
+        /// <summary>
+        /// Method calculates <paramref name="polynomial"/> spectrum
+        /// </summary>
+        public static FieldElement[] GetSpectrum(this Polynomial polynomial, int? expectedDegree = null)
+        {
+            if (polynomial == null)
+                throw new ArgumentNullException(nameof(polynomial));
+            if (expectedDegree.HasValue && expectedDegree.Value < 0)
+                throw new ArgumentException($"{nameof(expectedDegree)} must be not negative");
+            if (expectedDegree.HasValue && expectedDegree.Value < polynomial.Degree)
+                throw new ArgumentException($"{nameof(expectedDegree)} must be greater or equal polynomial's degree");
+
+            return polynomial.GetCoefficients(expectedDegree).GetSpectrum();
         }
     }
 }

@@ -51,28 +51,6 @@
         }
 
         /// <summary>
-        /// Method calculates <paramref name="polynomial"/> spectrum
-        /// </summary>
-        public static FieldElement[] GetSpectrum(this Polynomial polynomial, int? expectedDegree = null)
-        {
-            if(polynomial == null)
-                throw new ArgumentNullException(nameof(polynomial));
-            if (expectedDegree.HasValue && expectedDegree.Value < 0)
-                throw new ArgumentException($"{nameof(expectedDegree)} must be not negative");
-            if (expectedDegree.HasValue && expectedDegree.Value < polynomial.Degree)
-                throw new ArgumentException($"{nameof(expectedDegree)} must be greater or equal polynomial's degree");
-
-            var coefficientsCount = (expectedDegree ?? polynomial.Degree) + 1;
-            var fieldExtension = polynomial.Field.FindExtensionContainingPrimitiveRoot(coefficientsCount);
-            var primitiveRoot = fieldExtension.GetPrimitiveRoot(coefficientsCount);
-            var transferredPolynomial = polynomial.TransferToSubfield(fieldExtension);
-
-            return Enumerable.Range(0, coefficientsCount)
-                .Select(x => fieldExtension.CreateElement(transferredPolynomial.Evaluate(FieldElement.Pow(primitiveRoot, x).Representation)))
-                .ToArray();
-        }
-
-        /// <summary>
         /// Transfers polynomial <paramref name="polynomial"/> to the compatible subfield
         /// of the field extension <paramref name="fieldExtension"/>
         /// </summary>

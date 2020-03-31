@@ -8,6 +8,7 @@
     using GfPolynoms.Extensions;
     using GfPolynoms.GaloisFields;
     using LinearSystemSolver;
+    using PolynomialExtensions = Extensions.PolynomialExtensions;
 
     public class LinearEquationsBasedFinder : IComplementaryRepresentationFinder
     {
@@ -206,8 +207,8 @@
 
             return
             (
-                PolynomialsAlgorithmsExtensions.CreateFormPolyphaseComponents(he, ho),
-                PolynomialsAlgorithmsExtensions.CreateFormPolyphaseComponents(ge, go)
+                PolynomialExtensions.CreateFormPolyphaseComponents(he, ho),
+                PolynomialExtensions.CreateFormPolyphaseComponents(ge, go)
             );
         }
 
