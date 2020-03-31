@@ -47,32 +47,44 @@
             return vector.Select((x, i) => x + additiveNoise[i]).ToArray();
         }
 
-        /// <summary>
-        /// Computes direct Fourier transform for the given signal <paramref name="signal"/>
-        /// </summary>
-        public static FieldElement[] GetSpectrum(this FieldElement[] signal)
+        private static FieldElement[] PerformFourierTransform(this FieldElement[] vector, bool isDirect)
         {
-            if(signal == null)
-                throw new ArgumentNullException(nameof(signal));
-            if(signal.Length == 0)
-                throw new ArgumentNullException($"{nameof(signal)} must not be empty");
-            if (signal.Any(x => x == null))
-                throw new ArgumentNullException($"{nameof(signal)} components must not be null");
+            if (vector == null)
+                throw new ArgumentNullException(nameof(vector));
+            if (vector.Length == 0)
+                throw new ArgumentNullException($"{nameof(vector)} must not be empty");
+            if (vector.Any(x => x == null))
+                throw new ArgumentNullException($"{nameof(vector)} components must not be null");
 
-            var field = signal[0].Field;
-            if (signal.Any(x => field.Equals(x.Field) == false))
-                throw new ArgumentException($"{nameof(signal)} components must belong to the one field");
+            var field = vector[0].Field;
+            if (vector.Any(x => field.Equals(x.Field) == false))
+                throw new ArgumentException($"{nameof(vector)} components must belong to the one field");
 
-            var fieldExtension = field.FindExtensionContainingPrimitiveRoot(signal.Length);
-            var primitiveRoot = fieldExtension.GetPrimitiveRoot(signal.Length);
-            var preparedSignal = signal.Select(x => x.TransferToSubfield(fieldExtension)).Reverse().ToArray();
+            FieldElement multiplier;
+            FieldElement primitiveRoot;
+            FieldElement[] preparedVector;
 
-            return Enumerable.Range(0, signal.Length)
+            if (isDirect)
+            {
+                var fieldExtension = field.FindExtensionContainingPrimitiveRoot(vector.Length);
+
+                multiplier = fieldExtension.One();
+                primitiveRoot = fieldExtension.GetPrimitiveRoot(vector.Length);
+                preparedVector = vector.Select(x => x.TransferToSubfield(fieldExtension)).Reverse().ToArray();
+            }
+            else
+            {
+                multiplier = field.CreateElement(vector.Length % field.Characteristic).InverseForMultiplication();
+                primitiveRoot = field.GetPrimitiveRoot(vector.Length);
+                preparedVector = vector.Reverse().ToArray();
+            }
+
+            return Enumerable.Range(0, vector.Length)
                 .Select(x =>
                         {
-                            var argument = FieldElement.Pow(primitiveRoot, x);
-                            return preparedSignal.Aggregate(
-                                fieldExtension.Zero(),
+                            var argument = FieldElement.Pow(primitiveRoot, isDirect ? x : -x);
+                            return multiplier * preparedVector.Aggregate(
+                                primitiveRoot.Field.Zero(),
                                 (spectrumComponent, component) => component + spectrumComponent * argument
                             );
                         })
@@ -80,35 +92,15 @@
         }
 
         /// <summary>
+        /// Computes direct Fourier transform for the given signal <paramref name="signal"/>
+        /// </summary>
+        public static FieldElement[] GetSpectrum(this FieldElement[] signal) =>
+            signal.PerformFourierTransform(true);
+
+        /// <summary>
         /// Computes reverse Fourier transform for the given spectrum <paramref name="spectrum"/>
         /// </summary>
-        public static FieldElement[] GetSignal(this FieldElement[] spectrum)
-        {
-            if (spectrum == null)
-                throw new ArgumentNullException(nameof(spectrum));
-            if (spectrum.Length == 0)
-                throw new ArgumentNullException($"{nameof(spectrum)} must not be empty");
-            if (spectrum.Any(x => x == null))
-                throw new ArgumentNullException($"{nameof(spectrum)} components must not be null");
-
-            var field = spectrum[0].Field;
-            if (spectrum.Any(x => field.Equals(x.Field) == false))
-                throw new ArgumentException($"{nameof(spectrum)} components must belong to the one field");
-
-            var primitiveRoot = field.GetPrimitiveRoot(spectrum.Length);
-            var multiplier = field.CreateElement(spectrum.Length % field.Characteristic).InverseForMultiplication();
-            var preparedSpectrum = spectrum.Reverse().ToArray();
-
-            return Enumerable.Range(0, spectrum.Length)
-                .Select(x =>
-                        {
-                            var argument = FieldElement.Pow(primitiveRoot, -x);
-                            return multiplier * preparedSpectrum.Aggregate(
-                                field.Zero(),
-                                (signalComponent, component) => component + signalComponent * argument
-                            );
-                        })
-                .ToArray();
-        }
+        public static FieldElement[] GetSignal(this FieldElement[] spectrum) =>
+            spectrum.PerformFourierTransform(false);
     }
 }
