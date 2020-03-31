@@ -60,7 +60,7 @@
                 throw new ArgumentNullException($"{nameof(vector)} components must not be null");
 
             var field = vector[0].Field;
-            if (vector.Any(x => field.IsFieldElement(x.Representation) == false))
+            if (vector.Any(x => field.Equals(x.Field) == false))
                 throw new ArgumentException($"{nameof(vector)} components must belong to the one field");
 
             var fieldExtension = field.FindExtensionContainingPrimitiveRoot(vector.Length);
