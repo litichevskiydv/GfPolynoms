@@ -3,7 +3,6 @@
     using System.CommandLine;
     using System.Linq;
     using GfAlgorithms.ComplementaryRepresentationFinder;
-    using GfAlgorithms.LinearSystemSolver;
     using GfAlgorithms.VariantsIterator;
     using GfPolynoms;
     using GfPolynoms.Extensions;
@@ -15,14 +14,14 @@
     [UsedImplicitly]
     public class PolyphaseRepresentationCommandDescription : CommandDescriptionBase
     {
-        private readonly IComplementaryRepresentationFinder _bruteForceBasedFinder;
         private readonly IComplementaryRepresentationFinder _linearSystemsBasedFinder;
+        private readonly IComplementaryRepresentationFinder _bruteForceBasedFinder;
         private readonly ILogger _logger;
 
         public PolyphaseRepresentationCommandDescription(IConfiguration configuration, ILoggerFactory loggerFactory) : base(configuration, loggerFactory)
         {
+            _linearSystemsBasedFinder = new LinearEquationsBasedFinder();
             _bruteForceBasedFinder = new BruteForceBasedFinder(new RecursiveIterator());
-            _linearSystemsBasedFinder = new LinearEquationsBasedFinder(new GaussSolver());
             _logger = LoggerFactory.CreateLogger<PolyphaseRepresentationCommandDescription>();
 
             Options.Add(

@@ -8,7 +8,6 @@
     using GfPolynoms.Extensions;
     using GfPolynoms.GaloisFields;
     using JetBrains.Annotations;
-    using LinearSystemSolver;
     using TestCases;
     using Xunit;
 
@@ -85,7 +84,7 @@
 
         public LinearEquationsBasedFinderTests()
         {
-            _representationFinder = new LinearEquationsBasedFinder(new GaussSolver());
+            _representationFinder = new LinearEquationsBasedFinder();
         }
 
         [Theory]

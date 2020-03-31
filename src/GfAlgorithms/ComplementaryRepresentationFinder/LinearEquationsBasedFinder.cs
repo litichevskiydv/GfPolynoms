@@ -38,8 +38,6 @@
                 );
         }
 
-        private readonly ILinearSystemSolver _linearSystemSolver;
-
         private static int GetPower(int a, int n)
         {
             var result = 1;
@@ -167,43 +165,21 @@
                 yield return componentsValues;
         }
 
-        private Polynomial ReconstructPolynomialBySpectrum(
+        private static Polynomial ReconstructPolynomialBySpectrum(GaloisField field, FieldElement[] values) =>
+            new Polynomial(values.GetSignal().Select(x => x.TransferFromSubfield(field)).ToArray());
+
+        private static (Polynomial h, Polynomial g) ReconstructComplementaryRepresentation(
             GaloisField field,
-            int coefficientsCount,
-            FieldElement primitiveRoot,
-            FieldElement[] values
-        )
-        {
-            var argument = primitiveRoot.Field.One();
-            var a = new FieldElement[values.Length, coefficientsCount];
-            for (var i = 0; i < a.GetLength(0); i++, argument.Multiply(primitiveRoot))
-            {
-                a[i, 0] = primitiveRoot.Field.One();
-                for (var j = 1; j < a.GetLength(1); j++)
-                    a[i, j] = argument * a[i, j - 1];
-            }
-
-            var systemSolution = _linearSystemSolver.Solve(a, values.Select(x => new FieldElement(x)).ToArray());
-            if (systemSolution.IsCorrect == false)
-                throw new InvalidOperationException("Can't reconstruct polynomial by values");
-
-            return new Polynomial(systemSolution.VariablesValues.Select(x => x.TransferFromSubfield(field)).ToArray());
-        }
-
-        private (Polynomial h, Polynomial g) ReconstructComplementaryRepresentation(
-            GaloisField field,
-            int componentsCoefficientsCount,
-            FieldElement primitiveRoot,
             FieldElement[] heValues,
             FieldElement[] hoValues,
             FieldElement[] geValues,
             FieldElement[] goValues
         )
         {
-            var he = ReconstructPolynomialBySpectrum(field, componentsCoefficientsCount, primitiveRoot, heValues);
-            var ho = ReconstructPolynomialBySpectrum(field, componentsCoefficientsCount, primitiveRoot, hoValues);
-            var ge = ReconstructPolynomialBySpectrum(field, componentsCoefficientsCount, primitiveRoot, geValues);
-            var go = ReconstructPolynomialBySpectrum(field, componentsCoefficientsCount, primitiveRoot, goValues);
+            var he = ReconstructPolynomialBySpectrum(field, heValues);
+            var ho = ReconstructPolynomialBySpectrum(field, hoValues);
+            var ge = ReconstructPolynomialBySpectrum(field, geValues);
+            var go = ReconstructPolynomialBySpectrum(field, goValues);
 
             return
             (
@@ -244,15 +220,7 @@
                     throw new ArgumentException($"Even and odd component of {polynomial} can't have zero in one point simultaneously");
 
             foreach (var (heValues, hoValues, geValues, goValues) in ComputePolyphaseComponentsValues(checkedPolynomial, componentsCoefficientsCount, checkedLambda, primitiveRoot, valuesReferences))
-                yield return ReconstructComplementaryRepresentation(field, componentsCoefficientsCount, primitiveRoot, heValues, hoValues, geValues, goValues);
-        }
-
-        public LinearEquationsBasedFinder(ILinearSystemSolver linearSystemSolver)
-        {
-            if (linearSystemSolver == null)
-                throw new ArgumentNullException(nameof(linearSystemSolver));
-
-            _linearSystemSolver = linearSystemSolver;
+                yield return ReconstructComplementaryRepresentation(field, heValues, hoValues, geValues, goValues);
         }
     }
 }
