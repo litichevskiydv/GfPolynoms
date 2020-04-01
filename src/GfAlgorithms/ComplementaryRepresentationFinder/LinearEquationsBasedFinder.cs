@@ -7,7 +7,6 @@
     using GfPolynoms;
     using GfPolynoms.Extensions;
     using GfPolynoms.GaloisFields;
-    using LinearSystemSolver;
     using PolynomialExtensions = Extensions.PolynomialExtensions;
 
     public class LinearEquationsBasedFinder : IComplementaryRepresentationFinder

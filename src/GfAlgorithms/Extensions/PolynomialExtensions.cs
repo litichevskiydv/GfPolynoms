@@ -8,7 +8,7 @@
     public static class PolynomialExtensions
     {
         /// <summary>
-        /// Converts source polynomial <paramref name="polynomial"/> to form p(x) = p_e(x^2)+x*p_o(x^2)
+        /// Converts source signal <paramref name="polynomial"/> to form p(x) = p_e(x^2)+x*p_o(x^2)
         /// </summary>
         /// <param name="polynomial">Polynomial for processing</param>
         /// <returns>Pair (p_e(x), p_o(x))</returns>
@@ -31,11 +31,11 @@
         }
 
         /// <summary>
-        /// Creates polynomial p(x) = p_e(x^2)+x*p_o(x^2)
+        /// Creates signal p(x) = p_e(x^2)+x*p_o(x^2)
         /// </summary>
         /// <param name="evenComponent">p_e(x)</param>
         /// <param name="oddComponent">p_o(x)</param>
-        /// <returns>Reconstructed polynomial</returns>
+        /// <returns>Reconstructed signal</returns>
         public static Polynomial CreateFormPolyphaseComponents(Polynomial evenComponent, Polynomial oddComponent)
         {
             if(evenComponent == null)
@@ -61,10 +61,7 @@
             return isMonomial;
         }
 
-        /// <summary>
-        /// Method calculates <paramref name="polynomial"/> spectrum
-        /// </summary>
-        public static FieldElement[] GetSpectrum(this Polynomial polynomial, int? expectedDegree = null)
+        private static FieldElement[] PerformFourierTransform(this Polynomial polynomial, int? expectedDegree, bool isDirect)
         {
             if (polynomial == null)
                 throw new ArgumentNullException(nameof(polynomial));
@@ -73,7 +70,20 @@
             if (expectedDegree.HasValue && expectedDegree.Value < polynomial.Degree)
                 throw new ArgumentException($"{nameof(expectedDegree)} must be greater or equal polynomial's degree");
 
-            return polynomial.GetCoefficients(expectedDegree).GetSpectrum();
+            var coefficients = polynomial.GetCoefficients(expectedDegree);
+            return isDirect ? coefficients.GetSpectrum() : coefficients.GetSignal();
         }
+
+        /// <summary>
+        /// Computes direct Fourier transform for the given signal <paramref name="signal"/>
+        /// </summary>
+        public static FieldElement[] GetSpectrum(this Polynomial signal, int? expectedDegree = null) =>
+            PerformFourierTransform(signal, expectedDegree, true);
+
+        /// <summary>
+        /// Computes reverse Fourier transform for the given spectrum <paramref name="spectrum"/>
+        /// </summary>
+        public static FieldElement[] GetSignal(this Polynomial spectrum, int? expectedDegree = null) =>
+            PerformFourierTransform(spectrum, expectedDegree, false);
     }
 }
