@@ -1,9 +1,11 @@
 ﻿namespace AppliedAlgebra.GfAlgorithms.Extensions
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
     using GfPolynoms;
     using GfPolynoms.Extensions;
+    using GfPolynoms.GaloisFields;
 
     public static class FieldElementsVectorExtensions
     {
@@ -47,7 +49,11 @@
             return vector.Select((x, i) => x + additiveNoise[i]).ToArray();
         }
 
-        private static FieldElement[] PerformFourierTransform(this FieldElement[] vector, bool isDirect)
+        /// <summary>
+        /// Determines field of the vector <paramref name="vector"/>
+        /// </summary>
+        /// <param name="vector">Field elements vector</param>
+        public static GaloisField GetField(this FieldElement[] vector)
         {
             if (vector == null)
                 throw new ArgumentNullException(nameof(vector));
@@ -60,30 +66,17 @@
             if (vector.Any(x => field.Equals(x.Field) == false))
                 throw new ArgumentException($"{nameof(vector)} components must belong to the one field");
 
-            FieldElement multiplier;
-            FieldElement primitiveRoot;
-            FieldElement[] preparedVector;
+            return field;
+        }
 
-            if (isDirect)
-            {
-                var fieldExtension = field.FindExtensionContainingPrimitiveRoot(vector.Length);
-
-                multiplier = fieldExtension.One();
-                primitiveRoot = fieldExtension.GetPrimitiveRoot(vector.Length);
-                preparedVector = vector.Select(x => x.TransferToSubfield(fieldExtension)).Reverse().ToArray();
-            }
-            else
-            {
-                multiplier = field.CreateElement(vector.Length % field.Characteristic).InverseForMultiplication();
-                primitiveRoot = field.GetPrimitiveRoot(vector.Length);
-                preparedVector = vector.Reverse().ToArray();
-            }
-
-            return Enumerable.Range(0, vector.Length)
+        private static FieldElement[] ComputeValues(FieldElement primitiveRoot, IReadOnlyCollection<FieldElement> vector)
+        {
+            var reversedVector = vector.Reverse().ToArray();
+            return Enumerable.Range(0, vector.Count)
                 .Select(x =>
                         {
-                            var argument = FieldElement.Pow(primitiveRoot, isDirect ? x : -x);
-                            return multiplier * preparedVector.Aggregate(
+                            var argument = FieldElement.Pow(primitiveRoot, x);
+                            return reversedVector.Aggregate(
                                 primitiveRoot.Field.Zero(),
                                 (spectrumComponent, component) => component + spectrumComponent * argument
                             );
@@ -94,13 +87,28 @@
         /// <summary>
         /// Computes direct Fourier transform for the given signal <paramref name="signal"/>
         /// </summary>
-        public static FieldElement[] GetSpectrum(this FieldElement[] signal) =>
-            signal.PerformFourierTransform(true);
+        public static FieldElement[] GetSpectrum(this FieldElement[] signal)
+        {
+            var field = signal.GetField();
+            var fieldExtension = field.FindExtensionContainingPrimitiveRoot(signal.Length);
+
+            var primitiveRoot = fieldExtension.GetPrimitiveRoot(signal.Length);
+            var preparedSignal = signal.Select(x => x.TransferToSubfield(fieldExtension)).ToArray();
+            return ComputeValues(primitiveRoot, preparedSignal);
+        }
 
         /// <summary>
         /// Computes reverse Fourier transform for the given spectrum <paramref name="spectrum"/>
         /// </summary>
-        public static FieldElement[] GetSignal(this FieldElement[] spectrum) =>
-            spectrum.PerformFourierTransform(false);
+        public static FieldElement[] GetSignal(this FieldElement[] spectrum)
+        {
+            var field = spectrum.GetField();
+
+            var primitiveRoot = field.GetPrimitiveRoot(spectrum.Length).InverseForMultiplication();
+            var multiplier = field.CreateElement(spectrum.Length % field.Characteristic).InverseForMultiplication();
+            return ComputeValues(primitiveRoot, spectrum)
+                .Select(value => multiplier * value)
+                .ToArray();
+        }
     }
 }
