@@ -21,8 +21,7 @@
         [InlineData(new int[0], new int[0], new int[0])]
         [InlineData(new[] {1}, new[] {1}, new int[0])]
         [InlineData(new[] {0, 1}, new int[0], new[] {1})]
-        public void ShouldGetPolyhaseComponentsForPolynomial(int[] polynomialCoefficients,
-            int[] expectedEvenComponentCoefficients, int[] expectedOddComponenetCoefficients)
+        public void ShouldGetPolyhaseComponentsForPolynomial(int[] polynomialCoefficients, int[] expectedEvenComponentCoefficients, int[] expectedOddComponenetCoefficients)
         {
             // Given
             var polynomial = new Polynomial(_field, polynomialCoefficients);
@@ -42,8 +41,7 @@
         [InlineData(new int[0], new int[0], new int[0])]
         [InlineData(new[] {1}, new int[0], new[] {1})]
         [InlineData(new int[0], new[] {1}, new[] {0, 1})]
-        public void ShouldCreatePolynomialFromPolyhaseComponents(int[] evenComponentCoefficients, int[] oddComponenetCoefficients, 
-            int[] expectedPolynomialCoefficients)
+        public void ShouldCreatePolynomialFromPolyhaseComponents(int[] evenComponentCoefficients, int[] oddComponenetCoefficients, int[] expectedPolynomialCoefficients)
         {
             // Given
             var evenComponent = new Polynomial(_field, evenComponentCoefficients);
@@ -74,19 +72,20 @@
             Assert.Equal(expected, isMonomial);
         }
 
-        [Fact]
-        public void MustGetPolynomialSpectrum()
+        [Theory]
+        [InlineData(5, new[] {1, 1, 1}, 3, new[] {3, 2, 1, 3})]
+        [InlineData(16, new[] {3, 3, 4, 4, 11, 9, 2, 14, 4, 0, 2, 5}, 14, new[] {13, 13, 0, 5, 2, 7, 13, 8, 1, 14, 15, 15, 3, 3, 9})]
+        public void MustGetPolynomialSpectrum(int fieldOrder, int[] coefficients, int expectedDegree, int[] expectedSpectrum)
         {
             // Given
-            var gf5 = GaloisField.Create(5);
-            var polynomial = new Polynomial(gf5, 1, 1, 1);
+            var field = GaloisField.Create(fieldOrder);
+            var polynomial = new Polynomial(field, coefficients);
 
             // When
-            var actualSpectrum = polynomial.GetSpectrum(3);
+            var actualSpectrum = polynomial.GetSpectrum(expectedDegree);
 
             // Then
-            var expectedSpectrum = new[] { 3, 2, 1, 3 }.Select(x => gf5.CreateElement(x)).ToArray();
-            Assert.Equal(expectedSpectrum, actualSpectrum);
+            Assert.Equal(expectedSpectrum.Select(x => field.CreateElement(x)).ToArray(), actualSpectrum);
         }
     }
 }

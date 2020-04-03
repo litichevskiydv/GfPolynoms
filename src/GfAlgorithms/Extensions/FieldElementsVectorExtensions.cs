@@ -69,15 +69,49 @@
             return field;
         }
 
-        private static FieldElement[] ComputeValues(FieldElement primitiveRoot, IReadOnlyCollection<FieldElement> vector)
+        private static FieldElement[] ComputeValues(FieldElement primitiveRoot, IReadOnlyList<FieldElement> vector)
         {
+            var field = primitiveRoot.Field;
+            var componentsCount = vector.Count;
+
+            var divisorUpperBound = Math.Sqrt(componentsCount) + 1;
+            for (var divisor = 2; divisor < divisorUpperBound; divisor++)
+            {
+                if (componentsCount % divisor != 0) continue;
+
+                var quotient = componentsCount / divisor;
+                var primitiveRootPower = FieldElement.Pow(primitiveRoot, divisor);
+                var vectorParts = new FieldElement[divisor][].MakeRectangle(quotient);
+                var computedValues = new FieldElement[divisor][];
+                for (var j = 0; j < divisor; j++)
+                {
+                    for (var k = 0; k < quotient; k++)
+                        vectorParts[j][k] = vector[k * divisor + j];
+                    computedValues[j] = ComputeValues(primitiveRootPower, vectorParts[j]);
+                }
+
+                var reversedRange = Enumerable.Range(0, divisor).Reverse().ToArray();
+                return Enumerable.Range(0, componentsCount)
+                    .Select(i =>
+                            {
+                                var argument = FieldElement.Pow(primitiveRoot, i);
+                                return reversedRange
+                                    .Aggregate(
+                                        field.Zero(),
+                                        (spectrumComponent, j) => computedValues[j][i % quotient] + spectrumComponent * argument
+                                    );
+                            }
+                    )
+                    .ToArray();
+            }
+
             var reversedVector = vector.Reverse().ToArray();
-            return Enumerable.Range(0, vector.Count)
+            return Enumerable.Range(0, componentsCount)
                 .Select(x =>
                         {
                             var argument = FieldElement.Pow(primitiveRoot, x);
                             return reversedVector.Aggregate(
-                                primitiveRoot.Field.Zero(),
+                                field.Zero(),
                                 (spectrumComponent, component) => component + spectrumComponent * argument
                             );
                         })
