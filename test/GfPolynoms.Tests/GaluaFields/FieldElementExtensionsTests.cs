@@ -43,6 +43,16 @@
                   };
         }
 
+        [Fact]
+        public void FindMinimalPolynomialMustValidateParameters()
+        {
+            // Given
+            FieldElement element = null;
+
+            // When, Then
+            Assert.Throws<ArgumentNullException>(() => element.FindMinimalPolynomial());
+        }
+
         [Theory]
         [MemberData(nameof(TransferToSubfieldParametersValidationTestCases))]
         public void TransferToSubfieldMustValidateParameters(TransferFieldElementParametersValidationTestCase testCase)
@@ -55,6 +65,21 @@
         public void TransferFromSubfieldMustValidateParameters(TransferFieldElementParametersValidationTestCase testCase)
         {
             Assert.ThrowsAny<ArgumentException>(() => testCase.FieldElement.TransferFromSubfield(testCase.NewField));
+        }
+
+        [Fact]
+        public void MustFindMinimalPolynomial()
+        {
+            // Given
+            var gf16 = GaloisField.Create(16, new[] { 1, 1, 0, 0, 1 });
+            var element = gf16.CreateElement(gf16.PowGeneratingElement(5));
+
+            // When
+            var actualMinimalPolynomial = element.FindMinimalPolynomial();
+
+            // Then
+            var expectedMinimalPolynomial = new Polynomial(GaloisField.Create(2), 1, 1, 1);
+            Assert.Equal(expectedMinimalPolynomial, actualMinimalPolynomial);
         }
     }
 }

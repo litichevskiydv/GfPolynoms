@@ -6,6 +6,17 @@
     public static class FieldElementExtensions
     {
         /// <summary>
+        /// Finds minimal polynomial for field element <paramref name="element"/>
+        /// </summary>
+        /// <param name="element">Field element whose minimal polynomial is to be constructed</param>
+        public static Polynomial FindMinimalPolynomial(this FieldElement element)
+        {
+            if(element == null)
+                throw new ArgumentNullException(nameof(element));
+            return element.Field.FindMinimalPolynomial(element.Representation);
+        }
+
+        /// <summary>
         /// Transfers element <paramref name="element"/> to the compatible subfield
         /// of the field extension <paramref name="fieldExtension"/>
         /// </summary>
