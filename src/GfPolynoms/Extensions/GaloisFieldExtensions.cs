@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using GaloisFields;
 
     public static class GaloisFieldExtensions
@@ -64,7 +65,11 @@
             return field.CreateElement(field.PowGeneratingElement((field.Order - 1) / rootOrder));
         }
 
-
+        /// <summary>
+        /// Generates conjugacy classes for field <paramref name="field"/> of the modulo <paramref name="modulus"/>
+        /// </summary>
+        /// <param name="field">Field whose order was used for classes generation</param>
+        /// <param name="modulus">Modulo used for classes generation</param>
         public static int[][] GenerateConjugacyClasses(this GaloisField field, int modulus)
         {
             if (field == null)
@@ -89,6 +94,34 @@
             }
 
             return conjugacyClasses.ToArray();
+        }
+
+        /// <summary>
+        /// Generates minimal polynomial for field <paramref name="fieldExtension"/> element <paramref name="fieldElement"/>
+        /// </summary>
+        /// <param name="fieldExtension">The field containing element whose minimal polynomial is to be constructed</param>
+        /// <param name="fieldElement">Field element whose minimal polynomial is to be constructed</param>
+        public static Polynomial FindMinimalPolynomial(this GaloisField fieldExtension, int fieldElement)
+        {
+            if(fieldExtension == null)
+                throw new ArgumentNullException(nameof(fieldExtension));
+
+            var field = GaloisField.Create(fieldExtension.Characteristic);
+            if (fieldElement == 0)
+                return new Polynomial(field, 0, 1);
+
+            return field.GenerateConjugacyClasses(fieldExtension.Order - 1)
+                .Single(x => x.Contains(fieldExtension.GetGeneratingElementDegree(fieldElement)))
+                .Aggregate(
+                    new Polynomial(fieldExtension, 1),
+                    (polynomial, classMember) =>
+                        polynomial
+                        * new Polynomial(
+                            fieldExtension,
+                            fieldExtension.InverseForAddition(fieldExtension.PowGeneratingElement(classMember)), 1
+                        )
+                )
+                .TransferFromSubfield(field);
         }
 
         /// <summary>

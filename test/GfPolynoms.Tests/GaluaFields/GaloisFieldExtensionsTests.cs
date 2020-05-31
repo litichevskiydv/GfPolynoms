@@ -16,9 +16,13 @@
         [UsedImplicitly]
         public static readonly TheoryData<GenerateConjugacyClassesParametersValidationTestCase> GenerateConjugacyClassesParametersValidationTestCases;
         [UsedImplicitly]
+        public static readonly TheoryData<FindMinimalPolynomialTestCase> FindMinimalPolynomialParametersValidationTestCases;
+        [UsedImplicitly]
         public static TheoryData<TransferElementParametersValidationTestCase> TransferToSubfieldParametersValidationTestCases;
         [UsedImplicitly]
         public static TheoryData<TransferElementParametersValidationTestCase> TransferFromSubfieldParametersValidationTestCases;
+        [UsedImplicitly]
+        public static readonly TheoryData<FindMinimalPolynomialTestCase> FindMinimalPolynomialTestCases;
 
         static GaloisFieldExtensionsTests()
         {
@@ -28,6 +32,7 @@
             var gf5 = GaloisField.Create(5);
             var gf9 = GaloisField.Create(9);
             var gf27 = GaloisField.Create(27);
+            var gf16 = GaloisField.Create(16, new[] {1, 1, 0, 0, 1});
             FieldExtensionSearchParametersValidationTestCases
                 = new TheoryData<FieldExtensionSearchParametersValidationTestCase>
                   {
@@ -46,6 +51,12 @@
                   {
                       new GenerateConjugacyClassesParametersValidationTestCase {Modulus = 7},
                       new GenerateConjugacyClassesParametersValidationTestCase {Field = gf2, Modulus = -1}
+                  };
+            FindMinimalPolynomialParametersValidationTestCases
+                = new TheoryData<FindMinimalPolynomialTestCase>
+                  {
+                      new FindMinimalPolynomialTestCase {FieldElement = 1},
+                      new FindMinimalPolynomialTestCase {FieldExtension = gf4, FieldElement = 5}
                   };
             TransferToSubfieldParametersValidationTestCases
                 = new TheoryData<TransferElementParametersValidationTestCase>
@@ -71,6 +82,17 @@
                           NewField = gf3
                       }
                   };
+            FindMinimalPolynomialTestCases
+                = new TheoryData<FindMinimalPolynomialTestCase>
+                  {
+                      new FindMinimalPolynomialTestCase {FieldExtension = gf5, FieldElement = 3, Expected = new Polynomial(gf5, 2, 1)},
+                      new FindMinimalPolynomialTestCase {FieldExtension = gf16, FieldElement = 0, Expected = new Polynomial(gf2, 0, 1)},
+                      new FindMinimalPolynomialTestCase {FieldExtension = gf16, FieldElement = 1, Expected = new Polynomial(gf2, 1, 1)},
+                      new FindMinimalPolynomialTestCase {FieldExtension = gf16, FieldElement = gf16.PowGeneratingElement(1), Expected = new Polynomial(gf2, 1, 1, 0, 0, 1)},
+                      new FindMinimalPolynomialTestCase {FieldExtension = gf16, FieldElement = gf16.PowGeneratingElement(2), Expected = new Polynomial(gf2, 1, 1, 0, 0, 1)},
+                      new FindMinimalPolynomialTestCase {FieldExtension = gf16, FieldElement = gf16.PowGeneratingElement(3), Expected = new Polynomial(gf2, 1, 1, 1, 1, 1)},
+                      new FindMinimalPolynomialTestCase {FieldExtension = gf16, FieldElement = gf16.PowGeneratingElement(5), Expected = new Polynomial(gf2, 1, 1, 1)}
+                  };
         }
 
         [Theory]
@@ -78,6 +100,41 @@
         public void MustValidateExtensionSearchParameters(FieldExtensionSearchParametersValidationTestCase testCase)
         {
             Assert.ThrowsAny<ArgumentException>(() => testCase.Field.FindExtensionContainingPrimitiveRoot(testCase.RootOrder));
+        }
+
+        [Theory]
+        [MemberData(nameof(PrimitiveRootObtainingParametersValidationTestCases))]
+        public void MustValidatePrimitiveRootObtainingParameters(PrimitiveRootObtainingParametersValidationTestCase testCase)
+        {
+            Assert.ThrowsAny<ArgumentException>(() => testCase.Field.GetPrimitiveRoot(testCase.RootOrder));
+        }
+
+        [Theory]
+        [MemberData(nameof(GenerateConjugacyClassesParametersValidationTestCases))]
+        public void GenerateConjugacyClassesMustValidateParameters(GenerateConjugacyClassesParametersValidationTestCase testCase)
+        {
+            Assert.ThrowsAny<ArgumentException>(() => testCase.Field.GenerateConjugacyClasses(testCase.Modulus));
+        }
+
+        [Theory]
+        [MemberData(nameof(FindMinimalPolynomialParametersValidationTestCases))]
+        public void FindMinimalPolynomialMustValidateParameters(FindMinimalPolynomialTestCase testCase)
+        {
+            Assert.ThrowsAny<ArgumentException>(() => testCase.FieldExtension.FindMinimalPolynomial(testCase.FieldElement));
+        }
+
+        [Theory]
+        [MemberData(nameof(TransferToSubfieldParametersValidationTestCases))]
+        public void TransferToSubfieldMustValidateParameters(TransferElementParametersValidationTestCase testCase)
+        {
+            Assert.ThrowsAny<ArgumentException>(() => testCase.Field.TransferElementToSubfield(testCase.FieldElement, testCase.NewField));
+        }
+
+        [Theory]
+        [MemberData(nameof(TransferFromSubfieldParametersValidationTestCases))]
+        public void TransferFromSubfieldMustValidateParameters(TransferElementParametersValidationTestCase testCase)
+        {
+            Assert.ThrowsAny<ArgumentException>(() => testCase.Field.TransferElementFromSubfield(testCase.FieldElement, testCase.NewField));
         }
 
         [Fact]
@@ -94,13 +151,6 @@
             Assert.Equal(1, fieldExtension.Pow(fieldExtension.PowGeneratingElement((fieldExtension.Order - 1) / rootOrder), rootOrder));
         }
 
-        [Theory]
-        [MemberData(nameof(PrimitiveRootObtainingParametersValidationTestCases))]
-        public void MustValidatePrimitiveRootObtainingParameters(PrimitiveRootObtainingParametersValidationTestCase testCase)
-        {
-            Assert.ThrowsAny<ArgumentException>(() => testCase.Field.GetPrimitiveRoot(testCase.RootOrder));
-        }
-
         [Fact]
         public void MustObtainPrimitiveRoot()
         {
@@ -115,13 +165,6 @@
             Assert.Equal(field.One(), primitiveRoot.Pow(rootOrder));
         }
 
-        [Theory]
-        [MemberData(nameof(GenerateConjugacyClassesParametersValidationTestCases))]
-        public void GenerateConjugacyClassesMustValidateParameters(GenerateConjugacyClassesParametersValidationTestCase testCase)
-        {
-            Assert.ThrowsAny<ArgumentException>(() => testCase.Field.GenerateConjugacyClasses(testCase.Modulus));
-        }
-
         [Fact]
         public void MustGenerateConjugacyClasses()
         {
@@ -133,22 +176,15 @@
             var actualConjugacyClasses = field.GenerateConjugacyClasses(modulus);
 
             // Then
-            var expectedFirstConjugacyClasses = new[] {new[] {0}, new[] {1, 2, 4}, new[] {3, 6, 5}};
+            var expectedFirstConjugacyClasses = new[] { new[] { 0 }, new[] { 1, 2, 4 }, new[] { 3, 6, 5 } };
             Assert.Equal(expectedFirstConjugacyClasses, actualConjugacyClasses);
         }
 
         [Theory]
-        [MemberData(nameof(TransferToSubfieldParametersValidationTestCases))]
-        public void TransferToSubfieldMustValidateParameters(TransferElementParametersValidationTestCase testCase)
+        [MemberData(nameof(FindMinimalPolynomialTestCases))]
+        public void MustFindMinimalPolynomial(FindMinimalPolynomialTestCase testCase)
         {
-            Assert.ThrowsAny<ArgumentException>(() => testCase.Field.TransferElementToSubfield(testCase.FieldElement, testCase.NewField));
-        }
-
-        [Theory]
-        [MemberData(nameof(TransferFromSubfieldParametersValidationTestCases))]
-        public void TransferFromSubfieldMustValidateParameters(TransferElementParametersValidationTestCase testCase)
-        {
-            Assert.ThrowsAny<ArgumentException>(() => testCase.Field.TransferElementFromSubfield(testCase.FieldElement, testCase.NewField));
+            Assert.Equal(testCase.Expected, testCase.FieldExtension.FindMinimalPolynomial(testCase.FieldElement));
         }
     }
 }
