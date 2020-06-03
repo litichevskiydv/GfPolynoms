@@ -46,7 +46,7 @@
             return linearSystemMatrix;
         }
 
-        private Polynomial FindDecomposingPolynomial(FieldElementsMatrix linearSystemMatrix)
+        private static Polynomial FindDecomposingPolynomial(FieldElementsMatrix linearSystemMatrix)
         {
             int? freeVariableIndex = null;
             var diagonalizationResult = linearSystemMatrix.DiagonalizeExtended();
@@ -78,10 +78,9 @@
             var field = polynomial.Field;
             var degree = polynomial.Degree;
 
-            if (polynomial[polynomial.Degree] > 1)
+            if (polynomial[degree] > 1)
             {
-                yield return new Polynomial(field, polynomial[polynomial.Degree]);
-                foreach (var factor in FactorizeInternal(polynomial / polynomial[polynomial.Degree]))
+                foreach (var factor in FactorizeInternal(polynomial / polynomial[degree]))
                     yield return factor;
                 yield break;
             }
@@ -115,6 +114,8 @@
             if (polynomial == null)
                 throw new ArgumentNullException(nameof(polynomial));
 
+            if (polynomial[polynomial.Degree] > 1)
+                yield return (new Polynomial(polynomial.Field, polynomial[polynomial.Degree]), 1);
             foreach (var factor in FactorizeInternal(polynomial))
                 yield return (factor, 1);
         }

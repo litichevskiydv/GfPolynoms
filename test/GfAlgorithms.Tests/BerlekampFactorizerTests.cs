@@ -25,11 +25,14 @@
 
         static BerlekampFactorizerTests()
         {
+            var gf3 = GaloisField.Create(3);
             var gf2 = GaloisField.Create(2);
 
             FactorizeTestsData
                 = new TheoryData<Polynomial>
                   {
+                      new Polynomial(gf3, 2, 2),
+                      PreparePolynomialForSearchOfAllIrreducibleFactorsOfGivenDegree(gf3, 2),
                       PreparePolynomialForSearchOfAllIrreducibleFactorsOfGivenDegree(gf2, 4),
                       PreparePolynomialForSearchOfAllIrreducibleFactorsOfGivenDegree(gf2, 8),
                       PreparePolynomialForSearchOfAllIrreducibleFactorsOfGivenDegree(gf2, 9)
