@@ -28,6 +28,51 @@
             _gcdFinder = gcdFinder;
         }
 
+        private static FieldElementsMatrix PrepareLinearSystemMatrix(Polynomial polynomial)
+        {
+            var one = polynomial.Field.One();
+            var currentMonomial = new Polynomial(one);
+            var multiplier = new Polynomial(one).RightShift(polynomial.Field.Order);
+            var linearSystemMatrix = new FieldElementsMatrix(polynomial.Field, polynomial.Degree, polynomial.Degree);
+            for (var j = 0; j < linearSystemMatrix.ColumnsCount; j++, currentMonomial *= multiplier)
+            {
+                var matrixColumn = (currentMonomial % polynomial).GetCoefficients(polynomial.Degree - 1);
+                for (var i = 0; i < linearSystemMatrix.RowsCount; i++)
+                    linearSystemMatrix[i, j] = matrixColumn[i];
+
+                linearSystemMatrix[j, j] -= one;
+            }
+
+            return linearSystemMatrix;
+        }
+
+        private Polynomial FindDecomposingPolynomial(FieldElementsMatrix linearSystemMatrix)
+        {
+            int? freeVariableIndex = null;
+            var diagonalizationResult = linearSystemMatrix.DiagonalizeExtended();
+            var coefficients = Enumerable.Repeat(linearSystemMatrix.Field.Zero(), linearSystemMatrix.RowsCount).ToArray();
+            for (var j = 1; j < linearSystemMatrix.ColumnsCount; j++)
+                if (diagonalizationResult.SelectedRowsByColumns[j].HasValue == false)
+                {
+                    freeVariableIndex = j;
+                    coefficients[j] = linearSystemMatrix.Field.One();
+                    break;
+                }
+            if (freeVariableIndex.HasValue == false)
+                return null;
+
+            var diagonalizedMatrix = diagonalizationResult.Result;
+            for (var j = 0; j < coefficients.Length; j++)
+                if (diagonalizationResult.SelectedRowsByColumns[j].HasValue)
+                {
+                    var selectedRowIndex = diagonalizationResult.SelectedRowsByColumns[j].Value;
+                    coefficients[j] = -diagonalizedMatrix[selectedRowIndex, freeVariableIndex.Value]
+                        * coefficients[freeVariableIndex.Value] / diagonalizationResult.Result[selectedRowIndex, j];
+                }
+
+            return new Polynomial(coefficients);
+        }
+
         private IEnumerable<Polynomial> FactorizeInternal(Polynomial polynomial)
         {
             var field = polynomial.Field;
@@ -47,44 +92,13 @@
                 yield break;
             }
 
-            var one = field.One();
-            var currentMonomial = new Polynomial(one);
-            var multiplier = new Polynomial(one).RightShift(field.Order);
-            var linearSystemMatrix = new FieldElementsMatrix(field, degree, degree);
-            for (var j = 0; j < linearSystemMatrix.ColumnsCount; j++, currentMonomial *= multiplier)
-            {
-                var matrixColumn = (currentMonomial % polynomial).GetCoefficients(degree - 1);
-                for (var i = 0; i < linearSystemMatrix.RowsCount; i++)
-                    linearSystemMatrix[i, j] = matrixColumn[i];
 
-                linearSystemMatrix[j, j] -= one;
-            }
-
-            int? freeVariableIndex = null;
-            var diagonalizationResult = linearSystemMatrix.DiagonalizeExtended();
-            var coefficients = Enumerable.Repeat(field.Zero(), linearSystemMatrix.RowsCount).ToArray();
-            for(var j = 1; j < linearSystemMatrix.ColumnsCount; j++)
-                if (diagonalizationResult.SelectedRowsByColumns[j].HasValue == false)
-                {
-                    freeVariableIndex = j;
-                    coefficients[j] = one;
-                    break;
-                }
-            if (freeVariableIndex.HasValue == false)
+            var decomposingPolynomial = FindDecomposingPolynomial(PrepareLinearSystemMatrix(polynomial));
+            if (decomposingPolynomial == null)
             {
                 yield return polynomial;
                 yield break;
             }
-
-            var diagonalizedMatrix = diagonalizationResult.Result;
-            for (var j = 0; j < coefficients.Length; j++)
-                if (diagonalizationResult.SelectedRowsByColumns[j].HasValue)
-                {
-                    var selectedRowIndex = diagonalizationResult.SelectedRowsByColumns[j].Value;
-                    coefficients[j] = -diagonalizedMatrix[selectedRowIndex, freeVariableIndex.Value]
-                        * coefficients[freeVariableIndex.Value] / diagonalizationResult.Result[selectedRowIndex, j];
-                }
-            var decomposingPolynomial = new Polynomial(coefficients);
 
             for (var i = 0; i < field.Order; i++)
             {
