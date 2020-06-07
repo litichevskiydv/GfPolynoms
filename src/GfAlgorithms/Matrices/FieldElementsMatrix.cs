@@ -2,6 +2,7 @@
 {
     using System;
     using System.Text;
+    using System.Threading.Tasks;
     using GfPolynoms;
     using GfPolynoms.Extensions;
     using GfPolynoms.GaloisFields;
@@ -428,12 +429,15 @@
 
         /// <summary>
         /// Transforms the current matrix to an diagonal view and returns process summary
+        /// <param name="options">Diagonalization process options</param>
         /// </summary>
-        public DiagonalizationSummary DiagonalizeExtended()
+        public DiagonalizationSummary DiagonalizeExtended(DiagonalizationOptions options = null)
         {
             var permutationsCount = 0;
             var selectedRowsByColumns = new int?[ColumnsCount];
+            var opts = options ?? new DiagonalizationOptions();
 
+            var parallelOptions = new ParallelOptions {MaxDegreeOfParallelism = opts.MaxDegreeOfParallelism};
             for (int col = 0, row = 0; col < ColumnsCount && row < RowsCount; ++col)
             {
                 var selectedRow = row;
@@ -443,8 +447,7 @@
 
                 if (selectedRow != row)
                 {
-                    for (var j = col; j < ColumnsCount; ++j)
-                        SwapColumnElements(selectedRow, row, j);
+                    Parallel.For(col, ColumnsCount, parallelOptions, j => SwapColumnElements(selectedRow, row, j));
                     ++permutationsCount;
                 }
 
@@ -452,8 +455,7 @@
                     if (i != row)
                     {
                         var c = _elements[i, col] / _elements[row, col];
-                        for (var j = col; j < ColumnsCount; ++j)
-                            _elements[i, j] -= _elements[row, j] * c;
+                        Parallel.For(col, ColumnsCount, parallelOptions, j => _elements[i, j] -= _elements[row, j] * c);
                     }
 
                 selectedRowsByColumns[col] = row;
@@ -465,8 +467,9 @@
 
         /// <summary>
         /// Transforms the current matrix to an diagonal view
+        /// <param name="options">Diagonalization process options</param>
         /// </summary>
-        public FieldElementsMatrix Diagonalize() => DiagonalizeExtended().Result;
+        public FieldElementsMatrix Diagonalize(DiagonalizationOptions options = null) => DiagonalizeExtended(options).Result;
 
 
         /// <summary>
@@ -671,13 +674,19 @@
 
         /// <summary>
         /// Transforms the matrix <paramref name="a"/> to an diagonal view
+        /// <param name="a">Diagonalizable matrix</param>
+        /// <param name="options">Diagonalization process options</param>
         /// </summary>
-        public static FieldElementsMatrix Diagonalize(FieldElementsMatrix a) => new FieldElementsMatrix(a).Diagonalize();
+        public static FieldElementsMatrix Diagonalize(FieldElementsMatrix a, DiagonalizationOptions options = null) =>
+            new FieldElementsMatrix(a).Diagonalize(options);
 
         /// <summary>
         /// Transforms the matrix <paramref name="a"/> to an diagonal view and returns process summary
+        /// <param name="a">Diagonalizable matrix</param>
+        /// <param name="options">Diagonalization process options</param>
         /// </summary>
-        public static DiagonalizationSummary DiagonalizeExtended(FieldElementsMatrix a) => new FieldElementsMatrix(a).DiagonalizeExtended();
+        public static DiagonalizationSummary DiagonalizeExtended(FieldElementsMatrix a, DiagonalizationOptions options = null) =>
+            new FieldElementsMatrix(a).DiagonalizeExtended(options);
 
         public static FieldElementsMatrix operator +(FieldElementsMatrix a, FieldElementsMatrix b) => Add(a, b);
 
