@@ -4,7 +4,7 @@
 
     public class DiagonalizationOptions
     {
-        public int MaxDegreeOfParallelism { get; }
+        public int MaxDegreeOfParallelism { get; set; }
 
         public DiagonalizationOptions()
         {

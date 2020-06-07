@@ -15,17 +15,22 @@
     public class BerlekampFactorizer : IPolynomialsFactorizer
     {
         private readonly IPolynomialsGcdFinder _gcdFinder;
+        private readonly DiagonalizationOptions _diagonalizationOptions;
 
         /// <summary>
         /// Initializes factorizer dependencies
         /// </summary>
         /// <param name="gcdFinder">Polynomials gcd finder</param>
-        public BerlekampFactorizer(IPolynomialsGcdFinder gcdFinder)
+        /// <param name="options">Factorization options</param>
+        public BerlekampFactorizer(IPolynomialsGcdFinder gcdFinder, BerlekampFactorizerOptions options = null)
         {
             if (gcdFinder == null)
                 throw new ArgumentNullException(nameof(gcdFinder));
 
             _gcdFinder = gcdFinder;
+
+            var opts = options ?? new BerlekampFactorizerOptions();
+            _diagonalizationOptions = new DiagonalizationOptions {MaxDegreeOfParallelism = opts.MaxDegreeOfParallelism};
         }
 
         private static FieldElementsMatrix PrepareLinearSystemMatrix(Polynomial polynomial)
@@ -46,10 +51,11 @@
             return linearSystemMatrix;
         }
 
-        private static Polynomial FindDecomposingPolynomial(FieldElementsMatrix linearSystemMatrix)
+        private Polynomial FindDecomposingPolynomial(FieldElementsMatrix linearSystemMatrix)
         {
+            var diagonalizationResult = linearSystemMatrix.DiagonalizeExtended(_diagonalizationOptions);
+
             int? freeVariableIndex = null;
-            var diagonalizationResult = linearSystemMatrix.DiagonalizeExtended();
             var coefficients = Enumerable.Repeat(linearSystemMatrix.Field.Zero(), linearSystemMatrix.RowsCount).ToArray();
             for (var j = 1; j < linearSystemMatrix.ColumnsCount; j++)
                 if (diagonalizationResult.SelectedRowsByColumns[j].HasValue == false)
