@@ -1,5 +1,6 @@
 ﻿namespace AppliedAlgebra.GfPolynoms.IrreduciblePolynomialsFinder
 {
+    using System.Collections.Generic;
     using GaloisFields;
 
     /// <summary>
@@ -8,12 +9,12 @@
     public interface IIrreduciblePolynomialsFinder
     {
         /// <summary>
-        /// Method for finding irreducible polynomial degree <paramref name="degree"/>
+        /// Finds irreducible polynomials degree <paramref name="degree"/>
         /// with coefficients from field <paramref name="field"/>
         /// </summary>
         /// <param name="field">Field from which irreducible polynomials coefficients come</param>
         /// <param name="degree">Irreducible polynomial degree</param>
-        /// <returns>Irreducible polynomial with specified properties</returns>
-        Polynomial Find(GaloisField field, int degree);
+        /// <returns>Irreducible polynomials with with specified properties</returns>
+        IEnumerable<Polynomial> Find(GaloisField field, int degree);
     }
 }

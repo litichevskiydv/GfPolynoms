@@ -10,46 +10,34 @@
     /// </summary>
     public class SimpleFinder : IIrreduciblePolynomialsFinder
     {
-        /// <summary>
-        /// Method for performing brute force search of irreducible polynomial
-        /// </summary>
-        /// <param name="templatePolynomial">Polynomial on which search is performed</param>
-        /// <param name="position">Analyzed monomial degree</param>
-        /// <param name="onCompleteAction">Results checker</param>
-        /// <returns>Search status</returns>
-        private static bool Generate(Polynomial templatePolynomial, int position, Func<Polynomial, bool> onCompleteAction)
+        private static IEnumerable<Polynomial> Generate(Polynomial templatePolynomial, int position, Func<Polynomial, bool> predicate = null)
         {
             if (templatePolynomial.Degree == position)
-                return onCompleteAction(templatePolynomial);
-
-            var stopGeneration = false;
-            var originalValue = templatePolynomial[position];
-            for (var i = originalValue; i < templatePolynomial.Field.Order && stopGeneration == false; i++)
             {
-                templatePolynomial[position] = i;
-                stopGeneration = Generate(templatePolynomial, position + 1, onCompleteAction);
+                if (predicate == null || predicate(templatePolynomial))
+                    yield return new Polynomial(templatePolynomial);
+                yield break;
             }
 
-            if (stopGeneration == false)
-                templatePolynomial[position] = originalValue;
-            return stopGeneration;
+            var originalValue = templatePolynomial[position];
+            for (var i = originalValue; i < templatePolynomial.Field.Order; i++)
+            {
+                templatePolynomial[position] = i;
+                foreach (var polynomial in Generate(templatePolynomial, position + 1, predicate))
+                    yield return polynomial;
+            }
+
+            templatePolynomial[position] = originalValue;
         }
 
-        /// <summary>
-        /// Method for creation initialization polynomial for brute force search
-        /// </summary>
-        /// <param name="field">Polynomial field</param>
-        /// <param name="degree">Polynomial degree</param>
-        private static Polynomial GenerateTemplatePolynomial(GaloisField field, int degree)
+        private static Polynomial GetTemplatePolynomial(GaloisField field, int degree)
         {
-            var templatePolynomial = new Polynomial(field, 1).RightShift(degree);
-            templatePolynomial[0] = 1;
-
-            return templatePolynomial;
+            var one = new Polynomial(field, 1);
+            return one + (one >> degree);
         }
 
         /// <inheritdoc />
-        public Polynomial Find(GaloisField field, int degree)
+        public IEnumerable<Polynomial> Find(GaloisField field, int degree)
         {
             if(field == null)
                 throw new ArgumentNullException(nameof(field));
@@ -57,21 +45,12 @@
                 throw new ArgumentException(nameof(degree));
 
             var possibleDivisors = new List<Polynomial>();
-            for (var i = 1; i*i <= degree; i++)
-            {
-                var templatePolynomial = GenerateTemplatePolynomial(field, i);
-                Generate(templatePolynomial, 0,
-                    x =>
-                    {
-                        possibleDivisors.Add(new Polynomial(x));
-                        return false;
-                    });
-            }
+            for (var i = 1; i * i <= degree; i++)
+                possibleDivisors.AddRange(Generate(GetTemplatePolynomial(field, i), 0));
 
-            var result = GenerateTemplatePolynomial(field, degree);
-            Generate(result, 0, x => possibleDivisors.All(d => (x%d).IsZero == false));
-
-            return result;
+            Func<Polynomial, bool> predicate = x => possibleDivisors.All(d => (x % d).IsZero == false);
+            foreach (var polynomial in Generate(GetTemplatePolynomial(field, degree), 0, predicate))
+                yield return polynomial;
         }
     }
 }

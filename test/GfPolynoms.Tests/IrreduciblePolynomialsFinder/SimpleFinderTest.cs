@@ -15,22 +15,26 @@
         [InlineData(3, 3)]
         [InlineData(3, 4)]
         [InlineData(5, 3)]
-        [InlineData(5, 4)]
-        public void ShouldFindIrreduciblePolynomialsFinder(int fieldOrder, int degree)
+        public void ShouldFindIrreduciblePolynomials(int fieldOrder, int degree)
         {
             // Given
             var finder = new SimpleFinder();
 
             // When
-            var polynomial = finder.Find(GaloisField.Create(fieldOrder), degree);
+            var irreduciblePolynomials = finder.Find(GaloisField.Create(fieldOrder), degree);
 
             // Then
-            Assert.Equal(degree, polynomial.Degree);
-            Assert.NotNull(
-                GaloisField.Create(
-                    (int) Math.Pow(fieldOrder, degree),
-                    Enumerable.Range(0, polynomial.Degree + 1).Select(x => polynomial[x]).ToArray()
-                )
+            Assert.All(irreduciblePolynomials,
+                polynomial =>
+                {
+                    Assert.Equal(degree, polynomial.Degree);
+                    Assert.NotNull(
+                        GaloisField.Create(
+                            (int) Math.Pow(fieldOrder, degree),
+                            Enumerable.Range(0, polynomial.Degree + 1).Select(x => polynomial[x]).ToArray()
+                        )
+                    );
+                }
             );
         }
     }

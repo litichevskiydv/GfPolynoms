@@ -222,7 +222,7 @@
 
             if (characteristicDegree != 1)
                 return irreduciblePolynomialCoefficients == null
-                    ? new PrimePowerOrderField(order, new SimpleFinder().Find(new PrimeOrderField(characteristic), characteristicDegree))
+                    ? new PrimePowerOrderField(order, new SimpleFinder().Find(new PrimeOrderField(characteristic), characteristicDegree).First())
                     : new PrimePowerOrderField(order, new Polynomial(new PrimeOrderField(characteristic), irreduciblePolynomialCoefficients));
 
             if (irreduciblePolynomialCoefficients != null)
