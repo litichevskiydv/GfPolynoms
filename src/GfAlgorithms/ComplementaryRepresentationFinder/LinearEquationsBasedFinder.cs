@@ -37,35 +37,20 @@
                 );
         }
 
-        private static int GetPower(int a, int n)
-        {
-            var result = 1;
-            while (n > 0)
-            {
-                if ((n & 1) == 1)
-                    result *= a;
-
-                a *= a;
-                n >>= 1;
-            }
-
-            return result;
-        }
-
         private static IReadOnlyDictionary<int, ValueSource> PrepareValuesSources(GaloisField field, int coefficientsCount)
         {
             var valuesSources = new Dictionary<int, ValueSource>();
             var conjugacyClasses = field.GenerateConjugacyClasses(coefficientsCount);
             foreach (var conjugacyClass in conjugacyClasses)
             {
-                var conjugacyClassField = GaloisField.Create(GetPower(field.Order, conjugacyClass.Length));
+                var conjugacyClassField = GaloisField.Create(field.Order.Pow(conjugacyClass.Length));
                 for (var i = 0; i < conjugacyClass.Length; i++)
                 {
                     var valueIndex = conjugacyClass[i];
                     if (i == 0)
                         valuesSources[valueIndex] = new ValueSource(conjugacyClassField);
                     else
-                        valuesSources[valueIndex] = new ValueSource(conjugacyClassField, conjugacyClass[0], GetPower(field.Order, i));
+                        valuesSources[valueIndex] = new ValueSource(conjugacyClassField, conjugacyClass[0], field.Order.Pow(i));
                 }
             }
 
