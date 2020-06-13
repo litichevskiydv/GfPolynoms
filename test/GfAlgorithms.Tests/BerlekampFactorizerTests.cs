@@ -20,22 +20,24 @@
         private static Polynomial PreparePolynomialForSearchOfAllIrreducibleFactorsOfGivenDegree(GaloisField field, int requiredDegree)
         {
             var one = new Polynomial(field.One());
-            return (one >> (int) Math.Pow(field.Order, requiredDegree)) + (one >> 1);
+            return (one >> (int) Math.Pow(field.Order, requiredDegree)) - (one >> 1);
         }
 
         static BerlekampFactorizerTests()
         {
-            var gf3 = GaloisField.Create(3);
             var gf2 = GaloisField.Create(2);
+            var gf3 = GaloisField.Create(3);
+            var gf5 = GaloisField.Create(5);
 
             FactorizeTestsData
                 = new TheoryData<Polynomial>
                   {
                       new Polynomial(gf3, 2, 2),
-                      PreparePolynomialForSearchOfAllIrreducibleFactorsOfGivenDegree(gf3, 2),
                       PreparePolynomialForSearchOfAllIrreducibleFactorsOfGivenDegree(gf2, 4),
                       PreparePolynomialForSearchOfAllIrreducibleFactorsOfGivenDegree(gf2, 8),
-                      PreparePolynomialForSearchOfAllIrreducibleFactorsOfGivenDegree(gf2, 9)
+                      PreparePolynomialForSearchOfAllIrreducibleFactorsOfGivenDegree(gf2, 9),
+                      PreparePolynomialForSearchOfAllIrreducibleFactorsOfGivenDegree(gf3, 2),
+                      PreparePolynomialForSearchOfAllIrreducibleFactorsOfGivenDegree(gf5, 2)
                   };
         }
 
