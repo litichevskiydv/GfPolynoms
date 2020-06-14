@@ -7,14 +7,8 @@
     using JetBrains.Annotations;
     using PolynomialsFactorizer;
     using PolynomialsGcdFinder;
+    using TestCases;
     using Xunit;
-
-    public class FindParametersValidationTestCase
-    {
-        public GaloisField Field { get; set; }
-
-        public int Degree { get; set; }
-    }
 
     public class FactorizationBasedFinderTests
     {
