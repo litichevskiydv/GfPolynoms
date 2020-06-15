@@ -58,7 +58,7 @@
                 if(Field.Equals(element.Field) == false)
                     throw new ArgumentException("Incorrect field");
 
-                _elements[i, j] = element;
+                _elements[i, j] = new FieldElement(element);
             }
         }
 
