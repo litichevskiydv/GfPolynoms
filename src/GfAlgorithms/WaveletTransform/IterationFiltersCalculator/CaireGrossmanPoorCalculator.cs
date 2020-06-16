@@ -49,7 +49,7 @@
 
             var field = sourceFilter.GetField();
             var fieldExtension = field.FindExtensionContainingPrimitiveRoot(sourceFilterLength / 2);
-            var primitiveRoot = fieldExtension.CreateElement(fieldExtension.GetGeneratingElementDegree(filterLengthDecreasesTimes));
+            var primitiveRoot = fieldExtension.GetPrimitiveRoot(sourceFilterLength / 2).Pow(filterLengthDecreasesTimes);
 
             var (sourceFilterEvenComponent, sourceFilterOddComponent) = new Polynomial(sourceFilter).GetPolyphaseComponents();
             var iterationFilterComponentLength = sourceFilterLength / (2 * filterLengthDecreasesTimes);

@@ -21,10 +21,16 @@
 
         static CaireGrossmanPoorCalculatorTests()
         {
+            var gf2 = GaloisField.Create(2);
+            var gf3 = GaloisField.Create(3);
             var gf17 = GaloisField.Create(17);
 
             var hSource1 = Enumerable.Repeat(gf17.CreateElement(16), 2).Concat(Enumerable.Repeat(gf17.Zero(), 14)).ToArray();
             var gSource1 = new[] { gf17.One(), gf17.CreateElement(16) }.Concat(Enumerable.Repeat(gf17.Zero(), 14)).ToArray();
+            var hSource2 = new[] {1, 0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 1}.Select(x => gf2.CreateElement(x)).ToArray();
+            var gSource2 = new[] {1, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 1}.Select(x => gf2.CreateElement(x)).ToArray();
+            var hSource3 = new[] {2, 1, 0, 0, 1, 1, 0, 0}.Select(x => gf3.CreateElement(x)).ToArray();
+            var gSource3 = new[] {0, 0, 1, 1, 0, 0, 1, 2}.Select(x => gf3.CreateElement(x)).ToArray();
 
             IterationFilterVectorCalculationTestCases
                 = new TheoryData<IterationFilterVectorCalculationTestCase>
@@ -94,6 +100,10 @@
                     new OrthogonalIterationFiltersVectorsCalculationTestCase(2, hSource1, gSource1, gf17.CreateElement(2)),
                     new OrthogonalIterationFiltersVectorsCalculationTestCase(3, hSource1, gSource1, gf17.CreateElement(2)),
                     new OrthogonalIterationFiltersVectorsCalculationTestCase(4, hSource1, gSource1, gf17.CreateElement(2)),
+                    new OrthogonalIterationFiltersVectorsCalculationTestCase(1, hSource2, gSource2),
+                    new OrthogonalIterationFiltersVectorsCalculationTestCase(1, hSource3, gSource3),
+                    new OrthogonalIterationFiltersVectorsCalculationTestCase(2, hSource3, gSource3),
+                    new OrthogonalIterationFiltersVectorsCalculationTestCase(3, hSource3, gSource3),
                   };
         }
 
