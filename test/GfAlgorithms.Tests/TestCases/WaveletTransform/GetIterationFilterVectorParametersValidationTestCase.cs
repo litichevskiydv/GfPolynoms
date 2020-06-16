@@ -2,12 +2,10 @@
 {
     using GfPolynoms;
 
-    public class IterationFilterVectorCalculationTestCase
+    public class GetIterationFilterVectorParametersValidationTestCase
     {
         public int IterationNumber { get; set; } 
         
         public FieldElement[] SourceFilter { get; set; }
-
-        public FieldElement[] ExpectedIterationFilter { get; set; }
     }
 }

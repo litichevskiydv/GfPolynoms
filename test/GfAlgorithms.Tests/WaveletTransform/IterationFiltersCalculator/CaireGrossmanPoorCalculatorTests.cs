@@ -1,7 +1,9 @@
 ﻿namespace AppliedAlgebra.GfAlgorithms.Tests.WaveletTransform.IterationFiltersCalculator
 {
+    using System;
     using System.Linq;
     using GfAlgorithms.WaveletTransform.IterationFiltersCalculator;
+    using GfPolynoms;
     using GfPolynoms.Extensions;
     using GfPolynoms.GaloisFields;
     using JetBrains.Annotations;
@@ -15,7 +17,7 @@
         private readonly CaireGrossmanPoorCalculator _iterationFiltersCalculator;
 
         [UsedImplicitly]
-        public static TheoryData<IterationFilterVectorCalculationTestCase> IterationFilterVectorCalculationTestCases;
+        public static TheoryData<GetIterationFilterVectorParametersValidationTestCase> GetIterationFilterVectorParametersValidationTestCases;
         [UsedImplicitly]
         public static TheoryData<OrthogonalIterationFiltersVectorsCalculationTestCase> OrthogonalIterationFiltersVectorsCalculationTestCases;
 
@@ -25,72 +27,20 @@
             var gf3 = GaloisField.Create(3);
             var gf17 = GaloisField.Create(17);
 
-            var hSource1 = Enumerable.Repeat(gf17.CreateElement(16), 2).Concat(Enumerable.Repeat(gf17.Zero(), 14)).ToArray();
-            var gSource1 = new[] { gf17.One(), gf17.CreateElement(16) }.Concat(Enumerable.Repeat(gf17.Zero(), 14)).ToArray();
+            var hSource1 = new[] {16, 16, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}.Select(x => gf17.CreateElement(x)).ToArray();
+            var gSource1 = new[] {1, 16, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}.Select(x => gf17.CreateElement(x)).ToArray();
             var hSource2 = new[] {1, 0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 1}.Select(x => gf2.CreateElement(x)).ToArray();
             var gSource2 = new[] {1, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 1}.Select(x => gf2.CreateElement(x)).ToArray();
             var hSource3 = new[] {2, 1, 0, 0, 1, 1, 0, 0}.Select(x => gf3.CreateElement(x)).ToArray();
             var gSource3 = new[] {0, 0, 1, 1, 0, 0, 1, 2}.Select(x => gf3.CreateElement(x)).ToArray();
 
-            IterationFilterVectorCalculationTestCases
-                = new TheoryData<IterationFilterVectorCalculationTestCase>
+            GetIterationFilterVectorParametersValidationTestCases
+                = new TheoryData<GetIterationFilterVectorParametersValidationTestCase>
                   {
-                      new IterationFilterVectorCalculationTestCase
-                      {
-                          IterationNumber = 1,
-                          SourceFilter = hSource1,
-                          ExpectedIterationFilter = hSource1
-
-                      },
-                      new IterationFilterVectorCalculationTestCase
-                      {
-                          IterationNumber = 1,
-                          SourceFilter = gSource1,
-                          ExpectedIterationFilter = gSource1
-
-                      },
-                      new IterationFilterVectorCalculationTestCase
-                      {
-                          IterationNumber = 2,
-                          SourceFilter = hSource1,
-                          ExpectedIterationFilter = Enumerable.Repeat(gf17.CreateElement(16), 2).Concat(Enumerable.Repeat(gf17.Zero(), 6)).ToArray()
-
-                      },
-                      new IterationFilterVectorCalculationTestCase
-                      {
-                          IterationNumber = 2,
-                          SourceFilter = gSource1,
-                          ExpectedIterationFilter = new[] {gf17.One(), gf17.CreateElement(16)}.Concat(Enumerable.Repeat(gf17.Zero(), 6)).ToArray()
-
-                      },
-                      new IterationFilterVectorCalculationTestCase
-                      {
-                          IterationNumber = 3,
-                          SourceFilter = hSource1,
-                          ExpectedIterationFilter = Enumerable.Repeat(gf17.CreateElement(16), 2).Concat(Enumerable.Repeat(gf17.Zero(), 2)).ToArray()
-
-                      },
-                      new IterationFilterVectorCalculationTestCase
-                      {
-                          IterationNumber = 3,
-                          SourceFilter = gSource1,
-                          ExpectedIterationFilter = new[] {gf17.One(), gf17.CreateElement(16)}.Concat(Enumerable.Repeat(gf17.Zero(), 2)).ToArray()
-
-                      },
-                      new IterationFilterVectorCalculationTestCase
-                      {
-                          IterationNumber = 4,
-                          SourceFilter = hSource1,
-                          ExpectedIterationFilter = new[] {gf17.CreateElement(16), gf17.CreateElement(16)}
-
-                      },
-                      new IterationFilterVectorCalculationTestCase
-                      {
-                          IterationNumber = 4,
-                          SourceFilter = gSource1,
-                          ExpectedIterationFilter = new[] {gf17.One(), gf17.CreateElement(16)}
-
-                      }
+                      new GetIterationFilterVectorParametersValidationTestCase {IterationNumber = -1, SourceFilter = hSource3},
+                      new GetIterationFilterVectorParametersValidationTestCase {IterationNumber = 1},
+                      new GetIterationFilterVectorParametersValidationTestCase {IterationNumber = 1, SourceFilter = new FieldElement[0]},
+                      new GetIterationFilterVectorParametersValidationTestCase {IterationNumber = 4, SourceFilter = hSource3}
                   };
 
             OrthogonalIterationFiltersVectorsCalculationTestCases
@@ -113,14 +63,10 @@
         }
 
         [Theory]
-        [MemberData(nameof(IterationFilterVectorCalculationTestCases))]
-        public void MustCalculateIterationFilterVector(IterationFilterVectorCalculationTestCase testCase)
+        [MemberData(nameof(GetIterationFilterVectorParametersValidationTestCases))]
+        public void GetIterationFilterVectorMustValidateParameters(GetIterationFilterVectorParametersValidationTestCase testCase)
         {
-            // When
-            var actualIterationFilter = _iterationFiltersCalculator.GetIterationFilter(testCase.IterationNumber, testCase.SourceFilter);
-
-            // Then
-            Assert.Equal(testCase.ExpectedIterationFilter, actualIterationFilter);
+            Assert.ThrowsAny<ArgumentException>(() => _iterationFiltersCalculator.GetIterationFilter(testCase.IterationNumber, testCase.SourceFilter));
         }
 
         [Theory]
