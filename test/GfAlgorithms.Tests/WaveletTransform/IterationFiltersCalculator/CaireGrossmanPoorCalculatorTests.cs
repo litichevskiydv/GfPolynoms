@@ -98,5 +98,15 @@
             Assert.Equal(halfSizeZeroMatrix, hMatrix * gMatrixTransposed);
             Assert.Equal(halfSizeZeroMatrix, gMatrix * hMatrixTransposed);
         }
+
+        [Fact]
+        public void GetIterationFilterPolynomialMustValidateParameters()
+        {
+            // Given
+            Polynomial sourceFilter = null;
+
+            // When, Then
+            Assert.Throws<ArgumentNullException>(() => _iterationFiltersCalculator.GetIterationFilter(1, sourceFilter));
+        }
     }
 }
