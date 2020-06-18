@@ -2,6 +2,7 @@
 {
     using System;
     using System.Linq;
+    using Extensions;
     using GfAlgorithms.WaveletTransform.IterationFiltersCalculator;
     using GfPolynoms;
     using GfPolynoms.Extensions;
@@ -69,44 +70,63 @@
             Assert.ThrowsAny<ArgumentException>(() => _iterationFiltersCalculator.GetIterationFilter(testCase.IterationNumber, testCase.SourceFilter));
         }
 
+        [Fact]
+        public void GetIterationFilterPolynomialMustValidateParameters()
+        {
+            Assert.Throws<ArgumentNullException>(() => _iterationFiltersCalculator.GetIterationFilter(1, (Polynomial)null));
+        }
+
+        private static void CheckIterationFiltersVectors(FieldElement[] iterationFilterH, FieldElement[] iterationFilterG, FieldElement multiplier = null)
+        {
+            var hMatrix = FieldElementsMatrix.DoubleCirculantMatrix(iterationFilterH);
+            var hMatrixTransposed = FieldElementsMatrix.Transpose(hMatrix);
+            var gMatrix = FieldElementsMatrix.DoubleCirculantMatrix(iterationFilterG);
+            var gMatrixTransposed = FieldElementsMatrix.Transpose(gMatrix);
+            var checkedMultiplier = multiplier ?? hMatrix.Field.One();
+
+            var fullSizeIdentityMatrix = FieldElementsMatrix.IdentityMatrix(hMatrix.Field, iterationFilterH.Length);
+            Assert.Equal(checkedMultiplier * fullSizeIdentityMatrix, hMatrixTransposed * hMatrix + gMatrixTransposed * gMatrix);
+
+            var halfSizeIdentityMatrix = FieldElementsMatrix.IdentityMatrix(hMatrix.Field, iterationFilterH.Length / 2);
+            var halfSizeZeroMatrix = FieldElementsMatrix.ZeroMatrix(hMatrix.Field, iterationFilterH.Length / 2);
+            Assert.Equal(checkedMultiplier * halfSizeIdentityMatrix, hMatrix * hMatrixTransposed);
+            Assert.Equal(checkedMultiplier * halfSizeIdentityMatrix, gMatrix * gMatrixTransposed);
+            Assert.Equal(halfSizeZeroMatrix, hMatrix * gMatrixTransposed);
+            Assert.Equal(halfSizeZeroMatrix, gMatrix * hMatrixTransposed);
+        }
+
         [Theory]
         [MemberData(nameof(OrthogonalIterationFiltersVectorsCalculationTestCases))]
         public void MustCalculateOrthogonalIterationFiltersVectors(OrthogonalIterationFiltersVectorsCalculationTestCase testCase)
         {
-            // Given
-            var field = testCase.SourceFilterH[0].Field;
-            var multiplier = testCase.Multiplier ?? field.One();
-
             // When
             var iterationFilterH = _iterationFiltersCalculator.GetIterationFilter(testCase.IterationNumber, testCase.SourceFilterH);
             var iterationFilterG = _iterationFiltersCalculator.GetIterationFilter(testCase.IterationNumber, testCase.SourceFilterG);
 
             // Then
-            var hMatrix = FieldElementsMatrix.DoubleCirculantMatrix(iterationFilterH);
-            var hMatrixTransposed = FieldElementsMatrix.Transpose(hMatrix);
-            var gMatrix = FieldElementsMatrix.DoubleCirculantMatrix(iterationFilterG);
-            var gMatrixTransposed = FieldElementsMatrix.Transpose(gMatrix);
-
-
-            var fullSizeIdentityMatrix = FieldElementsMatrix.IdentityMatrix(hMatrix.Field, iterationFilterH.Length);
-            Assert.Equal(multiplier * fullSizeIdentityMatrix, hMatrixTransposed * hMatrix + gMatrixTransposed * gMatrix);
-
-            var halfSizeIdentityMatrix = FieldElementsMatrix.IdentityMatrix(hMatrix.Field, iterationFilterH.Length / 2);
-            var halfSizeZeroMatrix = FieldElementsMatrix.ZeroMatrix(hMatrix.Field, iterationFilterH.Length / 2);
-            Assert.Equal(multiplier * halfSizeIdentityMatrix, hMatrix * hMatrixTransposed);
-            Assert.Equal(multiplier * halfSizeIdentityMatrix, gMatrix * gMatrixTransposed);
-            Assert.Equal(halfSizeZeroMatrix, hMatrix * gMatrixTransposed);
-            Assert.Equal(halfSizeZeroMatrix, gMatrix * hMatrixTransposed);
+            CheckIterationFiltersVectors(iterationFilterH, iterationFilterG, testCase.Multiplier);
         }
 
-        [Fact]
-        public void GetIterationFilterPolynomialMustValidateParameters()
+        [Theory]
+        [MemberData(nameof(OrthogonalIterationFiltersVectorsCalculationTestCases))]
+        public void MustCalculateOrthogonalIterationFiltersPolynomials(OrthogonalIterationFiltersVectorsCalculationTestCase testCase)
         {
             // Given
-            Polynomial sourceFilter = null;
+            var sourceFilterExpectedDegree = testCase.SourceFilterH.Length - 1;
+            var hFilterPolynomial = new Polynomial(testCase.SourceFilterH);
+            var gFilterPolynomial = new Polynomial(testCase.SourceFilterG);
 
-            // When, Then
-            Assert.Throws<ArgumentNullException>(() => _iterationFiltersCalculator.GetIterationFilter(1, sourceFilter));
+            // When
+            var iterationFilterH = _iterationFiltersCalculator.GetIterationFilter(testCase.IterationNumber, hFilterPolynomial, sourceFilterExpectedDegree);
+            var iterationFilterG = _iterationFiltersCalculator.GetIterationFilter(testCase.IterationNumber, gFilterPolynomial, sourceFilterExpectedDegree);
+
+            // Then
+            var iterationFilterExpectedDegree = testCase.SourceFilterH.Length / 2.Pow(testCase.IterationNumber - 1) - 1;
+            CheckIterationFiltersVectors(
+                iterationFilterH.GetCoefficients(iterationFilterExpectedDegree),
+                iterationFilterG.GetCoefficients(iterationFilterExpectedDegree),
+                testCase.Multiplier
+            );
         }
     }
 }
