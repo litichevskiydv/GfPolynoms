@@ -10,7 +10,7 @@
     /// <summary>
     /// Iteration filters calculator based on Caire-Grossman-Poor algorithm
     /// </summary>
-    public class CaireGrossmanPoorCalculator : IIterationFiltersCalculator
+    public class CaireGrossmanPoorCalculator : IterationFiltersCalculatorBase
     {
         private static Polynomial GetIterationFilterComponent(
             Polynomial sourceFilterComponent,
@@ -29,25 +29,14 @@
             return new Polynomial(iterationFilterComponentValues.GetSignal()).TransferFromSubfield(field);
         }
 
-        /// <inheritdoc />
-        public FieldElement[] GetIterationFilter(int iterationNumber, FieldElement[] sourceFilter)
+        protected override FieldElement[] GetIterationFilter(
+            int iterationNumber,
+            GaloisField field,
+            FieldElement[] sourceFilter,
+            int sourceFilterLength,
+            int filterLengthDecreasesTimes
+        )
         {
-            if(iterationNumber <= 0)
-                throw new ArgumentException($"{nameof(iterationNumber)} must be positive");
-            if (sourceFilter == null)
-                throw new ArgumentNullException(nameof(sourceFilter));
-            if(sourceFilter.Length == 0)
-                throw new ArgumentException($"{nameof(sourceFilter)} length must be positive");
-
-            if (iterationNumber == 1)
-                return sourceFilter;
-
-            var sourceFilterLength = sourceFilter.Length;
-            var filterLengthDecreasesTimes = 2.Pow(iterationNumber - 1);
-            if (sourceFilterLength % (2 * filterLengthDecreasesTimes) != 0)
-                throw new ArgumentException($"{nameof(sourceFilter)} length is incorrect");
-
-            var field = sourceFilter.GetField();
             var fieldExtension = field.FindExtensionContainingPrimitiveRoot(sourceFilterLength / 2);
             var primitiveRoot = fieldExtension.GetPrimitiveRoot(sourceFilterLength / 2).Pow(filterLengthDecreasesTimes);
 
@@ -58,15 +47,6 @@
                     GetIterationFilterComponent(sourceFilterOddComponent, iterationFilterComponentLength, primitiveRoot, field)
                 )
                 .GetCoefficients(2 * iterationFilterComponentLength - 1);
-        }
-
-        /// <inheritdoc />
-        public Polynomial GetIterationFilter(int iterationNumber, Polynomial sourceFilter, int? expectedDegree = null)
-        {
-            if(sourceFilter == null)
-                throw new ArgumentNullException(nameof(sourceFilter));
-
-            return new Polynomial(GetIterationFilter(iterationNumber, sourceFilter.GetCoefficients(expectedDegree)));
         }
     }
 }
