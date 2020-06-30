@@ -18,42 +18,19 @@
 
         [UsedImplicitly]
         public static TheoryData<GetIterationFilterVectorParametersValidationTestCase> GetIterationFilterVectorParametersValidationTestCases;
-        [UsedImplicitly]
-        public static TheoryData<OrthogonalIterationFiltersVectorsCalculationTestCase> OrthogonalIterationFiltersVectorsCalculationTestCases;
 
         static IterationFiltersCalculatorTestsBase()
         {
-            var gf2 = GaloisField.Create(2);
             var gf3 = GaloisField.Create(3);
-            var gf17 = GaloisField.Create(17);
-
-            var hSource1 = new[] { 16, 16, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }.Select(x => gf17.CreateElement(x)).ToArray();
-            var gSource1 = new[] { 1, 16, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }.Select(x => gf17.CreateElement(x)).ToArray();
-            var hSource2 = new[] { 1, 0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 1 }.Select(x => gf2.CreateElement(x)).ToArray();
-            var gSource2 = new[] { 1, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 1 }.Select(x => gf2.CreateElement(x)).ToArray();
-            var hSource3 = new[] { 2, 1, 0, 0, 1, 1, 0, 0 }.Select(x => gf3.CreateElement(x)).ToArray();
-            var gSource3 = new[] { 0, 0, 1, 1, 0, 0, 1, 2 }.Select(x => gf3.CreateElement(x)).ToArray();
+            var hSource = new[] { 2, 1, 0, 0, 1, 1, 0, 0 }.Select(x => gf3.CreateElement(x)).ToArray();
 
             GetIterationFilterVectorParametersValidationTestCases
                 = new TheoryData<GetIterationFilterVectorParametersValidationTestCase>
                   {
-                      new GetIterationFilterVectorParametersValidationTestCase {IterationNumber = -1, SourceFilter = hSource3},
+                      new GetIterationFilterVectorParametersValidationTestCase {IterationNumber = -1, SourceFilter = hSource},
                       new GetIterationFilterVectorParametersValidationTestCase {IterationNumber = 1},
                       new GetIterationFilterVectorParametersValidationTestCase {IterationNumber = 1, SourceFilter = new FieldElement[0]},
-                      new GetIterationFilterVectorParametersValidationTestCase {IterationNumber = 4, SourceFilter = hSource3}
-                  };
-
-            OrthogonalIterationFiltersVectorsCalculationTestCases
-                = new TheoryData<OrthogonalIterationFiltersVectorsCalculationTestCase>
-                  {
-                    new OrthogonalIterationFiltersVectorsCalculationTestCase(1, hSource1, gSource1, gf17.CreateElement(2)),
-                    new OrthogonalIterationFiltersVectorsCalculationTestCase(2, hSource1, gSource1, gf17.CreateElement(2)),
-                    new OrthogonalIterationFiltersVectorsCalculationTestCase(3, hSource1, gSource1, gf17.CreateElement(2)),
-                    new OrthogonalIterationFiltersVectorsCalculationTestCase(4, hSource1, gSource1, gf17.CreateElement(2)),
-                    new OrthogonalIterationFiltersVectorsCalculationTestCase(1, hSource2, gSource2),
-                    new OrthogonalIterationFiltersVectorsCalculationTestCase(1, hSource3, gSource3),
-                    new OrthogonalIterationFiltersVectorsCalculationTestCase(2, hSource3, gSource3),
-                    new OrthogonalIterationFiltersVectorsCalculationTestCase(3, hSource3, gSource3),
+                      new GetIterationFilterVectorParametersValidationTestCase {IterationNumber = 4, SourceFilter = hSource}
                   };
         }
 
@@ -94,32 +71,24 @@
             Assert.Equal(halfSizeZeroMatrix, gMatrix * hMatrixTransposed);
         }
 
-        [Theory]
-        [MemberData(nameof(OrthogonalIterationFiltersVectorsCalculationTestCases))]
-        public void MustCalculateOrthogonalIterationFiltersVectors(OrthogonalIterationFiltersVectorsCalculationTestCase testCase)
+        protected void TestOrthogonalIterationFiltersVectorsCalculation(OrthogonalIterationFiltersVectorsCalculationTestCase testCase)
         {
-            // When
             var iterationFilterH = IterationFiltersCalculator.GetIterationFilter(testCase.IterationNumber, testCase.SourceFilterH);
             var iterationFilterG = IterationFiltersCalculator.GetIterationFilter(testCase.IterationNumber, testCase.SourceFilterG);
 
-            // Then
             CheckIterationFiltersVectors(iterationFilterH, iterationFilterG, testCase.Multiplier);
         }
 
-        [Theory]
-        [MemberData(nameof(OrthogonalIterationFiltersVectorsCalculationTestCases))]
-        public void MustCalculateOrthogonalIterationFiltersPolynomials(OrthogonalIterationFiltersVectorsCalculationTestCase testCase)
+
+        protected void TestOrthogonalIterationFiltersPolynomialsCalculation(OrthogonalIterationFiltersVectorsCalculationTestCase testCase)
         {
-            // Given
             var sourceFilterExpectedDegree = testCase.SourceFilterH.Length - 1;
             var hFilterPolynomial = new Polynomial(testCase.SourceFilterH);
             var gFilterPolynomial = new Polynomial(testCase.SourceFilterG);
 
-            // When
             var iterationFilterH = IterationFiltersCalculator.GetIterationFilter(testCase.IterationNumber, hFilterPolynomial, sourceFilterExpectedDegree);
             var iterationFilterG = IterationFiltersCalculator.GetIterationFilter(testCase.IterationNumber, gFilterPolynomial, sourceFilterExpectedDegree);
 
-            // Then
             var iterationFilterExpectedDegree = testCase.SourceFilterH.Length / 2.Pow(testCase.IterationNumber - 1) - 1;
             CheckIterationFiltersVectors(
                 iterationFilterH.GetCoefficients(iterationFilterExpectedDegree),
