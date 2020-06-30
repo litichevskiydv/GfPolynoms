@@ -79,7 +79,6 @@
             CheckIterationFiltersVectors(iterationFilterH, iterationFilterG, testCase.Multiplier);
         }
 
-
         protected void TestOrthogonalIterationFiltersPolynomialsCalculation(OrthogonalIterationFiltersVectorsCalculationTestCase testCase)
         {
             var sourceFilterExpectedDegree = testCase.SourceFilterH.Length - 1;
@@ -95,6 +94,20 @@
                 iterationFilterG.GetCoefficients(iterationFilterExpectedDegree),
                 testCase.Multiplier
             );
+        }
+
+        protected void TestComplementaryIterationFiltersVectorsCalculation(ComplementaryIterationFiltersVectorsCalculationTestCase testCase)
+        {
+            var iterationFilterH = IterationFiltersCalculator.GetIterationFilter(testCase.IterationNumber, testCase.SourceFilterH);
+            var iterationFilterG = IterationFiltersCalculator.GetIterationFilter(testCase.IterationNumber, testCase.SourceFilterG);
+
+            var field = testCase.SourceFilterH.GetField();
+            var one = new Polynomial(field, 1);
+            var modularPolynomial = (one >> (iterationFilterH.Length / 2)) - one;
+
+            var (he, ho) = new Polynomial(iterationFilterH).GetPolyphaseComponents();
+            var (ge, go) = new Polynomial(iterationFilterG).GetPolyphaseComponents();
+            Assert.Equal(one, (he * go - ho * ge) % modularPolynomial);
         }
     }
 }

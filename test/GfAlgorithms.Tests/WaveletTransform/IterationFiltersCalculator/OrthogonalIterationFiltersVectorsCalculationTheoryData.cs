@@ -1,6 +1,5 @@
 ﻿namespace AppliedAlgebra.GfAlgorithms.Tests.WaveletTransform.IterationFiltersCalculator
 {
-    using System.Linq;
     using GfPolynoms.Extensions;
     using GfPolynoms.GaloisFields;
     using TestCases.WaveletTransform;
@@ -14,12 +13,12 @@
             var gf3 = GaloisField.Create(3);
             var gf17 = GaloisField.Create(17);
 
-            var hSource1 = new[] {16, 16, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}.Select(x => gf17.CreateElement(x)).ToArray();
-            var gSource1 = new[] {1, 16, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}.Select(x => gf17.CreateElement(x)).ToArray();
-            var hSource2 = new[] {1, 0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 1}.Select(x => gf2.CreateElement(x)).ToArray();
-            var gSource2 = new[] {1, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 1}.Select(x => gf2.CreateElement(x)).ToArray();
-            var hSource3 = new[] {2, 1, 0, 0, 1, 1, 0, 0}.Select(x => gf3.CreateElement(x)).ToArray();
-            var gSource3 = new[] {0, 0, 1, 1, 0, 0, 1, 2}.Select(x => gf3.CreateElement(x)).ToArray();
+            var hSource1 = gf17.CreateElementsVector(16, 16, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+            var gSource1 = gf17.CreateElementsVector(1, 16, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+            var hSource2 = gf2.CreateElementsVector(1, 0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 1);
+            var gSource2 = gf2.CreateElementsVector(1, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 1);
+            var hSource3 = gf3.CreateElementsVector(2, 1, 0, 0, 1, 1, 0, 0);
+            var gSource3 = gf3.CreateElementsVector(0, 0, 1, 1, 0, 0, 1, 2);
 
             Add(new OrthogonalIterationFiltersVectorsCalculationTestCase(1, hSource1, gSource1, gf17.CreateElement(2)));
             Add(new OrthogonalIterationFiltersVectorsCalculationTestCase(2, hSource1, gSource1, gf17.CreateElement(2)));

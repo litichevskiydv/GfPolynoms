@@ -32,6 +32,19 @@
         }
 
         /// <summary>
+        /// Returns field elements vector constructed from components representation
+        /// </summary>
+        public static FieldElement[] CreateElementsVector(this GaloisField field, params int[] componentsRepresentations)
+        {
+            if(componentsRepresentations == null)
+                throw new ArgumentNullException(nameof(componentsRepresentations));
+            if(componentsRepresentations.Length == 0)
+                throw new ArgumentException($"{componentsRepresentations.Length} must not be zero");
+
+            return componentsRepresentations.Select(field.CreateElement).ToArray();
+        }
+
+        /// <summary>
         /// Finds extension of the field <paramref name="field"/> containing root of unity of the order <paramref name="rootOrder"/>
         /// </summary>
         /// <param name="field">Extendable field</param>
