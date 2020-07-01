@@ -10,6 +10,17 @@
     public static class FieldElementsVectorExtensions
     {
         /// <summary>
+        /// Creates deep copy of the source vector <paramref name="source"/>
+        /// </summary>
+        public static FieldElement[] CloneVector(this FieldElement[] source)
+        {
+            if(source == null)
+                throw new ArgumentNullException(nameof(source));
+
+            return source.Select(component => new FieldElement(component)).ToArray();
+        }
+
+        /// <summary>
         /// Computes the Hamming distance between codewords <paramref name="first"/> and <paramref name="second"/>
         /// </summary>
         public static int ComputeHammingDistance(this FieldElement[] first, FieldElement[] second)

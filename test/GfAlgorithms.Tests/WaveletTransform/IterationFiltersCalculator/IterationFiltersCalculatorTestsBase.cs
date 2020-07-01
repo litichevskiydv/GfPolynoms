@@ -34,7 +34,7 @@
                   };
         }
 
-        public IterationFiltersCalculatorTestsBase(IIterationFiltersCalculator iterationFiltersCalculator)
+        protected IterationFiltersCalculatorTestsBase(IIterationFiltersCalculator iterationFiltersCalculator)
         {
             IterationFiltersCalculator = iterationFiltersCalculator;
         }
