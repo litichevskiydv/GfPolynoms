@@ -26,7 +26,7 @@
             if (powersCache.TryGetValue(degree, out result) == false)
             {
                 if (degree == 0)
-                    result = new BiVariablePolynomial(polynomial.Field) {[new Tuple<int, int>(0, 0)] = polynomial.Field.One()};
+                    result = new BiVariablePolynomial(polynomial.Field) {[(0, 0)] = polynomial.Field.One()};
                 else
                     result = Pow(powersCache, polynomial, degree - 1)*polynomial;
                 powersCache[degree] = result;
@@ -62,8 +62,8 @@
             var yCache = new Dictionary<int, BiVariablePolynomial>(polynomial.CoefficientsCount);
 
             foreach (var coefficient in polynomial)
-                result.Add(coefficient.Value, Pow(xCache, xSubstitution, coefficient.Key.Item1)
-                                              *Pow(yCache, ySubstitution, coefficient.Key.Item2));
+                result.Add(coefficient.Value, Pow(xCache, xSubstitution, coefficient.Key.xDegree)
+                                              *Pow(yCache, ySubstitution, coefficient.Key.yDegree));
 
             return result;
         }
@@ -82,9 +82,9 @@
             if (polynomial.IsZero)
                 return result;
 
-            var minXDegree = polynomial.Min(x => x.Key.Item1);
+            var minXDegree = polynomial.Min(x => x.Key.xDegree);
             foreach (var coefficient in polynomial)
-                result[new Tuple<int, int>(coefficient.Key.Item1 - minXDegree, coefficient.Key.Item2)] = new FieldElement(coefficient.Value);
+                result[(coefficient.Key.xDegree - minXDegree, coefficient.Key.yDegree)] = new FieldElement(coefficient.Value);
 
             return result;
         }
@@ -107,8 +107,8 @@
             var field = polynomial.Field;
             var resultCoefficients = new int[polynomial.MaxYDegree + 1];
             foreach (var coefficient in polynomial)
-                resultCoefficients[coefficient.Key.Item2] = field.Add(resultCoefficients[coefficient.Key.Item2],
-                    field.Multiply(coefficient.Value.Representation, field.Pow(xValue.Representation, coefficient.Key.Item1)));
+                resultCoefficients[coefficient.Key.yDegree] = field.Add(resultCoefficients[coefficient.Key.yDegree],
+                    field.Multiply(coefficient.Value.Representation, field.Pow(xValue.Representation, coefficient.Key.xDegree)));
 
             return new Polynomial(field, resultCoefficients);
         }
@@ -131,8 +131,8 @@
             var field = polynomial.Field;
             var resultCoefficients = new int[polynomial.MaxXDegree + 1];
             foreach (var coefficient in polynomial)
-                resultCoefficients[coefficient.Key.Item1] = field.Add(resultCoefficients[coefficient.Key.Item1],
-                    field.Multiply(coefficient.Value.Representation, field.Pow(yValue.Representation, coefficient.Key.Item2)));
+                resultCoefficients[coefficient.Key.xDegree] = field.Add(resultCoefficients[coefficient.Key.xDegree],
+                    field.Multiply(coefficient.Value.Representation, field.Pow(yValue.Representation, coefficient.Key.yDegree)));
 
             return new Polynomial(field, resultCoefficients);
         }
@@ -157,15 +157,15 @@
 
             foreach (var coefficient in polynomial)
             {
-                if (coefficient.Key.Item1 < r || coefficient.Key.Item2 < s)
+                if (coefficient.Key.xDegree < r || coefficient.Key.yDegree < s)
                     continue;
 
-                var currentAddition = combinationsCountCalculator.Calculate(field, coefficient.Key.Item1, r, combinationsCache).Representation;
+                var currentAddition = combinationsCountCalculator.Calculate(field, coefficient.Key.xDegree, r, combinationsCache).Representation;
                 currentAddition = field.Multiply(currentAddition,
-                    combinationsCountCalculator.Calculate(field, coefficient.Key.Item2, s, combinationsCache).Representation);
+                    combinationsCountCalculator.Calculate(field, coefficient.Key.yDegree, s, combinationsCache).Representation);
                 currentAddition = field.Multiply(currentAddition, coefficient.Value.Representation);
-                currentAddition = field.Multiply(currentAddition, field.Pow(xValue.Representation, coefficient.Key.Item1 - r));
-                currentAddition = field.Multiply(currentAddition, field.Pow(yValue.Representation, coefficient.Key.Item2 - s));
+                currentAddition = field.Multiply(currentAddition, field.Pow(xValue.Representation, coefficient.Key.xDegree - r));
+                currentAddition = field.Multiply(currentAddition, field.Pow(yValue.Representation, coefficient.Key.yDegree - s));
 
                 derivativeValue = field.Add(derivativeValue, currentAddition);
             }

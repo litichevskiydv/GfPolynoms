@@ -20,23 +20,23 @@
                   {
                       new BiVariableMonomialsComparisonTestCase
                       {
-                          FirstOperand = Tuple.Create(1, 1), SecondOperand = Tuple.Create(1, 1), ExpectedResult = 0
+                          FirstOperand = (1, 1), SecondOperand = (1, 1), ExpectedResult = 0
                       },
                       new BiVariableMonomialsComparisonTestCase
                       {
-                          FirstOperand = Tuple.Create(0, 1), SecondOperand = Tuple.Create(1, 1), ExpectedResult = -1
+                          FirstOperand = (0, 1), SecondOperand = (1, 1), ExpectedResult = -1
                       },
                       new BiVariableMonomialsComparisonTestCase
                       {
-                          FirstOperand = Tuple.Create(1, 1), SecondOperand = Tuple.Create(0, 1), ExpectedResult = 1
+                          FirstOperand = (1, 1), SecondOperand = (0, 1), ExpectedResult = 1
                       },
                       new BiVariableMonomialsComparisonTestCase
                       {
-                          FirstOperand = Tuple.Create(0, 2), SecondOperand = Tuple.Create(3, 1), ExpectedResult = -1
+                          FirstOperand = (0, 2), SecondOperand = (3, 1), ExpectedResult = -1
                       },
                       new BiVariableMonomialsComparisonTestCase
                       {
-                          FirstOperand = Tuple.Create(3, 1), SecondOperand = Tuple.Create(0, 2), ExpectedResult = 1
+                          FirstOperand = (3, 1), SecondOperand = (0, 2), ExpectedResult = 1
                       }
                   };
         }

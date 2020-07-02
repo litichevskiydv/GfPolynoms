@@ -1,6 +1,5 @@
 ﻿namespace AppliedAlgebra.GfAlgorithms.Tests
 {
-    using System;
     using System.Collections.Generic;
     using BiVariablePolynomials;
     using CombinationsCountCalculator;
@@ -45,11 +44,11 @@
 
             var polynomialForEvoluation = new BiVariablePolynomial(Gf5)
                                           {
-                                              [new Tuple<int, int>(1, 1)] = Gf5.CreateElement(2),
-                                              [new Tuple<int, int>(0, 1)] = Gf5.One(),
-                                              [new Tuple<int, int>(2, 0)] = Gf5.One(),
-                                              [new Tuple<int, int>(1, 0)] = Gf5.One(),
-                                              [new Tuple<int, int>(0, 0)] = Gf5.CreateElement(4)
+                                              [(1, 1)] = Gf5.CreateElement(2),
+                                              [(0, 1)] = Gf5.One(),
+                                              [(2, 0)] = Gf5.One(),
+                                              [(1, 0)] = Gf5.One(),
+                                              [(0, 0)] = Gf5.CreateElement(4)
                                           };
             EvaluateTestsData
                 = new TheoryData<EvaluationTestCase>
@@ -91,40 +90,40 @@
                       {
                           FirstOperand = new BiVariablePolynomial(Gf5)
                                          {
-                                             [Tuple.Create(0, 0)] = Gf5.CreateElement(2),
-                                             [Tuple.Create(1, 0)] = Gf5.CreateElement(3)
+                                             [(0, 0)] = Gf5.CreateElement(2),
+                                             [(1, 0)] = Gf5.CreateElement(3)
                                          },
                           SecondOperand = new BiVariablePolynomial(Gf5)
                                           {
-                                              [Tuple.Create(0, 0)] = Gf5.CreateElement(3),
-                                              [Tuple.Create(0, 1)] = Gf5.CreateElement(4)
+                                              [(0, 0)] = Gf5.CreateElement(3),
+                                              [(0, 1)] = Gf5.CreateElement(4)
                                           },
                           Expected = new BiVariablePolynomial(Gf5)
                                      {
-                                         [Tuple.Create(1, 0)] = Gf5.CreateElement(3),
-                                         [Tuple.Create(0, 1)] = Gf5.CreateElement(4)
+                                         [(1, 0)] = Gf5.CreateElement(3),
+                                         [(0, 1)] = Gf5.CreateElement(4)
                                      }
                       },
                       new BinaryOperationTestCase
                       {
                           FirstOperand = new BiVariablePolynomial(Gf5)
                                          {
-                                             [Tuple.Create(0, 0)] = Gf5.CreateElement(2),
-                                             [Tuple.Create(1, 0)] = Gf5.CreateElement(3),
-                                             [Tuple.Create(0, 1)] = Gf5.CreateElement(4)
+                                             [(0, 0)] = Gf5.CreateElement(2),
+                                             [(1, 0)] = Gf5.CreateElement(3),
+                                             [(0, 1)] = Gf5.CreateElement(4)
                                          },
                           SecondOperand = new BiVariablePolynomial(Gf5)
                                           {
-                                              [Tuple.Create(0, 1)] = Gf5.CreateElement(4),
-                                              [Tuple.Create(0, 0)] = Gf5.CreateElement(4),
-                                              [Tuple.Create(1, 0)] = Gf5.CreateElement(4)
+                                              [(0, 1)] = Gf5.CreateElement(4),
+                                              [(0, 0)] = Gf5.CreateElement(4),
+                                              [(1, 0)] = Gf5.CreateElement(4)
 
                                           },
                           Expected = new BiVariablePolynomial(Gf5)
                                      {
-                                         [Tuple.Create(1, 0)] = Gf5.CreateElement(2),
-                                         [Tuple.Create(0, 1)] = Gf5.CreateElement(3),
-                                         [Tuple.Create(0, 0)] = Gf5.One()
+                                         [(1, 0)] = Gf5.CreateElement(2),
+                                         [(0, 1)] = Gf5.CreateElement(3),
+                                         [(0, 0)] = Gf5.One()
                                      }
                       }
                   };
@@ -136,40 +135,40 @@
                       {
                           FirstOperand = new BiVariablePolynomial(Gf5)
                           {
-                              [Tuple.Create(0, 0)] = Gf5.CreateElement(2),
-                              [Tuple.Create(1, 0)] = Gf5.CreateElement(3)
+                              [(0, 0)] = Gf5.CreateElement(2),
+                              [(1, 0)] = Gf5.CreateElement(3)
                           },
                           SecondOperand = new BiVariablePolynomial(Gf5)
                           {
-                              [Tuple.Create(0, 0)] = Gf5.CreateElement(3),
-                              [Tuple.Create(0, 1)] = Gf5.CreateElement(4)
+                              [(0, 0)] = Gf5.CreateElement(3),
+                              [(0, 1)] = Gf5.CreateElement(4)
                           },
                           Expected = new BiVariablePolynomial(Gf5)
                           {
-                              [Tuple.Create(0, 0)] = Gf5.CreateElement(4),
-                              [Tuple.Create(1, 0)] = Gf5.CreateElement(3),
-                              [Tuple.Create(0, 1)] = Gf5.One()
+                              [(0, 0)] = Gf5.CreateElement(4),
+                              [(1, 0)] = Gf5.CreateElement(3),
+                              [(0, 1)] = Gf5.One()
                           }
                       },
                       new BinaryOperationTestCase
                       {
                           FirstOperand = new BiVariablePolynomial(Gf5)
                           {
-                              [Tuple.Create(0, 0)] = Gf5.CreateElement(2),
-                              [Tuple.Create(1, 0)] = Gf5.CreateElement(3),
-                              [Tuple.Create(0, 1)] = Gf5.CreateElement(4)
+                              [(0, 0)] = Gf5.CreateElement(2),
+                              [(1, 0)] = Gf5.CreateElement(3),
+                              [(0, 1)] = Gf5.CreateElement(4)
                           },
                           SecondOperand = new BiVariablePolynomial(Gf5)
                           {
-                              [Tuple.Create(0, 0)] = Gf5.CreateElement(4),
-                              [Tuple.Create(1, 0)] = Gf5.CreateElement(4),
-                              [Tuple.Create(0, 1)] = Gf5.CreateElement(4)
+                              [(0, 0)] = Gf5.CreateElement(4),
+                              [(1, 0)] = Gf5.CreateElement(4),
+                              [(0, 1)] = Gf5.CreateElement(4)
 
                           },
                           Expected = new BiVariablePolynomial(Gf5)
                           {
-                              [Tuple.Create(0, 0)] = Gf5.CreateElement(3),
-                              [Tuple.Create(1, 0)] = Gf5.CreateElement(4)
+                              [(0, 0)] = Gf5.CreateElement(3),
+                              [(1, 0)] = Gf5.CreateElement(4)
                           }
                       }
                   };
@@ -181,51 +180,51 @@
                       {
                           FirstOperand = new BiVariablePolynomial(Gf5)
                           {
-                              [Tuple.Create(0, 0)] = Gf5.CreateElement(2),
-                              [Tuple.Create(1, 0)] = Gf5.CreateElement(3)
+                              [(0, 0)] = Gf5.CreateElement(2),
+                              [(1, 0)] = Gf5.CreateElement(3)
                           },
                           SecondOperand = new BiVariablePolynomial(Gf5)
                           {
-                              [Tuple.Create(0, 0)] = Gf5.CreateElement(3),
-                              [Tuple.Create(0, 1)] = Gf5.CreateElement(4)
+                              [(0, 0)] = Gf5.CreateElement(3),
+                              [(0, 1)] = Gf5.CreateElement(4)
                           },
                           Expected = new BiVariablePolynomial(Gf5)
                           {
-                              [Tuple.Create(0, 0)] = Gf5.One(),
-                              [Tuple.Create(1, 0)] = Gf5.CreateElement(4),
-                              [Tuple.Create(0, 1)] = Gf5.CreateElement(3),
-                              [Tuple.Create(1, 1)] = Gf5.CreateElement(2)
+                              [(0, 0)] = Gf5.One(),
+                              [(1, 0)] = Gf5.CreateElement(4),
+                              [(0, 1)] = Gf5.CreateElement(3),
+                              [(1, 1)] = Gf5.CreateElement(2)
                           }
                       },
                       new BinaryOperationTestCase
                       {
                           FirstOperand = new BiVariablePolynomial(Gf5)
                           {
-                              [Tuple.Create(0, 0)] = Gf5.CreateElement(2),
-                              [Tuple.Create(1, 0)] = Gf5.CreateElement(3),
-                              [Tuple.Create(0, 1)] = Gf5.CreateElement(4)
+                              [(0, 0)] = Gf5.CreateElement(2),
+                              [(1, 0)] = Gf5.CreateElement(3),
+                              [(0, 1)] = Gf5.CreateElement(4)
                           },
                           SecondOperand = new BiVariablePolynomial(Gf5)
                           {
-                              [Tuple.Create(0, 0)] = Gf5.CreateElement(4),
-                              [Tuple.Create(1, 0)] = Gf5.One(),
-                              [Tuple.Create(0, 1)] = Gf5.CreateElement(2)
+                              [(0, 0)] = Gf5.CreateElement(4),
+                              [(1, 0)] = Gf5.One(),
+                              [(0, 1)] = Gf5.CreateElement(2)
                           },
                           Expected = new BiVariablePolynomial(Gf5)
                           {
-                              [Tuple.Create(0, 0)] = Gf5.CreateElement(3),
-                              [Tuple.Create(1, 0)] = Gf5.CreateElement(4),
-                              [Tuple.Create(2, 0)] = Gf5.CreateElement(3),
-                              [Tuple.Create(0, 2)] = Gf5.CreateElement(3)
+                              [(0, 0)] = Gf5.CreateElement(3),
+                              [(1, 0)] = Gf5.CreateElement(4),
+                              [(2, 0)] = Gf5.CreateElement(3),
+                              [(0, 2)] = Gf5.CreateElement(3)
                           }
                       },
                       new BinaryOperationTestCase
                       {
                           FirstOperand = new BiVariablePolynomial(Gf5)
                           {
-                              [Tuple.Create(0, 0)] = Gf5.CreateElement(2),
-                              [Tuple.Create(1, 0)] = Gf5.CreateElement(3),
-                              [Tuple.Create(0, 1)] = Gf5.CreateElement(4)
+                              [(0, 0)] = Gf5.CreateElement(2),
+                              [(1, 0)] = Gf5.CreateElement(3),
+                              [(0, 1)] = Gf5.CreateElement(4)
                           },
                           SecondOperand = new BiVariablePolynomial(Gf5),
                           Expected = new BiVariablePolynomial(Gf5)
@@ -235,10 +234,10 @@
             var polynomialForMultiplication
                 = new BiVariablePolynomial(Gf5)
                   {
-                      [Tuple.Create(0, 0)] = Gf5.CreateElement(3),
-                      [Tuple.Create(1, 0)] = Gf5.CreateElement(2),
-                      [Tuple.Create(0, 1)] = Gf5.CreateElement(4),
-                      [Tuple.Create(1, 1)] = Gf5.One()
+                      [(0, 0)] = Gf5.CreateElement(3),
+                      [(1, 0)] = Gf5.CreateElement(2),
+                      [(0, 1)] = Gf5.CreateElement(4),
+                      [(1, 1)] = Gf5.One()
                   };
             MultiplyByFieldElementTestsData
                 = new TheoryData<MultiplicationByFieldElementTestCase>
@@ -255,10 +254,10 @@
                           Multiplier = Gf5.CreateElement(2),
                           Expected = new BiVariablePolynomial(Gf5)
                           {
-                              [Tuple.Create(0, 0)] = Gf5.One(),
-                              [Tuple.Create(1, 0)] = Gf5.CreateElement(4),
-                              [Tuple.Create(0, 1)] = Gf5.CreateElement(3),
-                              [Tuple.Create(1, 1)] = Gf5.CreateElement(2)
+                              [(0, 0)] = Gf5.One(),
+                              [(1, 0)] = Gf5.CreateElement(4),
+                              [(0, 1)] = Gf5.CreateElement(3),
+                              [(1, 1)] = Gf5.CreateElement(2)
                           }
                       }
                   };
@@ -270,68 +269,68 @@
                       {
                           Polynomial = new BiVariablePolynomial(Gf5)
                                        {
-                                           [Tuple.Create(0, 0)] = Gf5.One(),
-                                           [Tuple.Create(1, 0)] = Gf5.CreateElement(3),
-                                           [Tuple.Create(0, 1)] = Gf5.CreateElement(2)
+                                           [(0, 0)] = Gf5.One(),
+                                           [(1, 0)] = Gf5.CreateElement(3),
+                                           [(0, 1)] = Gf5.CreateElement(2)
                                        },
                           XSubstitution = new BiVariablePolynomial(Gf5)
                                           {
-                                              [Tuple.Create(1, 0)] = Gf5.One()
+                                              [(1, 0)] = Gf5.One()
                                           },
                           YSubstitution = new BiVariablePolynomial(Gf5)
                                           {
-                                              [Tuple.Create(0, 0)] = Gf5.CreateElement(3),
-                                              [Tuple.Create(1, 1)] = Gf5.One()
+                                              [(0, 0)] = Gf5.CreateElement(3),
+                                              [(1, 1)] = Gf5.One()
                                           },
                           Expected = new BiVariablePolynomial(Gf5)
                                      {
-                                         [Tuple.Create(0, 0)] = Gf5.CreateElement(2),
-                                         [Tuple.Create(1, 0)] = Gf5.CreateElement(3),
-                                         [Tuple.Create(1, 1)] = Gf5.CreateElement(2)
+                                         [(0, 0)] = Gf5.CreateElement(2),
+                                         [(1, 0)] = Gf5.CreateElement(3),
+                                         [(1, 1)] = Gf5.CreateElement(2)
                                      }
                       },
                       new SubstitutionTestCase
                       {
                           Polynomial = new BiVariablePolynomial(Gf5)
                                        {
-                                           [Tuple.Create(0, 0)] = Gf5.One(),
-                                           [Tuple.Create(1, 0)] = Gf5.CreateElement(2),
-                                           [Tuple.Create(2, 0)] = Gf5.One(),
-                                           [Tuple.Create(0, 1)] = Gf5.CreateElement(3),
-                                           [Tuple.Create(1, 1)] = Gf5.One()
+                                           [(0, 0)] = Gf5.One(),
+                                           [(1, 0)] = Gf5.CreateElement(2),
+                                           [(2, 0)] = Gf5.One(),
+                                           [(0, 1)] = Gf5.CreateElement(3),
+                                           [(1, 1)] = Gf5.One()
                                        },
                           XSubstitution = new BiVariablePolynomial(Gf5)
                                           {
-                                              [Tuple.Create(0, 0)] = Gf5.One(),
-                                              [Tuple.Create(1, 0)] = Gf5.One()
+                                              [(0, 0)] = Gf5.One(),
+                                              [(1, 0)] = Gf5.One()
                                           },
                           YSubstitution = new BiVariablePolynomial(Gf5)
                                           {
-                                              [Tuple.Create(0, 0)] = Gf5.CreateElement(2),
-                                              [Tuple.Create(1, 1)] = Gf5.One()
+                                              [(0, 0)] = Gf5.CreateElement(2),
+                                              [(1, 1)] = Gf5.One()
                                           },
                           Expected = new BiVariablePolynomial(Gf5)
                                      {
-                                         [Tuple.Create(0, 0)] = Gf5.CreateElement(2),
-                                         [Tuple.Create(1, 0)] = Gf5.One(),
-                                         [Tuple.Create(2, 0)] = Gf5.One(),
-                                         [Tuple.Create(1, 1)] = Gf5.CreateElement(4),
-                                         [Tuple.Create(2, 1)] = Gf5.One()
+                                         [(0, 0)] = Gf5.CreateElement(2),
+                                         [(1, 0)] = Gf5.One(),
+                                         [(2, 0)] = Gf5.One(),
+                                         [(1, 1)] = Gf5.CreateElement(4),
+                                         [(2, 1)] = Gf5.One()
                                      }
                       },
                       new SubstitutionTestCase
                       {
                           Polynomial = new BiVariablePolynomial(Gf5)
                                        {
-                                           [Tuple.Create(0, 0)] = Gf5.One(),
-                                           [Tuple.Create(1, 0)] = Gf5.CreateElement(3),
-                                           [Tuple.Create(0, 1)] = Gf5.CreateElement(2)
+                                           [(0, 0)] = Gf5.One(),
+                                           [(1, 0)] = Gf5.CreateElement(3),
+                                           [(0, 1)] = Gf5.CreateElement(2)
                                        },
                           XSubstitution = new BiVariablePolynomial(Gf5),
                           YSubstitution = new BiVariablePolynomial(Gf5),
                           Expected = new BiVariablePolynomial(Gf5)
                                      {
-                                         [Tuple.Create(0, 0)] = Gf5.One()
+                                         [(0, 0)] = Gf5.One()
                                      }
                       }
                   };
@@ -343,30 +342,30 @@
                       {
                           Polynomial = new BiVariablePolynomial(Gf5)
                           {
-                              [Tuple.Create(1, 0)] = Gf5.CreateElement(2),
-                              [Tuple.Create(2, 0)] = Gf5.One(),
-                              [Tuple.Create(1, 1)] = Gf5.CreateElement(3)
+                              [(1, 0)] = Gf5.CreateElement(2),
+                              [(2, 0)] = Gf5.One(),
+                              [(1, 1)] = Gf5.CreateElement(3)
                           },
                           Expected = new BiVariablePolynomial(Gf5)
                           {
-                              [Tuple.Create(0, 0)] = Gf5.CreateElement(2),
-                              [Tuple.Create(1, 0)] = Gf5.One(),
-                              [Tuple.Create(0, 1)] = Gf5.CreateElement(3)
+                              [(0, 0)] = Gf5.CreateElement(2),
+                              [(1, 0)] = Gf5.One(),
+                              [(0, 1)] = Gf5.CreateElement(3)
                           }
                       },
                       new DivideByXDegreeTestCase
                       {
                           Polynomial = new BiVariablePolynomial(Gf5)
                           {
-                              [Tuple.Create(1, 0)] = Gf5.CreateElement(2),
-                              [Tuple.Create(2, 0)] = Gf5.One(),
-                              [Tuple.Create(0, 1)] = Gf5.CreateElement(3)
+                              [(1, 0)] = Gf5.CreateElement(2),
+                              [(2, 0)] = Gf5.One(),
+                              [(0, 1)] = Gf5.CreateElement(3)
                           },
                           Expected = new BiVariablePolynomial(Gf5)
                           {
-                              [Tuple.Create(1, 0)] = Gf5.CreateElement(2),
-                              [Tuple.Create(2, 0)] = Gf5.One(),
-                              [Tuple.Create(0, 1)] = Gf5.CreateElement(3)
+                              [(1, 0)] = Gf5.CreateElement(2),
+                              [(2, 0)] = Gf5.One(),
+                              [(0, 1)] = Gf5.CreateElement(3)
                           }
                       },
                       new DivideByXDegreeTestCase
@@ -383,9 +382,9 @@
                       {
                           Polynomial = new BiVariablePolynomial(Gf5)
                           {
-                              [Tuple.Create(0, 0)] = Gf5.CreateElement(3),
-                              [Tuple.Create(1, 0)] = Gf5.CreateElement(2),
-                              [Tuple.Create(0, 1)] = Gf5.One()
+                              [(0, 0)] = Gf5.CreateElement(3),
+                              [(1, 0)] = Gf5.CreateElement(2),
+                              [(0, 1)] = Gf5.One()
                           },
                           VariableValue = Gf5.One(),
                           Expected = new Polynomial(Gf5, 0, 1)
@@ -394,9 +393,9 @@
                       {
                           Polynomial = new BiVariablePolynomial(Gf5)
                           {
-                              [Tuple.Create(0, 0)] = Gf5.CreateElement(3),
-                              [Tuple.Create(1, 0)] = Gf5.CreateElement(2),
-                              [Tuple.Create(1, 1)] = Gf5.One()
+                              [(0, 0)] = Gf5.CreateElement(3),
+                              [(1, 0)] = Gf5.CreateElement(2),
+                              [(1, 1)] = Gf5.One()
                           },
                           VariableValue = Gf5.Zero(),
                           Expected = new Polynomial(Gf5, 3)
@@ -405,12 +404,12 @@
                       {
                           Polynomial = new BiVariablePolynomial(Gf5)
                           {
-                              [Tuple.Create(0, 0)] = Gf5.CreateElement(2),
-                              [Tuple.Create(1, 0)] = Gf5.CreateElement(3),
-                              [Tuple.Create(2, 0)] = Gf5.CreateElement(2),
-                              [Tuple.Create(0, 1)] = Gf5.One(),
-                              [Tuple.Create(1, 1)] = Gf5.One(),
-                              [Tuple.Create(0, 2)] = Gf5.One()
+                              [(0, 0)] = Gf5.CreateElement(2),
+                              [(1, 0)] = Gf5.CreateElement(3),
+                              [(2, 0)] = Gf5.CreateElement(2),
+                              [(0, 1)] = Gf5.One(),
+                              [(1, 1)] = Gf5.One(),
+                              [(0, 2)] = Gf5.One()
                           },
                           VariableValue = Gf5.CreateElement(3),
                           Expected = new Polynomial(Gf5, 4, 4, 1)
@@ -424,9 +423,9 @@
                       {
                           Polynomial = new BiVariablePolynomial(Gf5)
                           {
-                              [Tuple.Create(0, 0)] = Gf5.CreateElement(3),
-                              [Tuple.Create(1, 0)] = Gf5.One(),
-                              [Tuple.Create(0, 1)] = Gf5.CreateElement(2)
+                              [(0, 0)] = Gf5.CreateElement(3),
+                              [(1, 0)] = Gf5.One(),
+                              [(0, 1)] = Gf5.CreateElement(2)
                           },
                           VariableValue = Gf5.One(),
                           Expected = new Polynomial(Gf5, 0, 1)
@@ -435,9 +434,9 @@
                       {
                           Polynomial = new BiVariablePolynomial(Gf5)
                           {
-                              [Tuple.Create(0, 0)] = Gf5.CreateElement(3),
-                              [Tuple.Create(0, 1)] = Gf5.CreateElement(2),
-                              [Tuple.Create(1, 1)] = Gf5.One()
+                              [(0, 0)] = Gf5.CreateElement(3),
+                              [(0, 1)] = Gf5.CreateElement(2),
+                              [(1, 1)] = Gf5.One()
                           },
                           VariableValue = Gf5.Zero(),
                           Expected = new Polynomial(Gf5, 3)
@@ -446,12 +445,12 @@
                       {
                           Polynomial = new BiVariablePolynomial(Gf5)
                           {
-                              [Tuple.Create(0, 0)] = Gf5.CreateElement(2),
-                              [Tuple.Create(1, 0)] = Gf5.CreateElement(3),
-                              [Tuple.Create(2, 0)] = Gf5.CreateElement(2),
-                              [Tuple.Create(0, 1)] = Gf5.One(),
-                              [Tuple.Create(1, 1)] = Gf5.One(),
-                              [Tuple.Create(0, 2)] = Gf5.One()
+                              [(0, 0)] = Gf5.CreateElement(2),
+                              [(1, 0)] = Gf5.CreateElement(3),
+                              [(2, 0)] = Gf5.CreateElement(2),
+                              [(0, 1)] = Gf5.One(),
+                              [(1, 1)] = Gf5.One(),
+                              [(0, 2)] = Gf5.One()
                           },
                           VariableValue = Gf5.CreateElement(2),
                           Expected = new Polynomial(Gf5, 3, 0, 2)
@@ -465,11 +464,11 @@
                       {
                           Polynomial = new BiVariablePolynomial(Gf5)
                           {
-                              [Tuple.Create(0, 0)] = Gf5.CreateElement(2),
-                              [Tuple.Create(1, 0)] = Gf5.CreateElement(2),
-                              [Tuple.Create(0, 1)] = Gf5.CreateElement(2),
-                              [Tuple.Create(2, 0)] = Gf5.One(),
-                              [Tuple.Create(0, 2)] = Gf5.One()
+                              [(0, 0)] = Gf5.CreateElement(2),
+                              [(1, 0)] = Gf5.CreateElement(2),
+                              [(0, 1)] = Gf5.CreateElement(2),
+                              [(2, 0)] = Gf5.One(),
+                              [(0, 2)] = Gf5.One()
                           },
                           R = 1,
                           S = 1,
@@ -481,10 +480,10 @@
                       {
                           Polynomial = new BiVariablePolynomial(Gf5)
                           {
-                              [Tuple.Create(0, 0)] = Gf5.CreateElement(2),
-                              [Tuple.Create(1, 0)] = Gf5.CreateElement(2),
-                              [Tuple.Create(0, 1)] = Gf5.CreateElement(2),
-                              [Tuple.Create(2, 2)] = Gf5.One()
+                              [(0, 0)] = Gf5.CreateElement(2),
+                              [(1, 0)] = Gf5.CreateElement(2),
+                              [(0, 1)] = Gf5.CreateElement(2),
+                              [(2, 2)] = Gf5.One()
                           },
                           R = 1,
                           S = 1,
@@ -496,10 +495,10 @@
                       {
                           Polynomial = new BiVariablePolynomial(Gf5)
                           {
-                              [Tuple.Create(0, 0)] = Gf5.CreateElement(2),
-                              [Tuple.Create(1, 0)] = Gf5.CreateElement(2),
-                              [Tuple.Create(0, 1)] = Gf5.CreateElement(2),
-                              [Tuple.Create(2, 2)] = Gf5.One()
+                              [(0, 0)] = Gf5.CreateElement(2),
+                              [(1, 0)] = Gf5.CreateElement(2),
+                              [(0, 1)] = Gf5.CreateElement(2),
+                              [(2, 2)] = Gf5.One()
                           },
                           R = 2,
                           S = 1,
@@ -522,7 +521,7 @@
         {
             // Given
             var polynomial = new BiVariablePolynomial(Gf5);
-            var monomial = new Tuple<int, int>(1, 1);
+            var monomial = (1, 1);
             var coefficientValue = new FieldElement(Gf5, coefficientValueRepresentation);
 
             // When
@@ -538,7 +537,7 @@
         public void ShouldChangeCoefficients(int coefficientValueRepresentation)
         {
             // Given
-            var monomial = new Tuple<int, int>(1, 1);
+            var monomial = (1, 1);
             var polynomial = new BiVariablePolynomial(Gf5) {[monomial] = Gf5.One()};
             var coefficientValue = new FieldElement(Gf5, coefficientValueRepresentation);
 

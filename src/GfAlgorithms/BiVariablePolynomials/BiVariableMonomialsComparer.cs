@@ -6,7 +6,7 @@
     /// <summary>
     /// Implementation of bivariate monomial comparer 
     /// </summary>
-    public class BiVariableMonomialsComparer : IComparer<Tuple<int, int>>
+    public class BiVariableMonomialsComparer : IComparer<(int xDegree, int yDegree)>
     {
         /// <summary>
         /// Weights of monomial variable's powers
@@ -14,24 +14,24 @@
         private readonly Tuple<int, int> _degreeWeight;
 
         /// <summary>
-        /// Method for comparison one bivariate monomial <paramref name="x"/> to another bivariate monomial <paramref name="y"/>
+        /// Method for comparison one bivariate monomial <paramref name="a"/> to another bivariate monomial <paramref name="b"/>
         /// </summary>
-        /// <param name="x">First compared</param>
-        /// <param name="y">Second compared</param>
+        /// <param name="a">First compared</param>
+        /// <param name="b">Second compared</param>
         /// <returns>Comparsion result</returns>
-        public int Compare(Tuple<int, int> x, Tuple<int, int> y)
+        public int Compare((int xDegree, int yDegree) a, (int xDegree, int yDegree) b)
         {
-            var xDegreeWeight = x.Item1*_degreeWeight.Item1 + x.Item2*_degreeWeight.Item2;
-            var yDegreeWeight = y.Item1 * _degreeWeight.Item1 + y.Item2 * _degreeWeight.Item2;
+            var xDegreeWeight = a.xDegree*_degreeWeight.Item1 + a.yDegree*_degreeWeight.Item2;
+            var yDegreeWeight = b.xDegree * _degreeWeight.Item1 + b.yDegree * _degreeWeight.Item2;
 
             if (xDegreeWeight < yDegreeWeight)
                 return -1;
             if (xDegreeWeight > yDegreeWeight)
                 return 1;
 
-            if (x.Item1 < y.Item1)
+            if (a.xDegree < b.xDegree)
                 return -1;
-            if (x.Item1 > y.Item1)
+            if (a.xDegree > b.xDegree)
                 return 1;
 
             return 0;

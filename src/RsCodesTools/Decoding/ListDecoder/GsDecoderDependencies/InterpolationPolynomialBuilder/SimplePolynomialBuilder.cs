@@ -33,12 +33,12 @@
         /// <param name="yDegree">Degree of bivariate monomial's y variable</param>
         /// <returns>Monomial's number</returns>
         private static int GetVariableIndexByMonomial(
-            IDictionary<Tuple<int, int>, int> variableIndexByMonomial,
-            IDictionary<int, Tuple<int, int>> monomialByVariableIndex,
+            IDictionary<(int xDegree, int yDegree), int> variableIndexByMonomial,
+            IDictionary<int, (int xDegree, int yDegree)> monomialByVariableIndex,
             int xDegree, 
             int yDegree)
         {
-            var monomial = new Tuple<int, int>(xDegree, yDegree);
+            var monomial = (xDegree, yDegree);
             int variableIndex;
 
             if (variableIndexByMonomial.TryGetValue(monomial, out variableIndex) == false)
@@ -69,8 +69,8 @@
             int maxXDegree, 
             IEnumerable<Tuple<FieldElement, FieldElement>> roots, 
             int rootsMultiplicity,
-            IDictionary<Tuple<int, int>, int> variableIndexByMonomial, 
-            IDictionary<int, Tuple<int, int>> monomialByVariableIndex)
+            IDictionary<(int xDegree, int yDegree), int> variableIndexByMonomial, 
+            IDictionary<int, (int xDegree, int yDegree)> monomialByVariableIndex)
         {
             var equations = new List<List<Tuple<int, FieldElement>>>();
             var combinationsCache = new FieldElement[Math.Max(maxWeightedDegree/degreeWeight.Item1, maxWeightedDegree/degreeWeight.Item2) + 1][]
@@ -136,7 +136,7 @@
         private static BiVariablePolynomial ConstructInterpolationPolynomial(
             GaloisField field,
             SystemSolution systemSolution, 
-            IReadOnlyDictionary<int, Tuple<int, int>> monomialByVariableIndex)
+            IReadOnlyDictionary<int, (int xDegree, int yDegree)> monomialByVariableIndex)
         {
             var interpolationPolynomial = new BiVariablePolynomial(field);
             for (var i = 0; i < systemSolution.VariablesValues.Length; i++)
@@ -169,8 +169,8 @@
                 throw new ArgumentException($"{nameof(roots)} is empty");
 
             var field = roots[0].Item1.Field;
-            var variableIndexByMonomial = new Dictionary<Tuple<int, int>, int>();
-            var monomialByVariableIndex = new Dictionary<int, Tuple<int, int>>();
+            var variableIndexByMonomial = new Dictionary<(int xDegree, int yDegree), int>();
+            var monomialByVariableIndex = new Dictionary<int, (int xDegree, int yDegree)>();
 
             var equationsSystem = BuildEquationsSystem(field, degreeWeight,
                 maxWeightedDegree, maxWeightedDegree / degreeWeight.Item1, roots, rootsMultiplicity,

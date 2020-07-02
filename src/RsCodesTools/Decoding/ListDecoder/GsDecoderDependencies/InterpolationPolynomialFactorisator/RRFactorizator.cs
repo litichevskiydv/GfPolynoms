@@ -1,6 +1,5 @@
 ﻿namespace AppliedAlgebra.RsCodesTools.Decoding.ListDecoder.GsDecoderDependencies.InterpolationPolynomialFactorisator
 {
-    using System;
     using System.Collections.Generic;
     using System.Linq;
     using GfAlgorithms.BiVariablePolynomials;
@@ -13,7 +12,7 @@
     /// </summary>
     public class RrFactorizator : IInterpolationPolynomialFactorizator
     {
-        private readonly Tuple<int, int> _zeroMonomial;
+        private readonly (int xDegee, int yDegree) _zeroMonomial;
 
         private static IEnumerable<FieldElement> FindPolynomialRoots(Polynomial polynomial)
         {
@@ -68,12 +67,12 @@
         {
             var xSubstitution = new BiVariablePolynomial(interpolationPolynomial.Field)
                                 {
-                                    [new Tuple<int, int>(1, 0)] = interpolationPolynomial.Field.One()
+                                    [(1, 0)] = interpolationPolynomial.Field.One()
                                 };
             var ySubstitution = new BiVariablePolynomial(interpolationPolynomial.Field)
                                 {
-                                    [new Tuple<int, int>(0, 0)] = interpolationPolynomial.Field.One(),
-                                    [new Tuple<int, int>(1, 1)] = interpolationPolynomial.Field.One()
+                                    [(0, 0)] = interpolationPolynomial.Field.One(),
+                                    [(1, 1)] = interpolationPolynomial.Field.One()
                                 };
 
             var factors = new HashSet<Polynomial>();
@@ -91,7 +90,7 @@
         /// </summary>
         public RrFactorizator()
         {
-            _zeroMonomial = new Tuple<int, int>(0, 0);
+            _zeroMonomial = (0, 0);
         }
     }
 }

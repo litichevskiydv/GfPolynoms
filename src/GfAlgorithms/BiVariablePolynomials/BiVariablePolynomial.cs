@@ -11,7 +11,7 @@
     /// <summary>
     /// Class represents a polynomial with two indeterminates over a finite field
     /// </summary>
-    public class BiVariablePolynomial : IEnumerable<KeyValuePair<Tuple<int, int>, FieldElement>>
+    public class BiVariablePolynomial : IEnumerable<KeyValuePair<(int xDegree, int yDegree), FieldElement>>
     {
         /// <summary>
         /// Field from which the coefficients of the polynomial
@@ -20,7 +20,7 @@
         /// <summary>
         /// Coefficients of the polynomial indexed by their monomials
         /// </summary>
-        private readonly Dictionary<Tuple<int, int>, FieldElement> _coefficients;
+        private readonly Dictionary<(int xDegree, int yDegree), FieldElement> _coefficients;
 
         /// <summary>
         /// Method for removing polynomial's zero coefficients
@@ -57,7 +57,7 @@
 
             Field = field;
 
-            _coefficients = new Dictionary<Tuple<int, int>, FieldElement>(estimatedCoefficientsCount ?? 0);
+            _coefficients = new Dictionary<(int xDegree, int yDegree), FieldElement>(estimatedCoefficientsCount ?? 0);
         }
 
         /// <summary>
@@ -79,7 +79,7 @@
         /// </summary>
         /// <param name="monomial">Monomial which coefficient is required</param>
         /// <returns>Bivariate polynomial coefficient</returns>
-        public FieldElement this[Tuple<int, int> monomial]
+        public FieldElement this[(int xDegree, int yDegree) monomial]
         {
             get
             {
@@ -107,11 +107,11 @@
         /// <summary>
         /// Maximum degree of the current bivariate polynomial by x variable
         /// </summary>
-        public int MaxXDegree => IsZero ? 0 : _coefficients.Keys.Max(x => x.Item1);
+        public int MaxXDegree => IsZero ? 0 : _coefficients.Keys.Max(x => x.xDegree);
         /// <summary>
         /// Maximum degree of the current bivariate polynomial by y variable
         /// </summary>
-        public int MaxYDegree => IsZero ? 0 : _coefficients.Keys.Max(x => x.Item2);
+        public int MaxYDegree => IsZero ? 0 : _coefficients.Keys.Max(x => x.yDegree);
         /// <summary>
         /// Current polynomial's coefficients count
         /// </summary>
@@ -125,33 +125,33 @@
         {
             var monomials = _coefficients
                 .Where(x => x.Value.Representation != 0)
-                .OrderBy(x => x.Key.Item2)
-                .ThenBy(x => x.Key.Item1)
+                .OrderBy(x => x.Key.yDegree)
+                .ThenBy(x => x.Key.xDegree)
                 .Select(x =>
                         {
                             var template = "{0}x^{1}y^{2}";
 
-                            if (x.Key.Item1 == 0 && x.Key.Item2 == 0)
+                            if (x.Key.xDegree == 0 && x.Key.yDegree == 0)
                                 template = "{0}";
                             else
                             {
                                 if (x.Value.Representation == 1)
                                     template = template.Replace("{0}", "");
 
-                                if (x.Key.Item1 == 0)
+                                if (x.Key.xDegree == 0)
                                     template = template.Replace("x^{1}", "");
-                                if (x.Key.Item1 == 1)
+                                if (x.Key.xDegree == 1)
                                     template = template.Replace("^{1}", "");
 
-                                if (x.Key.Item2 == 0)
+                                if (x.Key.yDegree == 0)
                                     template = template.Replace("y^{2}", "");
-                                if (x.Key.Item2 == 1)
+                                if (x.Key.yDegree == 1)
                                     template = template.Replace("^{2}", "");
                             }
 
-                            return string.Format(template, x.Value.Representation, x.Key.Item1, x.Key.Item2);
+                            return string.Format(template, x.Value.Representation, x.Key.xDegree, x.Key.yDegree);
                         });
-            return string.Join((string) "+", (IEnumerable<string>) monomials);
+            return string.Join("+", monomials);
         }
 
         /// <summary>
@@ -165,8 +165,8 @@
             var result = Field.Zero();
             foreach (var coefficient in _coefficients)
                 result += coefficient.Value
-                          *FieldElement.Pow(xValue, coefficient.Key.Item1)
-                          *FieldElement.Pow(yValue, coefficient.Key.Item2);
+                          *FieldElement.Pow(xValue, coefficient.Key.xDegree)
+                          *FieldElement.Pow(yValue, coefficient.Key.yDegree);
 
             return result;
         }
@@ -258,25 +258,27 @@
         /// <param name="b">Factor</param>
         public BiVariablePolynomial Multiply(BiVariablePolynomial b)
         {
-            var coeficientsArray = _coefficients.ToArray();
+            var coefficientsArray = _coefficients.ToArray();
             _coefficients.Clear();
 
             if (b.IsZero)
                 return this;
 
-            foreach (var coefficient in coeficientsArray)
+            foreach (var coefficient in coefficientsArray)
                 foreach (var otherCoefficient in b._coefficients)
                 {
-                    FieldElement coeficientValue;
-                    var monomial = new Tuple<int, int>(coefficient.Key.Item1 + otherCoefficient.Key.Item1,
-                        coefficient.Key.Item2 + otherCoefficient.Key.Item2);
+                    FieldElement coefficientValue;
+                    var monomial = (
+                        coefficient.Key.xDegree + otherCoefficient.Key.xDegree,
+                        coefficient.Key.yDegree + otherCoefficient.Key.yDegree
+                    );
                     
-                    if (_coefficients.TryGetValue(monomial, out coeficientValue) == false)
+                    if (_coefficients.TryGetValue(monomial, out coefficientValue) == false)
                     {
-                        coeficientValue = Field.Zero();
-                        _coefficients[monomial] = coeficientValue;
+                        coefficientValue = Field.Zero();
+                        _coefficients[monomial] = coefficientValue;
                     }
-                    coeficientValue.Add(coefficient.Value*otherCoefficient.Value);
+                    coefficientValue.Add(coefficient.Value*otherCoefficient.Value);
                 }
 
             return RemoveZeroCoefficients();
@@ -340,7 +342,7 @@
         /// Method for getting enumerator for the current bivariate polynomial coefficients enumeration
         /// </summary>
         /// <returns>Current bivariate polynomial coefficients enumerator</returns>
-        public IEnumerator<KeyValuePair<Tuple<int, int>, FieldElement>> GetEnumerator()
+        public IEnumerator<KeyValuePair<(int xDegree, int yDegree), FieldElement>> GetEnumerator()
         {
             return _coefficients.GetEnumerator();
         }
