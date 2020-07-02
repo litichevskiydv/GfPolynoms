@@ -1,6 +1,7 @@
 ﻿namespace AppliedAlgebra.GfPolynoms.Extensions
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
     using GaloisFields;
 
@@ -29,6 +30,28 @@
             for (var i = 0; i <= polynomial.Degree; i++)
                 resultCoefficients[i*variableDegree] = polynomial[i];
             return new Polynomial(polynomial.Field, resultCoefficients);
+        }
+
+        /// <summary>
+        /// Method for calculating results of replacement polynomial <paramref name="polynomial"/> variable by <paramref name="substitution"/>
+        /// </summary>
+        /// <param name="polynomial">Modified polynomial</param>
+        /// <param name="substitution">Substitution for variable</param>
+        /// <returns>Replacement results</returns>
+        public static Polynomial PerformVariableSubstitution(this Polynomial polynomial, Polynomial substitution)
+        {
+            if(polynomial == null)
+                throw new ArgumentNullException(nameof(polynomial));
+            if(substitution == null)
+                throw new ArgumentNullException(nameof(substitution));
+            if(polynomial.Field.Equals(substitution.Field) == false)
+                throw new ArgumentException($"Fields of {nameof(polynomial)} and {nameof(substitution)} must be the same");
+
+            var result = new Polynomial(polynomial.Field);
+            var poweredSubstitution = new Polynomial(polynomial.Field, 1);
+            for (var i = 0; i <= polynomial.Degree; i++, poweredSubstitution.Multiply(substitution)) 
+                result.Add(polynomial[i] * poweredSubstitution);
+            return result;
         }
 
         /// <summary>

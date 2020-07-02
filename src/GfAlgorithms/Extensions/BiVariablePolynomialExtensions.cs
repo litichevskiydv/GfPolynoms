@@ -19,16 +19,17 @@
         /// <param name="powersCache">Cache for storing Exponentiation results </param>
         /// <param name="polynomial">Bivariate polynomial for exponentiation</param>
         /// <param name="degree">Power for exponentiation</param>
-        private static BiVariablePolynomial Pow(IDictionary<int, BiVariablePolynomial> powersCache, BiVariablePolynomial polynomial, int degree)
+        private static BiVariablePolynomial Pow(
+            IDictionary<int, BiVariablePolynomial> powersCache,
+            BiVariablePolynomial polynomial, int degree
+        )
         {
-            BiVariablePolynomial result;
-
-            if (powersCache.TryGetValue(degree, out result) == false)
+            if (powersCache.TryGetValue(degree, out var result) == false)
             {
                 if (degree == 0)
                     result = new BiVariablePolynomial(polynomial.Field) {[(0, 0)] = polynomial.Field.One()};
                 else
-                    result = Pow(powersCache, polynomial, degree - 1)*polynomial;
+                    result = Pow(powersCache, polynomial, degree - 1) * polynomial;
                 powersCache[degree] = result;
             }
 
@@ -42,8 +43,11 @@
         /// <param name="xSubstitution">Substitution for x variable</param>
         /// <param name="ySubstitution">Substitution for x variable</param>
         /// <returns>Replacement results</returns>
-        public static BiVariablePolynomial PerformVariablesSubstitution(this BiVariablePolynomial polynomial,
-            BiVariablePolynomial xSubstitution, BiVariablePolynomial ySubstitution)
+        public static BiVariablePolynomial PerformVariablesSubstitution(
+            this BiVariablePolynomial polynomial,
+            BiVariablePolynomial xSubstitution, 
+            BiVariablePolynomial ySubstitution
+        )
         {
             if (polynomial == null)
                 throw new ArgumentNullException(nameof(polynomial));
