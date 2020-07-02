@@ -17,19 +17,22 @@
         private readonly ILinearSystemSolver _linearSystemSolver;
 
         /// <summary>
-        /// Method for calculating generation plynomial <paramref name="generatingPolynomial"/> first zeros count on passing points <paramref name="decodedCodeword"/>
+        /// Method for calculating generation polynomial <paramref name="generatingPolynomial"/> first zeros count on passing points <paramref name="decodedCodeword"/>
         /// </summary>
         /// <param name="generatingPolynomial">Generating polynomial of the wavelet code</param>
         /// <param name="decodedCodeword">Received codeword from which points'll be taken</param>
-        protected int CalculateGeneratingPolynomialLeadZeroValuesCount(Polynomial generatingPolynomial,
-            Tuple<FieldElement, FieldElement>[] decodedCodeword)
+        protected int CalculateGeneratingPolynomialLeadZeroValuesCount(
+            Polynomial generatingPolynomial,
+            (FieldElement xValue, FieldElement yValue)[] decodedCodeword
+        )
         {
             var count = 0;
             for (;
-                count < decodedCodeword.Length && generatingPolynomial.Evaluate(decodedCodeword[count].Item1.Representation) == 0;
+                count < decodedCodeword.Length && generatingPolynomial.Evaluate(decodedCodeword[count].xValue.Representation) == 0;
                 count++)
             {
             }
+
             return count;
         }
 
@@ -40,19 +43,24 @@
         /// <param name="generationPolynomialLeadZeroValuesCount">Generating polynomial's first zeros count on received points</param>
         /// <param name="decodedCodeword">Received codeword for decoding</param>
         /// <returns>Prepared codeword</returns>
-        protected Tuple<FieldElement, FieldElement>[] PrepareCodewordForFrequenceDecoding(
-            int n, int generationPolynomialLeadZeroValuesCount, 
-            Tuple<FieldElement, FieldElement>[] decodedCodeword)
+        protected (FieldElement xValue, FieldElement yValue)[] PrepareCodewordForFrequenceDecoding(
+            int n,
+            int generationPolynomialLeadZeroValuesCount,
+            (FieldElement xValue, FieldElement yValue)[] decodedCodeword
+        )
         {
-            var field = decodedCodeword[0].Item1.Field;
+            var field = decodedCodeword[0].xValue.Field;
             var correction = new FieldElement(field, n % field.Characteristic);
 
-            var preparedCodeword = new Tuple<FieldElement, FieldElement>[n];
+            var preparedCodeword = new (FieldElement xValue, FieldElement yValue)[n];
             for (var i = 0; i < n; i++)
             {
-                var inversedSample = FieldElement.InverseForMultiplication(decodedCodeword[i].Item1);
-                preparedCodeword[i] = new Tuple<FieldElement, FieldElement>(inversedSample,
-                    decodedCodeword[i].Item2 * correction * FieldElement.Pow(decodedCodeword[i].Item1, generationPolynomialLeadZeroValuesCount));
+                var invertedSample = FieldElement.InverseForMultiplication(decodedCodeword[i].xValue);
+                preparedCodeword[i] = (
+                    invertedSample,
+                    decodedCodeword[i].yValue * correction
+                                              * FieldElement.Pow(decodedCodeword[i].xValue, generationPolynomialLeadZeroValuesCount)
+                );
             }
 
             return preparedCodeword;
@@ -71,7 +79,7 @@
         /// <returns>Decoding result in the time domain</returns>
         protected Polynomial ComputeTimeDecodingResult(int n, int k, int d,
             Polynomial generatingPolynomial, int generationPolynomialLeadZeroValuesCount,
-            Tuple<FieldElement, FieldElement>[] decodedCodeword, Polynomial frequencyDecodingResult)
+            (FieldElement xValue, FieldElement yValue)[] decodedCodeword, Polynomial frequencyDecodingResult)
         {
             var field = generatingPolynomial.Field;
             var firstSampleNumber = Math.Min(generationPolynomialLeadZeroValuesCount, d - 1);
@@ -79,7 +87,7 @@
             var linearSystemMatrix = new FieldElement[n - d + 1, k];
             for (var i = 0; i < n - d + 1; i++)
             {
-                var sample = decodedCodeword[i + firstSampleNumber].Item1;
+                var sample = decodedCodeword[i + firstSampleNumber].xValue;
                 var sampleSqr = sample * sample;
                 var samplePower = field.One();
                 var correction = new FieldElement(field, generatingPolynomial.Evaluate(sample.Representation));

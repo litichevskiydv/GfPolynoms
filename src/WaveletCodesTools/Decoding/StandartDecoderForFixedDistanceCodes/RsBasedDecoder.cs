@@ -7,7 +7,7 @@
     using RsInformationPolynomialNotFoundException = RsCodesTools.Decoding.StandartDecoder.InformationPolynomialWasNotFoundException;
 
     /// <summary>
-    /// Implementation of standart wavelet codes decoder contract based on Reed-Solomon codes standart decoder
+    /// Implementation of standard wavelet codes decoder contract based on Reed-Solomon codes standart decoder
     /// </summary>
     public class RsBasedDecoder : FixedDistanceCodesDecoderBase, IDecoder
     {
@@ -25,8 +25,13 @@
         /// <param name="decodedCodeword">Received codeword for decoding</param>
         /// <param name="errorsCount">Number of errors in received codeword</param>
         /// <returns>Decoding result in frequency domain</returns>
-        private Polynomial GetFrequencyDecodingResults(int n, int d, int generationPolynomialLeadZeroValuesCount,
-            Tuple<FieldElement, FieldElement>[] decodedCodeword, int? errorsCount)
+        private Polynomial GetFrequencyDecodingResults(
+            int n, 
+            int d, 
+            int generationPolynomialLeadZeroValuesCount,
+            (FieldElement xValue, FieldElement yValue)[] decodedCodeword, 
+            int? errorsCount
+        )
         {
             var preparedCodeword = PrepareCodewordForFrequenceDecoding(n, generationPolynomialLeadZeroValuesCount, decodedCodeword);
             try
@@ -46,10 +51,17 @@
         /// <param name="k">Information word length</param>
         /// <param name="d">Code distance</param>
         /// <param name="generatingPolynomial">Generating polynomial of the wavelet code</param>
-        /// <param name="decodedCodeword">Recived codeword for decoding</param>
+        /// <param name="decodedCodeword">Received codeword for decoding</param>
         /// <param name="errorsCount">Number of errors in received codeword</param>
         /// <returns>Decoding result</returns>
-        public Polynomial Decode(int n, int k, int d, Polynomial generatingPolynomial, Tuple<FieldElement, FieldElement>[] decodedCodeword, int? errorsCount = null)
+        public Polynomial Decode(
+            int n, 
+            int k, 
+            int d, 
+            Polynomial generatingPolynomial, 
+            (FieldElement xValue, FieldElement yValue)[] decodedCodeword, 
+            int? errorsCount = null
+        )
         {
             if (n <= 0)
                 throw new ArgumentException(nameof(n));

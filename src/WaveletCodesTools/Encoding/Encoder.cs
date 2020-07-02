@@ -1,6 +1,5 @@
 ﻿namespace AppliedAlgebra.WaveletCodesTools.Encoding
 {
-    using System;
     using GfPolynoms;
     using GfPolynoms.Extensions;
 
@@ -17,8 +16,12 @@
         /// <param name="informationPolynomial">Information polynomial</param>
         /// <param name="modularPolynomial">Modular polynomial for wavelet code encoding scheme</param>
         /// <returns>Computed codeword</returns>
-        public Tuple<FieldElement, FieldElement>[] Encode(int n, Polynomial generatingPolynomial, Polynomial informationPolynomial,
-            Polynomial modularPolynomial = null)
+        public (FieldElement xValue, FieldElement yValue)[] Encode(
+            int n, 
+            Polynomial generatingPolynomial, 
+            Polynomial informationPolynomial,
+            Polynomial modularPolynomial = null
+        )
         {
             var field = generatingPolynomial.Field;
             var m = modularPolynomial;
@@ -28,14 +31,14 @@
                 m = new Polynomial(field, 1).RightShift(n);
                 m[0] = field.InverseForAddition(1);
             }
-            var codeWordPolynomial = (informationPolynomial.RaiseVariableDegree(2) * generatingPolynomial) % m;
+            var codeWordPolynomial = informationPolynomial.RaiseVariableDegree(2) * generatingPolynomial % m;
 
             var i = 0;
-            var codeword = new Tuple<FieldElement, FieldElement>[n];
+            var codeword = new (FieldElement xValue, FieldElement yValue)[n];
             for (; i <= codeWordPolynomial.Degree; i++)
-                codeword[i] = Tuple.Create(field.CreateElement(field.PowGeneratingElement(i)), field.CreateElement(codeWordPolynomial[i]));
+                codeword[i] = (field.CreateElement(field.PowGeneratingElement(i)), field.CreateElement(codeWordPolynomial[i]));
             for (; i < n; i++)
-                codeword[i] = Tuple.Create(field.CreateElement(field.PowGeneratingElement(i)), field.Zero());
+                codeword[i] = (field.CreateElement(field.PowGeneratingElement(i)), field.Zero());
 
             return codeword;
         }

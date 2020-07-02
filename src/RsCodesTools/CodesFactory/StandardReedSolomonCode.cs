@@ -50,8 +50,8 @@
             return _preparedPoints.Select(x => Field.CreateElement(informationPolynomial.Evaluate(x.Representation))).ToArray();
         }
 
-        private Tuple<FieldElement, FieldElement>[] TransformNoisyCodeword(FieldElement[] noisyCodeword) =>
-            noisyCodeword.Select((x, i) => Tuple.Create(_preparedPoints[i], x)).ToArray();
+        private (FieldElement xValue, FieldElement yValue)[] TransformNoisyCodeword(IEnumerable<FieldElement> noisyCodeword) =>
+            noisyCodeword.Select((x, i) => (_preparedPoints[i], x)).ToArray();
 
         public FieldElement[] Decode(FieldElement[] noisyCodeword) =>
             _decoder.Decode(CodewordLength, InformationWordLength, TransformNoisyCodeword(noisyCodeword))

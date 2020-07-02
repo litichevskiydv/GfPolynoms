@@ -1,11 +1,10 @@
 ﻿namespace AppliedAlgebra.RsCodesTools.Decoding.ListDecoder.GsDecoderDependencies.InterpolationPolynomialBuilder
 {
-    using System;
     using GfAlgorithms.BiVariablePolynomials;
     using GfPolynoms;
 
     /// <summary>
-    /// Contarct for bivariate interpolation polynomial builder
+    /// Contract for bivariate interpolation polynomial builder
     /// </summary>
     public interface IInterpolationPolynomialBuilder
     {
@@ -20,7 +19,7 @@
         BiVariablePolynomial Build(
             (int xWeight, int yWeight) degreeWeight,
             int maxWeightedDegree,
-            Tuple<FieldElement, FieldElement>[] roots,
+            (FieldElement xValue, FieldElement yValue)[] roots,
             int rootsMultiplicity
         );
     }

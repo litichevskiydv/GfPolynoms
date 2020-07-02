@@ -54,8 +54,8 @@
             (new Polynomial(informationWord).RaiseVariableDegree(2) * _generatingPolynomial % _modularPolynomial)
             .GetCoefficients(CodewordLength - 1);
 
-        private Tuple<FieldElement, FieldElement>[] TransformNoisyCodeword(FieldElement[] noisyCodeword) =>
-            noisyCodeword.Select((x, i) => Tuple.Create(_preparedPoints[i], x)).ToArray();
+        private (FieldElement xValue, FieldElement yValue)[] TransformNoisyCodeword(FieldElement[] noisyCodeword) =>
+            noisyCodeword.Select((x, i) => (_preparedPoints[i], x)).ToArray();
 
         /// <inheritdoc />
         public FieldElement[] Decode(FieldElement[] noisyCodeword) =>

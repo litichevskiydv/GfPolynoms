@@ -19,16 +19,19 @@
         [UsedImplicitly]
         public static readonly TheoryData<DecoderTestCase> DecoderTestsData;
 
-        private static Tuple<FieldElement, FieldElement>[] AddRandomNoise(Tuple<FieldElement, FieldElement>[] codeword, int errorsCount)
+        private static (FieldElement xValue, FieldElement yValue)[] AddRandomNoise(
+            (FieldElement xValue, FieldElement yValue)[] codeword, 
+            int errorsCount
+        )
         {
             var random = new Random();
             var errorsPositions = new HashSet<int>();
             while (errorsPositions.Count < errorsCount)
                 errorsPositions.Add(random.Next(codeword.Length));
 
-            var one = codeword[0].Item1.Field.One();
+            var one = codeword[0].xValue.Field.One();
             foreach (var errorPosition in errorsPositions)
-                codeword[errorPosition].Item2.Add(one);
+                codeword[errorPosition].yValue.Add(one);
 
             return codeword;
         }

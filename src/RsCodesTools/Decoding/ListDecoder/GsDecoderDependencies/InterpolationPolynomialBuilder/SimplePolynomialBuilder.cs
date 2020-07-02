@@ -67,7 +67,7 @@
             (int xWeight, int yWeight) degreeWeight,
             int maxWeightedDegree, 
             int maxXDegree, 
-            IEnumerable<Tuple<FieldElement, FieldElement>> roots, 
+            IEnumerable<(FieldElement xValue, FieldElement yValue)> roots, 
             int rootsMultiplicity,
             IDictionary<(int xDegree, int yDegree), int> variableIndexByMonomial, 
             IDictionary<int, (int xDegree, int yDegree)> monomialByVariableIndex)
@@ -89,8 +89,8 @@
                                 var variableIndex = GetVariableIndexByMonomial(variableIndexByMonomial, monomialByVariableIndex, i, j);
                                 var coefficient = _combinationsCountCalculator.Calculate(field, i, r, combinationsCache)
                                                   *_combinationsCountCalculator.Calculate(field, j, s, combinationsCache)
-                                                  *FieldElement.Pow(root.Item1, i - r)
-                                                  *FieldElement.Pow(root.Item2, j - s);
+                                                  *FieldElement.Pow(root.xValue, i - r)
+                                                  *FieldElement.Pow(root.yValue, j - s);
 
                                 equation.Add(new Tuple<int, FieldElement>(variableIndex, coefficient));
                             }
@@ -154,11 +154,11 @@
         /// <param name="maxWeightedDegree">Maximum value of bivariate monomial degree</param>
         /// <param name="roots">Roots of the interpolation polynomial</param>
         /// <param name="rootsMultiplicity">Multiplicity of bivariate polynomial's roots</param>
-        /// <returns>Builded interpolation polynomial</returns>
+        /// <returns>Built interpolation polynomial</returns>
         public BiVariablePolynomial Build(
             (int xWeight, int yWeight) degreeWeight, 
-            int maxWeightedDegree, 
-            Tuple<FieldElement, FieldElement>[] roots, 
+            int maxWeightedDegree,
+            (FieldElement xValue, FieldElement yValue)[] roots, 
             int rootsMultiplicity)
         {
             if (roots == null)
@@ -166,7 +166,7 @@
             if (roots.Length == 0)
                 throw new ArgumentException($"{nameof(roots)} is empty");
 
-            var field = roots[0].Item1.Field;
+            var field = roots[0].xValue.Field;
             var variableIndexByMonomial = new Dictionary<(int xDegree, int yDegree), int>();
             var monomialByVariableIndex = new Dictionary<int, (int xDegree, int yDegree)>();
 

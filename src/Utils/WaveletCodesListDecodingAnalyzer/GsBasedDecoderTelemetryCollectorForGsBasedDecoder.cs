@@ -24,12 +24,12 @@
         /// <summary>
         /// Отобранные интересные примеры
         /// </summary>
-        public ConcurrentDictionary<Tuple<int, int>, List<Tuple<FieldElement, FieldElement>[]>> InterestingSamples { get; }
+        public ConcurrentDictionary<Tuple<int, int>, List<(FieldElement xValue, FieldElement yValue)[]>> InterestingSamples { get; }
 
         public GsBasedDecoderTelemetryCollectorForGsBasedDecoder()
         {
             ProcessingResults = new ConcurrentDictionary<Tuple<int, int>, int>();
-            InterestingSamples = new ConcurrentDictionary<Tuple<int, int>, List<Tuple<FieldElement, FieldElement>[]>>();
+            InterestingSamples = new ConcurrentDictionary<Tuple<int, int>, List<(FieldElement xValue, FieldElement yValue)[]>>();
         }
 
         /// <summary>
@@ -38,16 +38,19 @@
         /// <param name="decodedCodeword">Декодируемое кодовое слово</param>
         /// <param name="frequencyDecodingListSize">Размер списка при декодировании в частотной области</param>
         /// <param name="timeDecodingListSize">Размер списка при декодировании во временной области</param>
-        public void ReportDecodingListsSizes(Tuple<FieldElement, FieldElement>[] decodedCodeword, 
-            int frequencyDecodingListSize, int timeDecodingListSize)
+        public void ReportDecodingListsSizes(
+            (FieldElement xValue, FieldElement yValue)[] decodedCodeword, 
+            int frequencyDecodingListSize, 
+            int timeDecodingListSize
+        )
         {
             var listsSizes = Tuple.Create(frequencyDecodingListSize, timeDecodingListSize);
 
             ProcessingResults.AddOrUpdate(listsSizes, 1, (key, value) => value + 1);
             if (timeDecodingListSize > 1)
             {
-                var clonnedCodeword = decodedCodeword.Select(x => new Tuple<FieldElement, FieldElement>(x.Item1, new FieldElement(x.Item2))).ToArray();
-                InterestingSamples.AddOrUpdate(listsSizes, new List<Tuple<FieldElement, FieldElement>[]> {clonnedCodeword},
+                var clonnedCodeword = decodedCodeword.Select(x => (new FieldElement(x.xValue), new FieldElement(x.yValue))).ToArray();
+                InterestingSamples.AddOrUpdate(listsSizes, new List<(FieldElement xValue, FieldElement yValue)[]> {clonnedCodeword},
                     (key, value) =>
                     {
                         value.Add(clonnedCodeword);
@@ -69,12 +72,11 @@
             {
                 builder.AppendLine($"Frequency decoding list size {listSize.Key.Item1}, time decoding list size {listSize.Key.Item2}, {listSize.Value} samples");
 
-                Tuple<FieldElement, FieldElement>[][] collectedSamples;
-                if (interestingSamples.TryGetValue(listSize.Key, out collectedSamples))
+                if (interestingSamples.TryGetValue(listSize.Key, out var collectedSamples))
                 {
                     builder.AppendLine("\tInteresting samples were collected:");
                     foreach (var collectedSample in collectedSamples)
-                        builder.AppendLine("\t\t[" + string.Join(",", collectedSample.Select(x => $"({x.Item1},{x.Item2})")) + "]");
+                        builder.AppendLine("\t\t[" + string.Join(",", collectedSample.Select(x => $"({x.xValue},{x.yValue})")) + "]");
                 }
             }
 

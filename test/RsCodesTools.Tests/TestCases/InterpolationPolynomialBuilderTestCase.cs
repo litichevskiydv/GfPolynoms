@@ -10,6 +10,6 @@
         public int MaxWeightedDegree { get; set; }
 
 
-        public Tuple<FieldElement, FieldElement>[] Roots { get; set; }
+        public (FieldElement xValue, FieldElement yValue)[] Roots { get; set; }
     }
 }

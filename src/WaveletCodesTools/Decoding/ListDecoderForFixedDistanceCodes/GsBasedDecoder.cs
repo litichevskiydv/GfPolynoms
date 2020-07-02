@@ -31,8 +31,13 @@
         /// <param name="decodedCodeword">Received codeword for decoding</param>
         /// <param name="minCorrectValuesCount">Minimum number of valid values</param>
         /// <returns>Decoding result in frequency domain</returns>
-        private Polynomial[] GetFrequencyDecodingResults(int n, int d, int generationPolynomialLeadZeroValuesCount,
-            Tuple<FieldElement, FieldElement>[] decodedCodeword, int minCorrectValuesCount)
+        private Polynomial[] GetFrequencyDecodingResults(
+            int n,
+            int d,
+            int generationPolynomialLeadZeroValuesCount,
+            (FieldElement xValue, FieldElement yValue)[] decodedCodeword,
+            int minCorrectValuesCount
+        )
         {
             var preparedCodeword = PrepareCodewordForFrequenceDecoding(n, generationPolynomialLeadZeroValuesCount, decodedCodeword);
             return _rsListDecoder.Decode(n, n - d + 1, preparedCodeword, minCorrectValuesCount);
@@ -49,10 +54,16 @@
         /// <param name="decodedCodeword">Received codeword for decoding</param>
         /// <param name="frequencyDecodingResults">Decoding result in the frequency domain</param>
         /// <returns>Decoding result in the time domain</returns>
-        private Polynomial[] SelectCorrectInformationPolynomials(int n, int k, int d, Polynomial generatingPolynomial, int generationPolynomialLeadZeroValuesCount,
-            Tuple<FieldElement, FieldElement>[] decodedCodeword, IEnumerable<Polynomial> frequencyDecodingResults)
-        {
-            return
+        private Polynomial[] SelectCorrectInformationPolynomials(
+            int n,
+            int k,
+            int d,
+            Polynomial generatingPolynomial,
+            int generationPolynomialLeadZeroValuesCount,
+            (FieldElement xValue, FieldElement yValue)[] decodedCodeword,
+            IEnumerable<Polynomial> frequencyDecodingResults
+        )
+            =>
                 frequencyDecodingResults
                     .Select(x =>
                                 ComputeTimeDecodingResult(
@@ -61,7 +72,7 @@
                                     decodedCodeword, x))
                     .Where(x => x != null)
                     .ToArray();
-        }
+        
 
         /// <summary>
         /// Method for performing list decoding of the wavelet code codeword
@@ -73,8 +84,8 @@
         /// <param name="decodedCodeword">Recived codeword for decoding</param>
         /// <param name="minCorrectValuesCount">Minimum number of valid values</param>
         /// <returns>Decoding result</returns>
-        public Polynomial[] Decode(int n, int k, int d, Polynomial generatingPolynomial, 
-            Tuple<FieldElement, FieldElement>[] decodedCodeword, int minCorrectValuesCount)
+        public Polynomial[] Decode(int n, int k, int d, Polynomial generatingPolynomial,
+            (FieldElement xValue, FieldElement yValue)[] decodedCodeword, int minCorrectValuesCount)
         {
             if (n <= 0)
                 throw new ArgumentException(nameof(n));

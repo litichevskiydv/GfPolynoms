@@ -27,8 +27,11 @@
         /// <param name="decodedCodeword">Recived codeword for decoding</param>
         /// <param name="minCorrectValuesCount">Minimum number of valid values</param>
         /// <returns>Valid decoding results</returns>
-        private static Polynomial[] SelectCorrectInformationPolynomials(IEnumerable<Polynomial> possiblePolynomials,
-            IReadOnlyList<Tuple<FieldElement, FieldElement>> decodedCodeword, int minCorrectValuesCount)
+        private static Polynomial[] SelectCorrectInformationPolynomials(
+            IEnumerable<Polynomial> possiblePolynomials,
+            IReadOnlyList<(FieldElement xValue, FieldElement yValue)> decodedCodeword,
+            int minCorrectValuesCount
+        )
         {
             var correctPolynomials = new List<Polynomial>();
 
@@ -36,7 +39,7 @@
             {
                 var matchesCount = 0;
                 for (var i = 0; i < decodedCodeword.Count && matchesCount < minCorrectValuesCount; i++)
-                    if (possiblePolynomial.Evaluate(decodedCodeword[i].Item1.Representation) == decodedCodeword[i].Item2.Representation)
+                    if (possiblePolynomial.Evaluate(decodedCodeword[i].xValue.Representation) == decodedCodeword[i].yValue.Representation)
                         matchesCount++;
 
                 if (matchesCount == minCorrectValuesCount)
@@ -51,10 +54,15 @@
         /// </summary>
         /// <param name="n">Codeword length</param>
         /// <param name="k">Information word length</param>
-        /// <param name="decodedCodeword">Recived codeword for decoding</param>
+        /// <param name="decodedCodeword">Received codeword for decoding</param>
         /// <param name="minCorrectValuesCount">Minimum number of valid values</param>
         /// <returns>Decoding result</returns>
-        public Polynomial[] Decode(int n, int k, Tuple<FieldElement, FieldElement>[] decodedCodeword, int minCorrectValuesCount)
+        public Polynomial[] Decode(
+            int n, 
+            int k, 
+            (FieldElement xValue, FieldElement yValue)[] decodedCodeword, 
+            int minCorrectValuesCount
+        )
         {
             if (n <= 0)
                 throw new ArgumentException(nameof(n));

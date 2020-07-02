@@ -1,6 +1,5 @@
 ﻿namespace AppliedAlgebra.RsCodesTools.Tests
 {
-    using System;
     using Decoding.ListDecoder.GsDecoderDependencies.InterpolationPolynomialBuilder;
     using GfAlgorithms.CombinationsCountCalculator;
     using GfPolynoms.Extensions;
@@ -35,8 +34,8 @@
                   MaxWeightedDegree = 3,
                   Roots = new[]
                           {
-                              Tuple.Create(gf5.One(), gf5.CreateElement(3)),
-                              Tuple.Create(gf5.CreateElement(2), gf5.CreateElement(4))
+                              (gf5.One(), gf5.CreateElement(3)),
+                              (gf5.CreateElement(2), gf5.CreateElement(4))
                           }
               },
               new InterpolationPolynomialBuilderTestCase
@@ -45,8 +44,8 @@
                   MaxWeightedDegree = 3,
                   Roots = new[]
                           {
-                              Tuple.Create(gf8.CreateElement(3), gf8.CreateElement(7)),
-                              Tuple.Create(gf8.CreateElement(5), gf8.CreateElement(4))
+                              (gf8.CreateElement(3), gf8.CreateElement(7)),
+                              (gf8.CreateElement(5), gf8.CreateElement(4))
                           }
               },
               new InterpolationPolynomialBuilderTestCase
@@ -55,8 +54,8 @@
                   MaxWeightedDegree = 3,
                   Roots = new[]
                           {
-                              Tuple.Create(gf27.CreateElement(15), gf27.CreateElement(26)),
-                              Tuple.Create(gf27.CreateElement(10), gf27.CreateElement(9))
+                              (gf27.CreateElement(15), gf27.CreateElement(26)),
+                              (gf27.CreateElement(10), gf27.CreateElement(9))
                           }
               }
           };
@@ -70,10 +69,10 @@
                   MaxWeightedDegree = 2,
                   Roots = new[]
                           {
-                              Tuple.Create(gf27.One(), gf27.CreateElement(16)),
-                              Tuple.Create(gf27.CreateElement(13), gf27.CreateElement(26)),
-                              Tuple.Create(gf27.CreateElement(10), gf27.CreateElement(15)),
-                              Tuple.Create(gf27.CreateElement(8), gf27.CreateElement(5))
+                              (gf27.One(), gf27.CreateElement(16)),
+                              (gf27.CreateElement(13), gf27.CreateElement(26)),
+                              (gf27.CreateElement(10), gf27.CreateElement(15)),
+                              (gf27.CreateElement(8), gf27.CreateElement(5))
                           }
               }
                   };

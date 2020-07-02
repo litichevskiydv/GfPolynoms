@@ -1,6 +1,5 @@
 ﻿namespace AppliedAlgebra.RsCodesTools.Encoding
 {
-    using System;
     using GfPolynoms;
     using GfPolynoms.Extensions;
 
@@ -15,16 +14,18 @@
         /// <param name="n">Codeword length</param>
         /// <param name="informationPolynomial">Information polynomial</param>
         /// <returns>Computed codeword</returns>
-        public Tuple<FieldElement, FieldElement>[] Encode(int n, Polynomial informationPolynomial)
+        public (FieldElement xValue, FieldElement yValue)[] Encode(int n, Polynomial informationPolynomial)
         {
             var field = informationPolynomial.Field;
-            var codeword = new Tuple<FieldElement, FieldElement>[n];
+            var codeword = new (FieldElement xValue, FieldElement yValue)[n];
 
             for (var i = 0; i < n; i++)
             {
                 var variableValue = field.PowGeneratingElement(i);
-                codeword[i] = Tuple.Create(field.CreateElement(variableValue),
-                    field.CreateElement(informationPolynomial.Evaluate(variableValue)));
+                codeword[i] = (
+                    field.CreateElement(variableValue),
+                    field.CreateElement(informationPolynomial.Evaluate(variableValue))
+                );
             }
 
             return codeword;

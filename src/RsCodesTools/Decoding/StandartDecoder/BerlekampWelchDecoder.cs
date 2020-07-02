@@ -26,7 +26,7 @@
         /// <returns>Generated system</returns>
         private static Tuple<FieldElement[,], FieldElement[]> BuildEquationsSystem(
             int k, 
-            IReadOnlyList<Tuple<FieldElement, FieldElement>> decodedCodeword,
+            IReadOnlyList<(FieldElement xValue, FieldElement yValue)> decodedCodeword,
             int errorsCount)
         {
             var a = new FieldElement[decodedCodeword.Count, k + 2 * errorsCount];
@@ -35,18 +35,18 @@
             for (var i = 0; i < decodedCodeword.Count; i++)
             {
                 var j = 0;
-                var coefficient = decodedCodeword[i].Item1.Field.One();
+                var coefficient = decodedCodeword[i].xValue.Field.One();
                 for (; j < k + errorsCount; j++)
                 {
                     a[i, j] = coefficient;
-                    coefficient *= decodedCodeword[i].Item1;
+                    coefficient *= decodedCodeword[i].xValue;
                 }
 
-                coefficient = -decodedCodeword[i].Item2;
+                coefficient = -decodedCodeword[i].yValue;
                 for (; j < k + 2 * errorsCount; j++)
                 {
                     a[i, j] = coefficient;
-                    coefficient *= decodedCodeword[i].Item1;
+                    coefficient *= decodedCodeword[i].xValue;
                 }
 
                 b[i] = -coefficient;
@@ -92,7 +92,7 @@
         /// <param name="decodedCodeword">Recived codeword for decoding</param>
         /// <param name="errorsCount">Errors count</param>
         /// <returns>Decoding result</returns>
-        public Polynomial Decode(int n, int k, Tuple<FieldElement, FieldElement>[] decodedCodeword, int? errorsCount = null)
+        public Polynomial Decode(int n, int k, (FieldElement xValue, FieldElement yValue)[] decodedCodeword, int? errorsCount = null)
         {
             var actualErrorsCount = errorsCount ?? (n - k) / 2;
             if (actualErrorsCount > (n - k) / 2)

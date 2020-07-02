@@ -71,7 +71,7 @@
         public BiVariablePolynomial Build(
             (int xWeight, int yWeight) degreeWeight, 
             int maxWeightedDegree,
-            Tuple<FieldElement, FieldElement>[] roots, 
+            (FieldElement xValue, FieldElement yValue)[] roots, 
             int rootsMultiplicity
             )
         {
@@ -80,7 +80,7 @@
             if (roots.Length == 0)
                 throw new ArgumentException($"{nameof(roots)} is empty");
 
-            var field = roots[0].Item1.Field;
+            var field = roots[0].xValue.Field;
             var maxXDegree = maxWeightedDegree/degreeWeight.xWeight;
             var maxYDegree = maxWeightedDegree/degreeWeight.yWeight;
             
@@ -109,7 +109,7 @@
                                 continue;
 
                             anyCompatiblePolynomialFound = true;
-                            var hasseDerivative = buildingPolynomials[i].CalculateHasseDerivative(r, s, root.Item1, root.Item2,
+                            var hasseDerivative = buildingPolynomials[i].CalculateHasseDerivative(r, s, root.xValue, root.yValue,
                                 _combinationsCountCalculator, combinationsCache);
                             if (hasseDerivative.Representation != 0)
                                 nonZeroDerivatives.Add(new Tuple<int, FieldElement>(i, hasseDerivative));
@@ -130,7 +130,7 @@
                             if (i != minimumIndex)
                                 buildingPolynomials[nonZeroDerivatives[i].Item1]
                                     .Subtract(nonZeroDerivatives[i].Item2.Divide(minimumDerivative), minimumPolynomial);
-                        transformationMultiplier[_zeroMonomial] = -root.Item1;
+                        transformationMultiplier[_zeroMonomial] = -root.xValue;
                         minimumPolynomial
                             .Multiply(minimumDerivative*transformationMultiplier);
                         leadMonomials[minimumPolynomialIndex] = (

@@ -1,10 +1,9 @@
 ﻿namespace AppliedAlgebra.WaveletCodesTools.Decoding.StandartDecoderForFixedDistanceCodes
 {
-    using System;
     using GfPolynoms;
 
     /// <summary>
-    /// Contract for wavelet code standart decoder
+    /// Contract for wavelet code standard decoder
     /// </summary>
     public interface IDecoder
     {
@@ -18,7 +17,13 @@
         /// <param name="decodedCodeword">Recived codeword for decoding</param>
         /// <param name="errorsCount">Number of errors in received codeword</param>
         /// <returns>Decoding result</returns>
-        Polynomial Decode(int n, int k, int d, Polynomial generatingPolynomial,
-            Tuple<FieldElement, FieldElement>[] decodedCodeword, int? errorsCount = null);
+        Polynomial Decode(
+            int n,
+            int k,
+            int d,
+            Polynomial generatingPolynomial,
+            (FieldElement xValue, FieldElement yValue)[] decodedCodeword,
+            int? errorsCount = null
+        );
     }
 }

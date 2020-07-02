@@ -14,6 +14,6 @@
         /// <param name="n">Codeword length</param>
         /// <param name="informationPolynomial">Information polynomial</param>
         /// <returns>Computed codeword</returns>
-        Tuple<FieldElement, FieldElement>[] Encode(int n, Polynomial informationPolynomial);
+        (FieldElement xValue, FieldElement yValue)[] Encode(int n, Polynomial informationPolynomial);
     }
 }

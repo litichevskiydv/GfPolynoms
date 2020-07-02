@@ -1,6 +1,5 @@
 ﻿namespace AppliedAlgebra.WaveletCodesTools.Encoding
 {
-    using System;
     using GfPolynoms;
 
     /// <summary>
@@ -16,7 +15,11 @@
         /// <param name="informationPolynomial">Information polynomial</param>
         /// <param name="modularPolynomial">Modular polynomial for wavelet code encoding scheme</param>
         /// <returns>Computed codeword</returns>
-        Tuple<FieldElement, FieldElement>[] Encode(int n, Polynomial generatingPolynomial, Polynomial informationPolynomial,
-            Polynomial modularPolynomial = null);
+        (FieldElement xValue, FieldElement yValue)[] Encode(
+            int n,
+            Polynomial generatingPolynomial,
+            Polynomial informationPolynomial,
+            Polynomial modularPolynomial = null
+        );
     }
 }

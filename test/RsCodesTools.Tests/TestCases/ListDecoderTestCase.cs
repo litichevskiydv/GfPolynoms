@@ -9,7 +9,7 @@
 
         public int K { get; set; }
 
-        public Tuple<FieldElement, FieldElement>[] DecodedCodeword { get; set; }
+        public (FieldElement xValue, FieldElement yValue)[] DecodedCodeword { get; set; }
 
         public int MinCorrectValuesCount { get; set; }
 
