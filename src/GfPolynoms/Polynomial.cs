@@ -517,6 +517,11 @@
             return Add(a, b);
         }
 
+        public static Polynomial operator -(Polynomial a)
+        {
+            return new Polynomial(a.Field).Subtract(a);
+        }
+
         public static Polynomial operator -(Polynomial a, Polynomial b)
         {
             return Subtract(a, b);
