@@ -5,7 +5,7 @@
 
     public class InterpolationPolynomialBuilderTestCase
     {
-        public Tuple<int, int> DegreeWeight { get; set; }
+        public (int xWeight, int yWeight) DegreeWeight { get; set; }
 
         public int MaxWeightedDegree { get; set; }
 

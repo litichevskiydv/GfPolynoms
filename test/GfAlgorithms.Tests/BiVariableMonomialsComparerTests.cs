@@ -43,7 +43,7 @@
 
         public BiVariableMonomialsComparerTests()
         {
-            _comparer = new BiVariableMonomialsComparer(Tuple.Create(1, 3));
+            _comparer = new BiVariableMonomialsComparer((1, 3));
         }
 
         [Theory]

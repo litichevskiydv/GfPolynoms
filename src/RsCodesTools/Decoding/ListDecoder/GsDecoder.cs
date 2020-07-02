@@ -72,7 +72,7 @@
             var temp = minCorrectValuesCount*minCorrectValuesCount - n*decrementedK;
             var rootsMultiplicity = 1 + (int) Math.Floor((n*decrementedK + Math.Sqrt(n*n*decrementedK*decrementedK + 4d*temp))/(2d*temp));
             var maxWeightedDegree = rootsMultiplicity*minCorrectValuesCount - 1;
-            var interpolationPolynomial = _interpolationPolynomialBuilder.Build(new Tuple<int, int>(1, decrementedK), maxWeightedDegree,
+            var interpolationPolynomial = _interpolationPolynomialBuilder.Build((1, decrementedK), maxWeightedDegree,
                 decodedCodeword, rootsMultiplicity);
 
             var possibleInformationPolynomials = _interpolationPolynomialFactorizator.Factorize(interpolationPolynomial, decrementedK);

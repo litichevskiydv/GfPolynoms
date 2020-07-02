@@ -17,6 +17,11 @@
         /// <param name="roots">Roots of the interpolation polynomial</param>
         /// <param name="rootsMultiplicity">Multiplicity of bivariate polynomial's roots</param>
         /// <returns>Builded interpolation polynomial</returns>
-        BiVariablePolynomial Build(Tuple<int, int> degreeWeight, int maxWeightedDegree, Tuple<FieldElement, FieldElement>[] roots, int rootsMultiplicity);
+        BiVariablePolynomial Build(
+            (int xWeight, int yWeight) degreeWeight,
+            int maxWeightedDegree,
+            Tuple<FieldElement, FieldElement>[] roots,
+            int rootsMultiplicity
+        );
     }
 }

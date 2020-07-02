@@ -1,6 +1,5 @@
 ﻿namespace AppliedAlgebra.GfAlgorithms.BiVariablePolynomials
 {
-    using System;
     using System.Collections.Generic;
 
     /// <summary>
@@ -11,7 +10,7 @@
         /// <summary>
         /// Weights of monomial variable's powers
         /// </summary>
-        private readonly Tuple<int, int> _degreeWeight;
+        private readonly (int xWeight, int yWeight) _degreeWeight;
 
         /// <summary>
         /// Method for comparison one bivariate monomial <paramref name="a"/> to another bivariate monomial <paramref name="b"/>
@@ -21,8 +20,8 @@
         /// <returns>Comparsion result</returns>
         public int Compare((int xDegree, int yDegree) a, (int xDegree, int yDegree) b)
         {
-            var xDegreeWeight = a.xDegree*_degreeWeight.Item1 + a.yDegree*_degreeWeight.Item2;
-            var yDegreeWeight = b.xDegree * _degreeWeight.Item1 + b.yDegree * _degreeWeight.Item2;
+            var xDegreeWeight = a.xDegree*_degreeWeight.xWeight + a.yDegree*_degreeWeight.yWeight;
+            var yDegreeWeight = b.xDegree * _degreeWeight.xWeight + b.yDegree * _degreeWeight.yWeight;
 
             if (xDegreeWeight < yDegreeWeight)
                 return -1;
@@ -41,11 +40,8 @@
         /// Constructor for creating bivariate monomials comparer with degree weights <paramref name="degreeWeight"/>
         /// </summary>
         /// <param name="degreeWeight">Weights of monomial variable's powers</param>
-        public BiVariableMonomialsComparer(Tuple<int, int> degreeWeight)
+        public BiVariableMonomialsComparer((int xWeight, int yWeight) degreeWeight)
         {
-            if (degreeWeight == null)
-                throw new ArgumentNullException(nameof(degreeWeight));
-
             _degreeWeight = degreeWeight;
         }
     }

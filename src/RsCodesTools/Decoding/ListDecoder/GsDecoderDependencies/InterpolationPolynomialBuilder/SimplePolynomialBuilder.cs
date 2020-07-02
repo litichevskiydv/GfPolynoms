@@ -64,7 +64,7 @@
         /// <returns>Linear system's representation</returns>
         private List<List<Tuple<int, FieldElement>>> BuildEquationsSystem(
             GaloisField field,
-            Tuple<int, int> degreeWeight,
+            (int xWeight, int yWeight) degreeWeight,
             int maxWeightedDegree, 
             int maxXDegree, 
             IEnumerable<Tuple<FieldElement, FieldElement>> roots, 
@@ -73,7 +73,7 @@
             IDictionary<int, (int xDegree, int yDegree)> monomialByVariableIndex)
         {
             var equations = new List<List<Tuple<int, FieldElement>>>();
-            var combinationsCache = new FieldElement[Math.Max(maxWeightedDegree/degreeWeight.Item1, maxWeightedDegree/degreeWeight.Item2) + 1][]
+            var combinationsCache = new FieldElement[Math.Max(maxWeightedDegree/degreeWeight.xWeight, maxWeightedDegree/degreeWeight.yWeight) + 1][]
                     .MakeSquare();
 
             foreach (var root in roots)
@@ -84,7 +84,7 @@
                         equations.Add(equation);
 
                         for (var i = r; i <= maxXDegree; i++)
-                            for (var j = s; i*degreeWeight.Item1 + j*degreeWeight.Item2 <= maxWeightedDegree; j++)
+                            for (var j = s; i*degreeWeight.xWeight + j*degreeWeight.yWeight <= maxWeightedDegree; j++)
                             {
                                 var variableIndex = GetVariableIndexByMonomial(variableIndexByMonomial, monomialByVariableIndex, i, j);
                                 var coefficient = _combinationsCountCalculator.Calculate(field, i, r, combinationsCache)
@@ -156,13 +156,11 @@
         /// <param name="rootsMultiplicity">Multiplicity of bivariate polynomial's roots</param>
         /// <returns>Builded interpolation polynomial</returns>
         public BiVariablePolynomial Build(
-            Tuple<int, int> degreeWeight, 
+            (int xWeight, int yWeight) degreeWeight, 
             int maxWeightedDegree, 
             Tuple<FieldElement, FieldElement>[] roots, 
             int rootsMultiplicity)
         {
-            if (degreeWeight == null)
-                throw new ArgumentNullException(nameof(degreeWeight));
             if (roots == null)
                 throw new ArgumentNullException(nameof(roots));
             if (roots.Length == 0)
@@ -173,7 +171,7 @@
             var monomialByVariableIndex = new Dictionary<int, (int xDegree, int yDegree)>();
 
             var equationsSystem = BuildEquationsSystem(field, degreeWeight,
-                maxWeightedDegree, maxWeightedDegree / degreeWeight.Item1, roots, rootsMultiplicity,
+                maxWeightedDegree, maxWeightedDegree / degreeWeight.xWeight, roots, rootsMultiplicity,
                 variableIndexByMonomial, monomialByVariableIndex);
 
             var systemSolution = SolveEquationsSystem(field, variableIndexByMonomial.Count, equationsSystem);

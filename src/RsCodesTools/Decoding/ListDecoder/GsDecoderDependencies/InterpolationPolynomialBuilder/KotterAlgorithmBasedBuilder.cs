@@ -55,9 +55,9 @@
         /// <param name="monomial">Bivariate monomial for degree weight calculation</param>
         /// <param name="degreeWeight">Weight of bivariate monomials degree</param>
         /// <returns>Calculated degree weight</returns>
-        private static int CalculateMonomialWeight((int xDegree, int yDegree) monomial, Tuple<int, int> degreeWeight)
+        private static int CalculateMonomialWeight((int xDegree, int yDegree) monomial, (int xWeight, int yWeight) degreeWeight)
         {
-            return monomial.xDegree * degreeWeight.Item1 + monomial.yDegree * degreeWeight.Item2;
+            return monomial.xDegree * degreeWeight.xWeight + monomial.yDegree * degreeWeight.yWeight;
         }
 
         /// <summary>
@@ -68,19 +68,21 @@
         /// <param name="roots">Roots of the interpolation polynomial</param>
         /// <param name="rootsMultiplicity">Multiplicity of bivariate polynomial's roots</param>
         /// <returns>Builded interpolation polynomial</returns>
-        public BiVariablePolynomial Build(Tuple<int, int> degreeWeight, int maxWeightedDegree,
-            Tuple<FieldElement, FieldElement>[] roots, int rootsMultiplicity)
+        public BiVariablePolynomial Build(
+            (int xWeight, int yWeight) degreeWeight, 
+            int maxWeightedDegree,
+            Tuple<FieldElement, FieldElement>[] roots, 
+            int rootsMultiplicity
+            )
         {
-            if (degreeWeight == null)
-                throw new ArgumentNullException(nameof(degreeWeight));
             if (roots == null)
                 throw new ArgumentNullException(nameof(roots));
             if (roots.Length == 0)
                 throw new ArgumentException($"{nameof(roots)} is empty");
 
             var field = roots[0].Item1.Field;
-            var maxXDegree = maxWeightedDegree/degreeWeight.Item1;
-            var maxYDegree = maxWeightedDegree/degreeWeight.Item2;
+            var maxXDegree = maxWeightedDegree/degreeWeight.xWeight;
+            var maxYDegree = maxWeightedDegree/degreeWeight.yWeight;
             
             var combinationsCache = new FieldElement[Math.Max(maxXDegree, maxYDegree) + 1][].MakeSquare();
             var transformationMultiplier = new BiVariablePolynomial(field) {[(1, 0)] = field.One()};
