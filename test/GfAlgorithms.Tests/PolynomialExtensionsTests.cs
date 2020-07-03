@@ -30,11 +30,11 @@
             var expectedOddComponent = new Polynomial(_field, expectedOddComponenetCoefficients);
 
             // When
-            var polyphaseComponents = polynomial.GetPolyphaseComponents();
+            var (actualEvenComponent, actualOddComponent) = polynomial.GetPolyphaseComponents();
 
             // Then
-            Assert.Equal(expectedEvenComponent, polyphaseComponents.Item1);
-            Assert.Equal(expectedOddComponent, polyphaseComponents.Item2);
+            Assert.Equal(expectedEvenComponent, actualEvenComponent);
+            Assert.Equal(expectedOddComponent, actualOddComponent);
         }
 
         [Theory]

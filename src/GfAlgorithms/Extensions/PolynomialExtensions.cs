@@ -12,7 +12,7 @@
         /// </summary>
         /// <param name="polynomial">Polynomial for processing</param>
         /// <returns>Pair (p_e(x), p_o(x))</returns>
-        public static Tuple<Polynomial, Polynomial> GetPolyphaseComponents(this Polynomial polynomial)
+        public static (Polynomial evenComponent, Polynomial oddComponent) GetPolyphaseComponents(this Polynomial polynomial)
         {
             if(polynomial == null)
                 throw new ArgumentNullException(nameof(polynomial));
@@ -26,8 +26,10 @@
                 else
                     oddDegreesCoefficients.Add(polynomial[i]);
 
-            return new Tuple<Polynomial, Polynomial>(new Polynomial(polynomial.Field, evenDegreesCoefficients.ToArray()),
-                new Polynomial(polynomial.Field, oddDegreesCoefficients.ToArray()));
+            return (
+                new Polynomial(polynomial.Field, evenDegreesCoefficients.ToArray()),
+                new Polynomial(polynomial.Field, oddDegreesCoefficients.ToArray())
+            );
         }
 
         /// <summary>

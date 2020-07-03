@@ -32,8 +32,8 @@
             if(sourceFilter == null)
                 throw new ArgumentNullException(nameof(sourceFilter));
 
-            var polythaseComponents = sourceFilter.GetPolyphaseComponents();
-            var gcdWithQuotients = _gcdFinder.GcdWithQuotients(polythaseComponents.Item1, polythaseComponents.Item2);
+            var (sourceFilterEvenComponent, sourceFilterOddComponent) = sourceFilter.GetPolyphaseComponents();
+            var gcdWithQuotients = _gcdFinder.GcdWithQuotients(sourceFilterEvenComponent, sourceFilterOddComponent);
             if (gcdWithQuotients.Gcd.IsMonomial() == false || maxFilterLength % 2 == 1 && gcdWithQuotients.Gcd.Degree > 0)
                 throw new InvalidOperationException($"{sourceFilter} polyphase components is not relatively prime");
 
