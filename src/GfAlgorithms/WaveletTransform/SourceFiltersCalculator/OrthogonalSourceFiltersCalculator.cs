@@ -18,6 +18,8 @@
                 throw new ArgumentNullException(nameof(h));
             if(h.Length == 0)
                 throw new ArgumentException($"{nameof(h)} must not be empty");
+            if (h.Length % 2 == 1)
+                throw new ArgumentException("Filters length must be even");
 
             h.GetField();
             var filtersLength = h.Length;

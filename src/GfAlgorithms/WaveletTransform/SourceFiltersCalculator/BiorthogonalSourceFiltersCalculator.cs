@@ -28,6 +28,8 @@
         {
             if (h == null)
                 throw new ArgumentNullException(nameof(h));
+            if(h.Length % 2 == 1)
+                throw new ArgumentException("Filters length must be even");
 
             var expectedDegree = h.Length - 1;
             var (_, analysisPair, synthesisPair) = GetSourceFilters(new Polynomial(h), expectedDegree);
@@ -37,7 +39,7 @@
             );
         }
 
-        private static Polynomial ComputeDualComponent(int filtersLength, Polynomial component)
+        private static Polynomial ComputeDualComponentForOddFiltersLength(int filtersLength, Polynomial component)
         {
             var componentCoefficients = component.RaiseVariableDegree(2).GetCoefficients(filtersLength - 1);
             return new Polynomial(
@@ -76,17 +78,18 @@
                     (new Polynomial(h), g)
                 );
             }
+            
+            var (ge, go) = g.GetPolyphaseComponents();
+            var hWithTilde = PolynomialExtensions.CreateFormPolyphaseComponents(
+                ComputeDualComponentForOddFiltersLength(filtersLength, go),
+                ComputeDualComponentForOddFiltersLength(filtersLength, -ge)
+            );
 
             var (he, ho) = h.GetPolyphaseComponents();
-            var (ge, go) = g.GetPolyphaseComponents();
-
-            var heWithTilde = ComputeDualComponent(filtersLength, go);
-            var hoWithTilde = ComputeDualComponent(filtersLength, -ge);
-            var hWithTilde = PolynomialExtensions.CreateFormPolyphaseComponents(heWithTilde, hoWithTilde);
-
-            var geWithTilde = ComputeDualComponent(filtersLength, -ho);
-            var goWithTilde = ComputeDualComponent(filtersLength, he);
-            var gWithTilde = PolynomialExtensions.CreateFormPolyphaseComponents(geWithTilde, goWithTilde);
+            var gWithTilde = PolynomialExtensions.CreateFormPolyphaseComponents(
+                ComputeDualComponentForOddFiltersLength(filtersLength, -ho),
+                ComputeDualComponentForOddFiltersLength(filtersLength, he)
+            );
 
             return new FiltersBankPolynomials(filtersLength, (hWithTilde, gWithTilde), (new Polynomial(h), g));
         }

@@ -20,13 +20,15 @@
         {
             var gf2 = GaloisField.Create(2);
             var gf3 = GaloisField.Create(3);
+            var gf9 = GaloisField.Create(9, new[] { 1, 0, 1 });
 
             GetSourceFiltersVectorsParametersValidationTestCases
                 = new TheoryData<FieldElement[]>
                   {
                       null,
                       new FieldElement[0],
-                      new[] {gf2.One(), gf3.One()}
+                      new[] {gf2.One(), gf3.One()},
+                      gf9.CreateElementsVector(5, 6, 2, 6, 2, 8, 2, 1, 0, 2, 7)
                   };
         }
 
