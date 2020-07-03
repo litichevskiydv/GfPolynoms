@@ -55,6 +55,39 @@
         }
 
         /// <summary>
+        /// Method for changing polynomial's <paramref name="polynomial"/> variable to <paramref name="newVariable"/>
+        /// </summary>
+        /// <param name="polynomial">Modified polynomial</param>
+        /// <param name="newVariable">New variable</param>
+        /// <returns>Change result</returns>
+        public static Polynomial ChangeVariable(this Polynomial polynomial, Polynomial newVariable)
+        {
+            if (polynomial == null)
+                throw new ArgumentNullException(nameof(polynomial));
+            if (newVariable == null)
+                throw new ArgumentNullException(nameof(newVariable));
+            if (newVariable.Degree == 0)
+                throw new ArgumentException($"{nameof(newVariable)} degree must be positive");
+            if (polynomial.Field.Equals(newVariable.Field) == false)
+                throw new ArgumentException($"Fields of {nameof(polynomial)} and {nameof(newVariable)} must be the same");
+
+            var currentPolynomial = polynomial;
+            var coefficients = new List<int>();
+            do
+            {
+                var divisionResult = currentPolynomial.DivideExtended(newVariable);
+                if (divisionResult.Remainder.Degree != 0)
+                    throw new InvalidOperationException("Variable cannot be changed");
+
+                coefficients.Add(divisionResult.Remainder[0]);
+                currentPolynomial = divisionResult.Quotient;
+
+            } while (currentPolynomial.IsZero == false);
+
+            return new Polynomial(polynomial.Field, coefficients.ToArray());
+        }
+
+        /// <summary>
         /// Method for obtaining polynomial coefficients
         /// </summary>
         public static FieldElement[] GetCoefficients(this Polynomial polynomial, int? expectedDegree = null)

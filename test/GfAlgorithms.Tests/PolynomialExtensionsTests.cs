@@ -1,5 +1,6 @@
 ﻿namespace AppliedAlgebra.GfAlgorithms.Tests
 {
+    using System;
     using System.Linq;
     using Extensions;
     using GfPolynoms;
@@ -86,6 +87,107 @@
 
             // Then
             Assert.Equal(expectedSpectrum.Select(x => field.CreateElement(x)).ToArray(), actualSpectrum);
+        }
+
+        [Theory]
+        [InlineData(3, null, 3, new[] {1, 1})]
+        [InlineData(3, new[] {1, 2, 2}, 3, null)]
+        [InlineData(3, new[] {1, 2, 2}, 5, new[] {1, 1})]
+        public void PerformVariableSubstitutionMustValidateParameters(
+            int polynomialFieldOrder,
+            int[] polynomialCoefficients,
+            int substitutionFieldOrder,
+            int[] substitutionCoefficients
+        )
+        {
+            // Given
+            var polynomialField = GaloisField.Create(polynomialFieldOrder);
+            var substitutionField = GaloisField.Create(substitutionFieldOrder);
+            var polynomial = polynomialCoefficients != null ? new Polynomial(polynomialField, polynomialCoefficients) : null;
+            var substitution = substitutionCoefficients != null ? new Polynomial(substitutionField, substitutionCoefficients) : null;
+
+            // When, Then
+            Assert.ThrowsAny<ArgumentException>(() => polynomial.PerformVariableSubstitution(substitution));
+        }
+
+        [Theory]
+        [InlineData(3, new[] {1, 2, 2}, new[] {1, 1}, new[] {2, 0, 2})]
+        [InlineData(5, new[] {3, 4, 1}, new[] {1, 0, 2}, new[] {3, 0, 2, 0, 4})]
+        public void MustPerformVariableSubstitution(
+            int fieldOrder,
+            int[] polynomialCoefficients,
+            int[] substitutionCoefficients,
+            int[] expectedCoefficients
+        )
+        {
+            // Given
+            var field = GaloisField.Create(fieldOrder);
+            var polynomial = new Polynomial(field, polynomialCoefficients);
+            var substitution = new Polynomial(field, substitutionCoefficients);
+
+            // When
+            var actual = polynomial.PerformVariableSubstitution(substitution);
+
+            // Then
+            var expected = new Polynomial(field, expectedCoefficients);
+            Assert.Equal(expected, actual);
+        }
+
+        [Theory]
+        [InlineData(3, null, 3, new[] {1, 1})]
+        [InlineData(3, new[] {1, 2, 2}, 3, null)]
+        [InlineData(3, new[] {1, 2, 2}, 5, new[] {1, 1})]
+        [InlineData(3, new[] {1, 2, 2}, 3, new[] {1})]
+        public void ChangeVariableSubstitutionMustValidateParameters(
+            int polynomialFieldOrder,
+            int[] polynomialCoefficients,
+            int newVariableFieldOrder,
+            int[] newVariableCoefficients
+        )
+        {
+            // Given
+            var polynomialField = GaloisField.Create(polynomialFieldOrder);
+            var newVariableField = GaloisField.Create(newVariableFieldOrder);
+            var polynomial = polynomialCoefficients != null ? new Polynomial(polynomialField, polynomialCoefficients) : null;
+            var newVariable = newVariableCoefficients != null ? new Polynomial(newVariableField, newVariableCoefficients) : null;
+
+            // When, Then
+            Assert.ThrowsAny<ArgumentException>(() => polynomial.ChangeVariable(newVariable));
+        }
+
+        [Theory]
+        [InlineData(3, new[] { 2, 0, 2 }, new[] { 1, 1 }, new[] { 1, 2, 2 })]
+        [InlineData(5, new[] { 3, 0, 2, 0, 4 }, new[] { 1, 0, 2 }, new[] { 3, 4, 1 })]
+        public void MustChangeVariable(
+            int fieldOrder,
+            int[] polynomialCoefficients,
+            int[] newVariableCoefficients,
+            int[] expectedCoefficients
+        )
+        {
+            // Given
+            var field = GaloisField.Create(fieldOrder);
+            var polynomial = new Polynomial(field, polynomialCoefficients);
+            var newVariable = new Polynomial(field, newVariableCoefficients);
+
+            // When
+            var actual = polynomial.ChangeVariable(newVariable);
+
+            // Then
+            var expected = new Polynomial(field, expectedCoefficients);
+            Assert.Equal(expected, actual);
+        }
+
+        [Fact]
+        public void MustNotChangeVariable()
+        {
+            // Given
+            var field = GaloisField.Create(5);
+            var polynomial = new Polynomial(field, 3, 1, 2, 0, 4);
+            var newVariable = new Polynomial(field, 1, 0, 2);
+
+            // When, Then
+            Assert.Throws<InvalidOperationException>(() => polynomial.ChangeVariable(newVariable));
         }
     }
 }
