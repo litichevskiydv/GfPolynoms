@@ -17,6 +17,7 @@
     using GfAlgorithms.LinearSystemSolver;
     using GfAlgorithms.PolynomialsGcdFinder;
     using GfAlgorithms.VariantsIterator;
+    using GfAlgorithms.WaveletTransform.IterationFiltersCalculator;
     using GfPolynoms;
     using GfPolynoms.Comparers;
     using GfPolynoms.Extensions;
@@ -53,7 +54,7 @@
 
         private static readonly ILogger Logger;
 
-        private static int AnalyzeCodeDistance(int codewordLength, int informationWordLength, Polynomial generatingPolynomial)
+        private static int AnalyzeCodeDistance(int codewordLength, int informationWordLength, Polynomial generatingPolynomial, bool logResult = true)
         {
             var field = generatingPolynomial.Field;
             var modularPolynomial = new Polynomial(field, 1).RightShift(codewordLength) + new Polynomial(field, field.InverseForAddition(1));
@@ -64,7 +65,9 @@
                 x => (new Polynomial(field, x).RaiseVariableDegree(2) * generatingPolynomial % modularPolynomial).GetCoefficients(codewordLength - 1),
                 new CodeDistanceAnalyzerOptions { LoggingResolution = 1000000000L}
             );
-            Logger.LogInformation("Code distance: {codeDistance}", codeDistance);
+            if (logResult)
+                Logger.LogInformation("Code distance: {codeDistance}", codeDistance);
+
             return codeDistance;
 
         }
@@ -133,6 +136,74 @@
                     }
                 }
             );
+        }
+
+        private static Polynomial FindNotFixedDistanceWaveletCode(GaloisField field, int codeDistance)
+        {
+            var codewordLength = field.Order - 1;
+            var informationWordLength = codewordLength / 2;
+
+
+            var variantsIterator = new RecursiveIterator();
+            foreach (var generatingPolynomial in variantsIterator.IteratePolynomials(field, field.Order - 1).Skip(1))
+                if (AnalyzeCodeDistance(codewordLength, informationWordLength, generatingPolynomial) == codeDistance
+                    && generatingPolynomial.GetSpectrum(codewordLength - 1).Count(x => x.Representation == 0) == 0)
+                {
+                    Logger.LogInformation("Generating polynomial: {generatingPolynomial}", generatingPolynomial);
+                    return generatingPolynomial;
+                }
+
+            return null;
+        }
+
+        private static void AnalyzeErrorCorrectingRate()
+        {
+            var field = GaloisField.Create(3);
+            var one = new Polynomial(field, 1);
+
+            const int codewordLength1 = 12;
+            const int informationWordLength1 = codewordLength1 / 2;
+            var modularPolynomial1 = (one >> codewordLength1) - one;
+
+            const int codewordLength2 = informationWordLength1;
+            const int informationWordLength2 = codewordLength2 / 2;
+            var modularPolynomial2 = (one >> codewordLength2) - one;
+
+            var iterationFiltersCalculator = new ConvolutionBasedCalculator();
+            var complementaryFiltersBuilder = new GcdBasedBuilder(new RecursiveGcdFinder());
+            foreach (var h1 in VariantsIterator.IteratePolynomials(field, codewordLength1 - 1).Skip(1))
+            {
+                Polynomial g1;
+                try
+                {
+                    g1 = complementaryFiltersBuilder.Build(h1, codewordLength1);
+                }
+                catch (InvalidOperationException)
+                {
+                    continue;
+                }
+                var generatingPolynomial1 = (h1 + (g1 >> 2)) % modularPolynomial1;
+
+                var h2 = iterationFiltersCalculator.GetIterationFilter(2, h1, codewordLength1 - 1);
+                var g2 = iterationFiltersCalculator.GetIterationFilter(2, g1, codewordLength1 - 1);
+                var generatingPolynomial2 = (h2 + (g2 >> 2)) % modularPolynomial2;
+
+                var relativeCodeDistance2 = AnalyzeCodeDistance(codewordLength2, informationWordLength2, generatingPolynomial2, false) / (double)codewordLength2;
+                var relativeCodeDistance1 = LinearCodeDistanceAnalyzer.Analyze(
+                    field,
+                    informationWordLength2,
+                    x => (
+                            (
+                                new Polynomial(field, x).RaiseVariableDegree(2) * generatingPolynomial2 % modularPolynomial2
+                            )
+                            .RaiseVariableDegree(2) * generatingPolynomial1 % modularPolynomial1
+                        )
+                        .GetCoefficients(codewordLength1 - 1),
+                    new CodeDistanceAnalyzerOptions {LoggingResolution = 1000000000L}
+                ) / (double)codewordLength1;
+                if (relativeCodeDistance1 > relativeCodeDistance2 && relativeCodeDistance1 / relativeCodeDistance2 > 1.8)
+                    Logger.LogInformation("Filter h: {h1}, filter g: {g1}, one iteration distance {relativeCodeDistance2}, two iterations distance {relativeCodeDistance1}", h1, g1, relativeCodeDistance2, relativeCodeDistance1);
+            }
         }
 
         private static void AnalyzeCodeDistanceForN3K2() =>
@@ -300,31 +371,13 @@
                 }
             );
 
-        private static Polynomial FindNotFixedDistanceWaveletCode(GaloisField field, int codeDistance)
-        {
-            var codewordLength = field.Order - 1;
-            var informationWordLength = codewordLength / 2;
-
-
-            var variantsIterator = new RecursiveIterator();
-            foreach (var generatingPolynomial in variantsIterator.IteratePolynomials(field, field.Order - 1).Skip(1))
-                if (AnalyzeCodeDistance(codewordLength, informationWordLength, generatingPolynomial) == codeDistance
-                    && generatingPolynomial.GetSpectrum(codewordLength - 1).Count(x => x.Representation == 0) == 0)
-                {
-                    Logger.LogInformation("Generating polynomial: {generatingPolynomial}", generatingPolynomial);
-                    return generatingPolynomial;
-                }
-
-            return null;
-        }
-
 
         [UsedImplicitly]
         public static void Main()
         {
             try
             {
-                AnalyzeSamplesForN31K15D15Code();
+                AnalyzeErrorCorrectingRate();
             }
             catch (Exception exception)
             {
