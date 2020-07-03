@@ -1,6 +1,5 @@
 ﻿namespace AppliedAlgebra.WaveletCodesListDecodingAnalyzer
 {
-    using System;
     using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Linq;
@@ -20,16 +19,16 @@
         /// <summary>
         /// Распределения длин списков в результатах декодирования
         /// </summary>
-        public ConcurrentDictionary<Tuple<int, int>, int> ProcessingResults { get; }
+        public ConcurrentDictionary<(int frequencyDecodingListSize, int timeDecodingListSize), int> ProcessingResults { get; }
         /// <summary>
         /// Отобранные интересные примеры
         /// </summary>
-        public ConcurrentDictionary<Tuple<int, int>, List<(FieldElement xValue, FieldElement yValue)[]>> InterestingSamples { get; }
+        public ConcurrentDictionary<(int frequencyDecodingListSize, int timeDecodingListSize), List<(FieldElement xValue, FieldElement yValue)[]>> InterestingSamples { get; }
 
         public GsBasedDecoderTelemetryCollectorForGsBasedDecoder()
         {
-            ProcessingResults = new ConcurrentDictionary<Tuple<int, int>, int>();
-            InterestingSamples = new ConcurrentDictionary<Tuple<int, int>, List<(FieldElement xValue, FieldElement yValue)[]>>();
+            ProcessingResults = new ConcurrentDictionary<(int frequencyDecodingListSize, int timeDecodingListSize), int>();
+            InterestingSamples = new ConcurrentDictionary<(int frequencyDecodingListSize, int timeDecodingListSize), List<(FieldElement xValue, FieldElement yValue)[]>>();
         }
 
         /// <summary>
@@ -44,7 +43,7 @@
             int timeDecodingListSize
         )
         {
-            var listsSizes = Tuple.Create(frequencyDecodingListSize, timeDecodingListSize);
+            var listsSizes = (frequencyDecodingListSize, timeDecodingListSize);
 
             ProcessingResults.AddOrUpdate(listsSizes, 1, (key, value) => value + 1);
             if (timeDecodingListSize > 1)
@@ -70,7 +69,7 @@
             var interestingSamples = InterestingSamples.ToDictionary(x => x.Key, x => x.Value.ToArray());
             foreach (var listSize in listsSizes)
             {
-                builder.AppendLine($"Frequency decoding list size {listSize.Key.Item1}, time decoding list size {listSize.Key.Item2}, {listSize.Value} samples");
+                builder.AppendLine($"Frequency decoding list size {listSize.Key.frequencyDecodingListSize}, time decoding list size {listSize.Key.timeDecodingListSize}, {listSize.Value} samples");
 
                 if (interestingSamples.TryGetValue(listSize.Key, out var collectedSamples))
                 {

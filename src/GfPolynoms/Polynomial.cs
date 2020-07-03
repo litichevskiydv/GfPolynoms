@@ -152,7 +152,7 @@
         public override string ToString()
         {
             var monomials = _coefficients
-                .Select((x, i) => new Tuple<int, int>(x, i))
+                .Select((x, i) => Tuple.Create(x, i))
                 .Where(x => x.Item1 != 0)
                 .Select(x =>
                         {

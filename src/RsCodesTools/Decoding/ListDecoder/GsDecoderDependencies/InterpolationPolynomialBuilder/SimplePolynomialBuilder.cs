@@ -92,7 +92,7 @@
                                                   *FieldElement.Pow(root.xValue, i - r)
                                                   *FieldElement.Pow(root.yValue, j - s);
 
-                                equation.Add(new Tuple<int, FieldElement>(variableIndex, coefficient));
+                                equation.Add(Tuple.Create(variableIndex, coefficient));
                             }
                     }
 

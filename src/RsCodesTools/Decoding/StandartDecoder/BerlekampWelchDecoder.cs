@@ -24,7 +24,7 @@
         /// <param name="decodedCodeword">Recived codeword for decoding</param>
         /// <param name="errorsCount">Errors count</param>
         /// <returns>Generated system</returns>
-        private static Tuple<FieldElement[,], FieldElement[]> BuildEquationsSystem(
+        private static (FieldElement[,] a, FieldElement[] b) BuildEquationsSystem(
             int k, 
             IReadOnlyList<(FieldElement xValue, FieldElement yValue)> decodedCodeword,
             int errorsCount)
@@ -52,7 +52,7 @@
                 b[i] = -coefficient;
             }
 
-            return Tuple.Create(a, b);
+            return (a, b);
         }
 
         /// <summary>
@@ -62,10 +62,14 @@
         /// <param name="errorsCount">Errors count</param>
         /// <param name="equationsSystem">Equations system</param>
         /// <returns>Computed information polynomial</returns>
-        private Polynomial ComputeInformationPolynomial(int k, int errorsCount, Tuple<FieldElement[,], FieldElement[]> equationsSystem)
+        private Polynomial ComputeInformationPolynomial(
+            int k,
+            int errorsCount,
+            (FieldElement[,] a, FieldElement[] b) equationsSystem
+        )
         {
-            var solution = _linearSystemSolver.Solve(equationsSystem.Item1, equationsSystem.Item2);
-            if(solution.IsEmpty)
+            var solution = _linearSystemSolver.Solve(equationsSystem.a, equationsSystem.b);
+            if (solution.IsEmpty)
                 throw new InformationPolynomialWasNotFoundException();
 
             var field = solution.VariablesValues[0].Field;

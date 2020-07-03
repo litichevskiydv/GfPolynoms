@@ -17,11 +17,11 @@
         /// <summary>
         /// Samples count stored by lists sizes in frequency and time domains
         /// </summary>
-        ConcurrentDictionary<Tuple<int, int>, int> ProcessingResults { get; }
+        ConcurrentDictionary<(int frequencyDecodingListSize, int timeDecodingListSize), int> ProcessingResults { get; }
         /// <summary>
         /// Important samples stored by lists sizes in frequency and time domains
         /// </summary>
-        ConcurrentDictionary<Tuple<int, int>, List<(FieldElement xValue, FieldElement yValue)[]>> InterestingSamples { get; }
+        ConcurrentDictionary<(int frequencyDecodingListSize, int timeDecodingListSize), List<(FieldElement xValue, FieldElement yValue)[]>> InterestingSamples { get; }
 
         /// <summary>
         /// Method for registering result of decoding 

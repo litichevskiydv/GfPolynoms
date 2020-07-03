@@ -112,7 +112,7 @@
                             var hasseDerivative = buildingPolynomials[i].CalculateHasseDerivative(r, s, root.xValue, root.yValue,
                                 _combinationsCountCalculator, combinationsCache);
                             if (hasseDerivative.Representation != 0)
-                                nonZeroDerivatives.Add(new Tuple<int, FieldElement>(i, hasseDerivative));
+                                nonZeroDerivatives.Add(Tuple.Create(i, hasseDerivative));
                         }
 
                         if (anyCompatiblePolynomialFound == false)
