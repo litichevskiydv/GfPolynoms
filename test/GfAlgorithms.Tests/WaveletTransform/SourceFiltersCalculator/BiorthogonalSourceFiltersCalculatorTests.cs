@@ -31,6 +31,7 @@
                 = new TheoryData<FieldElement[]>
                   {
                       new Polynomial(gf2, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1).GetCoefficients(23),
+                      new Polynomial(gf2, 1, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1).GetCoefficients(15),
                       new Polynomial(gf7, 3, 2, 5, 0, 4).GetCoefficients(5),
                       new Polynomial(gf7, 4, 2, 6, 4, 3, 4).GetCoefficients(5),
                       new Polynomial(gf9, 2, 7, 5, 1, 8, 3, 2, 5).GetCoefficients(7),
