@@ -41,6 +41,11 @@
                       },
                       new ComplementaryPolynomialBuildingTestCase
                       {
+                          SourceFilter = new Polynomial(gf2, 1, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1),
+                          MaxFilterLength = 16
+                      },
+                      new ComplementaryPolynomialBuildingTestCase
+                      {
                           SourceFilter = new Polynomial(gf7, 3, 2, 5, 0, 4),
                           MaxFilterLength = 6
                       },
