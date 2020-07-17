@@ -72,6 +72,32 @@
 
         }
 
+        private static int AnalyzeCodeDistance(int informationWordLength, params Polynomial[] generatingPolynomials)
+        {
+            var field = generatingPolynomials[0].Field;
+            var one = new Polynomial(field, 1);
+            var codeDistance = LinearCodeDistanceAnalyzer.Analyze(
+                field,
+                informationWordLength,
+                x =>
+                {
+                    var codeword = new Polynomial(field, x);
+                    var codewordLength = informationWordLength;
+                    foreach (var generatingPolynomial in generatingPolynomials)
+                    {
+                        codewordLength *= 2;
+                        var modularPolynomial = (one >> codewordLength) - one;
+                        codeword = codeword.RaiseVariableDegree(2) * generatingPolynomial % modularPolynomial;
+                    }
+
+                    return codeword.GetCoefficients(codewordLength - 1);
+                },
+                new CodeDistanceAnalyzerOptions { LoggingResolution = 1000000000L }
+            );
+
+            return codeDistance;
+        }
+
         private static int AnalyzeMinimalSphereCovering(ICode code)
         {
             var minimalRadius = MinimalSphereCoveringAnalyzer.Analyze(code);
@@ -189,18 +215,7 @@
                 var generatingPolynomial2 = (h2 + (g2 >> 2)) % modularPolynomial2;
 
                 var relativeCodeDistance2 = AnalyzeCodeDistance(codewordLength2, informationWordLength2, generatingPolynomial2, false) / (double)codewordLength2;
-                var relativeCodeDistance1 = LinearCodeDistanceAnalyzer.Analyze(
-                    field,
-                    informationWordLength2,
-                    x => (
-                            (
-                                new Polynomial(field, x).RaiseVariableDegree(2) * generatingPolynomial2 % modularPolynomial2
-                            )
-                            .RaiseVariableDegree(2) * generatingPolynomial1 % modularPolynomial1
-                        )
-                        .GetCoefficients(codewordLength1 - 1),
-                    new CodeDistanceAnalyzerOptions {LoggingResolution = 1000000000L}
-                ) / (double)codewordLength1;
+                var relativeCodeDistance1 = AnalyzeCodeDistance(informationWordLength2, generatingPolynomial2, generatingPolynomial1) / (double)codewordLength1;
                 if (relativeCodeDistance1 > relativeCodeDistance2 && relativeCodeDistance1 / relativeCodeDistance2 > 1.8)
                     Logger.LogInformation("Filter h: {h1}, filter g: {g1}, one iteration distance {relativeCodeDistance2}, two iterations distance {relativeCodeDistance1}", h1, g1, relativeCodeDistance2, relativeCodeDistance1);
             }
@@ -382,7 +397,7 @@
         {
             try
             {
-                AnalyzeCodeDistanceForN8K4();
+                AnalyzeErrorCorrectingRate();
             }
             catch (Exception exception)
             {
