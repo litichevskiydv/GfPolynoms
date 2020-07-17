@@ -237,6 +237,12 @@
                 new Polynomial(GaloisField.Create(2), 1, 1, 1, 0, 0, 0, 1)
             );
 
+        private static void AnalyzeCodeDistanceForN16K4() =>
+            AnalyzeCodeDistance(4,
+                new Polynomial(GaloisField.Create(2), 1, 1, 1, 0, 0, 0, 1),
+                new Polynomial(GaloisField.Create(2), 1, 1, 0, 0, 0, 1, 0, 0, 0, 1)
+            );
+
         private static void AnalyzeMinimalSphereCoveringForN8K4D4() =>
             AnalyzeMinimalSphereCovering(
                 new WaveletCode(8, 4, 4, new Polynomial(GaloisField.Create(9), 2, 0, 1, 2, 1, 1))
@@ -397,7 +403,7 @@
         {
             try
             {
-                AnalyzeErrorCorrectingRate();
+                AnalyzeCodeDistanceForN16K4();
             }
             catch (Exception exception)
             {
