@@ -1,6 +1,5 @@
 ﻿namespace AppliedAlgebra.GfAlgorithms.Tests.WaveletTransform.SourceFiltersCalculator
 {
-    using System;
     using ComplementaryFilterBuilder;
     using Extensions;
     using GfAlgorithms.WaveletTransform.SourceFiltersCalculator;
@@ -21,6 +20,7 @@
         static BiorthogonalSourceFiltersCalculatorTests()
         {
             var gf2 = GaloisField.Create(2);
+            var gf3 = GaloisField.Create(3);
             var gf7 = GaloisField.Create(7);
             var gf8 = GaloisField.Create(8, new[] { 1, 1, 0, 1 });
             var gf9 = GaloisField.Create(9, new[] { 1, 0, 1 });
@@ -32,6 +32,7 @@
                   {
                       new Polynomial(gf2, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1).GetCoefficients(23),
                       new Polynomial(gf2, 1, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1).GetCoefficients(15),
+                      new Polynomial(gf3, 2, 1, 0, 0, 1, 1).GetCoefficients(11),
                       new Polynomial(gf2, 1, 1, 0, 0, 0, 0, 1).GetCoefficients(7),
                       new Polynomial(gf7, 3, 2, 5, 0, 4).GetCoefficients(5),
                       new Polynomial(gf7, 4, 2, 6, 4, 3, 4).GetCoefficients(5),
