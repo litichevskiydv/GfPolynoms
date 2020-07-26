@@ -25,6 +25,7 @@
         static GcdBasedBuilderTests()
         {
             var gf2 = GaloisField.Create(2);
+            var gf3 = GaloisField.Create(3);
             var gf7 = GaloisField.Create(7);
             var gf8 = GaloisField.Create(8, new[] {1, 1, 0, 1});
             var gf9 = GaloisField.Create(9, new[] {1, 0, 1});
@@ -43,6 +44,11 @@
                       {
                           SourceFilter = new Polynomial(gf2, 1, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1),
                           MaxFilterLength = 16
+                      },
+                      new ComplementaryPolynomialBuildingTestCase
+                      {
+                          SourceFilter = new Polynomial(gf3, 2, 1, 0, 0, 1, 1),
+                          MaxFilterLength = 12
                       },
                       new ComplementaryPolynomialBuildingTestCase
                       {
