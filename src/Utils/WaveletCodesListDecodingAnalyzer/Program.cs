@@ -63,7 +63,7 @@
                 field,
                 informationWordLength,
                 x => (new Polynomial(field, x).RaiseVariableDegree(2) * generatingPolynomial % modularPolynomial).GetCoefficients(codewordLength - 1),
-                new CodeDistanceAnalyzerOptions { LoggingResolution = 1000000000L}
+                new CodeDistanceAnalyzerOptions { LoggingResolution = 1000000000L }
             );
             if (logResult)
                 Logger.LogInformation("Code distance: {codeDistance}", codeDistance);
@@ -243,6 +243,17 @@
                 new Polynomial(GaloisField.Create(2), 1, 1, 0, 0, 0, 1, 0, 0, 0, 1)
             );
 
+        private static void AnalyzeCodeDistanceForN6K3() =>
+            AnalyzeCodeDistance(6, 3,
+                new Polynomial(GaloisField.Create(3), 1, 1, 0, 1)
+            );
+
+        private static void AnalyzeCodeDistanceForN12K3() =>
+            AnalyzeCodeDistance(3,
+                new Polynomial(GaloisField.Create(3), 1, 1, 0, 1),
+                new Polynomial(GaloisField.Create(3), 1, 0, 0, 1, 0, 0, 0, 1)
+            );
+
         private static void AnalyzeMinimalSphereCoveringForN8K4D4() =>
             AnalyzeMinimalSphereCovering(
                 new WaveletCode(8, 4, 4, new Polynomial(GaloisField.Create(9), 2, 0, 1, 2, 1, 1))
@@ -403,7 +414,7 @@
         {
             try
             {
-                AnalyzeCodeDistanceForN16K4();
+                AnalyzeCodeDistanceForN12K3();
             }
             catch (Exception exception)
             {
