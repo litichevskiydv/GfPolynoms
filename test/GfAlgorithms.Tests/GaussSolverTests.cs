@@ -33,14 +33,32 @@
             return new LinearSystemSolverTestCase {A = matrix, B = remainders, Expected = expectedSolution};
         }
 
-        private static LinearSystemSolverTestCase PrepareTestCaseForEmptySolution(GaloisField field, int[,] a, IEnumerable<int> b) =>
+        private static LinearSystemSolverTestCase PrepareTestCaseForEmptySolution(
+            GaloisField field,
+            int[,] a,
+            IEnumerable<int> b
+        ) =>
             PrepareTestCase(field, a, b, SystemSolution.EmptySolution());
 
-        private static LinearSystemSolverTestCase PrepareTestCaseForOneSolution(GaloisField field, int[,] a, IEnumerable<int> b, IEnumerable<int> variablesValues) =>
+        private static LinearSystemSolverTestCase PrepareTestCaseForOneSolution(
+            GaloisField field,
+            int[,] a,
+            IEnumerable<int> b,
+            IEnumerable<int> variablesValues
+        ) =>
             PrepareTestCase(field, a, b, SystemSolution.OneSolution(variablesValues.Select(field.CreateElement).ToArray()));
 
-        private static LinearSystemSolverTestCase PrepareTestCaseForInfiniteSolution(GaloisField field, int[,] a, IEnumerable<int> b, IEnumerable<int> variablesValues) =>
-            PrepareTestCase(field, a, b, SystemSolution.InfiniteSolution(variablesValues.Select(field.CreateElement).ToArray()));
+        private static LinearSystemSolverTestCase PrepareTestCaseForInfiniteSolution(
+            GaloisField field,
+            int[,] a,
+            IEnumerable<int> b,
+            params int[][] solutionSystemBasis
+        ) =>
+            PrepareTestCase(field, a, b,
+                SystemSolution.InfiniteSolution(
+                    solutionSystemBasis.Select(vector => vector.Select(field.CreateElement).ToArray()).ToArray()
+                )
+            );
 
         static GaussSolverTests()
         {
@@ -84,6 +102,13 @@
                           new[,] {{1, 1, 1}, {1, 2, 1}},
                           new[] {0, 0},
                           new[] {2, 0, 1}
+                      ),
+                      PrepareTestCaseForInfiniteSolution(
+                          gf27,
+                          new[,] {{1, 1, 1}},
+                          new[] {2},
+                          new[] {1, 1, 0},
+                          new[] {1, 0, 1}
                       )
                   };
         }

@@ -422,9 +422,9 @@
         /// </summary>
         private void SwapColumnElements(int firstRowIndex, int secondRowsIndex, int columnIndex)
         {
-            var tmp = _elements[firstRowIndex, columnIndex];
+            var element = _elements[firstRowIndex, columnIndex];
             _elements[firstRowIndex, columnIndex] = _elements[secondRowsIndex, columnIndex];
-            _elements[secondRowsIndex, columnIndex] = tmp;
+            _elements[secondRowsIndex, columnIndex] = element;
         }
 
         /// <summary>

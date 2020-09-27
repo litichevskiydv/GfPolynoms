@@ -1,6 +1,7 @@
 ﻿namespace AppliedAlgebra.GfAlgorithms.LinearSystemSolver
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
     using GfPolynoms;
 
@@ -17,19 +18,23 @@
         /// Variables values
         /// </summary>
         public FieldElement[] VariablesValues { get; }
+        /// <summary>
+        /// Basis of the solution system
+        /// </summary>
+        public IReadOnlyList<FieldElement[]> SolutionSystemBasis { get; }
 
         /// <summary>
         /// Constructor for creating system solution
         /// </summary>
         /// <param name="solutionsCount">Solutions count</param>
         /// <param name="variablesValues">Variables values</param>
-        private SystemSolution(int solutionsCount, FieldElement[] variablesValues)
+        /// <param name="solutionSystemBasis">Basis of the solution system</param>
+        private SystemSolution(int solutionsCount, FieldElement[] variablesValues, IReadOnlyList<FieldElement[]> solutionSystemBasis)
         {
-            if ((variablesValues == null || variablesValues.Length == 0) && solutionsCount != 0)
-                throw new ArgumentException(nameof(variablesValues));
-
             _solutionsCount = solutionsCount;
+
             VariablesValues = variablesValues;
+            SolutionSystemBasis = solutionSystemBasis;
         }
 
         /// <summary>
@@ -39,8 +44,21 @@
         /// <returns>Checking result</returns>
         protected bool Equals(SystemSolution other)
         {
-            return _solutionsCount == other._solutionsCount
-                   && (IsEmpty || VariablesValues.SequenceEqual(other.VariablesValues));
+            if (_solutionsCount != other._solutionsCount) 
+                return false;
+
+            if (IsCorrect)
+                return VariablesValues.SequenceEqual(other.VariablesValues);
+
+            if (IsInfinite)
+                return SolutionSystemBasis.Count == other.SolutionSystemBasis.Count
+                       && SolutionSystemBasis.All(
+                           vector => other.SolutionSystemBasis.Any(
+                               otherVector => otherVector.SequenceEqual(vector)
+                           )
+                       );
+
+            return true;
         }
 
         /// <summary>
@@ -54,18 +72,6 @@
             if (ReferenceEquals(this, obj)) return true;
             if (obj.GetType() != this.GetType()) return false;
             return Equals((SystemSolution) obj);
-        }
-
-        /// <summary>
-        /// Method for calculation object hash
-        /// </summary>
-        /// <returns>Calculated hash</returns>
-        public override int GetHashCode()
-        {
-            unchecked
-            {
-                return (_solutionsCount*397) ^ (!IsEmpty ? VariablesValues.GetHashCode() : 0);
-            }
         }
 
         /// <summary>
@@ -86,7 +92,7 @@
         /// </summary>
         public static SystemSolution EmptySolution()
         {
-            return new SystemSolution(0, null);
+            return new SystemSolution(0, null, null);
         }
 
         /// <summary>
@@ -95,16 +101,24 @@
         /// <param name="variablesValues">Variables values</param>
         public static SystemSolution OneSolution(FieldElement[] variablesValues)
         {
-            return new SystemSolution(1, variablesValues);
+            if(variablesValues == null)
+                throw new ArgumentNullException(nameof(variablesValues));
+
+            return new SystemSolution(1, variablesValues, new FieldElement[0][]);
         }
 
         /// <summary>
         /// Factory method for infinite solutions set creation
         /// </summary>
-        /// <param name="variablesValues">One of possible values of variables</param>
-        public static SystemSolution InfiniteSolution(FieldElement[] variablesValues)
+        /// <param name="solutionSystemBasis">Basis of the solution system</param>
+        public static SystemSolution InfiniteSolution(IReadOnlyList<FieldElement[]> solutionSystemBasis)
         {
-            return new SystemSolution(int.MaxValue, variablesValues);
+            if (solutionSystemBasis == null)
+                throw new ArgumentNullException(nameof(solutionSystemBasis));
+            if (solutionSystemBasis.Count == 0)
+                throw new ArgumentException($"{nameof(solutionSystemBasis)} must not be empty");
+
+            return new SystemSolution(int.MaxValue, solutionSystemBasis[0], solutionSystemBasis);
         }
     }
 }
