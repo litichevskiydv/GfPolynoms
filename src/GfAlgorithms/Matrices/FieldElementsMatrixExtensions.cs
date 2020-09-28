@@ -48,6 +48,55 @@
         }
 
         /// <summary>
+        /// Appends new column <paramref name="column"/> to the matrix <paramref name="matrix"/>
+        /// </summary>
+        /// <param name="matrix">Source matrix</param>
+        /// <param name="column">Column to append</param>
+        /// <returns>Extended matrix</returns>
+        public static FieldElementsMatrix AppendColumn(this FieldElementsMatrix matrix, FieldElementsMatrix column)
+        {
+            if(matrix == null)
+                throw new ArgumentNullException(nameof(matrix));
+            if(column == null)
+                throw new ArgumentNullException(nameof(column));
+
+            if(column.ColumnsCount != 1 || matrix.RowsCount != column.RowsCount)
+                throw new ArgumentException($"Dimensions of the {column} must be correlated with dimensions of the {matrix}");
+
+
+            return new FieldElementsMatrix(
+                matrix.Field,
+                matrix.RowsCount,
+                matrix.ColumnsCount + 1,
+                (i, j) => j == matrix.ColumnsCount ? column[i, 0] : matrix[i, j]
+            );
+        }
+
+        /// <summary>
+        /// Appends new column <paramref name="column"/> to the matrix <paramref name="matrix"/>
+        /// </summary>
+        /// <param name="matrix">Source matrix</param>
+        /// <param name="column">Column to append</param>
+        /// <returns>Extended matrix</returns>
+        public static FieldElementsMatrix AppendColumn(this FieldElementsMatrix matrix, params FieldElement[] column) =>
+            matrix.AppendColumn(FieldElementsMatrix.ColumnVector(column));
+
+        /// <summary>
+        /// Appends new column <paramref name="column"/> to the matrix <paramref name="matrix"/>
+        /// </summary>
+        /// <param name="matrix">Source matrix</param>
+        /// <param name="column">Column to append</param>
+        /// <returns>Extended matrix</returns>
+        public static FieldElementsMatrix AppendColumn(this FieldElementsMatrix matrix, params int[] column)
+        {
+            if (matrix == null)
+                throw new ArgumentNullException(nameof(matrix));
+
+            return matrix.AppendColumn(FieldElementsMatrix.ColumnVector(matrix.Field, column));
+        }
+            
+
+        /// <summary>
         /// Calculates determinant of the matrix <paramref name="matrix"/>
         /// <param name="matrix">Matrix whose determinant will be calculated</param>
         /// </summary>

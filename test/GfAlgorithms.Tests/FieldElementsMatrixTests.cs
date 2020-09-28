@@ -1,6 +1,7 @@
 ﻿namespace AppliedAlgebra.GfAlgorithms.Tests
 {
     using System;
+    using System.Linq;
     using GfPolynoms;
     using GfPolynoms.Extensions;
     using GfPolynoms.GaloisFields;
@@ -81,6 +82,13 @@
             public int[] IncludedColumnsIndices { get; set; }
         }
 
+        public class AppendColumnParametersValidationTestCase
+        {
+            public FieldElementsMatrix Matrix { get; set; }
+
+            public FieldElementsMatrix Column { get; set; }
+        }
+
         #endregion
 
         [UsedImplicitly]
@@ -109,6 +117,8 @@
         public static TheoryData<SubmatrixCreationParametersValidationTestCase> SubmatrixFromRowsCreationParametersValidationTestCases;
         [UsedImplicitly]
         public static TheoryData<SubmatrixCreationParametersValidationTestCase> SubmatrixFromColumnsCreationParametersValidationTestCases;
+        [UsedImplicitly]
+        public static TheoryData<AppendColumnParametersValidationTestCase> AppendColumnParametersValidationTestCases;
 
         static FieldElementsMatrixTests()
         {
@@ -333,6 +343,13 @@
                       new SubmatrixCreationParametersValidationTestCase {Matrix = matrix, IncludedColumnsIndices = new[] {0, 0}},
                       new SubmatrixCreationParametersValidationTestCase {Matrix = matrix, IncludedColumnsIndices = new[] {-1}},
                       new SubmatrixCreationParametersValidationTestCase {Matrix = matrix, IncludedColumnsIndices = new[] {5}}
+                  };
+            AppendColumnParametersValidationTestCases
+                = new TheoryData<AppendColumnParametersValidationTestCase>
+                  {
+                      new AppendColumnParametersValidationTestCase(),
+                      new AppendColumnParametersValidationTestCase {Matrix = matrix},
+                      new AppendColumnParametersValidationTestCase {Matrix = matrix, Column = matrix}
                   };
 
         }
@@ -797,6 +814,61 @@
                 }
             );
             Assert.Equal(expectedSubmatrix, actualSubmatrix);
+        }
+
+        [Theory]
+        [MemberData(nameof(AppendColumnParametersValidationTestCases))]
+        public void MustValidateParametersDuringColumnAppending(AppendColumnParametersValidationTestCase testCase)
+        {
+            Assert.ThrowsAny<ArgumentException>(() => testCase.Matrix.AppendColumn(testCase.Column));
+        }
+
+        [Fact]
+        public void MustAppendColumnDeclaredAsMatrix()
+        {
+            // Given
+            var gf5 = GaloisField.Create(5);
+            var matrix = new FieldElementsMatrix(gf5, new[,] {{0, 3}, {2, 0}, {4, 2}});
+            var column = new FieldElementsMatrix(gf5, new[,] {{1}, {3}, {0}});
+
+            // When
+            var actual = matrix.AppendColumn(column);
+
+            // Then
+            var expected = new FieldElementsMatrix(gf5, new[,] {{0, 3, 1}, {2, 0, 3}, {4, 2, 0}});
+            Assert.Equal(expected, actual);
+        }
+
+        [Fact]
+        public void MustAppendColumnDeclaredAsFieldElementsArray()
+        {
+            // Given
+            var gf5 = GaloisField.Create(5);
+            var matrix = new FieldElementsMatrix(gf5, new[,] {{0, 3}, {2, 0}, {4, 2}});
+            var column = new[] {4, 2, 1}.Select(gf5.CreateElement).ToArray();
+
+            // When
+            var actual = matrix.AppendColumn(column);
+
+            // Then
+            var expected = new FieldElementsMatrix(gf5, new[,] {{0, 3, 4}, {2, 0, 2}, {4, 2, 1}});
+            Assert.Equal(expected, actual);
+        }
+
+        [Fact]
+        public void MustAppendColumnDeclaredAsNumbersArray()
+        {
+            // Given
+            var gf5 = GaloisField.Create(5);
+            var matrix = new FieldElementsMatrix(gf5, new[,] {{0, 3}, {2, 0}, {4, 2}});
+            var column = new[] {2, 0, 3};
+
+            // When
+            var actual = matrix.AppendColumn(column);
+
+            // Then
+            var expected = new FieldElementsMatrix(gf5, new[,] {{0, 3, 2}, {2, 0, 0}, {4, 2, 3}});
+            Assert.Equal(expected, actual);
         }
     }
 }
