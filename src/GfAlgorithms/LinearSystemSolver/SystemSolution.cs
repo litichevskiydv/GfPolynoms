@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using GfPolynoms;
 
     /// <summary>
@@ -35,43 +34,6 @@
 
             VariablesValues = variablesValues;
             SolutionSystemBasis = solutionSystemBasis;
-        }
-
-        /// <summary>
-        /// Method for checking the equality of the current solution to the <paramref name="other"/>
-        /// </summary>
-        /// <param name="other">Another solution</param>
-        /// <returns>Checking result</returns>
-        protected bool Equals(SystemSolution other)
-        {
-            if (_solutionsCount != other._solutionsCount) 
-                return false;
-
-            if (IsCorrect)
-                return VariablesValues.SequenceEqual(other.VariablesValues);
-
-            if (IsInfinite)
-                return SolutionSystemBasis.Count == other.SolutionSystemBasis.Count
-                       && SolutionSystemBasis.All(
-                           vector => other.SolutionSystemBasis.Any(
-                               otherVector => otherVector.SequenceEqual(vector)
-                           )
-                       );
-
-            return true;
-        }
-
-        /// <summary>
-        /// Method for checking the equality of the current solution to the <paramref name="obj"/>
-        /// </summary>
-        /// <param name="obj">Another object</param>
-        /// <returns>Checking result</returns>
-        public override bool Equals(object obj)
-        {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != this.GetType()) return false;
-            return Equals((SystemSolution) obj);
         }
 
         /// <summary>

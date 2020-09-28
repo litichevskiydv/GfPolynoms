@@ -12,7 +12,57 @@
 
     public class GaussSolverTests
     {
+        private class SystemSolutionsComparer : IEqualityComparer<SystemSolution>
+        {
+            public bool Equals(SystemSolution x, SystemSolution y)
+            {
+                if (ReferenceEquals(x, y)) return true;
+                if (ReferenceEquals(x, null)) return false;
+                if (ReferenceEquals(y, null)) return false;
+                if (x.GetType() != y.GetType()) return false;
+
+
+                if (x.IsEmpty != y.IsEmpty || x.IsCorrect != y.IsCorrect || x.IsInfinite != y.IsInfinite)
+                    return false;
+
+                if (x.IsCorrect)
+                    return x.VariablesValues.SequenceEqual(y.VariablesValues);
+
+                if (x.IsInfinite)
+                    return x.SolutionSystemBasis.Count == y.SolutionSystemBasis.Count
+                           && x.SolutionSystemBasis.All(
+                               vector => y.SolutionSystemBasis.Any(
+                                   otherVector => otherVector.SequenceEqual(vector)
+                               )
+                           );
+
+                return true;
+            }
+
+            private static int GetVectorHashCode(IEnumerable<FieldElement> vector)
+            {
+                unchecked
+                {
+                    return vector.Aggregate(0, (hash, x) => hash * 31 ^ x.GetHashCode());
+                }
+            }
+
+            public int GetHashCode(SystemSolution obj)
+            {
+                if (obj.IsEmpty)
+                    return obj.IsEmpty.GetHashCode();
+
+                unchecked
+                {
+                    return obj.IsCorrect
+                        ? GetVectorHashCode(obj.VariablesValues)
+                        : obj.SolutionSystemBasis.Aggregate(0, (hash, vector) => hash * 397 ^ GetVectorHashCode(vector));
+                }
+            }
+        }
+
         private readonly ILinearSystemSolver _gaussSolver;
+        private readonly IEqualityComparer<SystemSolution> _solutionsComparer;
 
         [UsedImplicitly]
         public static readonly TheoryData<LinearSystemSolverTestCase> EmptySolutionTestsData;
@@ -21,7 +71,12 @@
         [UsedImplicitly]
         public static readonly TheoryData<LinearSystemSolverTestCase> InfiniteSolutionTestsData;
 
-        private static LinearSystemSolverTestCase PrepareTestCase(GaloisField field, int[,] a, IEnumerable<int> b, SystemSolution expectedSolution)
+        private static LinearSystemSolverTestCase PrepareTestCase(
+            GaloisField field,
+            int[,] a,
+            IEnumerable<int> b,
+            SystemSolution expectedSolution
+        )
         {
             var matrix = new FieldElement[a.GetLength(0), a.GetLength(1)];
             for (var i = 0; i < a.GetLength(0); i++)
@@ -116,6 +171,7 @@
         public GaussSolverTests()
         {
             _gaussSolver = new GaussSolver();
+            _solutionsComparer = new SystemSolutionsComparer();
         }
 
         [Theory]
@@ -126,7 +182,7 @@
             var actualSolution = _gaussSolver.Solve(testCase.A, testCase.B);
 
             // Then
-            Assert.Equal(testCase.Expected, actualSolution);
+            Assert.Equal(testCase.Expected, actualSolution, _solutionsComparer);
         }
 
         [Theory]
@@ -137,7 +193,7 @@
             var actualSolution = _gaussSolver.Solve(testCase.A, testCase.B);
 
             // Then
-            Assert.Equal(testCase.Expected, actualSolution);
+            Assert.Equal(testCase.Expected, actualSolution, _solutionsComparer);
         }
 
         [Theory]
@@ -148,7 +204,7 @@
             var actualSolution = _gaussSolver.Solve(testCase.A, testCase.B);
 
             // Then
-            Assert.Equal(testCase.Expected, actualSolution);
+            Assert.Equal(testCase.Expected, actualSolution, _solutionsComparer);
         }
     }
 }
