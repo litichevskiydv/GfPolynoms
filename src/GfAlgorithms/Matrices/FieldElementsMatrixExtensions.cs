@@ -94,7 +94,54 @@
 
             return matrix.AppendColumn(FieldElementsMatrix.ColumnVector(matrix.Field, column));
         }
-            
+
+        /// <summary>
+        /// Appends new row <paramref name="row"/> to the matrix <paramref name="matrix"/>
+        /// </summary>
+        /// <param name="matrix">Source matrix</param>
+        /// <param name="row">Row to append</param>
+        /// <returns>Extended matrix</returns>
+        public static FieldElementsMatrix AppendRow(this FieldElementsMatrix matrix, FieldElementsMatrix row)
+        {
+            if (matrix == null)
+                throw new ArgumentNullException(nameof(matrix));
+            if (row == null)
+                throw new ArgumentNullException(nameof(row));
+
+            if (row.RowsCount != 1 || matrix.ColumnsCount != row.ColumnsCount)
+                throw new ArgumentException($"Dimensions of the {row} must be correlated with dimensions of the {matrix}");
+
+            return new FieldElementsMatrix(
+                matrix.Field,
+                matrix.RowsCount + 1,
+                matrix.ColumnsCount,
+                (i, j) => i == matrix.RowsCount ? row[0, j] : matrix[i, j]
+            );
+        }
+
+        /// <summary>
+        /// Appends new row <paramref name="row"/> to the matrix <paramref name="matrix"/>
+        /// </summary>
+        /// <param name="matrix">Source matrix</param>
+        /// <param name="row">Row to append</param>
+        /// <returns>Extended matrix</returns>
+        public static FieldElementsMatrix AppendRow(this FieldElementsMatrix matrix, params FieldElement[] row) =>
+            matrix.AppendRow(FieldElementsMatrix.RowVector(row));
+
+        /// <summary>
+        /// Appends new row <paramref name="row"/> to the matrix <paramref name="matrix"/>
+        /// </summary>
+        /// <param name="matrix">Source matrix</param>
+        /// <param name="row">Row to append</param>
+        /// <returns>Extended matrix</returns>
+        public static FieldElementsMatrix AppendRow(this FieldElementsMatrix matrix, params int[] row)
+        {
+            if (matrix == null)
+                throw new ArgumentNullException(nameof(matrix));
+
+            return matrix.AppendRow(FieldElementsMatrix.RowVector(matrix.Field, row));
+        }
+
 
         /// <summary>
         /// Calculates determinant of the matrix <paramref name="matrix"/>
