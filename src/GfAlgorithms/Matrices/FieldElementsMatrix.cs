@@ -31,6 +31,13 @@
                 SelectedRowsByColumns = selectedRowsByColumns;
                 Result = result;
             }
+
+            public void Deconstruct(out int permutationsCount, out int?[] selectedRowsByColumns, out FieldElementsMatrix result)
+            {
+                permutationsCount = PermutationsCount;
+                selectedRowsByColumns = SelectedRowsByColumns;
+                result = Result;
+            }
         }
 
         /// <summary>
