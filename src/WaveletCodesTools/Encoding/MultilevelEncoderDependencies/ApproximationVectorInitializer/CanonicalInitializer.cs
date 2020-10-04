@@ -22,7 +22,7 @@
 
             var approximationVectorLength = signalLength / multiplier;
             if(informationWord.Length < approximationVectorLength)
-                throw new ArgumentException($"{nameof(informationWord)} length is too short");
+                throw new ArgumentException($"{nameof(informationWord)} is too short");
 
             return informationWord.Take(approximationVectorLength).ToArray();
         }
