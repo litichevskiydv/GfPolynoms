@@ -6,7 +6,7 @@
 
     /// <summary>
     /// An approximation vector initializer for codes that transforms the entire information word
-    /// </summary>s
+    /// </summary>
     public class NaiveInitializer: IApproximationVectorInitializer
     {
         /// <inheritdoc/>
