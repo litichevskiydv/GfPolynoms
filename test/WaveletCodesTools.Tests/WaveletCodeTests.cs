@@ -1,4 +1,4 @@
-﻿namespace AppliedAlgebra.WaveletCodesTools.Tests.Codes
+﻿namespace AppliedAlgebra.WaveletCodesTools.Tests
 {
     using CodesAbstractions;
     using CodesResearchTools.NoiseGenerator;
@@ -8,6 +8,7 @@
     using GfPolynoms.GaloisFields;
     using JetBrains.Annotations;
     using TestCases;
+    using TestsDependencies;
     using Xunit;
 
     public class WaveletCodeTests : WaveletCodeTestsBase

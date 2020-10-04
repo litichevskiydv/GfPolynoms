@@ -1,8 +1,7 @@
-﻿namespace AppliedAlgebra.WaveletCodesTools.Tests
+﻿namespace AppliedAlgebra.WaveletCodesTools.Tests.Decoding.StandartDecoderForFixedDistanceCodes
 {
     using System;
     using System.Collections.Generic;
-    using Decoding.StandartDecoderForFixedDistanceCodes;
     using Encoding;
     using GfAlgorithms.LinearSystemSolver;
     using GfPolynoms;
@@ -11,8 +10,9 @@
     using JetBrains.Annotations;
     using RsCodesTools.Decoding.StandartDecoder;
     using TestCases;
+    using WaveletCodesTools.Decoding.StandartDecoderForFixedDistanceCodes;
     using Xunit;
-    using InformationPolynomialWasNotFoundException = Decoding.StandartDecoderForFixedDistanceCodes.InformationPolynomialWasNotFoundException;
+    using InformationPolynomialWasNotFoundException = WaveletCodesTools.Decoding.StandartDecoderForFixedDistanceCodes.InformationPolynomialWasNotFoundException;
 
     public class RsBasedDecoderTests
     {

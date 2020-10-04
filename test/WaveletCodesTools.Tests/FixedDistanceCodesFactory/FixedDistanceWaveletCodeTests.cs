@@ -1,11 +1,7 @@
-﻿namespace AppliedAlgebra.WaveletCodesTools.Tests.Codes
+﻿namespace AppliedAlgebra.WaveletCodesTools.Tests.FixedDistanceCodesFactory
 {
     using CodesAbstractions;
     using CodesResearchTools.NoiseGenerator;
-    using Decoding.ListDecoderForFixedDistanceCodes;
-    using Decoding.StandartDecoderForFixedDistanceCodes;
-    using FixedDistanceCodesFactory;
-    using GeneratingPolynomialsBuilder;
     using GfAlgorithms.CombinationsCountCalculator;
     using GfAlgorithms.ComplementaryFilterBuilder;
     using GfAlgorithms.Extensions;
@@ -18,6 +14,11 @@
     using RsCodesTools.Decoding.ListDecoder.GsDecoderDependencies.InterpolationPolynomialFactorisator;
     using RsCodesTools.Decoding.StandartDecoder;
     using TestCases;
+    using TestsDependencies;
+    using WaveletCodesTools.Decoding.ListDecoderForFixedDistanceCodes;
+    using WaveletCodesTools.Decoding.StandartDecoderForFixedDistanceCodes;
+    using WaveletCodesTools.FixedDistanceCodesFactory;
+    using WaveletCodesTools.GeneratingPolynomialsBuilder;
     using Xunit;
 
     [UsedImplicitly]

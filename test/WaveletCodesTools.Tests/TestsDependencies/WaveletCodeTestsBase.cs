@@ -1,4 +1,4 @@
-﻿namespace AppliedAlgebra.WaveletCodesTools.Tests.Codes
+﻿namespace AppliedAlgebra.WaveletCodesTools.Tests.TestsDependencies
 {
     using System.Collections.Generic;
     using System.Linq;

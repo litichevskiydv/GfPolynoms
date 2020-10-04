@@ -1,6 +1,5 @@
-﻿namespace AppliedAlgebra.WaveletCodesTools.Tests
+﻿namespace AppliedAlgebra.WaveletCodesTools.Tests.GeneratingPolynomialsBuilder
 {
-    using GeneratingPolynomialsBuilder;
     using GfAlgorithms.ComplementaryFilterBuilder;
     using GfAlgorithms.LinearSystemSolver;
     using GfAlgorithms.PolynomialsGcdFinder;
@@ -8,6 +7,7 @@
     using GfPolynoms.GaloisFields;
     using JetBrains.Annotations;
     using TestCases;
+    using WaveletCodesTools.GeneratingPolynomialsBuilder;
     using Xunit;
 
     public class LiftingSchemeBasedBuilderTests

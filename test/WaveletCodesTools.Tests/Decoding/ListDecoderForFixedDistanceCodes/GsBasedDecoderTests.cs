@@ -1,8 +1,7 @@
-﻿namespace AppliedAlgebra.WaveletCodesTools.Tests
+﻿namespace AppliedAlgebra.WaveletCodesTools.Tests.Decoding.ListDecoderForFixedDistanceCodes
 {
     using System;
     using System.Collections.Generic;
-    using Decoding.ListDecoderForFixedDistanceCodes;
     using Encoding;
     using GfAlgorithms.CombinationsCountCalculator;
     using GfAlgorithms.LinearSystemSolver;
@@ -14,6 +13,7 @@
     using RsCodesTools.Decoding.ListDecoder.GsDecoderDependencies.InterpolationPolynomialBuilder;
     using RsCodesTools.Decoding.ListDecoder.GsDecoderDependencies.InterpolationPolynomialFactorisator;
     using TestCases;
+    using WaveletCodesTools.Decoding.ListDecoderForFixedDistanceCodes;
     using Xunit;
 
     public class GsBasedDecoderTests
