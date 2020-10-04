@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using Encoding;
     using GfAlgorithms.LinearSystemSolver;
     using GfPolynoms;
     using GfPolynoms.Extensions;
@@ -11,6 +10,7 @@
     using RsCodesTools.Decoding.StandartDecoder;
     using TestCases;
     using WaveletCodesTools.Decoding.StandartDecoderForFixedDistanceCodes;
+    using WaveletCodesTools.Encoding;
     using Xunit;
     using InformationPolynomialWasNotFoundException = WaveletCodesTools.Decoding.StandartDecoderForFixedDistanceCodes.InformationPolynomialWasNotFoundException;
 

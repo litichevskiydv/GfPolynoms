@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using Encoding;
     using GfAlgorithms.CombinationsCountCalculator;
     using GfAlgorithms.LinearSystemSolver;
     using GfPolynoms;
@@ -14,6 +13,7 @@
     using RsCodesTools.Decoding.ListDecoder.GsDecoderDependencies.InterpolationPolynomialFactorisator;
     using TestCases;
     using WaveletCodesTools.Decoding.ListDecoderForFixedDistanceCodes;
+    using WaveletCodesTools.Encoding;
     using Xunit;
 
     public class GsBasedDecoderTests
