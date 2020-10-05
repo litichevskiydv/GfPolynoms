@@ -37,7 +37,13 @@
                 = new TheoryData<GetDetailsVectorParametersValidationTestCase>
                   {
                       new GetDetailsVectorParametersValidationTestCase {LevelNumber = -1},
-                      new GetDetailsVectorParametersValidationTestCase {LevelNumber = 1}
+                      new GetDetailsVectorParametersValidationTestCase {LevelNumber = 1},
+                      new GetDetailsVectorParametersValidationTestCase {LevelNumber = 0},
+                      new GetDetailsVectorParametersValidationTestCase
+                      {
+                          LevelNumber = 0,
+                          ApproximationVector = FieldElementsMatrix.IdentityMatrix(gf3, 2)
+                      }
                   };
         }
 
@@ -71,7 +77,8 @@
             var actualApproximationVector = _waveletCoefficientsGenerator.GetApproximationVector(informationWord, signalLength, levelNumber);
 
             // Then
-            Assert.Equal(informationWord, actualApproximationVector);
+            var expectedApproximationVector = FieldElementsMatrix.ColumnVector(informationWord);
+            Assert.Equal(expectedApproximationVector, actualApproximationVector);
         }
 
         [Theory]
@@ -90,12 +97,13 @@
             var gf3 = GaloisField.Create(3);
             var informationWord = new[] { gf3.Zero(), gf3.One(), gf3.CreateElement(2) };
             const int levelNumber = 0;
+            var approximationVector = FieldElementsMatrix.ColumnVector(informationWord);
 
             // When
-            var actualDetailsVector = _waveletCoefficientsGenerator.GetDetailsVector(informationWord, levelNumber, informationWord);
+            var actualDetailsVector = _waveletCoefficientsGenerator.GetDetailsVector(informationWord, levelNumber, approximationVector);
 
             // Then
-            var expectedDetailsVector = new[] { gf3.One(), gf3.Zero(), gf3.CreateElement(2) };
+            var expectedDetailsVector = FieldElementsMatrix.ColumnVector(gf3.One(), gf3.Zero(), gf3.CreateElement(2));
             Assert.Equal(expectedDetailsVector, actualDetailsVector);
         }
     }

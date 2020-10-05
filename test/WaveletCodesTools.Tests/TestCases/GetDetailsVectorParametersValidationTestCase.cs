@@ -1,5 +1,6 @@
 ﻿namespace AppliedAlgebra.WaveletCodesTools.Tests.TestCases
 {
+    using GfAlgorithms.Matrices;
     using GfPolynoms;
 
     public class GetDetailsVectorParametersValidationTestCase
@@ -8,6 +9,6 @@
 
         public int LevelNumber { get; set; }
 
-        public FieldElement[] ApproximationVector { get; set; }
+        public FieldElementsMatrix ApproximationVector { get; set; }
     }
 }

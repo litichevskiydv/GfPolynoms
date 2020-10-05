@@ -1,9 +1,9 @@
 ﻿namespace AppliedAlgebra.WaveletCodesTools.Tests.TestCases
 {
-    using GfPolynoms;
+    using GfAlgorithms.Matrices;
 
     public class DetailsVectorGenerationTestCase : GetDetailsVectorParametersValidationTestCase
     {
-        public FieldElement[] ExpectedDetailsVector { get; set; }
+        public FieldElementsMatrix ExpectedDetailsVector { get; set; }
     }
 }

@@ -23,7 +23,7 @@
         }
 
         /// <inheritdoc/>
-        public FieldElement[] GetApproximationVector(FieldElement[] informationWord, int signalLength, int levelNumber)
+        public FieldElementsMatrix GetApproximationVector(FieldElement[] informationWord, int signalLength, int levelNumber)
         {
             if (informationWord == null)
                 throw new ArgumentNullException(nameof(informationWord));
@@ -32,18 +32,22 @@
             if (computedSignalLength != signalLength)
                 throw new ArgumentException($"{nameof(signalLength)} and {nameof(informationWord)} length must be correlated");
 
-            return informationWord;
+            return FieldElementsMatrix.ColumnVector(informationWord);
         }
 
         /// <inheritdoc/>
-        public FieldElement[] GetDetailsVector(FieldElement[] informationWord, int levelNumber, FieldElement[] approximationVector)
+        public FieldElementsMatrix GetDetailsVector(FieldElement[] informationWord, int levelNumber, FieldElementsMatrix approximationVector)
         {
             if (levelNumber < 0)
                 throw new ArgumentException($"{nameof(levelNumber)} must not be negative");
             if (levelNumber >= _levelsTransforms.Count)
                 throw new ArgumentException($"Level {levelNumber} of transformation is not supported");
+            if(approximationVector == null)
+                throw new ArgumentNullException(nameof(approximationVector));
+            if(approximationVector.ColumnsCount != 1)
+                throw new ArgumentException($"{nameof(approximationVector)} must be a column vector");
 
-            return (_levelsTransforms[levelNumber] * FieldElementsMatrix.ColumnVector(approximationVector)).GetColumn(0);
+            return _levelsTransforms[levelNumber] * approximationVector;
         }
     }
 }

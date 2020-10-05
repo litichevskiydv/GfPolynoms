@@ -2,7 +2,7 @@
 {
     using System;
     using System.Linq;
-    using GfPolynoms;
+    using GfAlgorithms.Matrices;
     using GfPolynoms.Extensions;
     using GfPolynoms.GaloisFields;
     using JetBrains.Annotations;
@@ -50,7 +50,8 @@
                       new GetDetailsVectorParametersValidationTestCase
                       {
                           InformationWord = informationWord,
-                          ApproximationVector = new FieldElement[0]
+                          LevelNumber = 1,
+                          ApproximationVector = FieldElementsMatrix.IdentityMatrix(gf3, 2)
                       }
                   };
             DetailsVectorGenerationTestCases
@@ -60,15 +61,15 @@
                       {
                           InformationWord = informationWord,
                           LevelNumber = 1,
-                          ApproximationVector = new[] {gf3.Zero()},
-                          ExpectedDetailsVector = new[] {gf3.One()}
+                          ApproximationVector = FieldElementsMatrix.ColumnVector(gf3.Zero()),
+                          ExpectedDetailsVector = FieldElementsMatrix.ColumnVector(gf3.One())
                       },
                       new DetailsVectorGenerationTestCase
                       {
                           InformationWord = informationWord,
                           LevelNumber = 0,
-                          ApproximationVector = new[] {gf3.Zero(), gf3.One()},
-                          ExpectedDetailsVector = new[] {gf3.CreateElement(2), gf3.Zero()}
+                          ApproximationVector = FieldElementsMatrix.ColumnVector(gf3.Zero(), gf3.One()),
+                          ExpectedDetailsVector = FieldElementsMatrix.ColumnVector(gf3.CreateElement(2), gf3.Zero())
                       }
                   };
         }
@@ -100,7 +101,7 @@
             var actualApproximationVector = _waveletCoefficientsGenerator.GetApproximationVector(informationWord, signalLength, levelNumber);
 
             // Then
-            var expectedApproximationVector = informationWord.Take(3).ToArray();
+            var expectedApproximationVector = FieldElementsMatrix.ColumnVector(informationWord.Take(3).ToArray());
             Assert.Equal(expectedApproximationVector, actualApproximationVector);
         }
 
