@@ -18,18 +18,18 @@
 
         public FieldElement[] GetIterationFilter(int iterationNumber, FieldElement[] sourceFilter)
         {
-            if (iterationNumber <= 0)
-                throw new ArgumentException($"{nameof(iterationNumber)} must be positive");
+            if (iterationNumber < 0)
+                throw new ArgumentException($"{nameof(iterationNumber)} must not be negative");
             if (sourceFilter == null)
                 throw new ArgumentNullException(nameof(sourceFilter));
             if (sourceFilter.Length == 0)
                 throw new ArgumentException($"{nameof(sourceFilter)} length must be positive");
 
-            if (iterationNumber == 1)
+            if (iterationNumber == 0)
                 return sourceFilter;
 
             var sourceFilterLength = sourceFilter.Length;
-            var filterLengthDecreasesTimes = 2.Pow(iterationNumber - 1);
+            var filterLengthDecreasesTimes = 2.Pow(iterationNumber);
             if (sourceFilterLength % (2 * filterLengthDecreasesTimes) != 0)
                 throw new ArgumentException($"{nameof(sourceFilter)} length is incorrect");
 

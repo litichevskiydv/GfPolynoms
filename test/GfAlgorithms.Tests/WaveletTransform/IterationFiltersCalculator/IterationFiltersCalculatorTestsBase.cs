@@ -28,9 +28,9 @@
                 = new TheoryData<GetIterationFilterVectorParametersValidationTestCase>
                   {
                       new GetIterationFilterVectorParametersValidationTestCase {IterationNumber = -1, SourceFilter = hSource},
-                      new GetIterationFilterVectorParametersValidationTestCase {IterationNumber = 1},
-                      new GetIterationFilterVectorParametersValidationTestCase {IterationNumber = 1, SourceFilter = new FieldElement[0]},
-                      new GetIterationFilterVectorParametersValidationTestCase {IterationNumber = 4, SourceFilter = hSource}
+                      new GetIterationFilterVectorParametersValidationTestCase {IterationNumber = 0},
+                      new GetIterationFilterVectorParametersValidationTestCase {IterationNumber = 0, SourceFilter = new FieldElement[0]},
+                      new GetIterationFilterVectorParametersValidationTestCase {IterationNumber = 3, SourceFilter = hSource}
                   };
         }
 
@@ -49,7 +49,7 @@
         [Fact]
         public void GetIterationFilterPolynomialMustValidateParameters()
         {
-            Assert.Throws<ArgumentNullException>(() => IterationFiltersCalculator.GetIterationFilter(1, (Polynomial)null));
+            Assert.Throws<ArgumentNullException>(() => IterationFiltersCalculator.GetIterationFilter(0, (Polynomial)null));
         }
 
         private static void CheckIterationFiltersVectors(FieldElement[] iterationFilterH, FieldElement[] iterationFilterG, FieldElement multiplier = null)
@@ -88,7 +88,7 @@
             var iterationFilterH = IterationFiltersCalculator.GetIterationFilter(testCase.IterationNumber, hFilterPolynomial, sourceFilterExpectedDegree);
             var iterationFilterG = IterationFiltersCalculator.GetIterationFilter(testCase.IterationNumber, gFilterPolynomial, sourceFilterExpectedDegree);
 
-            var iterationFilterExpectedDegree = testCase.SourceFilterH.Length / 2.Pow(testCase.IterationNumber - 1) - 1;
+            var iterationFilterExpectedDegree = testCase.SourceFilterH.Length / 2.Pow(testCase.IterationNumber) - 1;
             CheckIterationFiltersVectors(
                 iterationFilterH.GetCoefficients(iterationFilterExpectedDegree),
                 iterationFilterG.GetCoefficients(iterationFilterExpectedDegree),

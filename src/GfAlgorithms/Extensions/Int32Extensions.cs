@@ -10,7 +10,7 @@
         public static int Pow(this int value, int degree)
         {
             if(degree < 0)
-                throw new ArgumentException($"{nameof(degree)} must be positive");
+                throw new ArgumentException($"{nameof(degree)} must not be negative");
 
             var result = 1;
             while (degree > 0)

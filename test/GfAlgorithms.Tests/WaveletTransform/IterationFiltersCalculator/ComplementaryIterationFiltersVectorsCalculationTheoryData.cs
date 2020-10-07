@@ -20,12 +20,12 @@
             var hSource3 = gf2.CreateElementsVector(1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0);
             var gSource3 = gf2.CreateElementsVector(1, 0, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0);
 
+            Add(new ComplementaryIterationFiltersVectorsCalculationTestCase(0, hSource1, gSource1));
             Add(new ComplementaryIterationFiltersVectorsCalculationTestCase(1, hSource1, gSource1));
-            Add(new ComplementaryIterationFiltersVectorsCalculationTestCase(2, hSource1, gSource1));
+            Add(new ComplementaryIterationFiltersVectorsCalculationTestCase(0, hSource2, gSource2));
             Add(new ComplementaryIterationFiltersVectorsCalculationTestCase(1, hSource2, gSource2));
             Add(new ComplementaryIterationFiltersVectorsCalculationTestCase(2, hSource2, gSource2));
-            Add(new ComplementaryIterationFiltersVectorsCalculationTestCase(3, hSource2, gSource2));
-            Add(new ComplementaryIterationFiltersVectorsCalculationTestCase(1, hSource3, gSource3));
+            Add(new ComplementaryIterationFiltersVectorsCalculationTestCase(0, hSource3, gSource3));
 
             foreach (var additionalCase in additionalCases) 
                 Add(additionalCase);

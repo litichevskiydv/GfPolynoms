@@ -66,8 +66,6 @@
             var signalLength = synthesisFilters.h.Length;
             if(signalLength % 2.Pow(levelsCount) != 0)
                 throw new ArgumentException($"{levelsCount} levels decomposition is not supported");
-            if (codewordLength < signalLength / 2)
-                throw new ArgumentException($"{nameof(codewordLength)} is too small");
 
             var iterationMatrices = PrepareIterationMatrices(levelsCount, synthesisFilters);
             var approximationVector = _waveletCoefficientsGenerator.GetApproximationVector(informationWord, signalLength, levelsCount - 1);

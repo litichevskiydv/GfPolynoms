@@ -32,14 +32,14 @@
 
             OrthogonalIterationFiltersVectorsCalculationTestCases
                 = new OrthogonalIterationFiltersVectorsCalculationTheoryData(
-                    new OrthogonalIterationFiltersVectorsCalculationTestCase(2, hSource1, gSource1)
+                    new OrthogonalIterationFiltersVectorsCalculationTestCase(1, hSource1, gSource1)
                 );
             ComplementaryIterationFiltersVectorsCalculationTestCases
                 = new ComplementaryIterationFiltersVectorsCalculationTheoryData(
+                    new ComplementaryIterationFiltersVectorsCalculationTestCase(1, hSource2, gSource2),
                     new ComplementaryIterationFiltersVectorsCalculationTestCase(2, hSource2, gSource2),
-                    new ComplementaryIterationFiltersVectorsCalculationTestCase(3, hSource2, gSource2),
-                    new ComplementaryIterationFiltersVectorsCalculationTestCase(2, hSource3, gSource3),
-                    new ComplementaryIterationFiltersVectorsCalculationTestCase(2, hWithTildeSource3, gWithTildeSource3)
+                    new ComplementaryIterationFiltersVectorsCalculationTestCase(1, hSource3, gSource3),
+                    new ComplementaryIterationFiltersVectorsCalculationTestCase(1, hWithTildeSource3, gWithTildeSource3)
                 );
         }
 

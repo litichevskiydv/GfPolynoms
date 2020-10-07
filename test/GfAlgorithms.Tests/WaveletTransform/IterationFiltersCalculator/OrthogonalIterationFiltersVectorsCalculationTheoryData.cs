@@ -20,14 +20,14 @@
             var hSource3 = gf3.CreateElementsVector(2, 1, 0, 0, 1, 1, 0, 0);
             var gSource3 = gf3.CreateElementsVector(0, 0, 1, 1, 0, 0, 1, 2);
 
+            Add(new OrthogonalIterationFiltersVectorsCalculationTestCase(0, hSource1, gSource1, gf17.CreateElement(2)));
             Add(new OrthogonalIterationFiltersVectorsCalculationTestCase(1, hSource1, gSource1, gf17.CreateElement(2)));
             Add(new OrthogonalIterationFiltersVectorsCalculationTestCase(2, hSource1, gSource1, gf17.CreateElement(2)));
             Add(new OrthogonalIterationFiltersVectorsCalculationTestCase(3, hSource1, gSource1, gf17.CreateElement(2)));
-            Add(new OrthogonalIterationFiltersVectorsCalculationTestCase(4, hSource1, gSource1, gf17.CreateElement(2)));
-            Add(new OrthogonalIterationFiltersVectorsCalculationTestCase(1, hSource2, gSource2));
+            Add(new OrthogonalIterationFiltersVectorsCalculationTestCase(0, hSource2, gSource2));
+            Add(new OrthogonalIterationFiltersVectorsCalculationTestCase(0, hSource3, gSource3));
             Add(new OrthogonalIterationFiltersVectorsCalculationTestCase(1, hSource3, gSource3));
             Add(new OrthogonalIterationFiltersVectorsCalculationTestCase(2, hSource3, gSource3));
-            Add(new OrthogonalIterationFiltersVectorsCalculationTestCase(3, hSource3, gSource3));
 
             foreach (var additionalCase in additionalCases)
                 Add(additionalCase);
