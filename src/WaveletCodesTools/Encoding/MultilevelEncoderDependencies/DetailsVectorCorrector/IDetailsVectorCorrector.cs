@@ -15,13 +15,15 @@
         /// <param name="iterationMatrices">Matrices for performing signal reconstruction</param>
         /// <param name="approximationVector">Approximation vector</param>
         /// <param name="detailsVector">Details vector</param>
-        /// <param name="requiredZerosNumber">Required number of trailing zeros in the signal</param>
+        /// <param name="correctableComponentsCount">Number of the correctable components in the end of the details vector</param>
+        /// <param name="requiredZerosCount">Required number of trailing zeros in the signal</param>
         /// <returns>Corrected details vector</returns>
         FieldElement[] CorrectDetailsVector(
             (FieldElementsMatrix hMatrix, FieldElementsMatrix gMatrix) iterationMatrices,
             FieldElement[] approximationVector,
             FieldElement[] detailsVector,
-            int requiredZerosNumber
+            int correctableComponentsCount,
+            int requiredZerosCount
         );
     }
 }

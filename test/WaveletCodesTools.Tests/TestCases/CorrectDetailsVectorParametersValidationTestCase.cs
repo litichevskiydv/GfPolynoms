@@ -11,6 +11,8 @@
 
         public FieldElement[] DetailsVector { get; set; }
 
+        public int CorrectableComponentsCount { get; set; }
+
         public int RequiredZerosNumber { get; set; }
     }
 }

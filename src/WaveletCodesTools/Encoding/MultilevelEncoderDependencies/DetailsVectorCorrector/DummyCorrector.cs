@@ -9,20 +9,22 @@
     /// </summary>
     public class DummyCorrector : IDetailsVectorCorrector
     {
+        /// <inheritdoc/>
         public FieldElement[] CorrectDetailsVector(
             (FieldElementsMatrix hMatrix, FieldElementsMatrix gMatrix) iterationMatrices,
             FieldElement[] approximationVector,
             FieldElement[] detailsVector,
-            int requiredZerosNumber
+            int correctableComponentsCount,
+            int requiredZerosCount
         )
         {
             if(detailsVector == null)
                 throw new ArgumentNullException(nameof(detailsVector));
-            if(requiredZerosNumber < 0)
-                throw new ArgumentException($"{requiredZerosNumber} must not be negative");
+            if(requiredZerosCount < 0)
+                throw new ArgumentException($"{requiredZerosCount} must not be negative");
 
-            if(requiredZerosNumber > 0)
-                throw new NotSupportedException($"Positive {requiredZerosNumber} is not supported");
+            if(requiredZerosCount > 0)
+                throw new NotSupportedException($"Positive {requiredZerosCount} is not supported");
             return detailsVector;
         }
     }

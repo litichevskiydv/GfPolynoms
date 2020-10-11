@@ -45,6 +45,7 @@
                     testCase.IterationMatrices,
                     testCase.ApproximationVector,
                     testCase.DetailsVector,
+                    testCase.CorrectableComponentsCount,
                     testCase.RequiredZerosNumber
                 )
             );
@@ -62,11 +63,18 @@
             );
             var approximationVector = gf3.CreateElementsVector(0, 2, 0, 1); 
             var detailsVector = gf3.CreateElementsVector(1, 0, 2, 0);
+            const int correctableComponentsCount = 1;
             const int requiredZerosNumber = 1;
 
             // When, Then
             Assert.Throws<NotSupportedException>(
-                () => _detailsVectorCorrector.CorrectDetailsVector(iterationMatrices, approximationVector, detailsVector, requiredZerosNumber)
+                () => _detailsVectorCorrector.CorrectDetailsVector(
+                    iterationMatrices,
+                    approximationVector,
+                    detailsVector,
+                    correctableComponentsCount,
+                    requiredZerosNumber
+                )
             );
         }
 
@@ -82,10 +90,17 @@
             );
             var approximationVector = gf3.CreateElementsVector(0, 2, 0, 1);
             var detailsVector = gf3.CreateElementsVector(1, 0, 2, 0);
+            const int correctableComponentsCount = 0;
             const int requiredZerosNumber = 0;
 
             // When
-            var correctedDetailsVector = _detailsVectorCorrector.CorrectDetailsVector(iterationMatrices, approximationVector, detailsVector, requiredZerosNumber);
+            var correctedDetailsVector = _detailsVectorCorrector.CorrectDetailsVector(
+                iterationMatrices,
+                approximationVector,
+                detailsVector,
+                correctableComponentsCount,
+                requiredZerosNumber
+            );
 
             // Then
             Assert.Equal(detailsVector, correctedDetailsVector);
