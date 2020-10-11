@@ -10,10 +10,10 @@
     public class DummyCorrector : IDetailsVectorCorrector
     {
         /// <inheritdoc/>
-        public FieldElement[] CorrectDetailsVector(
+        public FieldElementsMatrix CorrectDetailsVector(
             (FieldElementsMatrix hMatrix, FieldElementsMatrix gMatrix) iterationMatrices,
-            FieldElement[] approximationVector,
-            FieldElement[] detailsVector,
+            FieldElementsMatrix approximationVector,
+            FieldElementsMatrix detailsVector,
             int correctableComponentsCount,
             int requiredZerosCount
         )

@@ -2,7 +2,6 @@
 {
     using System;
     using GfAlgorithms.Matrices;
-    using GfPolynoms.Extensions;
     using GfPolynoms.GaloisFields;
     using JetBrains.Annotations;
     using TestCases;
@@ -25,7 +24,7 @@
                       new CorrectDetailsVectorParametersValidationTestCase(),
                       new CorrectDetailsVectorParametersValidationTestCase
                       {
-                          DetailsVector = gf3.CreateElementsVector(0, 1, 2),
+                          DetailsVector = FieldElementsMatrix.ColumnVector(gf3, 0, 1, 2),
                           RequiredZerosNumber = -1
                       }
                   };
@@ -61,8 +60,8 @@
                 FieldElementsMatrix.DoubleCirculantMatrix(gf3, 0, 0, 0, 1),
                 FieldElementsMatrix.DoubleCirculantMatrix(gf3, 0, 0, 0, 1)
             );
-            var approximationVector = gf3.CreateElementsVector(0, 2, 0, 1); 
-            var detailsVector = gf3.CreateElementsVector(1, 0, 2, 0);
+            var approximationVector = FieldElementsMatrix.ColumnVector(gf3, 0, 2, 0, 1); 
+            var detailsVector = FieldElementsMatrix.ColumnVector(gf3, 1, 0, 2, 0);
             const int correctableComponentsCount = 1;
             const int requiredZerosNumber = 1;
 
@@ -88,8 +87,8 @@
                 FieldElementsMatrix.DoubleCirculantMatrix(gf3, 0, 0, 0, 1),
                 FieldElementsMatrix.DoubleCirculantMatrix(gf3, 0, 0, 0, 1)
             );
-            var approximationVector = gf3.CreateElementsVector(0, 2, 0, 1);
-            var detailsVector = gf3.CreateElementsVector(1, 0, 2, 0);
+            var approximationVector = FieldElementsMatrix.ColumnVector(gf3, 0, 2, 0, 1);
+            var detailsVector = FieldElementsMatrix.ColumnVector(gf3, 1, 0, 2, 0);
             const int correctableComponentsCount = 0;
             const int requiredZerosNumber = 0;
 
