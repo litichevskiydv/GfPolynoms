@@ -16,7 +16,7 @@
         private readonly IWaveletCoefficientsGenerator _waveletCoefficientsGenerator;
 
         private readonly int _signalLength;
-        private readonly (FieldElementsMatrix iterationMatrixH, FieldElementsMatrix iterationMatrixG)[] _iterationMatrices;
+        private readonly (FieldElementsMatrix iterationMatrixH, FieldElementsMatrix iterationMatrixG)[] _iterationsMatrices;
 
         private static FieldElementsMatrix PrepareIterationMatrix(
             IIterationFiltersCalculator iterationFiltersCalculator,
@@ -67,7 +67,7 @@
                 throw new ArgumentException($"{levelsCount} levels decomposition is not supported");
 
             _waveletCoefficientsGenerator = waveletCoefficientsGenerator;
-            _iterationMatrices = PrepareIterationMatrices(iterationFiltersCalculator, levelsCount, synthesisFilters);
+            _iterationsMatrices = PrepareIterationMatrices(iterationFiltersCalculator, levelsCount, synthesisFilters);
         }
 
         /// <inheritdoc/>
@@ -80,11 +80,11 @@
             if(codewordLength < informationWord.Length)
                 throw new ArgumentException($"{nameof(codewordLength)} is too short");
 
-            var levelsCount = _iterationMatrices.Length;
+            var levelsCount = _iterationsMatrices.Length;
             var approximationVector = _waveletCoefficientsGenerator.GetApproximationVector(informationWord, _signalLength, levelsCount - 1);
             for (var levelNumber = levelsCount - 1; levelNumber >= 0; levelNumber--)
             {
-                var (iterationMatrixH, iterationMatrixG) = _iterationMatrices[levelNumber];
+                var (iterationMatrixH, iterationMatrixG) = _iterationsMatrices[levelNumber];
                 var detailsVector = _waveletCoefficientsGenerator.GetDetailsVector(informationWord, levelNumber, approximationVector);
 
                 approximationVector = iterationMatrixH * approximationVector + iterationMatrixG * detailsVector;
