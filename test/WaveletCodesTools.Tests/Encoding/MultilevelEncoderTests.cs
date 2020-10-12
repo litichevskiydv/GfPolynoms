@@ -10,6 +10,7 @@
     using JetBrains.Annotations;
     using TestCases;
     using WaveletCodesTools.Encoding;
+    using WaveletCodesTools.Encoding.MultilevelEncoderDependencies.DetailsVectorCorrector;
     using WaveletCodesTools.Encoding.MultilevelEncoderDependencies.WaveletCoefficientsGenerator;
     using Xunit;
 
@@ -20,6 +21,8 @@
             public IIterationFiltersCalculator IterationFiltersCalculator { get; set; }
 
             public IWaveletCoefficientsGenerator WaveletCoefficientsGenerator { get; set; }
+
+            public IDetailsVectorCorrector DetailsVectorCorrector { get; set; }
 
             public int LevelsCount { get; set; }
 
@@ -55,6 +58,13 @@
                       {
                           IterationFiltersCalculator = new ConvolutionBasedCalculator(),
                           WaveletCoefficientsGenerator = new NaiveGenerator(),
+                          DetailsVectorCorrector = new DummyCorrector()
+                      },
+                      new MultilevelEncoderConstructorParametersValidationTestCase
+                      {
+                          IterationFiltersCalculator = new ConvolutionBasedCalculator(),
+                          WaveletCoefficientsGenerator = new NaiveGenerator(),
+                          DetailsVectorCorrector = new DummyCorrector(),
                           LevelsCount = 2,
                           SynthesisFilters = (gf3.CreateElementsVector(1, 1, 0, 0, 0, 0), gf3.CreateElementsVector(0, 1, 0, 0, 0, 0))
                       }
@@ -91,6 +101,7 @@
                     FieldElementsMatrix.CirculantMatrix(gf3.CreateElementsVector(0, 0, 0, 0, 0, 1)),
                     FieldElementsMatrix.CirculantMatrix(gf3.CreateElementsVector(0, 0, 1))
                 ),
+                new DummyCorrector(), 
                 2,
                 (
                     gf3.CreateElementsVector(1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0),
@@ -107,6 +118,7 @@
                 () => new MultilevelEncoder(
                     testCase.IterationFiltersCalculator,
                     testCase.WaveletCoefficientsGenerator,
+                    testCase.DetailsVectorCorrector,
                     testCase.LevelsCount,
                     testCase.SynthesisFilters
                 )
