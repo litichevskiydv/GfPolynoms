@@ -100,11 +100,15 @@
             var approximationVector = FieldElementsMatrix.ColumnVector(informationWord);
 
             // When
-            var actualDetailsVector = _waveletCoefficientsGenerator.GetDetailsVector(informationWord, levelNumber, approximationVector);
+            var (actualDetailsVector, actualCorrectableComponentsCount) 
+                = _waveletCoefficientsGenerator.GetDetailsVector(informationWord, levelNumber, approximationVector);
 
             // Then
             var expectedDetailsVector = FieldElementsMatrix.ColumnVector(gf3.One(), gf3.Zero(), gf3.CreateElement(2));
             Assert.Equal(expectedDetailsVector, actualDetailsVector);
+
+            const int expectedCorrectableComponentsCount = 0;
+            Assert.Equal(actualCorrectableComponentsCount, expectedCorrectableComponentsCount);
         }
     }
 }

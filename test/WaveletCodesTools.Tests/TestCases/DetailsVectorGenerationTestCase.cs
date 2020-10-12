@@ -5,5 +5,7 @@
     public class DetailsVectorGenerationTestCase : GetDetailsVectorParametersValidationTestCase
     {
         public FieldElementsMatrix ExpectedDetailsVector { get; set; }
+
+        public int ExpectedCorrectableComponentsCount { get; set; }
     }
 }

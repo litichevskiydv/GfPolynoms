@@ -62,14 +62,16 @@
                           InformationWord = informationWord,
                           LevelNumber = 1,
                           ApproximationVector = FieldElementsMatrix.ColumnVector(gf3.Zero()),
-                          ExpectedDetailsVector = FieldElementsMatrix.ColumnVector(gf3.One())
+                          ExpectedDetailsVector = FieldElementsMatrix.ColumnVector(gf3.One()),
+                          ExpectedCorrectableComponentsCount = 0
                       },
                       new DetailsVectorGenerationTestCase
                       {
                           InformationWord = informationWord,
                           LevelNumber = 0,
                           ApproximationVector = FieldElementsMatrix.ColumnVector(gf3.Zero(), gf3.One()),
-                          ExpectedDetailsVector = FieldElementsMatrix.ColumnVector(gf3.CreateElement(2), gf3.Zero())
+                          ExpectedDetailsVector = FieldElementsMatrix.ColumnVector(gf3.CreateElement(2), gf3.Zero()),
+                          ExpectedCorrectableComponentsCount = 1
                       }
                   };
         }
@@ -119,10 +121,12 @@
         public void MustGenerateDetailsVector(DetailsVectorGenerationTestCase testCase)
         {
             // When
-            var actualDetailsVector = _waveletCoefficientsGenerator.GetDetailsVector(testCase.InformationWord, testCase.LevelNumber, testCase.ApproximationVector);
+            var (actualDetailsVector, actualCorrectableComponentsCount) 
+                = _waveletCoefficientsGenerator.GetDetailsVector(testCase.InformationWord, testCase.LevelNumber, testCase.ApproximationVector);
 
             // Then
             Assert.Equal(testCase.ExpectedDetailsVector, actualDetailsVector);
+            Assert.Equal(testCase.ExpectedCorrectableComponentsCount, actualCorrectableComponentsCount);
         }
     }
 }

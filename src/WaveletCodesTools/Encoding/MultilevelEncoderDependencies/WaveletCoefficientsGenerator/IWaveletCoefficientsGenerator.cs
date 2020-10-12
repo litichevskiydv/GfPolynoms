@@ -23,7 +23,7 @@
         /// <param name="informationWord">Information word</param>
         /// <param name="levelNumber">Wavelet decomposition level number</param>
         /// <param name="approximationVector">Approximation vector for level <paramref name="levelNumber"/> defined as a column vector</param>
-        /// <returns>Details vector defined as a column vector</returns>
-        FieldElementsMatrix GetDetailsVector(FieldElement[] informationWord, int levelNumber, FieldElementsMatrix approximationVector);
+        /// <returns>Details vector generation result</returns>
+        DetailsVectorGenerationResult GetDetailsVector(FieldElement[] informationWord, int levelNumber, FieldElementsMatrix approximationVector);
     }
 }

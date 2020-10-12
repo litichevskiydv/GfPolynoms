@@ -31,7 +31,7 @@
         }
 
         /// <inheritdoc/>
-        public FieldElementsMatrix GetDetailsVector(FieldElement[] informationWord, int levelNumber, FieldElementsMatrix approximationVector)
+        public DetailsVectorGenerationResult GetDetailsVector(FieldElement[] informationWord, int levelNumber, FieldElementsMatrix approximationVector)
         {
             if (informationWord == null)
                 throw new ArgumentNullException(nameof(informationWord));
@@ -44,8 +44,12 @@
             var approximationVectorLength = approximationVector.RowsCount;
 
             var informationSymbols = informationWord.Skip(approximationVectorLength).Take(approximationVectorLength).ToArray();
-            return FieldElementsMatrix.ColumnVector(
-                informationSymbols.Concat(Enumerable.Repeat(field.Zero(), approximationVectorLength - informationSymbols.Length)).ToArray()
+            var correctableComponentsCount = approximationVectorLength - informationSymbols.Length;
+            return new DetailsVectorGenerationResult(
+                FieldElementsMatrix.ColumnVector(
+                    informationSymbols.Concat(Enumerable.Repeat(field.Zero(), correctableComponentsCount)).ToArray()
+                ),
+                correctableComponentsCount
             );
         }
     }

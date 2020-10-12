@@ -85,7 +85,7 @@
             for (var levelNumber = levelsCount - 1; levelNumber >= 0; levelNumber--)
             {
                 var (iterationMatrixH, iterationMatrixG) = _iterationsMatrices[levelNumber];
-                var detailsVector = _waveletCoefficientsGenerator.GetDetailsVector(informationWord, levelNumber, approximationVector);
+                var (detailsVector, _) = _waveletCoefficientsGenerator.GetDetailsVector(informationWord, levelNumber, approximationVector);
 
                 approximationVector = iterationMatrixH * approximationVector + iterationMatrixG * detailsVector;
             }

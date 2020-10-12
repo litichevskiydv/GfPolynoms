@@ -36,7 +36,7 @@
         }
 
         /// <inheritdoc/>
-        public FieldElementsMatrix GetDetailsVector(FieldElement[] informationWord, int levelNumber, FieldElementsMatrix approximationVector)
+        public DetailsVectorGenerationResult GetDetailsVector(FieldElement[] informationWord, int levelNumber, FieldElementsMatrix approximationVector)
         {
             if (levelNumber < 0)
                 throw new ArgumentException($"{nameof(levelNumber)} must not be negative");
@@ -47,7 +47,7 @@
             if(approximationVector.ColumnsCount != 1)
                 throw new ArgumentException($"{nameof(approximationVector)} must be a column vector");
 
-            return _levelsTransforms[levelNumber] * approximationVector;
+            return new DetailsVectorGenerationResult(_levelsTransforms[levelNumber] * approximationVector, 0);
         }
     }
 }
