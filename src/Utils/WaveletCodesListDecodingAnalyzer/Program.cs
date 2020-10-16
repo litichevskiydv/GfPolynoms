@@ -36,6 +36,9 @@
     using WaveletCodesTools.Decoding.ListDecoderForFixedDistanceCodes;
     using WaveletCodesTools.Decoding.ListDecoderForFixedDistanceCodes.GsBasedDecoderDependencies;
     using WaveletCodesTools.Decoding.StandartDecoderForFixedDistanceCodes;
+    using WaveletCodesTools.Encoding;
+    using WaveletCodesTools.Encoding.MultilevelEncoderDependencies.DetailsVectorCorrector;
+    using WaveletCodesTools.Encoding.MultilevelEncoderDependencies.WaveletCoefficientsGenerator;
     using WaveletCodesTools.FixedDistanceCodesFactory;
     using WaveletCodesTools.GeneratingPolynomialsBuilder;
     using ILogger = Microsoft.Extensions.Logging.ILogger;
@@ -45,6 +48,7 @@
     {
         private static readonly IVariantsIterator VariantsIterator;
         private static readonly INoiseGenerator NoiseGenerator;
+        private static readonly CommonCodeDistanceAnalyzer CommonCodeDistanceAnalyzer;
         private static readonly LinearCodeDistanceAnalyzer LinearCodeDistanceAnalyzer;
         private static readonly MinimalSphereCoveringAnalyzer MinimalSphereCoveringAnalyzer;
         private static readonly ListsSizesDistributionAnalyzer ListsSizesDistributionAnalyzer;
@@ -53,6 +57,21 @@
         private static readonly IGsBasedDecoderTelemetryCollector TelemetryCollector;
 
         private static readonly ILogger Logger;
+
+        private static int AnalyzeCodeDistance(GaloisField field, int codewordLength, int informationWordLength, IMultilevelEncoder encoder, bool logResult = true)
+        {
+            var codeDistance = CommonCodeDistanceAnalyzer.Analyze(
+                field,
+                informationWordLength,
+                informationWord => encoder.Encode(codewordLength, field.CreateElementsVector(informationWord)),
+                new CodeDistanceAnalyzerOptions { LoggingResolution = 1000000000L }
+            );
+
+            if (logResult)
+                Logger.LogInformation("Code distance: {codeDistance}", codeDistance);
+
+            return codeDistance;
+        }
 
         private static int AnalyzeCodeDistance(int codewordLength, int informationWordLength, Polynomial generatingPolynomial, bool logResult = true)
         {
@@ -254,6 +273,21 @@
                 new Polynomial(GaloisField.Create(3), 1, 0, 0, 1, 0, 0, 0, 1)
             );
 
+        private static void AnalyzeCodeDistanceForN9K5()
+        {
+            var gf3 = GaloisField.Create(3);
+            var encoder = new MultilevelEncoder(
+                new ConvolutionBasedCalculator(),
+                new CanonicalGenerator(),
+                new LinearEquationsBasedCorrector(new GaussSolver()),
+                2,
+                (
+                    gf3.CreateElementsVector(2, 1, 2, 1, 1, 0, 2, 1, 2, 0, 2, 1),
+                    gf3.CreateElementsVector(1, 1, 0, 1, 2, 1, 2, 0, 2, 1, 0, 0)
+                )
+            );
+            AnalyzeCodeDistance(gf3, 9, 5, encoder);
+        }
         private static void AnalyzeMinimalSphereCoveringForN8K4D4() =>
             AnalyzeMinimalSphereCovering(
                 new WaveletCode(8, 4, 4, new Polynomial(GaloisField.Create(9), 2, 0, 1, 2, 1, 1))
@@ -414,7 +448,7 @@
         {
             try
             {
-                AnalyzeCodeDistanceForN12K3();
+                AnalyzeCodeDistanceForN9K5();
             }
             catch (Exception exception)
             {
@@ -442,6 +476,7 @@
             NoiseGenerator = new RecursiveGenerator();
             WordsComparer = new FieldElementsArraysComparer();
 
+            CommonCodeDistanceAnalyzer = new CommonCodeDistanceAnalyzer(loggerFactory.CreateLogger<CommonCodeDistanceAnalyzer>());
             LinearCodeDistanceAnalyzer = new LinearCodeDistanceAnalyzer(loggerFactory.CreateLogger<LinearCodeDistanceAnalyzer>());
             MinimalSphereCoveringAnalyzer = new MinimalSphereCoveringAnalyzer(VariantsIterator, loggerFactory.CreateLogger<MinimalSphereCoveringAnalyzer>());
             ListsSizesDistributionAnalyzer = new ListsSizesDistributionAnalyzer(VariantsIterator, loggerFactory.CreateLogger<ListsSizesDistributionAnalyzer>());
