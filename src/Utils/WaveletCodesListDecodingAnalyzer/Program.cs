@@ -288,6 +288,7 @@
             );
             AnalyzeCodeDistance(gf3, 9, 5, encoder);
         }
+
         private static void AnalyzeMinimalSphereCoveringForN8K4D4() =>
             AnalyzeMinimalSphereCovering(
                 new WaveletCode(8, 4, 4, new Polynomial(GaloisField.Create(9), 2, 0, 1, 2, 1, 1))

@@ -26,7 +26,7 @@
                 () => int.MaxValue,
                 (mapping, loopState, localCodeDistance) =>
                 {
-                    foreach (var (_, codeword) in GenerateMappings(field, encodingProcedure, mapping.informationWord, 0).Skip(1))
+                    foreach (var (_, codeword) in GenerateMappings(field, encodingProcedure, mapping.informationWord.ToArray(), 0).Skip(1))
                     {
                         if (Interlocked.Increment(ref processedPairsCount) % options.LoggingResolution == 0)
                             Logger.LogInformation("Processed {processedPairsCount} pairs, code distance {codeDistance}", processedPairsCount, localCodeDistance);
@@ -38,7 +38,8 @@
                 },
                 localCodeDistance =>
                 {
-                    lock (syncRoot) codeDistance = Math.Min(codeDistance, localCodeDistance);
+                    lock (syncRoot) 
+                        codeDistance = Math.Min(codeDistance, localCodeDistance);
                 }
             );
 
