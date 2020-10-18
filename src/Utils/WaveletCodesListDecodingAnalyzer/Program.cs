@@ -243,6 +243,7 @@
         }
 
         private static void FindWaveletTransformsForMultilevelEncoding(
+            ISourceFiltersCalculator sourceFiltersCalculator,
             GaloisField field,
             int filtersLength,
             int codewordLength,
@@ -253,7 +254,6 @@
         {
             var identityMatrix = FieldElementsMatrix.IdentityMatrix(field, filtersLength / 2);
             var zeroMatrix = FieldElementsMatrix.ZeroMatrix(field, filtersLength / 2);
-            var sourceFiltersCalculator = new OrthogonalSourceFiltersCalculator();
             foreach (var filterH in VariantsIterator.IterateVectors(field, filtersLength).Skip(1))
             {
                 try
@@ -280,7 +280,7 @@
                         field,
                         informationWordLength,
                         informationWord => encoder.Encode(codewordLength, field.CreateElementsVector(informationWord)),
-                        new CodeDistanceAnalyzerOptions {LoggingResolution = 1000000000L, MaxDegreeOfParallelism = Environment.ProcessorCount - 2}
+                        new CodeDistanceAnalyzerOptions {LoggingResolution = 1000000000L, MaxDegreeOfParallelism = (int)(Environment.ProcessorCount * 0.8)}
                     );
                     if (codeDistance >= codeDistanceLimit)
                         Logger.LogInformation(
@@ -508,10 +508,11 @@
             try
             {
                 FindWaveletTransformsForMultilevelEncoding(
+                    new BiorthogonalSourceFiltersCalculator(new GcdBasedBuilder(new RecursiveGcdFinder())),
                     GaloisField.Create(3),
                     12,
-                    11,
-                    6,
+                    9,
+                    5,
                     2,
                     3
                 );
