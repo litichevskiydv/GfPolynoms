@@ -15,9 +15,11 @@
     using GfAlgorithms.ComplementaryFilterBuilder;
     using GfAlgorithms.Extensions;
     using GfAlgorithms.LinearSystemSolver;
+    using GfAlgorithms.Matrices;
     using GfAlgorithms.PolynomialsGcdFinder;
     using GfAlgorithms.VariantsIterator;
     using GfAlgorithms.WaveletTransform.IterationFiltersCalculator;
+    using GfAlgorithms.WaveletTransform.SourceFiltersCalculator;
     using GfPolynoms;
     using GfPolynoms.Comparers;
     using GfPolynoms.Extensions;
@@ -240,6 +242,62 @@
             }
         }
 
+        private static void FindWaveletTransformsForMultilevelEncoding(
+            GaloisField field,
+            int filtersLength,
+            int codewordLength,
+            int informationWordLength,
+            int levelsCount,
+            int codeDistanceLimit
+        )
+        {
+            var identityMatrix = FieldElementsMatrix.IdentityMatrix(field, filtersLength / 2);
+            var zeroMatrix = FieldElementsMatrix.ZeroMatrix(field, filtersLength / 2);
+            var sourceFiltersCalculator = new OrthogonalSourceFiltersCalculator();
+            foreach (var filterH in VariantsIterator.IterateVectors(field, filtersLength).Skip(1))
+            {
+                try
+                {
+                    var ((hWithTilde, gWithTilde), (h, g)) = sourceFiltersCalculator.GetSourceFilters(filterH);
+                    var hMatrix = FieldElementsMatrix.DoubleCirculantMatrix(h);
+                    var gMatrix = FieldElementsMatrix.DoubleCirculantMatrix(g);
+                    var hMatrixWithTilde = FieldElementsMatrix.DoubleCirculantMatrix(hWithTilde);
+                    var gMatrixWithTilde = FieldElementsMatrix.DoubleCirculantMatrix(gWithTilde);
+                    if (Equals(hMatrixWithTilde * FieldElementsMatrix.Transpose(hMatrix), identityMatrix) == false
+                        || Equals(gMatrixWithTilde * FieldElementsMatrix.Transpose(gMatrix), identityMatrix) == false
+                        || Equals(hMatrixWithTilde * FieldElementsMatrix.Transpose(gMatrix), zeroMatrix) == false
+                        || Equals(gMatrixWithTilde * FieldElementsMatrix.Transpose(hMatrix), zeroMatrix) == false)
+                        continue;
+
+                    var encoder = new MultilevelEncoder(
+                        new ConvolutionBasedCalculator(),
+                        new CanonicalGenerator(),
+                        new LinearEquationsBasedCorrector(new GaussSolver()),
+                        levelsCount, 
+                        (h, g)
+                    );
+                    var codeDistance = CommonCodeDistanceAnalyzer.Analyze(
+                        field,
+                        informationWordLength,
+                        informationWord => encoder.Encode(codewordLength, field.CreateElementsVector(informationWord)),
+                        new CodeDistanceAnalyzerOptions {LoggingResolution = 1000000000L, MaxDegreeOfParallelism = Environment.ProcessorCount - 2}
+                    );
+                    if (codeDistance >= codeDistanceLimit)
+                        Logger.LogInformation(
+                            "Filter h ({hFilter}), filter g ({gFilter}), code distance: {codeDistance}",
+                            string.Join(",", (IEnumerable<FieldElement>)h),
+                            string.Join(",", (IEnumerable<FieldElement>)g),
+                            codeDistance
+                        );
+                }
+                catch
+                {
+                }
+            }
+
+            Logger.LogInformation("Possible filters were checked");
+        }
+
         private static void AnalyzeCodeDistanceForN3K2() =>
             AnalyzeCodeDistance(3, 2, new Polynomial(GaloisField.Create(4, new[] {1, 1, 1}), 2, 1));
 
@@ -449,7 +507,14 @@
         {
             try
             {
-                AnalyzeCodeDistanceForN9K5();
+                FindWaveletTransformsForMultilevelEncoding(
+                    GaloisField.Create(3),
+                    12,
+                    11,
+                    6,
+                    2,
+                    3
+                );
             }
             catch (Exception exception)
             {
