@@ -21,7 +21,7 @@
                                   ?? Enumerable.Repeat(code.Field.Zero(), code.InformationWordLength).ToArray(),
                 AdditiveNoise = noiseGenerator
                     .VariatePositionsAndValues(code.Field, code.CodewordLength, errorsCount ?? (code.CodeDistance - 1) / 2)
-                    .Skip(30)
+                    .Skip(1)
                     .First()
             };
 
