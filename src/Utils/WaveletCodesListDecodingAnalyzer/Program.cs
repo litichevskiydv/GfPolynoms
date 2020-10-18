@@ -340,8 +340,8 @@
                 new LinearEquationsBasedCorrector(new GaussSolver()),
                 2,
                 (
-                    gf3.CreateElementsVector(2, 1, 2, 1, 1, 0, 2, 1, 2, 0, 2, 1),
-                    gf3.CreateElementsVector(1, 1, 0, 1, 2, 1, 2, 0, 2, 1, 0, 0)
+                    gf3.CreateElementsVector(2, 1, 1, 2, 0, 1, 2, 2, 0, 0, 0, 0),
+                    gf3.CreateElementsVector(0, 2, 0, 2, 1, 1, 0, 0, 0, 0, 0, 0)
                 )
             );
             AnalyzeCodeDistance(gf3, 9, 5, encoder);
