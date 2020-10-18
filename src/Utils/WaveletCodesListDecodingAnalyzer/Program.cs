@@ -269,18 +269,18 @@
                         || Equals(gMatrixWithTilde * FieldElementsMatrix.Transpose(hMatrix), zeroMatrix) == false)
                         continue;
 
-                    var encoder = new MultilevelEncoder(
-                        new ConvolutionBasedCalculator(),
-                        new CanonicalGenerator(),
-                        new LinearEquationsBasedCorrector(new GaussSolver()),
-                        levelsCount, 
-                        (h, g)
-                    );
-                    var codeDistance = CommonCodeDistanceAnalyzer.Analyze(
+                    var codeDistance = AnalyzeCodeDistance(
                         field,
+                        codewordLength,
                         informationWordLength,
-                        informationWord => encoder.Encode(codewordLength, field.CreateElementsVector(informationWord)),
-                        new CodeDistanceAnalyzerOptions {LoggingResolution = 1000000000L, MaxDegreeOfParallelism = (int)(Environment.ProcessorCount * 0.8)}
+                        new MultilevelEncoder(
+                            new ConvolutionBasedCalculator(),
+                            new CanonicalGenerator(),
+                            new LinearEquationsBasedCorrector(new GaussSolver()),
+                            levelsCount,
+                            (h, g)
+                        ),
+                        false
                     );
                     if (codeDistance >= codeDistanceLimit)
                         Logger.LogInformation(
