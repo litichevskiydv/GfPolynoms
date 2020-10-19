@@ -62,11 +62,16 @@
 
         private static int AnalyzeCodeDistance(GaloisField field, int codewordLength, int informationWordLength, IMultilevelEncoder encoder, bool logResult = true)
         {
+            var encoderOptions = new MultilevelEncoderOptions {MaxDegreeOfParallelism = 1};
             var codeDistance = CommonCodeDistanceAnalyzer.Analyze(
                 field,
                 informationWordLength,
-                informationWord => encoder.Encode(codewordLength, field.CreateElementsVector(informationWord)),
-                new CodeDistanceAnalyzerOptions { LoggingResolution = 1000000000L }
+                informationWord => encoder.Encode(codewordLength, field.CreateElementsVector(informationWord), encoderOptions),
+                new CodeDistanceAnalyzerOptions
+                {
+                    LoggingResolution = 1000000000L,
+                    MaxDegreeOfParallelism = (int)(Environment.ProcessorCount * 0.9)
+                }
             );
 
             if (logResult)
