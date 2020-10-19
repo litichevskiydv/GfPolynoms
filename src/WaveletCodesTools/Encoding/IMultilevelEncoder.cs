@@ -12,7 +12,8 @@
         /// </summary>
         /// <param name="codewordLength">Codeword length</param>
         /// <param name="informationWord">Information word</param>
+        /// <param name="options">Encoder option</param>
         /// <returns>Codeword</returns>
-        FieldElement[] Encode(int codewordLength, FieldElement[] informationWord);
+        FieldElement[] Encode(int codewordLength, FieldElement[] informationWord, MultilevelEncoderOptions options = null);
     }
 }

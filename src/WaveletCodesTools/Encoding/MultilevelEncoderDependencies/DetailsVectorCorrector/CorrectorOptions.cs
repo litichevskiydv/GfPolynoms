@@ -6,7 +6,7 @@
     public class CorrectorOptions
     {
         /// <summary>
-        /// Maximum degree of parallelism if it is supported by solver
+        /// Maximum degree of parallelism if it is supported by corrector
         /// </summary>
         public int MaxDegreeOfParallelism { get; set; }
 

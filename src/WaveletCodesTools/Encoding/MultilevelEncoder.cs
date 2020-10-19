@@ -77,7 +77,7 @@
         }
 
         /// <inheritdoc/>
-        public FieldElement[] Encode(int codewordLength, FieldElement[] informationWord)
+        public FieldElement[] Encode(int codewordLength, FieldElement[] informationWord, MultilevelEncoderOptions options = null)
         {
             if(codewordLength <= 0)
                 throw new ArgumentException($"{nameof(codewordLength)} must be positive");
@@ -85,6 +85,8 @@
                 throw new ArgumentNullException(nameof(informationWord));
             if(codewordLength < informationWord.Length)
                 throw new ArgumentException($"{nameof(codewordLength)} is too short");
+
+            var opts = options ?? new MultilevelEncoderOptions();
 
             var levelsCount = _iterationsMatrices.Length;
             var approximationVector = _waveletCoefficientsGenerator.GetApproximationVector(informationWord, _signalLength, levelsCount - 1);
@@ -99,7 +101,8 @@
                         approximationVector,
                         detailsVector,
                         correctableComponentsCount,
-                        _signalLength - codewordLength
+                        _signalLength - codewordLength,
+                        new CorrectorOptions {MaxDegreeOfParallelism = opts.MaxDegreeOfParallelism}
                     );
 
                 approximationVector = iterationMatrixH * approximationVector + iterationMatrixG * detailsVector;

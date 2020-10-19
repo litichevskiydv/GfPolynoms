@@ -139,7 +139,11 @@
         public void MustPerformMultilevelEncoding(MultilevelEncodingTestCase testCase)
         {
             // When
-            var actualCodeword = _multilevelEncoder.Encode(testCase.CodewordLength, testCase.InformationWord);
+            var actualCodeword = _multilevelEncoder.Encode(
+                testCase.CodewordLength,
+                testCase.InformationWord,
+                new MultilevelEncoderOptions {MaxDegreeOfParallelism = 1}
+            );
 
             // Then
             Assert.Equal(testCase.ExpectedCodeword, actualCodeword);
