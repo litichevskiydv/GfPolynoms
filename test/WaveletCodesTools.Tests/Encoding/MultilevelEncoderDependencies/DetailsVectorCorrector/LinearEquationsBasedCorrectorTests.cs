@@ -171,7 +171,8 @@
                 testCase.ApproximationVector,
                 testCase.DetailsVector,
                 testCase.CorrectableComponentsCount,
-                testCase.RequiredZerosNumber
+                testCase.RequiredZerosNumber,
+                new CorrectorOptions {MaxDegreeOfParallelism = 1}
             );
 
             // Then

@@ -15,7 +15,8 @@
             FieldElementsMatrix approximationVector,
             FieldElementsMatrix detailsVector,
             int correctableComponentsCount,
-            int requiredZerosCount
+            int requiredZerosCount,
+            CorrectorOptions options = null
         )
         {
             if(detailsVector == null)

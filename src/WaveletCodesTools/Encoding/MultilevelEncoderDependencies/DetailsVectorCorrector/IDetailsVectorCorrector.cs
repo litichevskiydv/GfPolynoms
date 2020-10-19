@@ -16,13 +16,15 @@
         /// <param name="detailsVector">Details vector defined as a column vector</param>
         /// <param name="correctableComponentsCount">Number of the correctable components in the end of the details vector</param>
         /// <param name="requiredZerosCount">Required number of trailing zeros in the signal</param>
+        /// <param name="options">Details vector corrector options</param>
         /// <returns>Corrected details vector defined as a column vector</returns>
         FieldElementsMatrix CorrectDetailsVector(
             (FieldElementsMatrix hMatrix, FieldElementsMatrix gMatrix) iterationMatrices,
             FieldElementsMatrix approximationVector,
             FieldElementsMatrix detailsVector,
             int correctableComponentsCount,
-            int requiredZerosCount
+            int requiredZerosCount,
+            CorrectorOptions options = null
         );
     }
 }

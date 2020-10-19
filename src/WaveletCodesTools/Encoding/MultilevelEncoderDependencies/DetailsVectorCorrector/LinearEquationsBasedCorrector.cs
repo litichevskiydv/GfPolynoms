@@ -27,7 +27,8 @@
             FieldElementsMatrix approximationVector,
             FieldElementsMatrix detailsVector,
             int correctableComponentsCount,
-            int requiredZerosCount
+            int requiredZerosCount,
+            CorrectorOptions options = null
         )
         {
             if(approximationVector == null)
@@ -52,6 +53,8 @@
             if (requiredZerosCount == 0)
                 return detailsVector;
 
+            var opts = options ?? new CorrectorOptions();
+
             var (hMatrix, gMatrix) = iterationMatrices;
             var equationsRowsRange = Enumerable.Range(hMatrix.RowsCount - requiredZerosCount, requiredZerosCount).ToArray();
             var valuesColumnsRange = Enumerable.Range(0, gMatrix.ColumnsCount - requiredZerosCount).ToArray();
@@ -68,7 +71,7 @@
             }
             var b = valuesVector.CreateSubmatrixFromRows(equationsRowsRange);
 
-            var systemSolution = _linearSystemSolver.Solve(a, b);
+            var systemSolution = _linearSystemSolver.Solve(a, b, new SolverOptions {MaxDegreeOfParallelism = opts.MaxDegreeOfParallelism});
             if(systemSolution.IsEmpty)
                 throw new InvalidOperationException("Can't correct details vector");
 
