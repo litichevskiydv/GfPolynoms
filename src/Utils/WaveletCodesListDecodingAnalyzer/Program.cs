@@ -60,7 +60,7 @@
 
         private static readonly ILogger Logger;
 
-        private static int AnalyzeCodeDistance(GaloisField field, int codewordLength, int informationWordLength, IMultilevelEncoder encoder, bool logResult = true)
+        private static int AnalyzeCodeDistance(GaloisField field, int codewordLength, int informationWordLength, IMultilevelEncoder encoder, int? codeDistanceLimit = null, bool logResult = true)
         {
             var encoderOptions = new MultilevelEncoderOptions {MaxDegreeOfParallelism = 1};
             var codeDistance = CommonCodeDistanceAnalyzer.Analyze(
@@ -69,8 +69,9 @@
                 informationWord => encoder.Encode(codewordLength, field.CreateElementsVector(informationWord), encoderOptions),
                 new CodeDistanceAnalyzerOptions
                 {
+                    MaxDegreeOfParallelism = (int)(Environment.ProcessorCount * 0.9),
                     LoggingResolution = 1000000000L,
-                    MaxDegreeOfParallelism = (int)(Environment.ProcessorCount * 0.9)
+                    CodeDistanceMinimumThreshold = codeDistanceLimit
                 }
             );
 
@@ -285,6 +286,7 @@
                             levelsCount,
                             (h, g)
                         ),
+                        codeDistanceLimit,
                         false
                     );
                     if (codeDistance >= codeDistanceLimit)
