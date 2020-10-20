@@ -28,10 +28,18 @@
                 {
                     foreach (var (_, codeword) in GenerateMappings(field, encodingProcedure, mapping.informationWord.ToArray(), 0).Skip(1))
                     {
+                        if(loopState.IsStopped)
+                            return localCodeDistance;
+
                         if (Interlocked.Increment(ref processedPairsCount) % options.LoggingResolution == 0)
                             Logger.LogInformation("Processed {processedPairsCount} pairs, code distance {codeDistance}", processedPairsCount, localCodeDistance);
 
                         localCodeDistance = Math.Min(localCodeDistance, mapping.codeword.ComputeHammingDistance(codeword));
+                        if (options.CodeDistanceMinimumThreshold.HasValue && localCodeDistance < options.CodeDistanceMinimumThreshold.Value)
+                        {
+                            loopState.Stop();
+                            return localCodeDistance;
+                        }
                     }
 
                     return localCodeDistance;

@@ -4,6 +4,7 @@
     using Analyzers.CodeDistance;
     using GfAlgorithms.CombinationsCountCalculator;
     using GfAlgorithms.ComplementaryFilterBuilder;
+    using GfAlgorithms.Extensions;
     using GfAlgorithms.LinearSystemSolver;
     using GfAlgorithms.PolynomialsGcdFinder;
     using GfPolynoms;
@@ -12,6 +13,7 @@
     using JetBrains.Annotations;
     using Microsoft.Extensions.Logging;
     using Moq;
+    using RsCodesTools;
     using RsCodesTools.Decoding.ListDecoder;
     using RsCodesTools.Decoding.ListDecoder.GsDecoderDependencies.InterpolationPolynomialBuilder;
     using RsCodesTools.Decoding.ListDecoder.GsDecoderDependencies.InterpolationPolynomialFactorisator;
@@ -94,6 +96,28 @@
 
             Assert.All(_mockLogger.Invocations, x => Assert.Equal(LogLevel.Information, x.Arguments[0]));
             Assert.True(_mockLogger.Invocations.Count >= 1);
+        }
+
+        [Fact]
+        public void MustStopAnalysisBeforeRealDistanceWasCalculated()
+        {
+            // Given
+            var gf2 = GaloisField.Create(2);
+            var code = new ReedSolomonCode(gf2, 8, 4);
+            const int codeDistanceMinimumThreshold = 7;
+
+            // When
+            var actualDistance = _analyzer.Analyze(
+                gf2,
+                code.InformationWordLength,
+                informationWord => code.Encode(gf2.CreateElementsVector(informationWord)),
+                new CodeDistanceAnalyzerOptions{ CodeDistanceMinimumThreshold = codeDistanceMinimumThreshold, LoggingResolution = 1}
+            );
+
+            // Then
+            Assert.True(actualDistance < codeDistanceMinimumThreshold);
+            Assert.True(_mockLogger.Invocations.Count < gf2.Order.Pow(code.InformationWordLength) - 1);
+
         }
     }
 }

@@ -53,7 +53,6 @@
                 throw new ArgumentNullException(nameof(encodingProcedure));
 
             var opts = options ?? new CodeDistanceAnalyzerOptions();
-
             return AnalyzeInternal(field, informationWordLength, encodingProcedure, opts);
         }
 

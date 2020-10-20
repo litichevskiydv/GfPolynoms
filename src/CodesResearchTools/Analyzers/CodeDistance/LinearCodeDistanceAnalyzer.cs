@@ -25,16 +25,23 @@
                 () => int.MaxValue,
                 (mapping, loopState, localCodeDistance) =>
                 {
+                    if (loopState.IsStopped)
+                        return localCodeDistance;
+
                     if (Interlocked.Increment(ref processedCodewords) % options.LoggingResolution == 0)
                         Logger.LogInformation("Processed {processedCodewords} pairs, code distance {codeDistance}", processedCodewords, localCodeDistance);
 
                     var distance = mapping.codeword.Count(x => x.Representation != 0);
+                    if(options.CodeDistanceMinimumThreshold.HasValue && distance < options.CodeDistanceMinimumThreshold.Value)
+                        loopState.Stop();
+
                     return Math.Min(localCodeDistance, distance);
 
                 },
                 localCodeDistance =>
                 {
-                    lock (syncRoot) codeDistance = Math.Min(codeDistance, localCodeDistance);
+                    lock (syncRoot) 
+                        codeDistance = Math.Min(codeDistance, localCodeDistance);
                 }
             );
 
