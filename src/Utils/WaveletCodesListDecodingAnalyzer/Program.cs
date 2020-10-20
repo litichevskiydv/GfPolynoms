@@ -258,6 +258,19 @@
             int codeDistanceLimit
         )
         {
+            Logger.LogInformation(
+                "Begin of search for wavelet transforms over field {field} " +
+                "length {filtersLength} for code with {levelsCount} levels of transformation, " +
+                "codeword length {codewordLength}, information word length {informationWordLength} " +
+                "and code distance greater or equal than {codeDistanceLimit}",
+                field,
+                filtersLength,
+                levelsCount,
+                codewordLength,
+                informationWordLength,
+                codeDistanceLimit
+            );
+
             var identityMatrix = FieldElementsMatrix.IdentityMatrix(field, filtersLength / 2);
             var zeroMatrix = FieldElementsMatrix.ZeroMatrix(field, filtersLength / 2);
             foreach (var filterH in VariantsIterator.IterateVectors(field, filtersLength).Skip(1))
@@ -302,7 +315,18 @@
                 }
             }
 
-            Logger.LogInformation("Possible filters were checked");
+            Logger.LogInformation(
+                "End of search for wavelet transforms over field {field} " +
+                "length {filtersLength} for code with {levelsCount} levels of transformation, " +
+                "codeword length {codewordLength}, information word length {informationWordLength} " +
+                "and code distance greater or equal than {codeDistanceLimit}",
+                field,
+                filtersLength,
+                levelsCount,
+                codewordLength,
+                informationWordLength,
+                codeDistanceLimit
+            );
         }
 
         private static void AnalyzeCodeDistanceForN3K2() =>
