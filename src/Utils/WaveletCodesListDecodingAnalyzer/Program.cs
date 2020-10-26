@@ -255,7 +255,8 @@
             int codewordLength,
             int informationWordLength,
             int levelsCount,
-            int codeDistanceLimit
+            int codeDistanceLimit,
+            FieldElement[] iterationInitialVector = null
         )
         {
             Logger.LogInformation(
@@ -273,7 +274,7 @@
 
             var identityMatrix = FieldElementsMatrix.IdentityMatrix(field, filtersLength / 2);
             var zeroMatrix = FieldElementsMatrix.ZeroMatrix(field, filtersLength / 2);
-            foreach (var filterH in VariantsIterator.IterateVectors(field, filtersLength).Skip(1))
+            foreach (var filterH in VariantsIterator.IterateVectors(field, filtersLength, iterationInitialVector).Skip(1))
             {
                 try
                 {
@@ -538,9 +539,10 @@
         {
             try
             {
+                var field = GaloisField.Create(3);
                 FindWaveletTransformsForMultilevelEncoding(
                     new BiorthogonalSourceFiltersCalculator(new GcdBasedBuilder(new RecursiveGcdFinder())),
-                    GaloisField.Create(3),
+                    field,
                     12,
                     9,
                     5,
