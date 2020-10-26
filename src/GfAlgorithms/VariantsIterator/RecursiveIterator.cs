@@ -52,14 +52,20 @@
         }
 
         /// <inheritdoc />
-        public IEnumerable<Polynomial> IteratePolynomials(GaloisField field, int maxDegree)
+        public IEnumerable<Polynomial> IteratePolynomials(GaloisField field, int maxDegree, Polynomial initialPolynomial = null)
         {
             if (field == null)
                 throw new ArgumentNullException(nameof(field));
             if (maxDegree < 0)
                 throw new ArgumentException($"{nameof(maxDegree)} must not be negative");
+            if(initialPolynomial != null && initialPolynomial.Field.Equals(field) == false)
+                throw new ArgumentException($"{initialPolynomial} must be over field {field}");
+            if(initialPolynomial != null && initialPolynomial.Degree > maxDegree)
+                throw new ArgumentException($"Degree of {nameof(initialPolynomial)} must not be greater than {maxDegree}");
 
-            return Iterate(field, maxDegree, new int[maxDegree + 1], values => new Polynomial(field, values));
+            var iterableValues = initialPolynomial?.GetCoefficients(maxDegree).Select(x => x.Representation).ToArray()
+                                 ?? new int[maxDegree + 1];
+            return Iterate(field, maxDegree, iterableValues, values => new Polynomial(field, values));
         }
     }
 }
