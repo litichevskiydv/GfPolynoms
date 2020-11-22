@@ -248,6 +248,21 @@
             }
         }
 
+        private static Timer InitializeStateLoggingTimer(IEnumerator<FieldElement[]> filtersEnumerator, TimeSpan period) =>
+            new Timer(
+                state =>
+                {
+                    var enumerator = (IEnumerator<FieldElement[]>) state;
+                    if (enumerator.Current == null) return;
+
+                    Logger.LogDebug("Processing filter h ({hFilter})",
+                        string.Join(",", (IEnumerable<FieldElement>) enumerator.Current));
+                },
+                filtersEnumerator,
+                TimeSpan.Zero,
+                period
+            );
+
         private static void FindWaveletTransformsForMultilevelEncoding(
             ISourceFiltersCalculator sourceFiltersCalculator,
             GaloisField field,
@@ -272,49 +287,53 @@
                 codeDistanceLimit
             );
 
-            var identityMatrix = FieldElementsMatrix.IdentityMatrix(field, filtersLength / 2);
-            var zeroMatrix = FieldElementsMatrix.ZeroMatrix(field, filtersLength / 2);
-            foreach (var filterH in VariantsIterator.IterateVectors(field, filtersLength, iterationInitialVector).Skip(1))
-            {
-                try
-                {
-                    var ((hWithTilde, gWithTilde), (h, g)) = sourceFiltersCalculator.GetSourceFilters(filterH);
-                    var hMatrix = FieldElementsMatrix.DoubleCirculantMatrix(h);
-                    var gMatrix = FieldElementsMatrix.DoubleCirculantMatrix(g);
-                    var hMatrixWithTilde = FieldElementsMatrix.DoubleCirculantMatrix(hWithTilde);
-                    var gMatrixWithTilde = FieldElementsMatrix.DoubleCirculantMatrix(gWithTilde);
-                    if (Equals(hMatrixWithTilde * FieldElementsMatrix.Transpose(hMatrix), identityMatrix) == false
-                        || Equals(gMatrixWithTilde * FieldElementsMatrix.Transpose(gMatrix), identityMatrix) == false
-                        || Equals(hMatrixWithTilde * FieldElementsMatrix.Transpose(gMatrix), zeroMatrix) == false
-                        || Equals(gMatrixWithTilde * FieldElementsMatrix.Transpose(hMatrix), zeroMatrix) == false)
-                        continue;
 
-                    var codeDistance = AnalyzeCodeDistance(
-                        field,
-                        codewordLength,
-                        informationWordLength,
-                        new MultilevelEncoder(
-                            new ConvolutionBasedCalculator(),
-                            new CanonicalGenerator(),
-                            new LinearEquationsBasedCorrector(new GaussSolver()),
-                            levelsCount,
-                            (h, g)
-                        ),
-                        codeDistanceLimit,
-                        false
-                    );
-                    if (codeDistance >= codeDistanceLimit)
-                        Logger.LogInformation(
-                            "Filter h ({hFilter}), filter g ({gFilter}), code distance: {codeDistance}",
-                            string.Join(",", (IEnumerable<FieldElement>)h),
-                            string.Join(",", (IEnumerable<FieldElement>)g),
-                            codeDistance
-                        );
-                }
-                catch
+            var zeroMatrix = FieldElementsMatrix.ZeroMatrix(field, filtersLength / 2);
+            var identityMatrix = FieldElementsMatrix.IdentityMatrix(field, filtersLength / 2);
+            using (var filtersEnumerator = VariantsIterator.IterateVectors(field, filtersLength, iterationInitialVector).Skip(1).GetEnumerator())
+            using (InitializeStateLoggingTimer(filtersEnumerator, TimeSpan.FromMinutes(15)))
+                while (filtersEnumerator.MoveNext())
                 {
+                    var filterH = filtersEnumerator.Current;
+                    try
+                    {
+                        var ((hWithTilde, gWithTilde), (h, g)) = sourceFiltersCalculator.GetSourceFilters(filterH);
+                        var hMatrix = FieldElementsMatrix.DoubleCirculantMatrix(h);
+                        var gMatrix = FieldElementsMatrix.DoubleCirculantMatrix(g);
+                        var hMatrixWithTilde = FieldElementsMatrix.DoubleCirculantMatrix(hWithTilde);
+                        var gMatrixWithTilde = FieldElementsMatrix.DoubleCirculantMatrix(gWithTilde);
+                        if (Equals(hMatrixWithTilde * FieldElementsMatrix.Transpose(hMatrix), identityMatrix) == false
+                            || Equals(gMatrixWithTilde * FieldElementsMatrix.Transpose(gMatrix), identityMatrix) == false
+                            || Equals(hMatrixWithTilde * FieldElementsMatrix.Transpose(gMatrix), zeroMatrix) == false
+                            || Equals(gMatrixWithTilde * FieldElementsMatrix.Transpose(hMatrix), zeroMatrix) == false)
+                            continue;
+
+                        var codeDistance = AnalyzeCodeDistance(
+                            field,
+                            codewordLength,
+                            informationWordLength,
+                            new MultilevelEncoder(
+                                new ConvolutionBasedCalculator(),
+                                new CanonicalGenerator(),
+                                new LinearEquationsBasedCorrector(new GaussSolver()),
+                                levelsCount,
+                                (h, g)
+                            ),
+                            codeDistanceLimit,
+                            false
+                        );
+                        if (codeDistance >= codeDistanceLimit)
+                            Logger.LogInformation(
+                                "Filter h ({hFilter}), filter g ({gFilter}), code distance: {codeDistance}",
+                                string.Join(",", (IEnumerable<FieldElement>) h),
+                                string.Join(",", (IEnumerable<FieldElement>) g),
+                                codeDistance
+                            );
+                    }
+                    catch
+                    {
+                    }
                 }
-            }
 
             Logger.LogInformation(
                 "End of search for wavelet transforms over field {field} " +
