@@ -17,9 +17,9 @@
                     Enumerable.Repeat(
                         string.Join(
                             string.Empty,
-                            Enumerable.Repeat("1", processorActiveCoresCount)
+                            Enumerable.Repeat("0", processorCoresCount - processorActiveCoresCount)
                                 .Concat(
-                                    Enumerable.Repeat("0", processorCoresCount - processorActiveCoresCount)
+                                    Enumerable.Repeat("1", processorActiveCoresCount)
                                 )
                         ),
                         physicalProcessorsCount
