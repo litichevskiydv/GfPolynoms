@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.Linq;
     using System.Reflection;
     using System.Threading;
@@ -11,6 +12,7 @@
     using CodesResearchTools.Analyzers.CodeSpaceCovering;
     using CodesResearchTools.Analyzers.ListsSizesDistribution;
     using CodesResearchTools.NoiseGenerator;
+    using Extensions;
     using GfAlgorithms.CombinationsCountCalculator;
     using GfAlgorithms.ComplementaryFilterBuilder;
     using GfAlgorithms.Extensions;
@@ -60,7 +62,15 @@
 
         private static readonly ILogger Logger;
 
-        private static int AnalyzeCodeDistance(GaloisField field, int codewordLength, int informationWordLength, IMultilevelEncoder encoder, int? codeDistanceLimit = null, bool logResult = true)
+        private static int AnalyzeCodeDistance(
+            int maxDegreeOfParallelism,
+            GaloisField field,
+            int codewordLength,
+            int informationWordLength,
+            IMultilevelEncoder encoder,
+            int? codeDistanceLimit = null,
+            bool logResult = true
+        )
         {
             var encoderOptions = new MultilevelEncoderOptions {MaxDegreeOfParallelism = 1};
             var codeDistance = CommonCodeDistanceAnalyzer.Analyze(
@@ -69,7 +79,7 @@
                 informationWord => encoder.Encode(codewordLength, field.CreateElementsVector(informationWord), encoderOptions),
                 new CodeDistanceAnalyzerOptions
                 {
-                    MaxDegreeOfParallelism = (int)(Environment.ProcessorCount * 0.9),
+                    MaxDegreeOfParallelism = maxDegreeOfParallelism,
                     LoggingResolution = 1000000000L,
                     CodeDistanceMinimumThreshold = codeDistanceLimit
                 }
@@ -264,6 +274,7 @@
             );
 
         private static void FindWaveletTransformsForMultilevelEncoding(
+            int maxDegreeOfParallelism,
             ISourceFiltersCalculator sourceFiltersCalculator,
             GaloisField field,
             int filtersLength,
@@ -309,6 +320,7 @@
                             continue;
 
                         var codeDistance = AnalyzeCodeDistance(
+                            maxDegreeOfParallelism,
                             field,
                             codewordLength,
                             informationWordLength,
@@ -395,7 +407,7 @@
                     gf3.CreateElementsVector(0, 2, 0, 2, 1, 1, 0, 0, 0, 0, 0, 0)
                 )
             );
-            AnalyzeCodeDistance(gf3, 9, 5, encoder);
+            AnalyzeCodeDistance(Process.GetCurrentProcess().ConstrainProcessorUsage(1, 0.8), gf3, 9, 5, encoder);
         }
 
         private static void AnalyzeMinimalSphereCoveringForN8K4D4() =>
@@ -560,13 +572,15 @@
             {
                 var field = GaloisField.Create(3);
                 FindWaveletTransformsForMultilevelEncoding(
+                    Process.GetCurrentProcess().ConstrainProcessorUsage(2, 0.7),
                     new BiorthogonalSourceFiltersCalculator(new GcdBasedBuilder(new RecursiveGcdFinder())),
                     field,
                     12,
-                    9,
-                    5,
+                    11,
+                    8,
                     2,
-                    4
+                    3,
+                    field.CreateElementsVector(0, 1, 1, 2, 0, 1, 2, 1, 2, 0, 1, 0)
                 );
             }
             catch (Exception exception)
