@@ -8,7 +8,7 @@
       Working tree: $(RepositoryUrl)/tree/$(RepositoryCommit)
       Commit message: $(RepositoryCommitMessage)
     </PackageDescription>
-    <TargetFramework>netstandard1.1</TargetFramework>
+    <TargetFrameworks>netstandard1.1;net5.0</TargetFrameworks>
     <AssemblyName>AppliedAlgebra.RsCodesTools</AssemblyName>
     <RootNamespace>AppliedAlgebra.RsCodesTools</RootNamespace>
     <PackageId>AppliedAlgebra.RsCodesTools</PackageId>

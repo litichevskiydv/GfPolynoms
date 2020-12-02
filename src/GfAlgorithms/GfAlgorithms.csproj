@@ -8,7 +8,7 @@
       Working tree: $(RepositoryUrl)/tree/$(RepositoryCommit)
       Commit message: $(RepositoryCommitMessage)
     </PackageDescription>
-    <TargetFramework>netstandard1.1</TargetFramework>
+    <TargetFrameworks>netstandard1.1;net5.0</TargetFrameworks>
     <AssemblyName>AppliedAlgebra.GfAlgorithms</AssemblyName>
     <RootNamespace>AppliedAlgebra.GfAlgorithms</RootNamespace>
     <PackageId>AppliedAlgebra.GfAlgorithms</PackageId>

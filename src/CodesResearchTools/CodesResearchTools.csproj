@@ -8,7 +8,7 @@
       Working tree: $(RepositoryUrl)/tree/$(RepositoryCommit)
       Commit message: $(RepositoryCommitMessage)
     </PackageDescription>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFrameworks>netstandard2.0;net5.0</TargetFrameworks>
     <AssemblyName>AppliedAlgebra.CodesResearchTools</AssemblyName>
     <RootNamespace>AppliedAlgebra.CodesResearchTools</RootNamespace>
     <PackageId>AppliedAlgebra.CodesResearchTools</PackageId>
@@ -27,7 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="3.1.9" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="5.0.0" />
   </ItemGroup>
 
 </Project>
