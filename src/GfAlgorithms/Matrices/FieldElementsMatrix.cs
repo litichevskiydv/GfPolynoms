@@ -424,15 +424,15 @@
             return this;
         }
 
-        /// <summary>
-        /// Swaps elements from rows number <paramref name="firstRowIndex"/> and <paramref name="secondRowsIndex"/> within column <paramref name="columnIndex"/>
-        /// </summary>
         private void SwapColumnElements(int firstRowIndex, int secondRowsIndex, int columnIndex)
         {
             var element = _elements[firstRowIndex, columnIndex];
             _elements[firstRowIndex, columnIndex] = _elements[secondRowsIndex, columnIndex];
             _elements[secondRowsIndex, columnIndex] = element;
         }
+
+        private void SubtractColumnElements(int minuendRowIndex, int subtrahendRowIndex, FieldElement subtrahendRowMultiplier, int columnIndex) =>
+            _elements[minuendRowIndex, columnIndex] -= subtrahendRowMultiplier * _elements[subtrahendRowIndex, columnIndex];
 
         /// <summary>
         /// Transforms the current matrix to an diagonal view and returns process summary
@@ -454,7 +454,12 @@
 
                 if (selectedRow != row)
                 {
-                    Parallel.For(col, ColumnsCount, parallelOptions, j => SwapColumnElements(selectedRow, row, j));
+                    if (parallelOptions.MaxDegreeOfParallelism == 1)
+                        for (var j = col; j < ColumnsCount; ++j)
+                            SwapColumnElements(selectedRow, row, j);
+                    else
+                        Parallel.For(col, ColumnsCount, parallelOptions, j => SwapColumnElements(selectedRow, row, j));
+
                     ++permutationsCount;
                 }
 
@@ -462,7 +467,12 @@
                     if (i != row)
                     {
                         var c = _elements[i, col] / _elements[row, col];
-                        Parallel.For(col, ColumnsCount, parallelOptions, j => _elements[i, j] -= _elements[row, j] * c);
+
+                        if (parallelOptions.MaxDegreeOfParallelism == 1)
+                            for (var j = col; j < ColumnsCount; ++j)
+                                SubtractColumnElements(i, row, c, j);
+                        else
+                            Parallel.For(col, ColumnsCount, parallelOptions, j => SubtractColumnElements(i, row, c, j));
                     }
 
                 selectedRowsByColumns[col] = row;

@@ -549,7 +549,10 @@
         public void MustDiagonalizeMatrix(DiagonalizationTestCase testCase)
         {
             // When
-            var actualTriangularMatrix = FieldElementsMatrix.Diagonalize(testCase.Matrix);
+            var actualTriangularMatrix = FieldElementsMatrix.Diagonalize(
+                testCase.Matrix,
+                new DiagonalizationOptions {MaxDegreeOfParallelism = 1}
+            );
 
             // Then
             Assert.Equal(testCase.ExpectedTriangularMatrix, actualTriangularMatrix);
