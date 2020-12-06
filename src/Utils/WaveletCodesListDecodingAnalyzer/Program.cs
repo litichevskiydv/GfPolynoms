@@ -580,7 +580,7 @@
                     8,
                     2,
                     3,
-                    field.CreateElementsVector(1, 0, 0, 2, 0, 1, 2, 2, 2, 2, 0, 2)
+                    field.CreateElementsVector(1, 2, 0, 1, 0, 0, 2, 2, 1, 0, 1, 2)
                 );
             }
             catch (Exception exception)
