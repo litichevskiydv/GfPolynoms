@@ -96,6 +96,20 @@
             public FieldElementsMatrix Row { get; set; }
         }
 
+        public class IsSatisfyParametersValidationTestCase
+        {
+            public FieldElementsMatrix Matrix { get; set; }
+
+            public Func<int, int, FieldElement, bool> Predicate { get; set; }
+        }
+
+        public class StandardChecksTestCase
+        {
+            public FieldElementsMatrix Matrix { get; set; }
+
+            public bool IsSatisfy { get; set; }
+        }
+
         #endregion
 
         [UsedImplicitly]
@@ -128,6 +142,12 @@
         public static TheoryData<AppendColumnParametersValidationTestCase> AppendColumnParametersValidationTestCases;
         [UsedImplicitly]
         public static TheoryData<AppendRowParametersValidationTestCase> AppendRowParametersValidationTestCases;
+        [UsedImplicitly]
+        public static TheoryData<IsSatisfyParametersValidationTestCase> IsSatisfyParametersValidationTestCases;
+        [UsedImplicitly]
+        public static TheoryData<StandardChecksTestCase> IsIdentityTestCases;
+        [UsedImplicitly]
+        public static TheoryData<StandardChecksTestCase> IsZeroTestCases;
 
         static FieldElementsMatrixTests()
         {
@@ -367,7 +387,32 @@
                       new AppendRowParametersValidationTestCase {Matrix = matrix},
                       new AppendRowParametersValidationTestCase {Matrix = matrix, Row = matrix}
                   };
-
+            IsSatisfyParametersValidationTestCases
+                = new TheoryData<IsSatisfyParametersValidationTestCase>
+                  {
+                      new IsSatisfyParametersValidationTestCase(),
+                      new IsSatisfyParametersValidationTestCase {Matrix = matrix}
+                  };
+            IsIdentityTestCases
+                = new TheoryData<StandardChecksTestCase>
+                  {
+                      new StandardChecksTestCase
+                      {
+                          Matrix = FieldElementsMatrix.IdentityMatrix(gf2, 3).AppendColumn(0, 0, 0), IsSatisfy = false
+                      },
+                      new StandardChecksTestCase {Matrix = FieldElementsMatrix.ZeroMatrix(gf2, 3), IsSatisfy = false},
+                      new StandardChecksTestCase {Matrix = FieldElementsMatrix.IdentityMatrix(gf2, 3), IsSatisfy = true}
+                  };
+            IsZeroTestCases
+                = new TheoryData<StandardChecksTestCase>
+                  {
+                      new StandardChecksTestCase
+                      {
+                          Matrix = FieldElementsMatrix.ZeroMatrix(gf2, 3).AppendColumn(0, 0, 0), IsSatisfy = false
+                      },
+                      new StandardChecksTestCase {Matrix = FieldElementsMatrix.IdentityMatrix(gf2, 3), IsSatisfy = false},
+                      new StandardChecksTestCase {Matrix = FieldElementsMatrix.ZeroMatrix(gf2, 3), IsSatisfy = true}
+                  };
         }
 
         [Theory]
@@ -943,6 +988,27 @@
             // Then
             var expected = new FieldElementsMatrix(gf5, new[,] {{3, 1, 1}, {4, 2, 0}, {0, 0, 3}});
             Assert.Equal(expected, actual);
+        }
+
+        [Theory]
+        [MemberData(nameof(IsSatisfyParametersValidationTestCases))]
+        public void IsSatisfyMustValidateParameters(IsSatisfyParametersValidationTestCase testCase)
+        {
+            Assert.ThrowsAny<ArgumentException>(() => testCase.Matrix.IsSatisfy(testCase.Predicate));
+        }
+
+        [Theory]
+        [MemberData(nameof(IsIdentityTestCases))]
+        public void MustRecognizeIdentityMatrix(StandardChecksTestCase testCase)
+        {
+            Assert.Equal(testCase.IsSatisfy, testCase.Matrix.IsIdentity());
+        }
+
+        [Theory]
+        [MemberData(nameof(IsZeroTestCases))]
+        public void MustRecognizeZeroMatrix(StandardChecksTestCase testCase)
+        {
+            Assert.Equal(testCase.IsSatisfy, testCase.Matrix.IsZero());
         }
     }
 }

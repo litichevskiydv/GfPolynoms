@@ -236,5 +236,40 @@
 
             return matrix.CreateSubmatrix(Enumerable.Range(0, matrix.RowsCount).ToArray(), includedColumnsIndices);
         }
+
+        /// <summary>
+        /// Checks matrix elements for satisfying the predicate
+        /// </summary>
+        /// <param name="matrix">Checked matrix</param>
+        /// <param name="predicate">Matrix elements predicate</param>
+        public static bool IsSatisfy(this FieldElementsMatrix matrix, Func<int, int, FieldElement, bool> predicate)
+        {
+            if(matrix == null)
+                throw new ArgumentNullException(nameof(matrix));
+            if (predicate == null)
+                throw new ArgumentNullException(nameof(predicate));
+
+            for(var i = 0; i < matrix.RowsCount; i++)
+                for(var j = 0; j < matrix.ColumnsCount; j++)
+                    if (predicate(i, j, matrix[i, j]) == false)
+                        return false;
+
+            return true;
+        }
+
+        /// <summary>
+        /// Checks if a matrix is the identity
+        /// </summary>
+        /// <param name="matrix">Checked matrix</param>
+        public static bool IsIdentity(this FieldElementsMatrix matrix) =>
+            IsSatisfy(matrix, (i, j, element) => i == j && element.Representation == 1 || i != j && element.Representation == 0) &&
+            matrix.RowsCount == matrix.ColumnsCount;
+
+        /// <summary>
+        /// Checks if a matrix is the zero
+        /// </summary>
+        /// <param name="matrix">Checked matrix</param>
+        public static bool IsZero(this FieldElementsMatrix matrix) =>
+            IsSatisfy(matrix, (i, j, element) => element.Representation == 0) && matrix.RowsCount == matrix.ColumnsCount;
     }
 }
