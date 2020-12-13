@@ -57,15 +57,12 @@
             var hMatrixTransposed = FieldElementsMatrix.DoubleCirculantMatrix(h).Transpose();
             var gMatrixTransposed = FieldElementsMatrix.DoubleCirculantMatrix(g).Transpose();
 
-            var fullSizeIdentityMatrix = FieldElementsMatrix.IdentityMatrix(hMatrixTransposed.Field, h.Length);
-            Assert.Equal(fullSizeIdentityMatrix, hMatrixTransposed * hMatrixWithTilde + gMatrixTransposed * gMatrixWithTilde);
+            Assert.True((hMatrixTransposed * hMatrixWithTilde + gMatrixTransposed * gMatrixWithTilde).IsIdentity());
 
-            var halfSizeIdentityMatrix = FieldElementsMatrix.IdentityMatrix(hMatrixTransposed.Field, h.Length / 2);
-            var halfSizeZeroMatrix = FieldElementsMatrix.ZeroMatrix(hMatrixTransposed.Field, h.Length / 2);
-            Assert.Equal(halfSizeIdentityMatrix, hMatrixWithTilde * hMatrixTransposed);
-            Assert.Equal(halfSizeIdentityMatrix, gMatrixWithTilde * gMatrixTransposed);
-            Assert.Equal(halfSizeZeroMatrix, hMatrixWithTilde * gMatrixTransposed);
-            Assert.Equal(halfSizeZeroMatrix, gMatrixWithTilde * hMatrixTransposed);
+            Assert.True((hMatrixWithTilde * hMatrixTransposed).IsIdentity());
+            Assert.True((gMatrixWithTilde * gMatrixTransposed).IsIdentity());
+            Assert.True((hMatrixWithTilde * gMatrixTransposed).IsZero());
+            Assert.True((gMatrixWithTilde * hMatrixTransposed).IsZero());
         }
 
         protected void TestSourceFiltersVectorsCalculation(FieldElement[] sourceFilterH)

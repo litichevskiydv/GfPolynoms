@@ -58,17 +58,14 @@
             var hMatrixTransposed = FieldElementsMatrix.Transpose(hMatrix);
             var gMatrix = FieldElementsMatrix.DoubleCirculantMatrix(iterationFilterG);
             var gMatrixTransposed = FieldElementsMatrix.Transpose(gMatrix);
-            var checkedMultiplier = multiplier ?? hMatrix.Field.One();
+            var checkedMultiplier = multiplier != null ? FieldElement.InverseForMultiplication(multiplier) : hMatrix.Field.One();
 
-            var fullSizeIdentityMatrix = FieldElementsMatrix.IdentityMatrix(hMatrix.Field, iterationFilterH.Length);
-            Assert.Equal(checkedMultiplier * fullSizeIdentityMatrix, hMatrixTransposed * hMatrix + gMatrixTransposed * gMatrix);
+            Assert.True((checkedMultiplier * (hMatrixTransposed * hMatrix + gMatrixTransposed * gMatrix)).IsIdentity());
 
-            var halfSizeIdentityMatrix = FieldElementsMatrix.IdentityMatrix(hMatrix.Field, iterationFilterH.Length / 2);
-            var halfSizeZeroMatrix = FieldElementsMatrix.ZeroMatrix(hMatrix.Field, iterationFilterH.Length / 2);
-            Assert.Equal(checkedMultiplier * halfSizeIdentityMatrix, hMatrix * hMatrixTransposed);
-            Assert.Equal(checkedMultiplier * halfSizeIdentityMatrix, gMatrix * gMatrixTransposed);
-            Assert.Equal(halfSizeZeroMatrix, hMatrix * gMatrixTransposed);
-            Assert.Equal(halfSizeZeroMatrix, gMatrix * hMatrixTransposed);
+            Assert.True((checkedMultiplier * hMatrix * hMatrixTransposed).IsIdentity());
+            Assert.True((checkedMultiplier * gMatrix * gMatrixTransposed).IsIdentity());
+            Assert.True((hMatrix * gMatrixTransposed).IsZero());
+            Assert.True((gMatrix * hMatrixTransposed).IsZero());
         }
 
         protected void TestOrthogonalIterationFiltersVectorsCalculation(OrthogonalIterationFiltersVectorsCalculationTestCase testCase)
