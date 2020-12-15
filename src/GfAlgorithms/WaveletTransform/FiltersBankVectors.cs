@@ -1,4 +1,4 @@
-﻿namespace AppliedAlgebra.GfAlgorithms.WaveletTransform.SourceFiltersCalculator
+﻿namespace AppliedAlgebra.GfAlgorithms.WaveletTransform
 {
     using GfPolynoms;
 

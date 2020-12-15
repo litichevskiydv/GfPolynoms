@@ -1,12 +1,12 @@
 ﻿namespace AppliedAlgebra.GfAlgorithms.Tests.WaveletTransform.SourceFiltersCalculator
 {
     using System;
+    using GfAlgorithms.WaveletTransform;
     using GfAlgorithms.WaveletTransform.SourceFiltersCalculator;
     using GfPolynoms;
     using GfPolynoms.Extensions;
     using GfPolynoms.GaloisFields;
     using JetBrains.Annotations;
-    using Matrices;
     using Xunit;
 
     public abstract class SourceFiltersCalculatorTestsBase
@@ -50,38 +50,22 @@
             Assert.Throws<ArgumentNullException>(() => SourceFiltersCalculator.GetSourceFilters((Polynomial)null));
         }
 
-        private static void CheckSourceFilters(FieldElement[] hWithTilde, FieldElement[] gWithTilde, FieldElement[] h, FieldElement[] g)
-        {
-            var hMatrixWithTilde = FieldElementsMatrix.DoubleCirculantMatrix(hWithTilde);
-            var gMatrixWithTilde = FieldElementsMatrix.DoubleCirculantMatrix(gWithTilde);
-            var hMatrixTransposed = FieldElementsMatrix.DoubleCirculantMatrix(h).Transpose();
-            var gMatrixTransposed = FieldElementsMatrix.DoubleCirculantMatrix(g).Transpose();
-
-            Assert.True((hMatrixTransposed * hMatrixWithTilde + gMatrixTransposed * gMatrixWithTilde).IsIdentity());
-
-            Assert.True((hMatrixWithTilde * hMatrixTransposed).IsIdentity());
-            Assert.True((gMatrixWithTilde * gMatrixTransposed).IsIdentity());
-            Assert.True((hMatrixWithTilde * gMatrixTransposed).IsZero());
-            Assert.True((gMatrixWithTilde * hMatrixTransposed).IsZero());
-        }
-
         protected void TestSourceFiltersVectorsCalculation(FieldElement[] sourceFilterH)
         {
-            var ((hWithTilde, gWithTilde), (h, g)) = SourceFiltersCalculator.GetSourceFilters(sourceFilterH);
+            var filtersBank = SourceFiltersCalculator.GetSourceFilters(sourceFilterH);
 
-            CheckSourceFilters(hWithTilde, gWithTilde, h, g);
+            Assert.True(filtersBank.IsSatisfyBiorthogonalCondition());
+            Assert.True(filtersBank.CanPerformPerfectReconstruction());
         }
 
         protected void TestSourceFiltersPolynomialsCalculation(FieldElement[] sourceFilterH)
         {
-            var (filtersLength, (hWithTilde, gWithTilde), (h, g)) = SourceFiltersCalculator.GetSourceFilters(new Polynomial(sourceFilterH), sourceFilterH.Length - 1);
+            var filtersBankPolynomials = SourceFiltersCalculator.GetSourceFilters(new Polynomial(sourceFilterH), sourceFilterH.Length - 1);
+            Assert.True(filtersBankPolynomials.CanPerformPerfectReconstruction());
 
-            CheckSourceFilters(
-                hWithTilde.GetCoefficients(filtersLength - 1),
-                gWithTilde.GetCoefficients(filtersLength - 1),
-                h.GetCoefficients(filtersLength - 1),
-                g.GetCoefficients(filtersLength - 1)
-            );
+            var filtersBankVectors = filtersBankPolynomials.ToFiltersBankVectors();
+            Assert.True(filtersBankVectors.IsSatisfyBiorthogonalCondition());
+            Assert.True(filtersBankVectors.CanPerformPerfectReconstruction());
         }
     }
 }

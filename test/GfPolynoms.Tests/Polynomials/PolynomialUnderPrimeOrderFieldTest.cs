@@ -278,7 +278,8 @@
 
         [Theory]
         [InlineData(new[] {1, 2, 1}, 2, new[] {1, 0, 2, 0, 1})]
-        [InlineData(new[] {1, 1, 1}, 1, new[] { 1, 1, 1 })]
+        [InlineData(new[] {1, 1, 1}, 1, new[] {1, 1, 1})]
+        [InlineData(new[] {1, 2, 1}, 0, new[] {1})]
         public void ShouldRaiseVariableDegre(int[] initialCoefficients, int newDegree, int[] resultCoefficients)
         {
             // Given

@@ -20,6 +20,7 @@
     using GfAlgorithms.Matrices;
     using GfAlgorithms.PolynomialsGcdFinder;
     using GfAlgorithms.VariantsIterator;
+    using GfAlgorithms.WaveletTransform;
     using GfAlgorithms.WaveletTransform.IterationFiltersCalculator;
     using GfAlgorithms.WaveletTransform.SourceFiltersCalculator;
     using GfPolynoms;
@@ -273,7 +274,47 @@
                 period
             );
 
-        private static void FindWaveletTransformsForMultilevelEncoding(
+        private static IEnumerable<FiltersBankVectors> IteratePerfectReconstructionFilters(
+            ISourceFiltersCalculator sourceFiltersCalculator,
+            GaloisField field,
+            int filtersLength,
+            FieldElement[] iterationInitialVector = null
+        )
+        {
+            var zeroMatrix = FieldElementsMatrix.ZeroMatrix(field, filtersLength / 2);
+            var identityMatrix = FieldElementsMatrix.IdentityMatrix(field, filtersLength / 2);
+
+            using var filtersEnumerator = VariantsIterator.IterateVectors(field, filtersLength, iterationInitialVector).Skip(1).GetEnumerator();
+            using (InitializeStateLoggingTimer(filtersEnumerator, TimeSpan.FromMinutes(15)))
+                while (filtersEnumerator.MoveNext())
+                {
+                    var filterH = filtersEnumerator.Current;
+                    FiltersBankVectors filterBankVectors;
+
+                    try
+                    {
+                        filterBankVectors = sourceFiltersCalculator.GetSourceFilters(filterH);
+                    }
+                    catch (Exception)
+                    {
+                        continue;
+                    }
+
+                    var hMatrix = FieldElementsMatrix.DoubleCirculantMatrix(filterBankVectors.SynthesisPair.h);
+                    var gMatrix = FieldElementsMatrix.DoubleCirculantMatrix(filterBankVectors.SynthesisPair.g);
+                    var hMatrixWithTilde = FieldElementsMatrix.DoubleCirculantMatrix(filterBankVectors.AnalysisPair.hWithTilde);
+                    var gMatrixWithTilde = FieldElementsMatrix.DoubleCirculantMatrix(filterBankVectors.AnalysisPair.gWithTilde);
+                    if (
+                        Equals(hMatrixWithTilde * FieldElementsMatrix.Transpose(hMatrix), identityMatrix) &&
+                        Equals(gMatrixWithTilde * FieldElementsMatrix.Transpose(gMatrix), identityMatrix) &&
+                        Equals(hMatrixWithTilde * FieldElementsMatrix.Transpose(gMatrix), zeroMatrix) &&
+                        Equals(gMatrixWithTilde * FieldElementsMatrix.Transpose(hMatrix), zeroMatrix)
+                    )
+                        yield return filterBankVectors;
+                }
+        }
+
+        private static void FindFirstLevelWaveletTransformsForMultilevelEncoding(
             int maxDegreeOfParallelism,
             ISourceFiltersCalculator sourceFiltersCalculator,
             GaloisField field,
@@ -297,7 +338,6 @@
                 informationWordLength,
                 codeDistanceLimit
             );
-
 
             var zeroMatrix = FieldElementsMatrix.ZeroMatrix(field, filtersLength / 2);
             var identityMatrix = FieldElementsMatrix.IdentityMatrix(field, filtersLength / 2);
@@ -571,7 +611,7 @@
             try
             {
                 var field = GaloisField.Create(3);
-                FindWaveletTransformsForMultilevelEncoding(
+                FindFirstLevelWaveletTransformsForMultilevelEncoding(
                     Process.GetCurrentProcess().ConstrainProcessorUsage(2, 0.7),
                     new BiorthogonalSourceFiltersCalculator(new GcdBasedBuilder(new RecursiveGcdFinder())),
                     field,

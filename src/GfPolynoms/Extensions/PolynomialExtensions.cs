@@ -20,7 +20,7 @@
         {
             if(polynomial == null)
                 throw new ArgumentNullException(nameof(polynomial));
-            if (variableDegree < 1)
+            if (variableDegree < 0)
                 throw new ArgumentException(nameof(variableDegree));
 
             if (variableDegree == 1)
@@ -28,7 +28,7 @@
 
             var resultCoefficients = new int[polynomial.Degree*variableDegree + 1];
             for (var i = 0; i <= polynomial.Degree; i++)
-                resultCoefficients[i*variableDegree] = polynomial[i];
+                resultCoefficients[i * variableDegree] = polynomial.Field.Add(resultCoefficients[i * variableDegree], polynomial[i]);
             return new Polynomial(polynomial.Field, resultCoefficients);
         }
 

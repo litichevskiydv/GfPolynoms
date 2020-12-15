@@ -3,12 +3,12 @@
     using System;
     using System.Linq;
     using Extensions;
+    using GfAlgorithms.WaveletTransform;
     using GfAlgorithms.WaveletTransform.IterationFiltersCalculator;
     using GfPolynoms;
     using GfPolynoms.Extensions;
     using GfPolynoms.GaloisFields;
     using JetBrains.Annotations;
-    using Matrices;
     using TestCases.WaveletTransform;
     using Xunit;
 
@@ -52,28 +52,14 @@
             Assert.Throws<ArgumentNullException>(() => IterationFiltersCalculator.GetIterationFilter(0, (Polynomial)null));
         }
 
-        private static void CheckIterationFiltersVectors(FieldElement[] iterationFilterH, FieldElement[] iterationFilterG, FieldElement multiplier = null)
-        {
-            var hMatrix = FieldElementsMatrix.DoubleCirculantMatrix(iterationFilterH);
-            var hMatrixTransposed = FieldElementsMatrix.Transpose(hMatrix);
-            var gMatrix = FieldElementsMatrix.DoubleCirculantMatrix(iterationFilterG);
-            var gMatrixTransposed = FieldElementsMatrix.Transpose(gMatrix);
-            var checkedMultiplier = multiplier != null ? FieldElement.InverseForMultiplication(multiplier) : hMatrix.Field.One();
-
-            Assert.True((checkedMultiplier * (hMatrixTransposed * hMatrix + gMatrixTransposed * gMatrix)).IsIdentity());
-
-            Assert.True((checkedMultiplier * hMatrix * hMatrixTransposed).IsIdentity());
-            Assert.True((checkedMultiplier * gMatrix * gMatrixTransposed).IsIdentity());
-            Assert.True((hMatrix * gMatrixTransposed).IsZero());
-            Assert.True((gMatrix * hMatrixTransposed).IsZero());
-        }
-
         protected void TestOrthogonalIterationFiltersVectorsCalculation(OrthogonalIterationFiltersVectorsCalculationTestCase testCase)
         {
             var iterationFilterH = IterationFiltersCalculator.GetIterationFilter(testCase.IterationNumber, testCase.SourceFilterH);
             var iterationFilterG = IterationFiltersCalculator.GetIterationFilter(testCase.IterationNumber, testCase.SourceFilterG);
 
-            CheckIterationFiltersVectors(iterationFilterH, iterationFilterG, testCase.Multiplier);
+            var filtersBank = new FiltersBankVectors((iterationFilterH, iterationFilterG), (iterationFilterH, iterationFilterG));
+            Assert.True(filtersBank.IsSatisfyBiorthogonalCondition(testCase.Multiplier));
+            Assert.True(filtersBank.CanPerformPerfectReconstruction(testCase.Multiplier));
         }
 
         protected void TestOrthogonalIterationFiltersPolynomialsCalculation(OrthogonalIterationFiltersVectorsCalculationTestCase testCase)
@@ -82,15 +68,20 @@
             var hFilterPolynomial = new Polynomial(testCase.SourceFilterH);
             var gFilterPolynomial = new Polynomial(testCase.SourceFilterG);
 
+            var iterationFilterExpectedDegree = testCase.SourceFilterH.Length / 2.Pow(testCase.IterationNumber) - 1;
             var iterationFilterH = IterationFiltersCalculator.GetIterationFilter(testCase.IterationNumber, hFilterPolynomial, sourceFilterExpectedDegree);
             var iterationFilterG = IterationFiltersCalculator.GetIterationFilter(testCase.IterationNumber, gFilterPolynomial, sourceFilterExpectedDegree);
 
-            var iterationFilterExpectedDegree = testCase.SourceFilterH.Length / 2.Pow(testCase.IterationNumber) - 1;
-            CheckIterationFiltersVectors(
-                iterationFilterH.GetCoefficients(iterationFilterExpectedDegree),
-                iterationFilterG.GetCoefficients(iterationFilterExpectedDegree),
-                testCase.Multiplier
+            var filtersBankPolynomials = new FiltersBankPolynomials(
+                iterationFilterExpectedDegree + 1,
+                (iterationFilterH, iterationFilterG),
+                (iterationFilterH, iterationFilterG)
             );
+            Assert.True(filtersBankPolynomials.CanPerformPerfectReconstruction(testCase.Multiplier));
+
+            var filtersBankVectors = filtersBankPolynomials.ToFiltersBankVectors();
+            Assert.True(filtersBankVectors.IsSatisfyBiorthogonalCondition(testCase.Multiplier));
+            Assert.True(filtersBankVectors.CanPerformPerfectReconstruction(testCase.Multiplier));
         }
 
         protected void TestComplementaryIterationFiltersVectorsCalculation(ComplementaryIterationFiltersVectorsCalculationTestCase testCase)
