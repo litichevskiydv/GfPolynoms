@@ -15,6 +15,8 @@
         {
             if(filtersBank == null)
                 throw new ArgumentNullException(nameof(filtersBank));
+            if(filtersBank.FiltersLength % 2 == 1)
+                throw new ArgumentException("Operation can be performed only for filters of even length");
 
             return new FiltersBankVectors(
                 (

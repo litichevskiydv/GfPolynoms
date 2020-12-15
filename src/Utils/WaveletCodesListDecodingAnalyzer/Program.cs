@@ -274,46 +274,6 @@
                 period
             );
 
-        private static IEnumerable<FiltersBankVectors> IteratePerfectReconstructionFilters(
-            ISourceFiltersCalculator sourceFiltersCalculator,
-            GaloisField field,
-            int filtersLength,
-            FieldElement[] iterationInitialVector = null
-        )
-        {
-            var zeroMatrix = FieldElementsMatrix.ZeroMatrix(field, filtersLength / 2);
-            var identityMatrix = FieldElementsMatrix.IdentityMatrix(field, filtersLength / 2);
-
-            using var filtersEnumerator = VariantsIterator.IterateVectors(field, filtersLength, iterationInitialVector).Skip(1).GetEnumerator();
-            using (InitializeStateLoggingTimer(filtersEnumerator, TimeSpan.FromMinutes(15)))
-                while (filtersEnumerator.MoveNext())
-                {
-                    var filterH = filtersEnumerator.Current;
-                    FiltersBankVectors filterBankVectors;
-
-                    try
-                    {
-                        filterBankVectors = sourceFiltersCalculator.GetSourceFilters(filterH);
-                    }
-                    catch (Exception)
-                    {
-                        continue;
-                    }
-
-                    var hMatrix = FieldElementsMatrix.DoubleCirculantMatrix(filterBankVectors.SynthesisPair.h);
-                    var gMatrix = FieldElementsMatrix.DoubleCirculantMatrix(filterBankVectors.SynthesisPair.g);
-                    var hMatrixWithTilde = FieldElementsMatrix.DoubleCirculantMatrix(filterBankVectors.AnalysisPair.hWithTilde);
-                    var gMatrixWithTilde = FieldElementsMatrix.DoubleCirculantMatrix(filterBankVectors.AnalysisPair.gWithTilde);
-                    if (
-                        Equals(hMatrixWithTilde * FieldElementsMatrix.Transpose(hMatrix), identityMatrix) &&
-                        Equals(gMatrixWithTilde * FieldElementsMatrix.Transpose(gMatrix), identityMatrix) &&
-                        Equals(hMatrixWithTilde * FieldElementsMatrix.Transpose(gMatrix), zeroMatrix) &&
-                        Equals(gMatrixWithTilde * FieldElementsMatrix.Transpose(hMatrix), zeroMatrix)
-                    )
-                        yield return filterBankVectors;
-                }
-        }
-
         private static void FindFirstLevelWaveletTransformsForMultilevelEncoding(
             int maxDegreeOfParallelism,
             ISourceFiltersCalculator sourceFiltersCalculator,
