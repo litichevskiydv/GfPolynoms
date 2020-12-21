@@ -1,7 +1,7 @@
 ﻿namespace AppliedAlgebra.GfAlgorithms.Tests.WaveletTransform.SourceFiltersCalculator
 {
     using ComplementaryFilterBuilder;
-    using Extensions;
+    using GfAlgorithms.WaveletTransform;
     using GfAlgorithms.WaveletTransform.SourceFiltersCalculator;
     using GfPolynoms;
     using GfPolynoms.Extensions;
@@ -70,48 +70,10 @@
         public void MustCalculateBiorthogonalSourceFiltersPolynomialsOfOddLength(FieldElement[] sourceFilterH)
         {
             // When
-            var (filtersLength, (hWithTilde, gWithTilde), (h, g)) = SourceFiltersCalculator.GetSourceFilters(new Polynomial(sourceFilterH), sourceFilterH.Length - 1);
+            var filtersBank = SourceFiltersCalculator.GetSourceFilters(new Polynomial(sourceFilterH), sourceFilterH.Length - 1);
 
             // Then
-            var (hWithTildeEvenComponent, hWithTildeOddComponent) = hWithTilde.GetPolyphaseComponents();
-            var (gWithTildeEvenComponent, gWithTildeOddComponent) = gWithTilde.GetPolyphaseComponents();
-            var (hEvenComponent, hOddComponent) = h.GetPolyphaseComponents();
-            var (gEvenComponent, gOddComponent) = g.GetPolyphaseComponents();
-
-            var field = hEvenComponent.Field;
-            var one = new Polynomial(field, 1);
-            var modularPolynomial = (one >> filtersLength) - one;
-
-            Assert.Equal(
-                one,
-                (
-                    hEvenComponent.RaiseVariableDegree(2) * hWithTildeEvenComponent.RaiseVariableDegree(filtersLength - 1)
-                    + gEvenComponent.RaiseVariableDegree(2) * gWithTildeEvenComponent.RaiseVariableDegree(filtersLength - 1)
-                ) % modularPolynomial
-            );
-            Assert.Equal(
-                one,
-                (
-                    hOddComponent.RaiseVariableDegree(2) * hWithTildeOddComponent.RaiseVariableDegree(filtersLength - 1)
-                    + gOddComponent.RaiseVariableDegree(2) * gWithTildeOddComponent.RaiseVariableDegree(filtersLength - 1)
-                ) % modularPolynomial
-            );
-
-            var zero = new Polynomial(field);
-            Assert.Equal(
-                zero,
-                (
-                    hEvenComponent.RaiseVariableDegree(2) * hWithTildeOddComponent.RaiseVariableDegree(filtersLength - 1)
-                    + gEvenComponent.RaiseVariableDegree(2) * gWithTildeOddComponent.RaiseVariableDegree(filtersLength - 1)
-                ) % modularPolynomial
-            );
-            Assert.Equal(
-                zero,
-                (
-                    hOddComponent.RaiseVariableDegree(2) * hWithTildeEvenComponent.RaiseVariableDegree(filtersLength - 1)
-                    + gOddComponent.RaiseVariableDegree(2) * gWithTildeEvenComponent.RaiseVariableDegree(filtersLength - 1)
-                ) % modularPolynomial
-            );
+            Assert.True(filtersBank.CanPerformPerfectReconstruction());
         }
     }
 }

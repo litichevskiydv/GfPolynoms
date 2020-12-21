@@ -46,34 +46,36 @@
             var (gEvenComponent, gOddComponent) = filtersBank.SynthesisPair.g.GetPolyphaseComponents();
 
             var field = hEvenComponent.Field;
-            var zero = new Polynomial(field);
             var one = new Polynomial(field, 1);
-            var polyphaseComponentsLength = filtersBank.FiltersLength / 2;
-            var modularPolynomial = (one >> polyphaseComponentsLength) - one;
+            var componentVariableDegree = filtersBank.FiltersLength % 2 + 1;
+            var modularPolynomialDegree = filtersBank.FiltersLength % 2 == 0 ? filtersBank.FiltersLength / 2 : filtersBank.FiltersLength;
+            var modularPolynomial = (one >> modularPolynomialDegree) - one;
             var checkedMultiplier = multiplier != null ? FieldElement.InverseForMultiplication(multiplier) : field.One();
 
+            var zero = new Polynomial(field);
             return one.Equals(
-                       checkedMultiplier.Representation * (
-                           hEvenComponent * hWithTildeEvenComponent.RaiseVariableDegree(polyphaseComponentsLength - 1)
-                           + gEvenComponent * gWithTildeEvenComponent.RaiseVariableDegree(polyphaseComponentsLength - 1)
+                       checkedMultiplier.Representation 
+                       * (
+                           hEvenComponent.RaiseVariableDegree(componentVariableDegree) * hWithTildeEvenComponent.RaiseVariableDegree(modularPolynomialDegree - 1)
+                           + gEvenComponent.RaiseVariableDegree(componentVariableDegree) * gWithTildeEvenComponent.RaiseVariableDegree(modularPolynomialDegree - 1)
                        ) % modularPolynomial
                    ) &&
                    one.Equals(
                        checkedMultiplier.Representation * (
-                           hOddComponent * hWithTildeOddComponent.RaiseVariableDegree(polyphaseComponentsLength - 1)
-                           + gOddComponent * gWithTildeOddComponent.RaiseVariableDegree(polyphaseComponentsLength - 1)
+                           hOddComponent.RaiseVariableDegree(componentVariableDegree) * hWithTildeOddComponent.RaiseVariableDegree(modularPolynomialDegree - 1)
+                           + gOddComponent.RaiseVariableDegree(componentVariableDegree) * gWithTildeOddComponent.RaiseVariableDegree(modularPolynomialDegree - 1)
                        ) % modularPolynomial
                    ) &&
                    zero.Equals(
                        (
-                           hEvenComponent * hWithTildeOddComponent.RaiseVariableDegree(polyphaseComponentsLength - 1)
-                           + gEvenComponent * gWithTildeOddComponent.RaiseVariableDegree(polyphaseComponentsLength - 1)
+                           hEvenComponent.RaiseVariableDegree(componentVariableDegree) * hWithTildeOddComponent.RaiseVariableDegree(modularPolynomialDegree - 1)
+                           + gEvenComponent.RaiseVariableDegree(componentVariableDegree) * gWithTildeOddComponent.RaiseVariableDegree(modularPolynomialDegree - 1)
                        ) % modularPolynomial
                    ) &&
                    zero.Equals(
                        (
-                           hOddComponent * hWithTildeEvenComponent.RaiseVariableDegree(polyphaseComponentsLength - 1)
-                           + gOddComponent * gWithTildeEvenComponent.RaiseVariableDegree(polyphaseComponentsLength - 1)
+                           hOddComponent.RaiseVariableDegree(componentVariableDegree) * hWithTildeEvenComponent.RaiseVariableDegree(modularPolynomialDegree - 1)
+                           + gOddComponent.RaiseVariableDegree(componentVariableDegree) * gWithTildeEvenComponent.RaiseVariableDegree(modularPolynomialDegree - 1)
                        ) % modularPolynomial
                    );
         }
