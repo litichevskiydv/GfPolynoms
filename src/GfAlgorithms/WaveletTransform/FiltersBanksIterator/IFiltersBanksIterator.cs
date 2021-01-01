@@ -13,13 +13,23 @@
         /// </summary>
         /// <param name="field">Galois field</param>
         /// <param name="filtersLength">Filters length</param>
-        IEnumerable<FiltersBankVectors> IterateFiltersBanksVectors(GaloisField field, int filtersLength);
+        /// <param name="initialFiltersBank">Initial filters bank</param>
+        IEnumerable<FiltersBankVectors> IterateFiltersBanksVectors(
+            GaloisField field,
+            int filtersLength,
+            FiltersBankVectors initialFiltersBank = null
+        );
 
         /// <summary>
         /// Iterates filter banks in polynomial form
         /// </summary>
         /// <param name="field">Galois field</param>
         /// <param name="expectedDegree">Filters polynomials expected degree</param>
-        IEnumerable<FiltersBankPolynomials> IterateFiltersBanksPolynomials(GaloisField field, int expectedDegree);
+        /// <param name="initialFiltersBank">Initial filters bank</param>
+        IEnumerable<FiltersBankPolynomials> IterateFiltersBanksPolynomials(
+            GaloisField field,
+            int expectedDegree,
+            FiltersBankPolynomials initialFiltersBank = null
+        );
     }
 }

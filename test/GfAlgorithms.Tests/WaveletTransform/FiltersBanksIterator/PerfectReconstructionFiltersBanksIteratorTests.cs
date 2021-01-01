@@ -1,5 +1,6 @@
 ﻿namespace AppliedAlgebra.GfAlgorithms.Tests.WaveletTransform.FiltersBanksIterator
 {
+    using System.Linq;
     using ComplementaryFilterBuilder;
     using GfAlgorithms.WaveletTransform;
     using GfAlgorithms.WaveletTransform.FiltersBanksIterator;
@@ -46,6 +47,21 @@
         }
 
         [Fact]
+        public void FiltersBanksVectorsIterationMustSupportInitialization()
+        {
+            // Given
+            var gf3 = GaloisField.Create(3);
+            const int filtersLength = 4;
+            var lastFiltersBank = _filtersBanksIterator.IterateFiltersBanksVectors(gf3, filtersLength).Last();
+
+            // When
+            var filtersBanks = _filtersBanksIterator.IterateFiltersBanksVectors(gf3, filtersLength, lastFiltersBank);
+
+            // Then
+            Assert.Empty(filtersBanks);
+        }
+
+        [Fact]
         public void MustIterateFiltersBanksPolynomials()
         {
             // Given
@@ -67,6 +83,21 @@
                 }
             );
             Assert.True(filtersBanksCount > 0);
+        }
+
+        [Fact]
+        public void FiltersBanksPolynomialsIterationMustSupportInitialization()
+        {
+            // Given
+            var gf3 = GaloisField.Create(3);
+            const int expectedDegree = 3;
+            var lastFiltersBank = _filtersBanksIterator.IterateFiltersBanksPolynomials(gf3, expectedDegree).Last();
+
+            // When
+            var filtersBanks = _filtersBanksIterator.IterateFiltersBanksPolynomials(gf3, expectedDegree, lastFiltersBank);
+
+            // Then
+            Assert.Empty(filtersBanks);
         }
     }
 }

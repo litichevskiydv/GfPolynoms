@@ -27,9 +27,13 @@
         }
 
         /// <inheritdoc/>
-        public IEnumerable<FiltersBankVectors> IterateFiltersBanksVectors(GaloisField field, int filtersLength)
+        public IEnumerable<FiltersBankVectors> IterateFiltersBanksVectors(
+            GaloisField field,
+            int filtersLength,
+            FiltersBankVectors initialFiltersBank = null
+        )
         {
-            foreach (var filterH in _variantsIterator.IterateVectors(field, filtersLength).Skip(1))
+            foreach (var filterH in _variantsIterator.IterateVectors(field, filtersLength, initialFiltersBank?.SynthesisPair.h).Skip(1))
             {
                 FiltersBankVectors filtersBank;
                 try
@@ -47,9 +51,13 @@
         }
 
         /// <inheritdoc/>
-        public IEnumerable<FiltersBankPolynomials> IterateFiltersBanksPolynomials(GaloisField field, int expectedDegree)
+        public IEnumerable<FiltersBankPolynomials> IterateFiltersBanksPolynomials(
+            GaloisField field,
+            int expectedDegree,
+            FiltersBankPolynomials initialFiltersBank = null
+        )
         {
-            foreach (var filterH in _variantsIterator.IteratePolynomials(field, expectedDegree))
+            foreach (var filterH in _variantsIterator.IteratePolynomials(field, expectedDegree, initialFiltersBank?.SynthesisPair.h).Skip(1))
             {
                 FiltersBankPolynomials filtersBank;
                 try
