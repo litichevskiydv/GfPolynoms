@@ -43,5 +43,12 @@
             analysisPair = AnalysisPair;
             synthesisPair = SynthesisPair;
         }
+
+        public override string ToString()
+        {
+            return $"AnalysisPair: (hWithTilde: {AnalysisPair.hWithTilde}; gWithTilde: {AnalysisPair.gWithTilde}), " +
+                   $"SynthesisPair: (h: {SynthesisPair.h}; g: {SynthesisPair.g}), " +
+                   $"FiltersLength: {FiltersLength}";
+        }
     }
 }

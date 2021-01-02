@@ -1,5 +1,6 @@
 ﻿namespace AppliedAlgebra.GfAlgorithms.WaveletTransform
 {
+    using System.Collections.Generic;
     using GfPolynoms;
 
     /// <summary>
@@ -33,6 +34,15 @@
         {
             analysisPair = AnalysisPair;
             synthesisPair = SynthesisPair;
+        }
+
+        private static string FilterToString(IEnumerable<FieldElement> filter) =>
+            string.Join(",", filter);
+
+        public override string ToString()
+        {
+            return $"AnalysisPair: (hWithTilde: {FilterToString(AnalysisPair.hWithTilde)}; gWithTilde: {FilterToString(AnalysisPair.gWithTilde)}), " +
+                   $"SynthesisPair: (h: {FilterToString(SynthesisPair.h)}; g: {FilterToString(SynthesisPair.g)})";
         }
     }
 }
