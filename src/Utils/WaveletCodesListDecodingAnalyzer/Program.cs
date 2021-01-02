@@ -17,10 +17,10 @@
     using GfAlgorithms.ComplementaryFilterBuilder;
     using GfAlgorithms.Extensions;
     using GfAlgorithms.LinearSystemSolver;
-    using GfAlgorithms.Matrices;
     using GfAlgorithms.PolynomialsGcdFinder;
     using GfAlgorithms.VariantsIterator;
     using GfAlgorithms.WaveletTransform;
+    using GfAlgorithms.WaveletTransform.FiltersBanksIterator;
     using GfAlgorithms.WaveletTransform.IterationFiltersCalculator;
     using GfAlgorithms.WaveletTransform.SourceFiltersCalculator;
     using GfPolynoms;
@@ -259,17 +259,16 @@
             }
         }
 
-        private static Timer InitializeStateLoggingTimer(IEnumerator<FieldElement[]> filtersEnumerator, TimeSpan period) =>
+        private static Timer InitializeStateLoggingTimer(IEnumerator<FiltersBankVectors> filtersBanksEnumerator, TimeSpan period) =>
             new Timer(
                 state =>
                 {
-                    var enumerator = (IEnumerator<FieldElement[]>) state;
-                    if (enumerator.Current == null) return;
+                    var enumerator = (IEnumerator<FiltersBankVectors>) state;
+                    if (enumerator?.Current == null) return;
 
-                    Logger.LogDebug("Processing filter h ({hFilter})",
-                        string.Join(",", (IEnumerable<FieldElement>) enumerator.Current));
+                    Logger.LogDebug("Processing filters bank ({filtersBank})", enumerator.Current);
                 },
-                filtersEnumerator,
+                filtersBanksEnumerator,
                 TimeSpan.Zero,
                 period
             );
@@ -283,7 +282,7 @@
             int informationWordLength,
             int levelsCount,
             int codeDistanceLimit,
-            FieldElement[] iterationInitialVector = null
+            FiltersBankVectors initialFiltersBank = null
         )
         {
             Logger.LogInformation(
@@ -299,26 +298,14 @@
                 codeDistanceLimit
             );
 
-            var zeroMatrix = FieldElementsMatrix.ZeroMatrix(field, filtersLength / 2);
-            var identityMatrix = FieldElementsMatrix.IdentityMatrix(field, filtersLength / 2);
-            using (var filtersEnumerator = VariantsIterator.IterateVectors(field, filtersLength, iterationInitialVector).Skip(1).GetEnumerator())
-            using (InitializeStateLoggingTimer(filtersEnumerator, TimeSpan.FromMinutes(15)))
-                while (filtersEnumerator.MoveNext())
+            var filtersBanksIterator = new PerfectReconstructionFiltersBanksIterator(VariantsIterator, sourceFiltersCalculator);
+            using (var filtersBanksEnumerator = filtersBanksIterator.IterateFiltersBanksVectors(field, filtersLength, initialFiltersBank).Skip(1).GetEnumerator())
+            using (InitializeStateLoggingTimer(filtersBanksEnumerator, TimeSpan.FromMinutes(15)))
+                while (filtersBanksEnumerator.MoveNext())
                 {
-                    var filterH = filtersEnumerator.Current;
+                    var filtersBank= filtersBanksEnumerator.Current;
                     try
                     {
-                        var ((hWithTilde, gWithTilde), (h, g)) = sourceFiltersCalculator.GetSourceFilters(filterH);
-                        var hMatrix = FieldElementsMatrix.DoubleCirculantMatrix(h);
-                        var gMatrix = FieldElementsMatrix.DoubleCirculantMatrix(g);
-                        var hMatrixWithTilde = FieldElementsMatrix.DoubleCirculantMatrix(hWithTilde);
-                        var gMatrixWithTilde = FieldElementsMatrix.DoubleCirculantMatrix(gWithTilde);
-                        if (Equals(hMatrixWithTilde * FieldElementsMatrix.Transpose(hMatrix), identityMatrix) == false
-                            || Equals(gMatrixWithTilde * FieldElementsMatrix.Transpose(gMatrix), identityMatrix) == false
-                            || Equals(hMatrixWithTilde * FieldElementsMatrix.Transpose(gMatrix), zeroMatrix) == false
-                            || Equals(gMatrixWithTilde * FieldElementsMatrix.Transpose(hMatrix), zeroMatrix) == false)
-                            continue;
-
                         var codeDistance = AnalyzeCodeDistance(
                             maxDegreeOfParallelism,
                             field,
@@ -329,18 +316,13 @@
                                 new CanonicalGenerator(),
                                 new LinearEquationsBasedCorrector(new GaussSolver()),
                                 levelsCount,
-                                (h, g)
+                                filtersBank.SynthesisPair
                             ),
                             codeDistanceLimit,
                             false
                         );
                         if (codeDistance >= codeDistanceLimit)
-                            Logger.LogInformation(
-                                "Filter h ({hFilter}), filter g ({gFilter}), code distance: {codeDistance}",
-                                string.Join(",", (IEnumerable<FieldElement>) h),
-                                string.Join(",", (IEnumerable<FieldElement>) g),
-                                codeDistance
-                            );
+                            Logger.LogInformation("Filters bank {filtersBank}, code distance: {codeDistance}", filtersBank, codeDistance);
                     }
                     catch
                     {
@@ -580,7 +562,7 @@
                     8,
                     2,
                     3,
-                    field.CreateElementsVector(1, 2, 0, 1, 0, 0, 2, 2, 1, 0, 1, 2)
+                    new FiltersBankVectors((null, null), (field.CreateElementsVector(1, 2, 0, 1, 0, 0, 2, 2, 1, 0, 1, 2), null))
                 );
             }
             catch (Exception exception)
