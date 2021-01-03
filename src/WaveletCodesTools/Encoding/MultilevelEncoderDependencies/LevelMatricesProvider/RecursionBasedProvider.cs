@@ -56,6 +56,7 @@
             _levelsMatrices = PrepareLevelsMatrices(iterationFiltersCalculator, levelsCount, synthesisFilters);
         }
 
+        /// <inheritdoc/>
         public (FieldElementsMatrix levelMatrixH, FieldElementsMatrix levelMatrixG) GetLevelMatrices(int levelNumber)
         {
             if (levelNumber < 0)
