@@ -13,6 +13,7 @@
     using TestsDependencies;
     using WaveletCodesTools.Encoding;
     using WaveletCodesTools.Encoding.MultilevelEncoderDependencies.DetailsVectorCorrector;
+    using WaveletCodesTools.Encoding.MultilevelEncoderDependencies.LevelMatricesProvider;
     using WaveletCodesTools.Encoding.MultilevelEncoderDependencies.WaveletCoefficientsGenerator;
     using Xunit;
 
@@ -28,16 +29,20 @@
         static MultilevelWaveletCodeTests()
         {
             var gf3 = GaloisField.Create(3);
+            const int levelsCount = 2;
             var code = new MultilevelWaveletCode(
                 new MultilevelEncoder(
-                    new ConvolutionBasedCalculator(),
+                    new RecursionBasedProvider(
+                        new ConvolutionBasedCalculator(),
+                        levelsCount,
+                        (
+                            gf3.CreateElementsVector(2, 1, 1, 2, 0, 1, 2, 2, 0, 0, 0, 0),
+                            gf3.CreateElementsVector(0, 2, 0, 2, 1, 1, 0, 0, 0, 0, 0, 0)
+                        )
+                    ),
                     new CanonicalGenerator(),
                     new LinearEquationsBasedCorrector(new GaussSolver()),
-                    2,
-                    (
-                        gf3.CreateElementsVector(2, 1, 1, 2, 0, 1, 2, 2, 0, 0, 0, 0),
-                        gf3.CreateElementsVector(0, 2, 0, 2, 1, 1, 0, 0, 0, 0, 0, 0)
-                    )
+                    levelsCount
                 ),
                 gf3,
                 9,

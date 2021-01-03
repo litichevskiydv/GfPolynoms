@@ -12,10 +12,9 @@
         /// Generates approximation vector for last level of wavelet decomposition
         /// </summary>
         /// <param name="informationWord">Information word</param>
-        /// <param name="signalLength">Signal length after performing reverse wavelet transform</param>
-        /// <param name="levelNumber">Number of the last level of wavelet decomposition</param>
+        /// <param name="vectorLength">Initial approximation vector length</param>
         /// <returns>Approximation vector defined as a column vector</returns>
-        FieldElementsMatrix GetApproximationVector(FieldElement[] informationWord, int signalLength, int levelNumber);
+        FieldElementsMatrix GetInitialApproximationVector(FieldElement[] informationWord, int vectorLength);
 
         /// <summary>
         /// Generates details vector for wavelet decomposition level <paramref name="levelNumber"/>

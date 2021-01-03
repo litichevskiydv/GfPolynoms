@@ -2,11 +2,10 @@
 {
     using System;
     using System.Linq;
-    using GfAlgorithms.Extensions;
     using GfAlgorithms.Matrices;
-    using GfAlgorithms.WaveletTransform.IterationFiltersCalculator;
     using GfPolynoms;
     using MultilevelEncoderDependencies.DetailsVectorCorrector;
+    using MultilevelEncoderDependencies.LevelMatricesProvider;
     using MultilevelEncoderDependencies.WaveletCoefficientsGenerator;
 
     /// <summary>
@@ -14,52 +13,28 @@
     /// </summary>
     public class MultilevelEncoder : IMultilevelEncoder
     {
+        private readonly ILevelMatricesProvider _levelMatricesProvider;
         private readonly IWaveletCoefficientsGenerator _waveletCoefficientsGenerator;
         private readonly IDetailsVectorCorrector _detailsVectorCorrector;
 
-        private readonly int _signalLength;
-        private readonly (FieldElementsMatrix iterationMatrixH, FieldElementsMatrix iterationMatrixG)[] _iterationsMatrices;
-
-        private static FieldElementsMatrix PrepareIterationMatrix(
-            IIterationFiltersCalculator iterationFiltersCalculator,
-            int levelNumber, 
-            FieldElement[] sourceFilter
-        ) =>
-            FieldElementsMatrix.DoubleCirculantMatrix(iterationFiltersCalculator.GetIterationFilter(levelNumber, sourceFilter))
-                .Transpose();
-
-        private static (FieldElementsMatrix iterationMatrixH, FieldElementsMatrix iterationMatrixG)[] PrepareIterationMatrices(
-            IIterationFiltersCalculator iterationFiltersCalculator,
-            int levelsCount,
-            (FieldElement[] h, FieldElement[] g) synthesisFilters
-        )
-        {
-            return Enumerable.Range(0, levelsCount)
-                .Select(levelNumber => (
-                            iterationMatrixH: PrepareIterationMatrix(iterationFiltersCalculator, levelNumber, synthesisFilters.h),
-                            iterationMatrixG: PrepareIterationMatrix(iterationFiltersCalculator, levelNumber, synthesisFilters.g)
-                        )
-                )
-                .ToArray();
-        }
+        private readonly int _levelsCount;
 
         /// <summary>
         /// Initializes multilevel encoder
         /// </summary>
-        /// <param name="iterationFiltersCalculator">Levels filters calculator</param>
+        /// <param name="levelMatricesProvider">Provides wavelet transform matrices for each encoding level</param>
         /// <param name="waveletCoefficientsGenerator">Wavelet coefficients generator</param>
         /// <param name="detailsVectorCorrector">Details vector corrector</param>
         /// <param name="levelsCount">Wavelet decomposition levels count</param>
-        /// <param name="synthesisFilters">Synthesis filters pair</param>
         public MultilevelEncoder(
-            IIterationFiltersCalculator iterationFiltersCalculator,
+            ILevelMatricesProvider levelMatricesProvider,
             IWaveletCoefficientsGenerator waveletCoefficientsGenerator,
             IDetailsVectorCorrector detailsVectorCorrector,
-            int levelsCount,
-            (FieldElement[] h, FieldElement[] g) synthesisFilters)
+            int levelsCount
+        )
         {
-            if (iterationFiltersCalculator == null)
-                throw new ArgumentNullException(nameof(iterationFiltersCalculator));
+            if (levelMatricesProvider == null)
+                throw new ArgumentNullException(nameof(levelMatricesProvider));
             if (waveletCoefficientsGenerator == null)
                 throw new ArgumentNullException(nameof(waveletCoefficientsGenerator));
             if (detailsVectorCorrector == null)
@@ -67,13 +42,11 @@
             if (levelsCount <= 0)
                 throw new ArgumentException($"{nameof(levelsCount)} must be positive");
 
-            _signalLength = synthesisFilters.h.Length;
-            if (_signalLength % 2.Pow(levelsCount) != 0)
-                throw new ArgumentException($"{levelsCount} levels decomposition is not supported");
-
+            _levelMatricesProvider = levelMatricesProvider;
             _waveletCoefficientsGenerator = waveletCoefficientsGenerator;
             _detailsVectorCorrector = detailsVectorCorrector;
-            _iterationsMatrices = PrepareIterationMatrices(iterationFiltersCalculator, levelsCount, synthesisFilters);
+
+            _levelsCount = levelsCount;
         }
 
         /// <inheritdoc/>
@@ -86,13 +59,15 @@
             if(codewordLength < informationWord.Length)
                 throw new ArgumentException($"{nameof(codewordLength)} is too short");
 
+            FieldElementsMatrix approximationVector = null;
             var opts = options ?? new MultilevelEncoderOptions();
-
-            var levelsCount = _iterationsMatrices.Length;
-            var approximationVector = _waveletCoefficientsGenerator.GetApproximationVector(informationWord, _signalLength, levelsCount - 1);
-            for (var levelNumber = levelsCount - 1; levelNumber >= 0; levelNumber--)
+            
+            for (var levelNumber = _levelsCount - 1; levelNumber >= 0; levelNumber--)
             {
-                var (iterationMatrixH, iterationMatrixG) = _iterationsMatrices[levelNumber];
+                var (iterationMatrixH, iterationMatrixG) = _levelMatricesProvider.GetLevelMatrices(levelNumber);
+
+                if(approximationVector == null)
+                    approximationVector = _waveletCoefficientsGenerator.GetInitialApproximationVector(informationWord, iterationMatrixH.ColumnsCount);
 
                 var (detailsVector, correctableComponentsCount) = _waveletCoefficientsGenerator.GetDetailsVector(informationWord, levelNumber, approximationVector);
                 if (levelNumber == 0)
@@ -101,7 +76,7 @@
                         approximationVector,
                         detailsVector,
                         correctableComponentsCount,
-                        _signalLength - codewordLength,
+                        iterationMatrixH.RowsCount - codewordLength,
                         new CorrectorOptions {MaxDegreeOfParallelism = opts.MaxDegreeOfParallelism}
                     );
 

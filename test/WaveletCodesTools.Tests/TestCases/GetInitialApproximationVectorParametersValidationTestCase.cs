@@ -2,12 +2,10 @@
 {
     using GfPolynoms;
 
-    public class GetApproximationVectorParametersValidationTestCase
+    public class GetInitialApproximationVectorParametersValidationTestCase
     {
         public FieldElement[] InformationWord { get; set; } 
 
-        public int SignalLength { get; set; }
-
-        public int LevelNumber { get; set; }
+        public int VectorLength { get; set; }
     }
 }

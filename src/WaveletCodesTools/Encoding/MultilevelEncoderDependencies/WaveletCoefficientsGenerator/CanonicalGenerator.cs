@@ -2,7 +2,6 @@
 {
     using System;
     using System.Linq;
-    using GfAlgorithms.Extensions;
     using GfAlgorithms.Matrices;
     using GfPolynoms;
     using GfPolynoms.Extensions;
@@ -14,20 +13,16 @@
     public class CanonicalGenerator: IWaveletCoefficientsGenerator
     {
         /// <inheritdoc/>
-        public FieldElementsMatrix GetApproximationVector(FieldElement[] informationWord, int signalLength, int levelNumber)
+        public FieldElementsMatrix GetInitialApproximationVector(FieldElement[] informationWord, int vectorLength)
         {
             if (informationWord == null)
                 throw new ArgumentNullException(nameof(informationWord));
-
-            var multiplier = 2.Pow(levelNumber + 1);
-            if (signalLength % multiplier != 0)
-                throw new ArgumentException($"Can't initialize approximation vector for level {levelNumber}");
-
-            var approximationVectorLength = signalLength / multiplier;
-            if (informationWord.Length < approximationVectorLength)
+            if (vectorLength <= 0)
+                throw new ArgumentException($"{nameof(vectorLength)} must be positive");
+            if (informationWord.Length < vectorLength)
                 throw new ArgumentException($"{nameof(informationWord)} is too short");
 
-            return FieldElementsMatrix.ColumnVector(informationWord.Take(approximationVectorLength).ToArray());
+            return FieldElementsMatrix.ColumnVector(informationWord.Take(vectorLength).ToArray());
         }
 
         /// <inheritdoc/>

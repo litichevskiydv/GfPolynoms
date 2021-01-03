@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using GfAlgorithms.Extensions;
     using GfAlgorithms.Matrices;
     using GfPolynoms;
 
@@ -23,14 +22,14 @@
         }
 
         /// <inheritdoc/>
-        public FieldElementsMatrix GetApproximationVector(FieldElement[] informationWord, int signalLength, int levelNumber)
+        public FieldElementsMatrix GetInitialApproximationVector(FieldElement[] informationWord, int vectorLength)
         {
             if (informationWord == null)
                 throw new ArgumentNullException(nameof(informationWord));
-
-            var computedSignalLength = 2.Pow(levelNumber + 1) * informationWord.Length;
-            if (computedSignalLength != signalLength)
-                throw new ArgumentException($"{nameof(signalLength)} and {nameof(informationWord)} length must be correlated");
+            if (informationWord.Length == 0)
+                throw new ArgumentException($"{nameof(informationWord)} must not be empty");
+            if (informationWord.Length != vectorLength)
+                throw new ArgumentException($"{nameof(vectorLength)} and {nameof(informationWord)} length must be equal");
 
             return FieldElementsMatrix.ColumnVector(informationWord);
         }

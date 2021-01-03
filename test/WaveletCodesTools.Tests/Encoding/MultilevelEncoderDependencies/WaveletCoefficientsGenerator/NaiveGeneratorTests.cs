@@ -14,7 +14,7 @@
         private readonly NaiveGenerator _waveletCoefficientsGenerator;
 
         [UsedImplicitly]
-        public static readonly TheoryData<GetApproximationVectorParametersValidationTestCase> GetApproximationVectorParametersValidationTestCases;
+        public static readonly TheoryData<GetInitialApproximationVectorParametersValidationTestCase> GetApproximationVectorParametersValidationTestCases;
         [UsedImplicitly]
         public static readonly TheoryData<GetDetailsVectorParametersValidationTestCase> GetDetailsVectorParametersValidationTestCases;
 
@@ -23,14 +23,13 @@
             var gf3 = GaloisField.Create(3);
 
             GetApproximationVectorParametersValidationTestCases
-                = new TheoryData<GetApproximationVectorParametersValidationTestCase>
+                = new TheoryData<GetInitialApproximationVectorParametersValidationTestCase>
                   {
-                      new GetApproximationVectorParametersValidationTestCase(),
-                      new GetApproximationVectorParametersValidationTestCase
+                      new GetInitialApproximationVectorParametersValidationTestCase(),
+                      new GetInitialApproximationVectorParametersValidationTestCase
                       {
                           InformationWord = new[] {gf3.One(), gf3.One()},
-                          SignalLength = 5,
-                          LevelNumber = 0
+                          VectorLength = 3
                       }
                   };
             GetDetailsVectorParametersValidationTestCases
@@ -57,10 +56,10 @@
 
         [Theory]
         [MemberData(nameof(GetApproximationVectorParametersValidationTestCases))]
-        public void GetApproximationVectorMustValidateParameters(GetApproximationVectorParametersValidationTestCase testCase)
+        public void GetApproximationVectorMustValidateParameters(GetInitialApproximationVectorParametersValidationTestCase testCase)
         {
             Assert.ThrowsAny<ArgumentException>(
-                () => _waveletCoefficientsGenerator.GetApproximationVector(testCase.InformationWord, testCase.SignalLength, testCase.LevelNumber)
+                () => _waveletCoefficientsGenerator.GetInitialApproximationVector(testCase.InformationWord, testCase.VectorLength)
             );
         }
 
@@ -69,12 +68,11 @@
         {
             // Given
             var gf3 = GaloisField.Create(3);
-            var informationWord = new[] { gf3.One(), gf3.Zero(), gf3.CreateElement(2) };
-            const int signalLength = 24;
-            const int levelNumber = 2;
+            var informationWord = new[] {gf3.One(), gf3.Zero(), gf3.CreateElement(2)};
+            const int vectorlength = 3;
 
             // When
-            var actualApproximationVector = _waveletCoefficientsGenerator.GetApproximationVector(informationWord, signalLength, levelNumber);
+            var actualApproximationVector = _waveletCoefficientsGenerator.GetInitialApproximationVector(informationWord, vectorlength);
 
             // Then
             var expectedApproximationVector = FieldElementsMatrix.ColumnVector(informationWord);

@@ -4,13 +4,13 @@
     using System.Linq;
     using GfAlgorithms.Matrices;
     using GfAlgorithms.WaveletTransform.IterationFiltersCalculator;
-    using GfPolynoms;
     using GfPolynoms.Extensions;
     using GfPolynoms.GaloisFields;
     using JetBrains.Annotations;
     using TestCases;
     using WaveletCodesTools.Encoding;
     using WaveletCodesTools.Encoding.MultilevelEncoderDependencies.DetailsVectorCorrector;
+    using WaveletCodesTools.Encoding.MultilevelEncoderDependencies.LevelMatricesProvider;
     using WaveletCodesTools.Encoding.MultilevelEncoderDependencies.WaveletCoefficientsGenerator;
     using Xunit;
 
@@ -18,15 +18,13 @@
     {
         public class MultilevelEncoderConstructorParametersValidationTestCase
         {
-            public IIterationFiltersCalculator IterationFiltersCalculator { get; set; }
+            public ILevelMatricesProvider LevelMatricesProvider { get; set; }
 
             public IWaveletCoefficientsGenerator WaveletCoefficientsGenerator { get; set; }
 
             public IDetailsVectorCorrector DetailsVectorCorrector { get; set; }
 
             public int LevelsCount { get; set; }
-
-            public (FieldElement[] h, FieldElement[] g) SynthesisFilters { get; set; }
         }
 
         private readonly MultilevelEncoder _multilevelEncoder;
@@ -41,32 +39,33 @@
         static MultilevelEncoderTests()
         {
             var gf3 = GaloisField.Create(3);
+            const int levelsCount = 2;
+            var levelMatricesProvider = new RecursionBasedProvider(
+                new ConvolutionBasedCalculator(),
+                levelsCount,
+                (
+                    gf3.CreateElementsVector(1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0),
+                    gf3.CreateElementsVector(0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+                )
+            );
             MultilevelEncoderConstructorParametersValidationTestCases
                 = new TheoryData<MultilevelEncoderConstructorParametersValidationTestCase>
                   {
                       new MultilevelEncoderConstructorParametersValidationTestCase(),
                       new MultilevelEncoderConstructorParametersValidationTestCase
                       {
-                          IterationFiltersCalculator = new ConvolutionBasedCalculator()
+                          LevelMatricesProvider = levelMatricesProvider
                       },
                       new MultilevelEncoderConstructorParametersValidationTestCase
                       {
-                          IterationFiltersCalculator = new ConvolutionBasedCalculator(),
+                          LevelMatricesProvider = levelMatricesProvider,
                           WaveletCoefficientsGenerator = new NaiveGenerator()
                       },
                       new MultilevelEncoderConstructorParametersValidationTestCase
                       {
-                          IterationFiltersCalculator = new ConvolutionBasedCalculator(),
+                          LevelMatricesProvider = levelMatricesProvider,
                           WaveletCoefficientsGenerator = new NaiveGenerator(),
                           DetailsVectorCorrector = new DummyCorrector()
-                      },
-                      new MultilevelEncoderConstructorParametersValidationTestCase
-                      {
-                          IterationFiltersCalculator = new ConvolutionBasedCalculator(),
-                          WaveletCoefficientsGenerator = new NaiveGenerator(),
-                          DetailsVectorCorrector = new DummyCorrector(),
-                          LevelsCount = 2,
-                          SynthesisFilters = (gf3.CreateElementsVector(1, 1, 0, 0, 0, 0), gf3.CreateElementsVector(0, 1, 0, 0, 0, 0))
                       }
                   };
             EncodeParametersValidationTestCases
@@ -95,18 +94,22 @@
         public MultilevelEncoderTests()
         {
             var gf3 = GaloisField.Create(3);
+            const int levelsCount = 2;
             _multilevelEncoder = new MultilevelEncoder(
-                new ConvolutionBasedCalculator(),
+                new RecursionBasedProvider(
+                    new ConvolutionBasedCalculator(),
+                    levelsCount,
+                    (
+                        gf3.CreateElementsVector(1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0),
+                        gf3.CreateElementsVector(0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+                    )
+                ),
                 new NaiveGenerator(
                     FieldElementsMatrix.CirculantMatrix(gf3.CreateElementsVector(0, 0, 0, 0, 0, 1)),
                     FieldElementsMatrix.CirculantMatrix(gf3.CreateElementsVector(0, 0, 1))
                 ),
-                new DummyCorrector(), 
-                2,
-                (
-                    gf3.CreateElementsVector(1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0),
-                    gf3.CreateElementsVector(0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
-                )
+                new DummyCorrector(),
+                levelsCount
             );
         }
 
@@ -116,11 +119,10 @@
         {
             Assert.ThrowsAny<ArgumentException>(
                 () => new MultilevelEncoder(
-                    testCase.IterationFiltersCalculator,
+                    testCase.LevelMatricesProvider,
                     testCase.WaveletCoefficientsGenerator,
                     testCase.DetailsVectorCorrector,
-                    testCase.LevelsCount,
-                    testCase.SynthesisFilters
+                    testCase.LevelsCount
                 )
             );
         }
