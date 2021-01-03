@@ -17,6 +17,7 @@
     using GfAlgorithms.ComplementaryFilterBuilder;
     using GfAlgorithms.Extensions;
     using GfAlgorithms.LinearSystemSolver;
+    using GfAlgorithms.Matrices;
     using GfAlgorithms.PolynomialsGcdFinder;
     using GfAlgorithms.VariantsIterator;
     using GfAlgorithms.WaveletTransform;
@@ -303,30 +304,36 @@
             using (InitializeStateLoggingTimer(filtersBanksEnumerator, TimeSpan.FromMinutes(15)))
                 while (filtersBanksEnumerator.MoveNext())
                 {
-                    var filtersBank= filtersBanksEnumerator.Current;
-                    try
+                    var filtersBank = filtersBanksEnumerator.Current;
+
+                    var requiredZerosCount = filtersLength - codewordLength;
+                    if (requiredZerosCount > 0)
                     {
-                        var codeDistance = AnalyzeCodeDistance(
-                            maxDegreeOfParallelism,
-                            field,
-                            codewordLength,
-                            informationWordLength,
-                            new MultilevelEncoder(
-                                new ConvolutionBasedCalculator(),
-                                new CanonicalGenerator(),
-                                new LinearEquationsBasedCorrector(new GaussSolver()),
-                                levelsCount,
-                                filtersBank.SynthesisPair
-                            ),
-                            codeDistanceLimit,
-                            false
-                        );
-                        if (codeDistance >= codeDistanceLimit)
-                            Logger.LogInformation("Filters bank {filtersBank}, code distance: {codeDistance}", filtersBank, codeDistance);
+                        var gMatrix = FieldElementsMatrix.DoubleCirculantMatrix(filtersBank.SynthesisPair.g);
+                        var equationsRowsRange = Enumerable.Range(gMatrix.RowsCount - requiredZerosCount, requiredZerosCount).ToArray();
+                        var variablesColumnsRange = Enumerable.Range(gMatrix.ColumnsCount - requiredZerosCount, requiredZerosCount).ToArray();
+
+                        if (gMatrix.CreateSubmatrix(equationsRowsRange, variablesColumnsRange).CalculateDeterminant().Representation == 0)
+                            continue;
                     }
-                    catch
-                    {
-                    }
+
+                    var codeDistance = AnalyzeCodeDistance(
+                        maxDegreeOfParallelism,
+                        field,
+                        codewordLength,
+                        informationWordLength,
+                        new MultilevelEncoder(
+                            new ConvolutionBasedCalculator(),
+                            new CanonicalGenerator(),
+                            new LinearEquationsBasedCorrector(new GaussSolver()),
+                            levelsCount,
+                            filtersBank.SynthesisPair
+                        ),
+                        codeDistanceLimit,
+                        false
+                    );
+                    if (codeDistance >= codeDistanceLimit)
+                        Logger.LogInformation("Filters bank {filtersBank}, code distance: {codeDistance}", filtersBank, codeDistance);
                 }
 
             Logger.LogInformation(
