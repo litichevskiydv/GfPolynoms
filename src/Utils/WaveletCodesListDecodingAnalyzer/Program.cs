@@ -275,7 +275,114 @@
                 period
             );
 
-        private static void FindFirstLevelWaveletTransformsForMultilevelEncoding(
+        private static void FindWaveletTransformsFiltersBanksForMultilevelEncoding(
+            int maxDegreeOfParallelism,
+            ISourceFiltersCalculator sourceFiltersCalculator,
+            GaloisField field,
+            int currentLevel,
+            int currentLevelFiltersLength,
+            FiltersBankVectors[] initialLevelsFiltersBanks,
+            FiltersBankVectors[] currentLevelsFiltersBanks,
+            int encodingLevelsCount,
+            int codewordLength,
+            int informationWordLength,
+            int codeDistanceLimit,
+            Func<FiltersBankVectors[], ILevelMatricesProvider> levelMatricesProvidersFactory
+        )
+        {
+            if (currentLevel == currentLevelsFiltersBanks.Length)
+            {
+                var (_, (zeroLevelH, zeroLevelG)) = currentLevelsFiltersBanks[0];
+                var requiredZerosCount = zeroLevelH.Length - codewordLength;
+                if (requiredZerosCount > 0)
+                {
+                    var gMatrix = FieldElementsMatrix.DoubleCirculantMatrix(zeroLevelG);
+                    var equationsRowsRange = Enumerable.Range(gMatrix.RowsCount - requiredZerosCount, requiredZerosCount).ToArray();
+                    var variablesColumnsRange = Enumerable.Range(gMatrix.ColumnsCount - requiredZerosCount, requiredZerosCount).ToArray();
+
+                    if (gMatrix.CreateSubmatrix(equationsRowsRange, variablesColumnsRange).CalculateDeterminant().Representation == 0)
+                        return;
+                }
+
+                var codeDistance = AnalyzeCodeDistance(
+                    maxDegreeOfParallelism,
+                    field,
+                    codewordLength,
+                    informationWordLength,
+                    new MultilevelEncoder(
+                        levelMatricesProvidersFactory(currentLevelsFiltersBanks),
+                        new CanonicalGenerator(),
+                        new LinearEquationsBasedCorrector(new GaussSolver()),
+                        encodingLevelsCount
+                    ),
+                    codeDistanceLimit,
+                    false
+                );
+                if (codeDistance >= codeDistanceLimit)
+                    for (var levelNumber = 0; levelNumber < currentLevelsFiltersBanks.Length; levelNumber++)
+                        Logger.LogInformation(
+                            "Level {levelNumber} filters bank {filtersBank}, code distance: {codeDistance}",
+                            levelNumber,
+                            currentLevelsFiltersBanks[levelNumber],
+                            codeDistance
+                        );
+
+                return;
+            }
+
+            Logger.LogInformation(
+                "Begin of search for wavelet transforms over field {field} for level {currentLevel}" +
+                "length {filtersLength} for code with {encodingLevelsCount} levels of transformation, " +
+                "codeword length {codewordLength}, information word length {informationWordLength} " +
+                "and code distance greater or equal than {codeDistanceLimit}",
+                field,
+                currentLevel,
+                currentLevelFiltersLength,
+                encodingLevelsCount,
+                codewordLength,
+                informationWordLength,
+                codeDistanceLimit
+            );
+
+            var filtersBanksIterator = new PerfectReconstructionFiltersBanksIterator(VariantsIterator, sourceFiltersCalculator);
+            using (var filtersBanksEnumerator = filtersBanksIterator.IterateFiltersBanksVectors(field, currentLevelFiltersLength, initialLevelsFiltersBanks[currentLevel]).Skip(1).GetEnumerator())
+            using (InitializeStateLoggingTimer(filtersBanksEnumerator, TimeSpan.FromMinutes(15)))
+                while (filtersBanksEnumerator.MoveNext())
+                {
+                    currentLevelsFiltersBanks[currentLevel] = filtersBanksEnumerator.Current;
+                    FindWaveletTransformsFiltersBanksForMultilevelEncoding(
+                        maxDegreeOfParallelism,
+                        sourceFiltersCalculator,
+                        field,
+                        currentLevel + 1,
+                        currentLevelFiltersLength / 2,
+                        initialLevelsFiltersBanks,
+                        currentLevelsFiltersBanks,
+                        encodingLevelsCount,
+                        codewordLength,
+                        informationWordLength,
+                        codeDistanceLimit,
+                        levelMatricesProvidersFactory
+                    );
+                }
+
+            initialLevelsFiltersBanks[currentLevel] = null;
+            Logger.LogInformation(
+                "End of search for wavelet transforms over field {field} for level {currentLevel}" +
+                "length {filtersLength} for code with {encodingLevelsCount} levels of transformation, " +
+                "codeword length {codewordLength}, information word length {informationWordLength} " +
+                "and code distance greater or equal than {codeDistanceLimit}",
+                field,
+                currentLevel,
+                currentLevelFiltersLength,
+                encodingLevelsCount,
+                codewordLength,
+                informationWordLength,
+                codeDistanceLimit
+            );
+        }
+
+        private static void FindWaveletTransformsForRecursiveMultilevelEncoding(
             int maxDegreeOfParallelism,
             ISourceFiltersCalculator sourceFiltersCalculator,
             GaloisField field,
@@ -285,70 +392,27 @@
             int levelsCount,
             int codeDistanceLimit,
             FiltersBankVectors initialFiltersBank = null
-        )
-        {
-            Logger.LogInformation(
-                "Begin of search for wavelet transforms over field {field} " +
-                "length {filtersLength} for code with {levelsCount} levels of transformation, " +
-                "codeword length {codewordLength}, information word length {informationWordLength} " +
-                "and code distance greater or equal than {codeDistanceLimit}",
-                field,
-                filtersLength,
-                levelsCount,
-                codewordLength,
-                informationWordLength,
-                codeDistanceLimit
-            );
+        ) => FindWaveletTransformsFiltersBanksForMultilevelEncoding(
+            maxDegreeOfParallelism,
+            sourceFiltersCalculator,
+            field,
+            0,
+            filtersLength,
+            new[] {initialFiltersBank},
+            new FiltersBankVectors[1],
+            levelsCount,
+            codewordLength,
+            informationWordLength,
+            codeDistanceLimit,
+            currentLevelsFiltersBanks =>
+                new RecursionBasedProvider(
+                    new ConvolutionBasedCalculator(),
+                    levelsCount,
+                    currentLevelsFiltersBanks[0].SynthesisPair
+                )
+        );
 
-            var filtersBanksIterator = new PerfectReconstructionFiltersBanksIterator(VariantsIterator, sourceFiltersCalculator);
-            using (var filtersBanksEnumerator = filtersBanksIterator.IterateFiltersBanksVectors(field, filtersLength, initialFiltersBank).Skip(1).GetEnumerator())
-            using (InitializeStateLoggingTimer(filtersBanksEnumerator, TimeSpan.FromMinutes(15)))
-                while (filtersBanksEnumerator.MoveNext())
-                {
-                    var filtersBank = filtersBanksEnumerator.Current;
 
-                    var requiredZerosCount = filtersLength - codewordLength;
-                    if (requiredZerosCount > 0)
-                    {
-                        var gMatrix = FieldElementsMatrix.DoubleCirculantMatrix(filtersBank.SynthesisPair.g);
-                        var equationsRowsRange = Enumerable.Range(gMatrix.RowsCount - requiredZerosCount, requiredZerosCount).ToArray();
-                        var variablesColumnsRange = Enumerable.Range(gMatrix.ColumnsCount - requiredZerosCount, requiredZerosCount).ToArray();
-
-                        if (gMatrix.CreateSubmatrix(equationsRowsRange, variablesColumnsRange).CalculateDeterminant().Representation == 0)
-                            continue;
-                    }
-
-                    var codeDistance = AnalyzeCodeDistance(
-                        maxDegreeOfParallelism,
-                        field,
-                        codewordLength,
-                        informationWordLength,
-                        new MultilevelEncoder(
-                            new RecursionBasedProvider(new ConvolutionBasedCalculator(), levelsCount, filtersBank.SynthesisPair),
-                            new CanonicalGenerator(),
-                            new LinearEquationsBasedCorrector(new GaussSolver()),
-                            levelsCount
-                        ),
-                        codeDistanceLimit,
-                        false
-                    );
-                    if (codeDistance >= codeDistanceLimit)
-                        Logger.LogInformation("Filters bank {filtersBank}, code distance: {codeDistance}", filtersBank, codeDistance);
-                }
-
-            Logger.LogInformation(
-                "End of search for wavelet transforms over field {field} " +
-                "length {filtersLength} for code with {levelsCount} levels of transformation, " +
-                "codeword length {codewordLength}, information word length {informationWordLength} " +
-                "and code distance greater or equal than {codeDistanceLimit}",
-                field,
-                filtersLength,
-                levelsCount,
-                codewordLength,
-                informationWordLength,
-                codeDistanceLimit
-            );
-        }
 
         private static void AnalyzeCodeDistanceForN3K2() =>
             AnalyzeCodeDistance(3, 2, new Polynomial(GaloisField.Create(4, new[] {1, 1, 1}), 2, 1));
@@ -564,7 +628,7 @@
             try
             {
                 var field = GaloisField.Create(3);
-                FindFirstLevelWaveletTransformsForMultilevelEncoding(
+                FindWaveletTransformsForRecursiveMultilevelEncoding(
                     Process.GetCurrentProcess().ConstrainProcessorUsage(2, 0.7),
                     new BiorthogonalSourceFiltersCalculator(new GcdBasedBuilder(new RecursiveGcdFinder())),
                     field,
@@ -572,8 +636,8 @@
                     7,
                     5,
                     3,
-                    2 /*,
-                    new FiltersBankVectors((null, null), (field.CreateElementsVector(1, 2, 0, 1, 0, 0, 2, 2, 1, 0, 1, 2), null))*/
+                    2,
+                    new FiltersBankVectors((null, null), (field.CreateElementsVector(1, 2, 1, 2, 0, 1, 0, 0), null))
                 );
             }
             catch (Exception exception)
