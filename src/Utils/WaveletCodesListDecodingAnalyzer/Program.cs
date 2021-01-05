@@ -271,7 +271,7 @@
                     Logger.LogDebug("Processing filters bank ({filtersBank})", enumerator.Current);
                 },
                 filtersBanksEnumerator,
-                TimeSpan.Zero,
+                period,
                 period
             );
 
