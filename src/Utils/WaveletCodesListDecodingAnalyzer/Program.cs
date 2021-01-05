@@ -330,19 +330,20 @@
                 return;
             }
 
-            Logger.LogInformation(
-                "Begin of search for wavelet transforms over field {field} for level {currentLevel}" +
-                "length {filtersLength} for code with {encodingLevelsCount} levels of transformation, " +
-                "codeword length {codewordLength}, information word length {informationWordLength} " +
-                "and code distance greater or equal than {codeDistanceLimit}",
-                field,
-                currentLevel,
-                currentLevelFiltersLength,
-                encodingLevelsCount,
-                codewordLength,
-                informationWordLength,
-                codeDistanceLimit
-            );
+            if (currentLevel == 0)
+                Logger.LogInformation(
+                    "Begin of search for wavelet transforms over field {field} for level {currentLevel} " +
+                    "length {filtersLength} for code with {encodingLevelsCount} levels of transformation, " +
+                    "codeword length {codewordLength}, information word length {informationWordLength} " +
+                    "and code distance greater or equal than {codeDistanceLimit}",
+                    field,
+                    currentLevel,
+                    currentLevelFiltersLength,
+                    encodingLevelsCount,
+                    codewordLength,
+                    informationWordLength,
+                    codeDistanceLimit
+                );
 
             var filtersBanksIterator = new PerfectReconstructionFiltersBanksIterator(VariantsIterator, sourceFiltersCalculator);
             using (var filtersBanksEnumerator = filtersBanksIterator.IterateFiltersBanksVectors(field, currentLevelFiltersLength, initialLevelsFiltersBanks[currentLevel]).Skip(1).GetEnumerator())
@@ -367,19 +368,20 @@
                 }
 
             initialLevelsFiltersBanks[currentLevel] = null;
-            Logger.LogInformation(
-                "End of search for wavelet transforms over field {field} for level {currentLevel}" +
-                "length {filtersLength} for code with {encodingLevelsCount} levels of transformation, " +
-                "codeword length {codewordLength}, information word length {informationWordLength} " +
-                "and code distance greater or equal than {codeDistanceLimit}",
-                field,
-                currentLevel,
-                currentLevelFiltersLength,
-                encodingLevelsCount,
-                codewordLength,
-                informationWordLength,
-                codeDistanceLimit
-            );
+            if (currentLevel == 0)
+                Logger.LogInformation(
+                    "End of search for wavelet transforms over field {field} for level {currentLevel} " +
+                    "length {filtersLength} for code with {encodingLevelsCount} levels of transformation, " +
+                    "codeword length {codewordLength}, information word length {informationWordLength} " +
+                    "and code distance greater or equal than {codeDistanceLimit}",
+                    field,
+                    currentLevel,
+                    currentLevelFiltersLength,
+                    encodingLevelsCount,
+                    codewordLength,
+                    informationWordLength,
+                    codeDistanceLimit
+                );
         }
 
         private static void FindWaveletTransformsForRecursiveMultilevelEncoding(
@@ -412,7 +414,39 @@
                 )
         );
 
-
+        private static void FindWaveletTransformsForStackBasedMultilevelEncoding(
+            int maxDegreeOfParallelism,
+            ISourceFiltersCalculator sourceFiltersCalculator,
+            GaloisField field,
+            int filtersLength,
+            int codewordLength,
+            int informationWordLength,
+            int levelsCount,
+            int codeDistanceLimit,
+            FiltersBankVectors[] initialLevelsFiltersBanks = null
+        ) => FindWaveletTransformsFiltersBanksForMultilevelEncoding(
+            maxDegreeOfParallelism,
+            sourceFiltersCalculator,
+            field,
+            0,
+            filtersLength,
+            initialLevelsFiltersBanks ?? new FiltersBankVectors[levelsCount],
+            new FiltersBankVectors[levelsCount],
+            levelsCount,
+            codewordLength,
+            informationWordLength,
+            codeDistanceLimit,
+            currentLevelsFiltersBanks =>
+                new StackBasedProvider(
+                    currentLevelsFiltersBanks.Select(
+                        x =>
+                        (
+                            FieldElementsMatrix.DoubleCirculantMatrix(x.SynthesisPair.h).Transpose(),
+                            FieldElementsMatrix.DoubleCirculantMatrix(x.SynthesisPair.g).Transpose()
+                        )
+                    ).ToArray()
+                )
+        );
 
         private static void AnalyzeCodeDistanceForN3K2() =>
             AnalyzeCodeDistance(3, 2, new Polynomial(GaloisField.Create(4, new[] {1, 1, 1}), 2, 1));
@@ -628,7 +662,7 @@
             try
             {
                 var field = GaloisField.Create(3);
-                FindWaveletTransformsForRecursiveMultilevelEncoding(
+                FindWaveletTransformsForStackBasedMultilevelEncoding(
                     Process.GetCurrentProcess().ConstrainProcessorUsage(2, 0.7),
                     new BiorthogonalSourceFiltersCalculator(new GcdBasedBuilder(new RecursiveGcdFinder())),
                     field,
@@ -636,8 +670,13 @@
                     7,
                     5,
                     3,
-                    2,
-                    new FiltersBankVectors((null, null), (field.CreateElementsVector(1, 2, 1, 2, 0, 1, 0, 0), null))
+                    2 /*,
+                    new[]
+                    {
+                        new FiltersBankVectors((null, null), (field.CreateElementsVector(1, 2, 1, 2, 0, 1, 0, 0), null)),
+                        new FiltersBankVectors((null, null), (field.CreateElementsVector(1, 2, 1, 2), null)),
+                        new FiltersBankVectors((null, null), (field.CreateElementsVector(1, 2), null))
+                    }*/
                 );
             }
             catch (Exception exception)
