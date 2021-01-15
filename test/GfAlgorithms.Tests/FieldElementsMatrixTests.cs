@@ -96,6 +96,13 @@
             public FieldElementsMatrix Row { get; set; }
         }
 
+        public class ConcatRowsParametersValidationTestCase
+        {
+            public FieldElementsMatrix First { get; set; }
+
+            public FieldElementsMatrix Second { get; set; }
+        }
+
         public class IsSatisfyParametersValidationTestCase
         {
             public FieldElementsMatrix Matrix { get; set; }
@@ -139,9 +146,11 @@
         [UsedImplicitly]
         public static TheoryData<SubmatrixCreationParametersValidationTestCase> SubmatrixFromColumnsCreationParametersValidationTestCases;
         [UsedImplicitly]
+        public static TheoryData<AppendRowParametersValidationTestCase> AppendRowParametersValidationTestCases;
+        [UsedImplicitly]
         public static TheoryData<AppendColumnParametersValidationTestCase> AppendColumnParametersValidationTestCases;
         [UsedImplicitly]
-        public static TheoryData<AppendRowParametersValidationTestCase> AppendRowParametersValidationTestCases;
+        public static TheoryData<ConcatRowsParametersValidationTestCase> ConcatRowsParametersValidationTestCases;
         [UsedImplicitly]
         public static TheoryData<IsSatisfyParametersValidationTestCase> IsSatisfyParametersValidationTestCases;
         [UsedImplicitly]
@@ -373,6 +382,13 @@
                       new SubmatrixCreationParametersValidationTestCase {Matrix = matrix, IncludedColumnsIndices = new[] {-1}},
                       new SubmatrixCreationParametersValidationTestCase {Matrix = matrix, IncludedColumnsIndices = new[] {5}}
                   };
+            AppendRowParametersValidationTestCases
+                = new TheoryData<AppendRowParametersValidationTestCase>
+                  {
+                      new AppendRowParametersValidationTestCase(),
+                      new AppendRowParametersValidationTestCase {Matrix = matrix},
+                      new AppendRowParametersValidationTestCase {Matrix = matrix, Row = matrix}
+                  };
             AppendColumnParametersValidationTestCases
                 = new TheoryData<AppendColumnParametersValidationTestCase>
                   {
@@ -380,12 +396,12 @@
                       new AppendColumnParametersValidationTestCase {Matrix = matrix},
                       new AppendColumnParametersValidationTestCase {Matrix = matrix, Column = matrix}
                   };
-            AppendRowParametersValidationTestCases
-                = new TheoryData<AppendRowParametersValidationTestCase>
+            ConcatRowsParametersValidationTestCases
+                = new TheoryData<ConcatRowsParametersValidationTestCase>
                   {
-                      new AppendRowParametersValidationTestCase(),
-                      new AppendRowParametersValidationTestCase {Matrix = matrix},
-                      new AppendRowParametersValidationTestCase {Matrix = matrix, Row = matrix}
+                      new ConcatRowsParametersValidationTestCase(),
+                      new ConcatRowsParametersValidationTestCase {First = matrix},
+                      new ConcatRowsParametersValidationTestCase {First = matrix, Second = FieldElementsMatrix.IdentityMatrix(gf2, 2)}
                   };
             IsSatisfyParametersValidationTestCases
                 = new TheoryData<IsSatisfyParametersValidationTestCase>
@@ -881,6 +897,61 @@
         }
 
         [Theory]
+        [MemberData(nameof(AppendRowParametersValidationTestCases))]
+        public void MustValidateParametersDuringRowAppending(AppendRowParametersValidationTestCase testCase)
+        {
+            Assert.ThrowsAny<ArgumentException>(() => testCase.Matrix.AppendRow(testCase.Row));
+        }
+
+        [Fact]
+        public void MustAppendRowDeclaredAsMatrix()
+        {
+            // Given
+            var gf5 = GaloisField.Create(5);
+            var matrix = new FieldElementsMatrix(gf5, new[,] { { 0, 3, 2 }, { 4, 2, 0 } });
+            var row = new FieldElementsMatrix(gf5, new[,] { { 1, 3, 4 } });
+
+            // When
+            var actual = matrix.AppendRow(row);
+
+            // Then
+            var expected = new FieldElementsMatrix(gf5, new[,] { { 0, 3, 2 }, { 4, 2, 0 }, { 1, 3, 4 } });
+            Assert.Equal(expected, actual);
+        }
+
+        [Fact]
+        public void MustAppendRowDeclaredAsFieldElementsArray()
+        {
+            // Given
+            var gf5 = GaloisField.Create(5);
+            var matrix = new FieldElementsMatrix(gf5, new[,] { { 4, 2, 1 }, { 3, 1, 2 } });
+            var row = new[] { 4, 1, 0 }.Select(gf5.CreateElement).ToArray();
+
+            // When
+            var actual = matrix.AppendRow(row);
+
+            // Then
+            var expected = new FieldElementsMatrix(gf5, new[,] { { 4, 2, 1 }, { 3, 1, 2 }, { 4, 1, 0 } });
+            Assert.Equal(expected, actual);
+        }
+
+        [Fact]
+        public void MustAppendRowDeclaredAsNumbersArray()
+        {
+            // Given
+            var gf5 = GaloisField.Create(5);
+            var matrix = new FieldElementsMatrix(gf5, new[,] { { 3, 1, 1 }, { 4, 2, 0 } });
+            var row = new[] { 0, 0, 3 };
+
+            // When
+            var actual = matrix.AppendRow(row);
+
+            // Then
+            var expected = new FieldElementsMatrix(gf5, new[,] { { 3, 1, 1 }, { 4, 2, 0 }, { 0, 0, 3 } });
+            Assert.Equal(expected, actual);
+        }
+
+        [Theory]
         [MemberData(nameof(AppendColumnParametersValidationTestCases))]
         public void MustValidateParametersDuringColumnAppending(AppendColumnParametersValidationTestCase testCase)
         {
@@ -936,57 +1007,25 @@
         }
 
         [Theory]
-        [MemberData(nameof(AppendRowParametersValidationTestCases))]
-        public void MustValidateParametersDuringRowAppending(AppendRowParametersValidationTestCase testCase)
+        [MemberData(nameof(ConcatRowsParametersValidationTestCases))]
+        public void ConcatRowsMustValidateParameters(ConcatRowsParametersValidationTestCase testCase)
         {
-            Assert.ThrowsAny<ArgumentException>(() => testCase.Matrix.AppendRow(testCase.Row));
+            Assert.ThrowsAny<ArgumentException>(() => testCase.First.ConcatRows(testCase.Second));
         }
 
         [Fact]
-        public void MustAppendRowDeclaredAsMatrix()
+        public void MustConcatenateMatricesRows()
         {
             // Given
-            var gf5 = GaloisField.Create(5);
-            var matrix = new FieldElementsMatrix(gf5, new[,] {{0, 3, 2}, {4, 2, 0}});
-            var row = new FieldElementsMatrix(gf5, new[,] {{1, 3, 4}});
+            var gf3 = GaloisField.Create(3);
+            var first = new FieldElementsMatrix(gf3, new[,] {{0, 1, 1}, {1, 2, 0}});
+            var second = new FieldElementsMatrix(gf3, new[,] {{0, 0, 1}, {2, 2, 1}});
 
             // When
-            var actual = matrix.AppendRow(row);
+            var actual = first.ConcatRows(second);
 
             // Then
-            var expected = new FieldElementsMatrix(gf5, new[,] {{0, 3, 2}, {4, 2, 0}, {1, 3, 4}});
-            Assert.Equal(expected, actual);
-        }
-
-        [Fact]
-        public void MustAppendRowDeclaredAsFieldElementsArray()
-        {
-            // Given
-            var gf5 = GaloisField.Create(5);
-            var matrix = new FieldElementsMatrix(gf5, new[,] {{4, 2, 1}, {3, 1, 2}});
-            var row = new[] {4, 1, 0}.Select(gf5.CreateElement).ToArray();
-
-            // When
-            var actual = matrix.AppendRow(row);
-
-            // Then
-            var expected = new FieldElementsMatrix(gf5, new[,] {{4, 2, 1}, {3, 1, 2}, {4, 1, 0}});
-            Assert.Equal(expected, actual);
-        }
-
-        [Fact]
-        public void MustAppendRowDeclaredAsNumbersArray()
-        {
-            // Given
-            var gf5 = GaloisField.Create(5);
-            var matrix = new FieldElementsMatrix(gf5, new[,] {{3, 1, 1}, {4, 2, 0}});
-            var row = new[] {0, 0, 3};
-
-            // When
-            var actual = matrix.AppendRow(row);
-
-            // Then
-            var expected = new FieldElementsMatrix(gf5, new[,] {{3, 1, 1}, {4, 2, 0}, {0, 0, 3}});
+            var expected = new FieldElementsMatrix(gf3, new[,] {{0, 1, 1}, {1, 2, 0}, {0, 0, 1}, {2, 2, 1}});
             Assert.Equal(expected, actual);
         }
 
