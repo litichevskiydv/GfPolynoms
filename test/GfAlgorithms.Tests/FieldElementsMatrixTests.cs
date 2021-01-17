@@ -96,7 +96,7 @@
             public FieldElementsMatrix Row { get; set; }
         }
 
-        public class ConcatRowsParametersValidationTestCase
+        public class ConcatMatricesParametersValidationTestCase
         {
             public FieldElementsMatrix First { get; set; }
 
@@ -150,7 +150,9 @@
         [UsedImplicitly]
         public static TheoryData<AppendColumnParametersValidationTestCase> AppendColumnParametersValidationTestCases;
         [UsedImplicitly]
-        public static TheoryData<ConcatRowsParametersValidationTestCase> ConcatRowsParametersValidationTestCases;
+        public static TheoryData<ConcatMatricesParametersValidationTestCase> ConcatRowsParametersValidationTestCases;
+        [UsedImplicitly]
+        public static TheoryData<ConcatMatricesParametersValidationTestCase> ConcatColumnsParametersValidationTestCases;
         [UsedImplicitly]
         public static TheoryData<IsSatisfyParametersValidationTestCase> IsSatisfyParametersValidationTestCases;
         [UsedImplicitly]
@@ -397,11 +399,18 @@
                       new AppendColumnParametersValidationTestCase {Matrix = matrix, Column = matrix}
                   };
             ConcatRowsParametersValidationTestCases
-                = new TheoryData<ConcatRowsParametersValidationTestCase>
+                = new TheoryData<ConcatMatricesParametersValidationTestCase>
                   {
-                      new ConcatRowsParametersValidationTestCase(),
-                      new ConcatRowsParametersValidationTestCase {First = matrix},
-                      new ConcatRowsParametersValidationTestCase {First = matrix, Second = FieldElementsMatrix.IdentityMatrix(gf2, 2)}
+                      new ConcatMatricesParametersValidationTestCase(),
+                      new ConcatMatricesParametersValidationTestCase {First = matrix},
+                      new ConcatMatricesParametersValidationTestCase {First = matrix, Second = FieldElementsMatrix.IdentityMatrix(gf2, 2)}
+                  };
+            ConcatColumnsParametersValidationTestCases
+                = new TheoryData<ConcatMatricesParametersValidationTestCase>
+                  {
+                      new ConcatMatricesParametersValidationTestCase(),
+                      new ConcatMatricesParametersValidationTestCase {First = matrix},
+                      new ConcatMatricesParametersValidationTestCase {First = matrix, Second = FieldElementsMatrix.IdentityMatrix(gf2, 2)}
                   };
             IsSatisfyParametersValidationTestCases
                 = new TheoryData<IsSatisfyParametersValidationTestCase>
@@ -1008,7 +1017,7 @@
 
         [Theory]
         [MemberData(nameof(ConcatRowsParametersValidationTestCases))]
-        public void ConcatRowsMustValidateParameters(ConcatRowsParametersValidationTestCase testCase)
+        public void ConcatRowsMustValidateParameters(ConcatMatricesParametersValidationTestCase testCase)
         {
             Assert.ThrowsAny<ArgumentException>(() => testCase.First.ConcatRows(testCase.Second));
         }
@@ -1026,6 +1035,29 @@
 
             // Then
             var expected = new FieldElementsMatrix(gf3, new[,] {{0, 1, 1}, {1, 2, 0}, {0, 0, 1}, {2, 2, 1}});
+            Assert.Equal(expected, actual);
+        }
+
+        [Theory]
+        [MemberData(nameof(ConcatColumnsParametersValidationTestCases))]
+        public void ConcatColumnsMustValidateParameters(ConcatMatricesParametersValidationTestCase testCase)
+        {
+            Assert.ThrowsAny<ArgumentException>(() => testCase.First.ConcatColumns(testCase.Second));
+        }
+
+        [Fact]
+        public void MustConcatenateMatricesColumns()
+        {
+            // Given
+            var gf3 = GaloisField.Create(3);
+            var first = new FieldElementsMatrix(gf3, new[,] {{0, 1}, {1, 2}, {1, 1}});
+            var second = new FieldElementsMatrix(gf3, new[,] {{0, 0}, {1, 1}, {2, 2}});
+
+            // When
+            var actual = first.ConcatColumns(second);
+
+            // Then
+            var expected = new FieldElementsMatrix(gf3, new[,] {{0, 1, 0, 0}, {1, 2, 1, 1}, {1, 1, 2, 2}});
             Assert.Equal(expected, actual);
         }
 

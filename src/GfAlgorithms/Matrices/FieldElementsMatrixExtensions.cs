@@ -167,6 +167,30 @@
         }
 
         /// <summary>
+        /// Concatenates columns from matrices <paramref name="first"/> and <paramref name="second"/> 
+        /// </summary>
+        /// <param name="first">The first matrix to concatenate</param>
+        /// <param name="second">The matrix to concatenate to the first matrix</param>
+        /// <returns>A new matrix that contains columns from the first and the second matrices</returns>
+        public static FieldElementsMatrix ConcatColumns(this FieldElementsMatrix first, FieldElementsMatrix second)
+        {
+            if (first == null)
+                throw new ArgumentNullException(nameof(first));
+            if (second == null)
+                throw new ArgumentNullException(nameof(second));
+
+            if (first.RowsCount != second.RowsCount)
+                throw new ArgumentException($"Rows count of the {nameof(first)} and {nameof(second)} must be equal");
+
+            return new FieldElementsMatrix(
+                first.Field,
+                first.RowsCount,
+                first.ColumnsCount + second.ColumnsCount,
+                (i, j) => j < first.ColumnsCount ? first[i, j] : second[i, j - first.ColumnsCount]
+            );
+        }
+
+        /// <summary>
         /// Calculates determinant of the matrix <paramref name="matrix"/>
         /// <param name="matrix">Matrix whose determinant will be calculated</param>
         /// </summary>
