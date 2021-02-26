@@ -1,9 +1,11 @@
 ﻿namespace AppliedAlgebra.WaveletCodesTools.Tests.Encoding
 {
+    using System;
     using GfAlgorithms.Matrices;
     using GfAlgorithms.WaveletTransform.IterationFiltersCalculator;
     using GfPolynoms.Extensions;
     using GfPolynoms.GaloisFields;
+    using JetBrains.Annotations;
     using WaveletCodesTools.Encoding;
     using WaveletCodesTools.Encoding.MultilevelEncoderDependencies.GeneratingMatrixProvider;
     using WaveletCodesTools.Encoding.MultilevelEncoderDependencies.LevelMatricesProvider;
@@ -11,6 +13,31 @@
 
     public class LinearMultilevelEncoderTests
     {
+
+        public class ConstructorParametersValidationTestCase
+        {
+            public IGeneratingMatrixProvider GeneratingMatrixProvider { get; set; }
+        }
+
+        [UsedImplicitly]
+        public static TheoryData<ConstructorParametersValidationTestCase> ConstructorParametersValidationTestCases;
+
+        static LinearMultilevelEncoderTests()
+        {
+            ConstructorParametersValidationTestCases
+                = new TheoryData<ConstructorParametersValidationTestCase>
+                  {
+                      new ConstructorParametersValidationTestCase()
+                  };
+        }
+
+        [Theory]
+        [MemberData(nameof(ConstructorParametersValidationTestCases))]
+        public void ConstructorMustValidateParameters(ConstructorParametersValidationTestCase testCase)
+        {
+            Assert.ThrowsAny<ArgumentException>(() => new LinearMultilevelEncoder(testCase.GeneratingMatrixProvider));
+        }
+
         [Fact]
         public void MustPerformEncodingForNaiveSchema()
         {
