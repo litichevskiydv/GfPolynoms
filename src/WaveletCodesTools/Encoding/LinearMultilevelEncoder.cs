@@ -19,12 +19,13 @@
         /// Initializes encoder dependencies
         /// </summary>
         /// <param name="generatingMatrixProvider">Generating matrix provider</param>
-        public LinearMultilevelEncoder(IGeneratingMatrixProvider generatingMatrixProvider)
+        /// <param name="levelsCount">Number of the levels of the wavelet decomposition used in encoding</param>
+        public LinearMultilevelEncoder(IGeneratingMatrixProvider generatingMatrixProvider, int levelsCount)
         {
             if (generatingMatrixProvider == null)
                 throw new ArgumentNullException(nameof(generatingMatrixProvider));
 
-            _generatingMatrix = generatingMatrixProvider.GetGeneratingMatrix();
+            _generatingMatrix = generatingMatrixProvider.GetGeneratingMatrix(levelsCount);
         }
 
         private static FieldElementsMatrix CreateInformationVector(FieldElement[] informationWord, int requiredLength)

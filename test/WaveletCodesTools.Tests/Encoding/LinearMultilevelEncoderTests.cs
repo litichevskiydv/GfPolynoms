@@ -18,6 +18,8 @@
         public class ConstructorParametersValidationTestCase
         {
             public IGeneratingMatrixProvider GeneratingMatrixProvider { get; set; }
+
+            public int LevelsCount { get; set; }
         }
 
         private readonly LinearMultilevelEncoder _naiveSchemaEncoder;
@@ -31,11 +33,32 @@
         static LinearMultilevelEncoderTests()
         {
             var gf3 = GaloisField.Create(3);
+            const int waveletTransformLevelsCount = 2;
+            var generatingMatrixProvider = new CanonicalProvider(
+                new RecursionBasedProvider(
+                    new ConvolutionBasedCalculator(),
+                    waveletTransformLevelsCount,
+                    (
+                        gf3.CreateElementsVector(1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0),
+                        gf3.CreateElementsVector(0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+                    )
+                )
+            );
 
             ConstructorParametersValidationTestCases
                 = new TheoryData<ConstructorParametersValidationTestCase>
                   {
-                      new ConstructorParametersValidationTestCase()
+                      new ConstructorParametersValidationTestCase(),
+                      new ConstructorParametersValidationTestCase
+                      {
+                          GeneratingMatrixProvider = generatingMatrixProvider,
+                          LevelsCount = -1
+                      },
+                      new ConstructorParametersValidationTestCase
+                      {
+                          GeneratingMatrixProvider = generatingMatrixProvider,
+                          LevelsCount = 50
+                      }
                   };
             EncodeParametersValidationTestCases
                 = new TheoryData<EncodeParametersValidationTestCase>
@@ -58,13 +81,14 @@
         public LinearMultilevelEncoderTests()
         {
             var gf3 = GaloisField.Create(3);
-            const int levelsCount = 2;
+            const int waveletTransformLevelsCount = 2;
+            const int encodingLevelsCount = 2;
 
             _naiveSchemaEncoder = new LinearMultilevelEncoder(
                 new NaiveProvider(
                     new RecursionBasedProvider(
                         new ConvolutionBasedCalculator(),
-                        levelsCount,
+                        waveletTransformLevelsCount,
                         (
                             gf3.CreateElementsVector(1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0),
                             gf3.CreateElementsVector(0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
@@ -72,20 +96,21 @@
                     ),
                     FieldElementsMatrix.CirculantMatrix(gf3, 0, 0, 0, 0, 0, 1),
                     FieldElementsMatrix.CirculantMatrix(gf3, 0, 0, 1)
-                )
+                ),
+                encodingLevelsCount
             );
             _canonicalSchemaEncoder = new LinearMultilevelEncoder(
                 new CanonicalProvider(
                     new RecursionBasedProvider(
                         new ConvolutionBasedCalculator(),
-                        levelsCount,
+                        waveletTransformLevelsCount,
                         (
                             gf3.CreateElementsVector(1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0),
                             gf3.CreateElementsVector(0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
                         )
-                    ),
-                    levelsCount
-                )
+                    )
+                ),
+                encodingLevelsCount
             );
         }
 
@@ -93,7 +118,9 @@
         [MemberData(nameof(ConstructorParametersValidationTestCases))]
         public void ConstructorMustValidateParameters(ConstructorParametersValidationTestCase testCase)
         {
-            Assert.ThrowsAny<ArgumentException>(() => new LinearMultilevelEncoder(testCase.GeneratingMatrixProvider));
+            Assert.ThrowsAny<ArgumentException>(
+                () => new LinearMultilevelEncoder(testCase.GeneratingMatrixProvider, testCase.LevelsCount)
+            );
         }
 
         [Theory]

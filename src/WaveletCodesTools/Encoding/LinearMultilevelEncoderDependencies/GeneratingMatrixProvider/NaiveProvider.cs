@@ -9,7 +9,8 @@
     /// </summary>
     public class NaiveProvider : IGeneratingMatrixProvider
     {
-        private readonly FieldElementsMatrix _generatingMatrix;
+        private readonly ILevelMatricesProvider _levelMatricesProvider;
+        private readonly FieldElementsMatrix[] _levelsTransforms;
 
         /// <summary>
         /// Initializes provider's dependencies
@@ -25,16 +26,27 @@
             if (levelsTransforms.Length == 0)
                 throw new ArgumentException("At least one transform must be provided");
 
-            _generatingMatrix = FieldElementsMatrix.IdentityMatrix(levelsTransforms[0].Field, levelsTransforms[0].RowsCount * 2);
-            for (var levelNumber = 0; levelNumber < levelsTransforms.Length; levelNumber++)
-            {
-                var levelTransform = levelsTransforms[levelNumber];
-                var (levelMatrixH, levelMatrixG) = levelMatricesProvider.GetLevelMatrices(levelNumber);
-                _generatingMatrix *= levelMatrixH + levelMatrixG * levelTransform;
-            }
+            _levelMatricesProvider = levelMatricesProvider;
+            _levelsTransforms = levelsTransforms;
         }
 
         /// <inheritdoc/>
-        public FieldElementsMatrix GetGeneratingMatrix() => _generatingMatrix;
+        public FieldElementsMatrix GetGeneratingMatrix(int levelsCount)
+        {
+            if (levelsCount <= 0)
+                throw new ArgumentException($"{nameof(levelsCount)} must be positive");
+            if (levelsCount > _levelsTransforms.Length)
+                throw new ArgumentException($"{nameof(levelsCount)} must not be greater than levels transforms count");
+
+            var generatingMatrix = FieldElementsMatrix.IdentityMatrix(_levelsTransforms[0].Field, _levelsTransforms[0].RowsCount * 2);
+            for (var levelNumber = 0; levelNumber < levelsCount; levelNumber++)
+            {
+                var levelTransform = _levelsTransforms[levelNumber];
+                var (levelMatrixH, levelMatrixG) = _levelMatricesProvider.GetLevelMatrices(levelNumber);
+                generatingMatrix *= levelMatrixH + levelMatrixG * levelTransform;
+            }
+
+            return generatingMatrix;
+        }
     }
 }

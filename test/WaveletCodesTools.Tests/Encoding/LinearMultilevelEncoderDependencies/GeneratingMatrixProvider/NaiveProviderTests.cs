@@ -62,10 +62,11 @@
         {
             // Given
             var gf3 = GaloisField.Create(3);
+            const int waveletTransformLevelsCount = 2;
             var generatingMatrixProvider = new NaiveProvider(
                 new RecursionBasedProvider(
                     new ConvolutionBasedCalculator(),
-                    2,
+                    waveletTransformLevelsCount,
                     (
                         gf3.CreateElementsVector(1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0),
                         gf3.CreateElementsVector(0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
@@ -76,7 +77,7 @@
             );
 
             // When
-            var actualGeneratingMatrix = generatingMatrixProvider.GetGeneratingMatrix();
+            var actualGeneratingMatrix = generatingMatrixProvider.GetGeneratingMatrix(2);
 
             // Then
             var expectedGeneratingMatrix = new FieldElementsMatrix(

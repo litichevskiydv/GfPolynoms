@@ -10,7 +10,8 @@
         /// <summary>
         /// Provides linear codes generating matrix
         /// </summary>
-        /// <returns></returns>
-        FieldElementsMatrix GetGeneratingMatrix();
+        /// <param name="levelsCount">Number of the levels of the wavelet decomposition used in generating matrix</param>
+        /// <returns>Generating matrix</returns>
+        FieldElementsMatrix GetGeneratingMatrix(int levelsCount);
     }
 }

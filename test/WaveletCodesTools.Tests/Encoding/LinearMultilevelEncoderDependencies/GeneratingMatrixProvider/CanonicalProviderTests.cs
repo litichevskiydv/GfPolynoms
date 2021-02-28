@@ -16,7 +16,6 @@
         {
             public ILevelMatricesProvider LevelMatricesProvider { get; set; }
 
-            public int LevelsCount { get; set; }
         }
 
         [UsedImplicitly]
@@ -24,21 +23,10 @@
 
         static CanonicalProviderTests()
         {
-            var gf3 = GaloisField.Create(3);
-            var levelMatricesProvider = new RecursionBasedProvider(
-                new ConvolutionBasedCalculator(),
-                2,
-                (
-                    gf3.CreateElementsVector(2, 1, 1, 2, 0, 1, 2, 2, 0, 0, 0, 0),
-                    gf3.CreateElementsVector(0, 2, 0, 2, 1, 1, 0, 0, 0, 0, 0, 0)
-                )
-            );
-
             ConstructorParametersValidationTestCases
                 = new TheoryData<ConstructorParametersValidationTestCase>
                   {
-                      new ConstructorParametersValidationTestCase(),
-                      new ConstructorParametersValidationTestCase {LevelMatricesProvider = levelMatricesProvider}
+                      new ConstructorParametersValidationTestCase()
                   };
         }
 
@@ -46,7 +34,7 @@
         [MemberData(nameof(ConstructorParametersValidationTestCases))]
         public void NaiveProviderConstructorMustValidateParameters(ConstructorParametersValidationTestCase testCase)
         {
-            Assert.ThrowsAny<ArgumentException>(() => new CanonicalProvider(testCase.LevelMatricesProvider, testCase.LevelsCount));
+            Assert.ThrowsAny<ArgumentException>(() => new CanonicalProvider(testCase.LevelMatricesProvider));
         }
 
         [Fact]
@@ -54,21 +42,20 @@
         {
             // Given
             var gf3 = GaloisField.Create(3);
-            const int levelsCount = 2;
+            const int waveletTransformLevelsCount = 2;
             var generatingMatrixProvider = new CanonicalProvider(
                 new RecursionBasedProvider(
                     new ConvolutionBasedCalculator(),
-                    levelsCount,
+                    waveletTransformLevelsCount,
                     (
                         gf3.CreateElementsVector(1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0),
                         gf3.CreateElementsVector(0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
                     )
-                ),
-                levelsCount
+                )
             );
 
             // When
-            var actualGeneratingMatrix = generatingMatrixProvider.GetGeneratingMatrix();
+            var actualGeneratingMatrix = generatingMatrixProvider.GetGeneratingMatrix(2);
 
             // Then
             var expectedGeneratingMatrix = new FieldElementsMatrix(
