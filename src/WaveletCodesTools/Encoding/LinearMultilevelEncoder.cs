@@ -6,7 +6,7 @@
     using GfAlgorithms.Matrices;
     using GfPolynoms;
     using GfPolynoms.Extensions;
-    using MultilevelEncoderDependencies.GeneratingMatrixProvider;
+    using LinearMultilevelEncoderDependencies.GeneratingMatrixProvider;
 
     /// <summary>
     /// Wavelet codes linear encoder that supports multilevel wavelet transform

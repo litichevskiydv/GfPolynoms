@@ -1,4 +1,4 @@
-﻿namespace AppliedAlgebra.WaveletCodesTools.Encoding.MultilevelEncoderDependencies.GeneratingMatrixProvider
+﻿namespace AppliedAlgebra.WaveletCodesTools.Encoding.LinearMultilevelEncoderDependencies.GeneratingMatrixProvider
 {
     using GfAlgorithms.Matrices;
 

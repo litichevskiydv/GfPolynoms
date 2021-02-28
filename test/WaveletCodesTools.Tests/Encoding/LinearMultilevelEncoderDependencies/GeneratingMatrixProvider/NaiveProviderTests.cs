@@ -1,4 +1,4 @@
-﻿namespace AppliedAlgebra.WaveletCodesTools.Tests.Encoding.MultilevelEncoderDependencies.GeneratingMatrixProvider
+﻿namespace AppliedAlgebra.WaveletCodesTools.Tests.Encoding.LinearMultilevelEncoderDependencies.GeneratingMatrixProvider
 {
     using System;
     using GfAlgorithms.Matrices;
@@ -6,7 +6,7 @@
     using GfPolynoms.Extensions;
     using GfPolynoms.GaloisFields;
     using JetBrains.Annotations;
-    using WaveletCodesTools.Encoding.MultilevelEncoderDependencies.GeneratingMatrixProvider;
+    using WaveletCodesTools.Encoding.LinearMultilevelEncoderDependencies.GeneratingMatrixProvider;
     using WaveletCodesTools.Encoding.MultilevelEncoderDependencies.LevelMatricesProvider;
     using Xunit;
 

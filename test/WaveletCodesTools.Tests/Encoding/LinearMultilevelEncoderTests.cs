@@ -9,7 +9,7 @@
     using JetBrains.Annotations;
     using TestCases;
     using WaveletCodesTools.Encoding;
-    using WaveletCodesTools.Encoding.MultilevelEncoderDependencies.GeneratingMatrixProvider;
+    using WaveletCodesTools.Encoding.LinearMultilevelEncoderDependencies.GeneratingMatrixProvider;
     using WaveletCodesTools.Encoding.MultilevelEncoderDependencies.LevelMatricesProvider;
     using Xunit;
 
