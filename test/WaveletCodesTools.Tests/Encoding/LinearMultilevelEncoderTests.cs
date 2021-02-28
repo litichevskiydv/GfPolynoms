@@ -10,6 +10,7 @@
     using TestCases;
     using WaveletCodesTools.Encoding;
     using WaveletCodesTools.Encoding.LinearMultilevelEncoderDependencies.GeneratingMatrixProvider;
+    using WaveletCodesTools.Encoding.LinearMultilevelEncoderDependencies.InformationVectorProvider;
     using WaveletCodesTools.Encoding.MultilevelEncoderDependencies.LevelMatricesProvider;
     using Xunit;
 
@@ -18,6 +19,8 @@
         public class ConstructorParametersValidationTestCase
         {
             public IGeneratingMatrixProvider GeneratingMatrixProvider { get; set; }
+
+            public IInformationVectorProvider InformationVectorProvider { get; set; }
 
             public int LevelsCount { get; set; }
         }
@@ -49,14 +52,17 @@
                 = new TheoryData<ConstructorParametersValidationTestCase>
                   {
                       new ConstructorParametersValidationTestCase(),
+                      new ConstructorParametersValidationTestCase {GeneratingMatrixProvider = generatingMatrixProvider},
                       new ConstructorParametersValidationTestCase
                       {
                           GeneratingMatrixProvider = generatingMatrixProvider,
+                          InformationVectorProvider = new LeadingZerosBasedProvider(),
                           LevelsCount = -1
                       },
                       new ConstructorParametersValidationTestCase
                       {
                           GeneratingMatrixProvider = generatingMatrixProvider,
+                          InformationVectorProvider = new LeadingZerosBasedProvider(),
                           LevelsCount = 50
                       }
                   };
@@ -97,6 +103,7 @@
                     FieldElementsMatrix.CirculantMatrix(gf3, 0, 0, 0, 0, 0, 1),
                     FieldElementsMatrix.CirculantMatrix(gf3, 0, 0, 1)
                 ),
+                new LeadingZerosBasedProvider(),
                 encodingLevelsCount
             );
             _canonicalSchemaEncoder = new LinearMultilevelEncoder(
@@ -110,6 +117,7 @@
                         )
                     )
                 ),
+                new LeadingZerosBasedProvider(),
                 encodingLevelsCount
             );
         }
@@ -119,7 +127,11 @@
         public void ConstructorMustValidateParameters(ConstructorParametersValidationTestCase testCase)
         {
             Assert.ThrowsAny<ArgumentException>(
-                () => new LinearMultilevelEncoder(testCase.GeneratingMatrixProvider, testCase.LevelsCount)
+                () => new LinearMultilevelEncoder(
+                    testCase.GeneratingMatrixProvider,
+                    testCase.InformationVectorProvider,
+                    testCase.LevelsCount
+                )
             );
         }
 

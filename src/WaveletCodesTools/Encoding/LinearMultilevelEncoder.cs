@@ -1,12 +1,10 @@
 ﻿namespace AppliedAlgebra.WaveletCodesTools.Encoding
 {
     using System;
-    using System.Linq;
-    using GfAlgorithms.Extensions;
     using GfAlgorithms.Matrices;
     using GfPolynoms;
-    using GfPolynoms.Extensions;
     using LinearMultilevelEncoderDependencies.GeneratingMatrixProvider;
+    using LinearMultilevelEncoderDependencies.InformationVectorProvider;
 
     /// <summary>
     /// Wavelet codes linear encoder that supports multilevel wavelet transform
@@ -14,29 +12,27 @@
     public class LinearMultilevelEncoder : IMultilevelEncoder
     {
         private readonly FieldElementsMatrix _generatingMatrix;
+        private readonly IInformationVectorProvider _informationVectorProvider;
 
         /// <summary>
         /// Initializes encoder dependencies
         /// </summary>
         /// <param name="generatingMatrixProvider">Generating matrix provider</param>
+        /// <param name="informationVectorProvider">Information vector provider</param>
         /// <param name="levelsCount">Number of the levels of the wavelet decomposition used in encoding</param>
-        public LinearMultilevelEncoder(IGeneratingMatrixProvider generatingMatrixProvider, int levelsCount)
+        public LinearMultilevelEncoder(
+            IGeneratingMatrixProvider generatingMatrixProvider,
+            IInformationVectorProvider informationVectorProvider,
+            int levelsCount
+        )
         {
             if (generatingMatrixProvider == null)
                 throw new ArgumentNullException(nameof(generatingMatrixProvider));
+            if (informationVectorProvider == null)
+                throw new ArgumentNullException(nameof(informationVectorProvider));
 
             _generatingMatrix = generatingMatrixProvider.GetGeneratingMatrix(levelsCount);
-        }
-
-        private static FieldElementsMatrix CreateInformationVector(FieldElement[] informationWord, int requiredLength)
-        {
-            var field = informationWord.GetField();
-            return FieldElementsMatrix.ColumnVector(
-                Enumerable.Repeat(field.Zero(), requiredLength - informationWord.Length)
-                    .Concat(informationWord)
-                    .ToArray()
-            );
-
+            _informationVectorProvider = informationVectorProvider;
         }
 
         /// <inheritdoc/>
@@ -51,7 +47,8 @@
             if(informationWord.Length > _generatingMatrix.ColumnsCount)
                 throw new ArgumentException($"{nameof(informationWord)} length is too long");
 
-            return (_generatingMatrix * CreateInformationVector(informationWord, _generatingMatrix.ColumnsCount)).GetColumn(0);
+            return (_generatingMatrix * _informationVectorProvider.GetInformationVector(informationWord, _generatingMatrix.ColumnsCount))
+                .GetColumn(0);
         }
     }
 }
