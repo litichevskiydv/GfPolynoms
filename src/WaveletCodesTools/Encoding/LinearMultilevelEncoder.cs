@@ -1,8 +1,11 @@
 ﻿namespace AppliedAlgebra.WaveletCodesTools.Encoding
 {
     using System;
+    using System.Linq;
+    using GfAlgorithms.Extensions;
     using GfAlgorithms.Matrices;
     using GfPolynoms;
+    using GfPolynoms.Extensions;
     using MultilevelEncoderDependencies.GeneratingMatrixProvider;
 
     /// <summary>
@@ -24,6 +27,17 @@
             _generatingMatrix = generatingMatrixProvider.GetGeneratingMatrix();
         }
 
+        private static FieldElementsMatrix CreateInformationVector(FieldElement[] informationWord, int requiredLength)
+        {
+            var field = informationWord.GetField();
+            return FieldElementsMatrix.ColumnVector(
+                Enumerable.Repeat(field.Zero(), requiredLength - informationWord.Length)
+                    .Concat(informationWord)
+                    .ToArray()
+            );
+
+        }
+
         /// <inheritdoc/>
         public FieldElement[] Encode(int codewordLength, FieldElement[] informationWord, MultilevelEncoderOptions options = null)
         {
@@ -34,9 +48,9 @@
             if (codewordLength < informationWord.Length)
                 throw new ArgumentException($"{nameof(codewordLength)} is too short");
             if(informationWord.Length > _generatingMatrix.ColumnsCount)
-                throw new ArgumentException($"{nameof(informationWord)} is too long");
+                throw new ArgumentException($"{nameof(informationWord)} length is too long");
 
-            return (_generatingMatrix * FieldElementsMatrix.ColumnVector(informationWord)).GetColumn(0);
+            return (_generatingMatrix * CreateInformationVector(informationWord, _generatingMatrix.ColumnsCount)).GetColumn(0);
         }
     }
 }

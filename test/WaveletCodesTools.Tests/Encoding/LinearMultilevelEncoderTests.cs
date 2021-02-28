@@ -21,6 +21,7 @@
         }
 
         private readonly LinearMultilevelEncoder _naiveSchemaEncoder;
+        private readonly LinearMultilevelEncoder _canonicalSchemaEncoder;
 
         [UsedImplicitly]
         public static TheoryData<ConstructorParametersValidationTestCase> ConstructorParametersValidationTestCases;
@@ -57,12 +58,13 @@
         public LinearMultilevelEncoderTests()
         {
             var gf3 = GaloisField.Create(3);
+            const int levelsCount = 2;
 
             _naiveSchemaEncoder = new LinearMultilevelEncoder(
                 new NaiveProvider(
                     new RecursionBasedProvider(
                         new ConvolutionBasedCalculator(),
-                        2,
+                        levelsCount,
                         (
                             gf3.CreateElementsVector(1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0),
                             gf3.CreateElementsVector(0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
@@ -70,6 +72,19 @@
                     ),
                     FieldElementsMatrix.CirculantMatrix(gf3, 0, 0, 0, 0, 0, 1),
                     FieldElementsMatrix.CirculantMatrix(gf3, 0, 0, 1)
+                )
+            );
+            _canonicalSchemaEncoder = new LinearMultilevelEncoder(
+                new CanonicalProvider(
+                    new RecursionBasedProvider(
+                        new ConvolutionBasedCalculator(),
+                        levelsCount,
+                        (
+                            gf3.CreateElementsVector(1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0),
+                            gf3.CreateElementsVector(0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+                        )
+                    ),
+                    levelsCount
                 )
             );
         }
@@ -101,6 +116,20 @@
 
             // Then
             var expectedCodeword = gf3.CreateElementsVector(1, 1, 2, 2, 1, 1, 2, 2, 1, 1, 2, 2);
+            Assert.Equal(expectedCodeword, actualCodeword);
+        }
+
+        [Fact]
+        public void MustPerformEncodingForCanonicalSchema()
+        {
+            // Given
+            var gf3 = GaloisField.Create(3);
+
+            // When
+            var actualCodeword = _canonicalSchemaEncoder.Encode(12, gf3.CreateElementsVector(1, 1, 1, 1, 1, 1, 1));
+
+            // Then
+            var expectedCodeword = gf3.CreateElementsVector(0, 1, 0, 1, 0, 2, 0, 1, 0, 1, 1, 1);
             Assert.Equal(expectedCodeword, actualCodeword);
         }
     }
