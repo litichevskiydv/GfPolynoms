@@ -117,7 +117,7 @@
                         )
                     )
                 ),
-                new LeadingZerosBasedProvider(),
+                new DetailsAbsenceBasedProvider(encodingLevelsCount),
                 encodingLevelsCount
             );
         }
@@ -168,7 +168,7 @@
             var actualCodeword = _canonicalSchemaEncoder.Encode(12, gf3.CreateElementsVector(1, 1, 1, 1, 1, 1, 1));
 
             // Then
-            var expectedCodeword = gf3.CreateElementsVector(0, 1, 0, 1, 0, 2, 0, 1, 0, 1, 1, 1);
+            var expectedCodeword = gf3.CreateElementsVector(1, 1, 1, 1, 1, 2, 1, 2, 1, 2, 1, 2);
             Assert.Equal(expectedCodeword, actualCodeword);
         }
     }
