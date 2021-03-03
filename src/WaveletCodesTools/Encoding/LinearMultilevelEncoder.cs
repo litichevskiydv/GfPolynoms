@@ -1,6 +1,7 @@
 ﻿namespace AppliedAlgebra.WaveletCodesTools.Encoding
 {
     using System;
+    using CodesAbstractions;
     using GfAlgorithms.Matrices;
     using GfPolynoms;
     using LinearMultilevelEncoderDependencies.GeneratingMatrixProvider;
@@ -13,16 +14,19 @@
     {
         private readonly FieldElementsMatrix _generatingMatrix;
         private readonly IInformationVectorProvider _informationVectorProvider;
+        private readonly ICodewordMutator _codewordMutator;
 
         /// <summary>
         /// Initializes encoder dependencies
         /// </summary>
         /// <param name="generatingMatrixProvider">Generating matrix provider</param>
         /// <param name="informationVectorProvider">Information vector provider</param>
+        /// <param name="codewordMutator">Codeword mutator</param>
         /// <param name="levelsCount">Number of the levels of the wavelet decomposition used in encoding</param>
         public LinearMultilevelEncoder(
             IGeneratingMatrixProvider generatingMatrixProvider,
             IInformationVectorProvider informationVectorProvider,
+            ICodewordMutator codewordMutator,
             int levelsCount
         )
         {
@@ -30,9 +34,12 @@
                 throw new ArgumentNullException(nameof(generatingMatrixProvider));
             if (informationVectorProvider == null)
                 throw new ArgumentNullException(nameof(informationVectorProvider));
+            if (codewordMutator == null)
+                throw new ArgumentNullException(nameof(codewordMutator));
 
             _generatingMatrix = generatingMatrixProvider.GetGeneratingMatrix(levelsCount);
             _informationVectorProvider = informationVectorProvider;
+            _codewordMutator = codewordMutator;
         }
 
         /// <inheritdoc/>
@@ -47,8 +54,8 @@
             if(informationWord.Length > _generatingMatrix.ColumnsCount)
                 throw new ArgumentException($"{nameof(informationWord)} length is too long");
 
-            return (_generatingMatrix * _informationVectorProvider.GetInformationVector(informationWord, _generatingMatrix.ColumnsCount))
-                .GetColumn(0);
+            var informationVector = _informationVectorProvider.GetInformationVector(informationWord, _generatingMatrix.ColumnsCount);
+            return _codewordMutator.Mutate((_generatingMatrix * informationVector).GetColumn(0), codewordLength);
         }
     }
 }

@@ -2,6 +2,7 @@
 {
     using System;
     using System.Linq;
+    using CodesAbstractions;
     using GfAlgorithms.Matrices;
     using GfAlgorithms.WaveletTransform.IterationFiltersCalculator;
     using GfPolynoms.Extensions;
@@ -21,6 +22,8 @@
             public IGeneratingMatrixProvider GeneratingMatrixProvider { get; set; }
 
             public IInformationVectorProvider InformationVectorProvider { get; set; }
+
+            public ICodewordMutator CodewordMutator { get; set; }
 
             public int LevelsCount { get; set; }
         }
@@ -57,12 +60,19 @@
                       {
                           GeneratingMatrixProvider = generatingMatrixProvider,
                           InformationVectorProvider = new LeadingZerosBasedProvider(),
+                      },
+                      new ConstructorParametersValidationTestCase
+                      {
+                          GeneratingMatrixProvider = generatingMatrixProvider,
+                          InformationVectorProvider = new LeadingZerosBasedProvider(),
+                          CodewordMutator = new BasicCodewordMutator(),
                           LevelsCount = -1
                       },
                       new ConstructorParametersValidationTestCase
                       {
                           GeneratingMatrixProvider = generatingMatrixProvider,
                           InformationVectorProvider = new LeadingZerosBasedProvider(),
+                          CodewordMutator = new BasicCodewordMutator(),
                           LevelsCount = 50
                       }
                   };
@@ -104,6 +114,7 @@
                     FieldElementsMatrix.CirculantMatrix(gf3, 0, 0, 1)
                 ),
                 new LeadingZerosBasedProvider(),
+                new BasicCodewordMutator(),
                 encodingLevelsCount
             );
             _canonicalSchemaEncoder = new LinearMultilevelEncoder(
@@ -118,6 +129,7 @@
                     )
                 ),
                 new DetailsAbsenceBasedProvider(encodingLevelsCount),
+                new BasicCodewordMutator(),
                 encodingLevelsCount
             );
         }
@@ -130,6 +142,7 @@
                 () => new LinearMultilevelEncoder(
                     testCase.GeneratingMatrixProvider,
                     testCase.InformationVectorProvider,
+                    testCase.CodewordMutator,
                     testCase.LevelsCount
                 )
             );
