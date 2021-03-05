@@ -43,6 +43,8 @@
     using WaveletCodesTools.Decoding.ListDecoderForFixedDistanceCodes.GsBasedDecoderDependencies;
     using WaveletCodesTools.Decoding.StandartDecoderForFixedDistanceCodes;
     using WaveletCodesTools.Encoding;
+    using WaveletCodesTools.Encoding.LinearMultilevelEncoderDependencies.GeneratingMatrixProvider;
+    using WaveletCodesTools.Encoding.LinearMultilevelEncoderDependencies.InformationVectorProvider;
     using WaveletCodesTools.Encoding.MultilevelEncoderDependencies.DetailsVectorCorrector;
     using WaveletCodesTools.Encoding.MultilevelEncoderDependencies.LevelMatricesProvider;
     using WaveletCodesTools.Encoding.MultilevelEncoderDependencies.WaveletCoefficientsGenerator;
@@ -290,7 +292,8 @@
             int codewordLength,
             int informationWordLength,
             int codeDistanceLimit,
-            Func<FiltersBankVectors[], ILevelMatricesProvider> levelMatricesProvidersFactory
+            Func<FiltersBankVectors[], ILevelMatricesProvider> levelMatricesProvidersFactory,
+            Func<ILevelMatricesProvider, int, IMultilevelEncoder> encodersFactory
         )
         {
             if (currentLevel == currentLevelsFiltersBanks.Length)
@@ -312,12 +315,7 @@
                     field,
                     codewordLength,
                     informationWordLength,
-                    new MultilevelEncoder(
-                        levelMatricesProvidersFactory(currentLevelsFiltersBanks),
-                        new CanonicalGenerator(),
-                        new LinearEquationsBasedCorrector(new GaussSolver()),
-                        encodingLevelsCount
-                    ),
+                    encodersFactory(levelMatricesProvidersFactory(currentLevelsFiltersBanks), encodingLevelsCount),
                     codeDistanceLimit,
                     false
                 );
@@ -366,7 +364,8 @@
                         codewordLength,
                         informationWordLength,
                         codeDistanceLimit,
-                        levelMatricesProvidersFactory
+                        levelMatricesProvidersFactory,
+                        encodersFactory
                     );
                 }
 
@@ -387,7 +386,7 @@
                 );
         }
 
-        private static void FindWaveletTransformsForRecursiveMultilevelEncoding(
+        private static void FindWaveletTransformsForRecursiveLinearMultilevelEncoding(
             int maxDegreeOfParallelism,
             ISourceFiltersCalculator sourceFiltersCalculator,
             GaloisField field,
@@ -414,6 +413,13 @@
                     new ConvolutionBasedCalculator(),
                     levelsCount,
                     currentLevelsFiltersBanks[0].SynthesisPair
+                ),
+            (levelMatricesProvider, encodingLevelsCount) =>
+                new LinearMultilevelEncoder(
+                    new CanonicalProvider(levelMatricesProvider),
+                    new DetailsAbsenceBasedProvider(encodingLevelsCount),
+                    new BasicCodewordMutator(),
+                    encodingLevelsCount
                 )
         );
 
@@ -448,6 +454,13 @@
                             FieldElementsMatrix.DoubleCirculantMatrix(x.SynthesisPair.g).Transpose()
                         )
                     ).ToArray()
+                ),
+            (levelMatricesProvider, encodingLevelsCount) =>
+                new MultilevelEncoder(
+                    levelMatricesProvider,
+                    new CanonicalGenerator(),
+                    new LinearEquationsBasedCorrector(new GaussSolver()),
+                    encodingLevelsCount
                 )
         );
 
