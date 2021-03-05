@@ -298,16 +298,20 @@
         {
             if (currentLevel == currentLevelsFiltersBanks.Length)
             {
-                var (_, (zeroLevelH, zeroLevelG)) = currentLevelsFiltersBanks[0];
-                var requiredZerosCount = zeroLevelH.Length - codewordLength;
-                if (requiredZerosCount > 0)
+                var encoder = encodersFactory(levelMatricesProvidersFactory(currentLevelsFiltersBanks), encodingLevelsCount);
+                if (encoder is MultilevelEncoder)
                 {
-                    var gMatrix = FieldElementsMatrix.DoubleCirculantMatrix(zeroLevelG);
-                    var equationsRowsRange = Enumerable.Range(gMatrix.RowsCount - requiredZerosCount, requiredZerosCount).ToArray();
-                    var variablesColumnsRange = Enumerable.Range(gMatrix.ColumnsCount - requiredZerosCount, requiredZerosCount).ToArray();
+                    var (_, (zeroLevelH, zeroLevelG)) = currentLevelsFiltersBanks[0];
+                    var requiredZerosCount = zeroLevelH.Length - codewordLength;
+                    if (requiredZerosCount > 0)
+                    {
+                        var gMatrix = FieldElementsMatrix.DoubleCirculantMatrix(zeroLevelG);
+                        var equationsRowsRange = Enumerable.Range(gMatrix.RowsCount - requiredZerosCount, requiredZerosCount).ToArray();
+                        var variablesColumnsRange = Enumerable.Range(gMatrix.ColumnsCount - requiredZerosCount, requiredZerosCount).ToArray();
 
-                    if (gMatrix.CreateSubmatrix(equationsRowsRange, variablesColumnsRange).CalculateDeterminant().Representation == 0)
-                        return;
+                        if (gMatrix.CreateSubmatrix(equationsRowsRange, variablesColumnsRange).CalculateDeterminant().Representation == 0)
+                            return;
+                    }
                 }
 
                 var codeDistance = AnalyzeCodeDistance(
@@ -315,7 +319,7 @@
                     field,
                     codewordLength,
                     informationWordLength,
-                    encodersFactory(levelMatricesProvidersFactory(currentLevelsFiltersBanks), encodingLevelsCount),
+                    encoder,
                     codeDistanceLimit,
                     false
                 );
