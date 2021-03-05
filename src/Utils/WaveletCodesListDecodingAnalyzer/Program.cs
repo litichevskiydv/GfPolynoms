@@ -76,7 +76,10 @@
         )
         {
             var encoderOptions = new MultilevelEncoderOptions {MaxDegreeOfParallelism = 1};
-            var codeDistance = CommonCodeDistanceAnalyzer.Analyze(
+            var analyzer = encoder is LinearMultilevelEncoder
+                ? (ICodeDistanceAnalyzer) LinearCodeDistanceAnalyzer
+                : CommonCodeDistanceAnalyzer;
+            var codeDistance = analyzer.Analyze(
                 field,
                 informationWordLength,
                 informationWord => encoder.Encode(codewordLength, field.CreateElementsVector(informationWord), encoderOptions),
