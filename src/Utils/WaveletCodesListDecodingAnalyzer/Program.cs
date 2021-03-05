@@ -678,21 +678,19 @@
             try
             {
                 var field = GaloisField.Create(3);
-                FindWaveletTransformsForStackBasedMultilevelEncoding(
+                FindWaveletTransformsForRecursiveLinearMultilevelEncoding(
                     Process.GetCurrentProcess().ConstrainProcessorUsage(2, 0.7),
                     new BiorthogonalSourceFiltersCalculator(new GcdBasedBuilder(new RecursiveGcdFinder())),
                     field,
+                    16,
+                    14,
                     8,
-                    7,
-                    5,
-                    3,
-                    2 /*,
-                    new[]
-                    {
-                        new FiltersBankVectors((null, null), (field.CreateElementsVector(1, 2, 1, 2, 0, 1, 0, 0), null)),
-                        new FiltersBankVectors((null, null), (field.CreateElementsVector(1, 2, 1, 2), null)),
-                        new FiltersBankVectors((null, null), (field.CreateElementsVector(1, 2), null))
-                    }*/
+                    4,
+                    6/*,
+                    new FiltersBankVectors(
+                        (null, null),
+                        (field.CreateElementsVector(1, 2, 1, 2, 0, 1, 0, 0, 1, 2, 1, 2, 0, 1, 0, 0), null)
+                    )*/
                 );
             }
             catch (Exception exception)
