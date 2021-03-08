@@ -5,16 +5,20 @@
 
     public static class InterlockedExtensions
     {
-        public static int Min(ref int location, int value)
+        private static int UpdateLocation(ref int location, int value, Func<int, int, int> newValueProvider)
         {
-            int originalValue, minimalValue;
+            int originalValue, newValue;
             do
             {
                 originalValue = location;
-                minimalValue = Math.Min(originalValue, value);
-            } while (Interlocked.CompareExchange(ref location, minimalValue, originalValue) != originalValue);
+                newValue = newValueProvider(originalValue, value);
+            } while (Interlocked.CompareExchange(ref location, newValue, originalValue) != originalValue);
 
             return originalValue;
         }
+
+        public static int Min(ref int location, int value) => UpdateLocation(ref location, value, Math.Min);
+
+        public static int Max(ref int location, int value) => UpdateLocation(ref location, value, Math.Max);
     }
 }

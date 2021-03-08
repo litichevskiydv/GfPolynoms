@@ -5,6 +5,7 @@
     using System.Threading;
     using System.Threading.Tasks;
     using CodesAbstractions;
+    using Extensions;
     using GfAlgorithms.Extensions;
     using GfAlgorithms.VariantsIterator;
     using GfPolynoms;
@@ -47,12 +48,11 @@
 
             var minimalRadius = 0;
             var processedWordsCount = 0L;
-            var syncRoot = new object();
             Parallel.ForEach(
                 _variantsIterator.IterateVectors(code.Field, firstPortionLength),
                 new ParallelOptions {MaxDegreeOfParallelism = opts.MaxDegreeOfParallelism},
                 () => 0,
-                (wordFirstPart, loopState, localMinimalRadius) =>
+                (wordFirstPart, _, localMinimalRadius) =>
                 {
                     if (secondPortionLength == 0)
                         return ProcessWord(code, opts, ref processedWordsCount, localMinimalRadius, wordFirstPart);
@@ -61,10 +61,7 @@
                         .Select(wordSecondPart => wordFirstPart.Concat(wordSecondPart).ToArray())
                         .Aggregate(localMinimalRadius, (current, word) => ProcessWord(code, opts, ref processedWordsCount, current, word));
                 },
-                localMinimalRadius =>
-                {
-                    lock (syncRoot) minimalRadius = Math.Max(minimalRadius, localMinimalRadius);
-                }
+                localMinimalRadius => { InterlockedExtensions.Max(ref minimalRadius, localMinimalRadius); }
             );
 
             return minimalRadius;
