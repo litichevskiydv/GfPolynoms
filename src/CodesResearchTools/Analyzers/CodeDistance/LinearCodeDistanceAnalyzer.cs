@@ -4,6 +4,7 @@
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
+    using Extensions;
     using GfPolynoms;
     using GfPolynoms.GaloisFields;
     using Microsoft.Extensions.Logging;
@@ -18,7 +19,6 @@
         {
             var processedCodewords = 0L;
             var codeDistance = int.MaxValue;
-            var syncRoot = new object();
             Parallel.ForEach(
                 GenerateMappings(field, encodingProcedure, new int[informationWordLength], 0).Skip(1),
                 new ParallelOptions { MaxDegreeOfParallelism = options.MaxDegreeOfParallelism },
@@ -40,8 +40,7 @@
                 },
                 localCodeDistance =>
                 {
-                    lock (syncRoot) 
-                        codeDistance = Math.Min(codeDistance, localCodeDistance);
+                    InterlockedExtensions.Min(ref codeDistance, localCodeDistance);
                 }
             );
 
