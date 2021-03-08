@@ -4,6 +4,7 @@
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
+    using Extensions;
     using GfAlgorithms.Extensions;
     using GfPolynoms;
     using GfPolynoms.GaloisFields;
@@ -45,12 +46,7 @@
                 },
                 localCodeDistance =>
                 {
-                    int originalCodeDistance, minimalCodeDistance;
-                    do
-                    {
-                        originalCodeDistance = codeDistance;
-                        minimalCodeDistance = Math.Min(originalCodeDistance, localCodeDistance);
-                    } while (Interlocked.CompareExchange(ref codeDistance, minimalCodeDistance, originalCodeDistance) != originalCodeDistance);
+                    InterlockedExtensions.Min(ref codeDistance, localCodeDistance);
                 }
             );
 
