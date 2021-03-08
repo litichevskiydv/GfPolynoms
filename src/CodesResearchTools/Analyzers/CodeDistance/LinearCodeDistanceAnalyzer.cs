@@ -5,6 +5,7 @@
     using System.Threading;
     using System.Threading.Tasks;
     using Extensions;
+    using GfAlgorithms.VariantsIterator;
     using GfPolynoms;
     using GfPolynoms.GaloisFields;
     using Microsoft.Extensions.Logging;
@@ -12,16 +13,17 @@
     public class LinearCodeDistanceAnalyzer : CodeDistanceAnalyzerBase
     {
         protected override int AnalyzeInternal(
-            GaloisField field, 
-            int informationWordLength, 
-            Func<int[], FieldElement[]> encodingProcedure, 
-            CodeDistanceAnalyzerOptions options)
+            GaloisField field,
+            int informationWordLength,
+            Func<FieldElement[], FieldElement[]> encodingProcedure,
+            CodeDistanceAnalyzerOptions options
+        )
         {
             var processedCodewords = 0L;
             var codeDistance = int.MaxValue;
             Parallel.ForEach(
-                GenerateMappings(field, encodingProcedure, new int[informationWordLength], 0).Skip(1),
-                new ParallelOptions { MaxDegreeOfParallelism = options.MaxDegreeOfParallelism },
+                GenerateMappings(field, informationWordLength, encodingProcedure).Skip(1),
+                new ParallelOptions {MaxDegreeOfParallelism = options.MaxDegreeOfParallelism},
                 () => int.MaxValue,
                 (mapping, loopState, localCodeDistance) =>
                 {
@@ -32,22 +34,20 @@
                         Logger.LogInformation("Processed {processedCodewords} pairs, code distance {codeDistance}", processedCodewords, localCodeDistance);
 
                     var distance = mapping.codeword.Count(x => x.Representation != 0);
-                    if(options.CodeDistanceMinimumThreshold.HasValue && distance < options.CodeDistanceMinimumThreshold.Value)
+                    if (options.CodeDistanceMinimumThreshold.HasValue && distance < options.CodeDistanceMinimumThreshold.Value)
                         loopState.Stop();
 
                     return Math.Min(localCodeDistance, distance);
 
                 },
-                localCodeDistance =>
-                {
-                    InterlockedExtensions.Min(ref codeDistance, localCodeDistance);
-                }
+                localCodeDistance => { InterlockedExtensions.Min(ref codeDistance, localCodeDistance); }
             );
 
             return codeDistance;
         }
 
-        public LinearCodeDistanceAnalyzer(ILogger<LinearCodeDistanceAnalyzer> logger) : base(logger)
+        public LinearCodeDistanceAnalyzer(IVariantsIterator variantsIterator, ILogger<LinearCodeDistanceAnalyzer> logger) 
+            : base(variantsIterator, logger)
         {
         }
     }

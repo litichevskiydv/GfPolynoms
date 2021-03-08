@@ -6,6 +6,7 @@
     using System.Threading.Tasks;
     using Extensions;
     using GfAlgorithms.Extensions;
+    using GfAlgorithms.VariantsIterator;
     using GfPolynoms;
     using GfPolynoms.GaloisFields;
     using Microsoft.Extensions.Logging;
@@ -15,18 +16,18 @@
         protected override int AnalyzeInternal(
             GaloisField field, 
             int informationWordLength, 
-            Func<int[], FieldElement[]> encodingProcedure,
+            Func<FieldElement[], FieldElement[]> encodingProcedure,
             CodeDistanceAnalyzerOptions options)
         {
             var processedPairsCount = 0L;
             var codeDistance = int.MaxValue;
             Parallel.ForEach(
-                GenerateMappings(field, encodingProcedure, new int[informationWordLength], 0),
+                GenerateMappings(field, informationWordLength, encodingProcedure),
                 new ParallelOptions {MaxDegreeOfParallelism = options.MaxDegreeOfParallelism},
                 () => int.MaxValue,
                 (mapping, loopState, localCodeDistance) =>
                 {
-                    foreach (var (_, codeword) in GenerateMappings(field, encodingProcedure, mapping.informationWord.ToArray(), 0).Skip(1))
+                    foreach (var (_, codeword) in GenerateMappings(field, informationWordLength, encodingProcedure, mapping.informationWord).Skip(1))
                     {
                         if(loopState.IsStopped)
                             return localCodeDistance;
@@ -53,7 +54,8 @@
             return codeDistance;
         }
 
-        public CommonCodeDistanceAnalyzer(ILogger<CommonCodeDistanceAnalyzer> logger) : base(logger)
+        public CommonCodeDistanceAnalyzer(IVariantsIterator variantsIterator, ILogger<CommonCodeDistanceAnalyzer> logger) 
+            : base(variantsIterator, logger)
         {
         }
     }

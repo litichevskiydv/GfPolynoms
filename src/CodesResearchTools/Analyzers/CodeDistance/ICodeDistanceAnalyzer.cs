@@ -20,7 +20,7 @@
         int Analyze(
             GaloisField field,
             int informationWordLength,
-            Func<int[], FieldElement[]> encodingProcedure,
+            Func<FieldElement[], FieldElement[]> encodingProcedure,
             CodeDistanceAnalyzerOptions options = null);
     }
 }

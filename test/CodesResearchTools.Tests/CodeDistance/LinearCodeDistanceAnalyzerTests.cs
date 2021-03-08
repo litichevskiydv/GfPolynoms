@@ -1,14 +1,13 @@
 ﻿namespace AppliedAlgebra.CodesResearchTools.Tests.CodeDistance
 {
-    using System.Linq;
     using Analyzers.CodeDistance;
     using GfAlgorithms.CombinationsCountCalculator;
     using GfAlgorithms.ComplementaryFilterBuilder;
     using GfAlgorithms.Extensions;
     using GfAlgorithms.LinearSystemSolver;
     using GfAlgorithms.PolynomialsGcdFinder;
+    using GfAlgorithms.VariantsIterator;
     using GfPolynoms;
-    using GfPolynoms.Extensions;
     using GfPolynoms.GaloisFields;
     using JetBrains.Annotations;
     using Microsoft.Extensions.Logging;
@@ -53,21 +52,21 @@
                       {
                           Field = wN7K3D4.Field,
                           InformationWordLength = wN7K3D4.InformationWordLength,
-                          EncodingProcedure = x => wN7K3D4.Encode(x.Select(value => wN7K3D4.Field.CreateElement(value)).ToArray()),
+                          EncodingProcedure = x => wN7K3D4.Encode(x),
                           Expected = wN7K3D4.CodeDistance
                       },
                       new CodeDistanceAnalyzerTestCase
                       {
                           Field = wN8K4D4First.Field,
                           InformationWordLength = wN8K4D4First.InformationWordLength,
-                          EncodingProcedure = x => wN8K4D4First.Encode(x.Select(value => wN8K4D4First.Field.CreateElement(value)).ToArray()),
+                          EncodingProcedure = x => wN8K4D4First.Encode(x),
                           Expected = wN8K4D4First.CodeDistance
                       },
                       new CodeDistanceAnalyzerTestCase
                       {
                           Field = wN8K4D4Second.Field,
                           InformationWordLength = wN8K4D4Second.InformationWordLength,
-                          EncodingProcedure = x => wN8K4D4Second.Encode(x.Select(value => wN8K4D4Second.Field.CreateElement(value)).ToArray()),
+                          EncodingProcedure = x => wN8K4D4Second.Encode(x),
                           Expected = wN8K4D4Second.CodeDistance
                       }
                   };
@@ -79,7 +78,7 @@
         public LinearCodeDistanceAnalyzerTests()
         {
             _mockLogger = new Mock<ILogger<LinearCodeDistanceAnalyzer>>();
-            _analyzer = new LinearCodeDistanceAnalyzer(_mockLogger.Object);
+            _analyzer = new LinearCodeDistanceAnalyzer(new RecursiveIterator(), _mockLogger.Object);
         }
 
         [Theory]
@@ -110,7 +109,7 @@
             var actualDistance = _analyzer.Analyze(
                 gf2,
                 code.InformationWordLength,
-                informationWord => code.Encode(gf2.CreateElementsVector(informationWord)),
+                informationWord => code.Encode(informationWord),
                 new CodeDistanceAnalyzerOptions{ CodeDistanceMinimumThreshold = codeDistanceMinimumThreshold, LoggingResolution = 1}
             );
 

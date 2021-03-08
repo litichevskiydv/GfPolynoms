@@ -10,7 +10,7 @@
 
         public int InformationWordLength { get; set; }
 
-        public Func<int[], FieldElement[]> EncodingProcedure { get; set; }
+        public Func<FieldElement[], FieldElement[]> EncodingProcedure { get; set; }
 
         public int Expected { get; set; }
     }

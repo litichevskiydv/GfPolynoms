@@ -84,7 +84,7 @@
             var codeDistance = analyzer.Analyze(
                 field,
                 informationWordLength,
-                informationWord => encoder.Encode(codewordLength, field.CreateElementsVector(informationWord), encoderOptions),
+                informationWord => encoder.Encode(codewordLength, informationWord, encoderOptions),
                 new CodeDistanceAnalyzerOptions
                 {
                     MaxDegreeOfParallelism = maxDegreeOfParallelism,
@@ -107,7 +107,7 @@
             var codeDistance = LinearCodeDistanceAnalyzer.Analyze(
                 field,
                 informationWordLength,
-                x => (new Polynomial(field, x).RaiseVariableDegree(2) * generatingPolynomial % modularPolynomial).GetCoefficients(codewordLength - 1),
+                x => (new Polynomial(x).RaiseVariableDegree(2) * generatingPolynomial % modularPolynomial).GetCoefficients(codewordLength - 1),
                 new CodeDistanceAnalyzerOptions { LoggingResolution = 1000000000L }
             );
             if (logResult)
@@ -126,7 +126,7 @@
                 informationWordLength,
                 x =>
                 {
-                    var codeword = new Polynomial(field, x);
+                    var codeword = new Polynomial(x);
                     var codewordLength = informationWordLength;
                     foreach (var generatingPolynomial in generatingPolynomials)
                     {
@@ -723,8 +723,8 @@
             NoiseGenerator = new RecursiveGenerator();
             WordsComparer = new FieldElementsArraysComparer();
 
-            CommonCodeDistanceAnalyzer = new CommonCodeDistanceAnalyzer(loggerFactory.CreateLogger<CommonCodeDistanceAnalyzer>());
-            LinearCodeDistanceAnalyzer = new LinearCodeDistanceAnalyzer(loggerFactory.CreateLogger<LinearCodeDistanceAnalyzer>());
+            CommonCodeDistanceAnalyzer = new CommonCodeDistanceAnalyzer(VariantsIterator, loggerFactory.CreateLogger<CommonCodeDistanceAnalyzer>());
+            LinearCodeDistanceAnalyzer = new LinearCodeDistanceAnalyzer(VariantsIterator, loggerFactory.CreateLogger<LinearCodeDistanceAnalyzer>());
             MinimalSphereCoveringAnalyzer = new MinimalSphereCoveringAnalyzer(VariantsIterator, loggerFactory.CreateLogger<MinimalSphereCoveringAnalyzer>());
             ListsSizesDistributionAnalyzer = new ListsSizesDistributionAnalyzer(VariantsIterator, loggerFactory.CreateLogger<ListsSizesDistributionAnalyzer>());
 
