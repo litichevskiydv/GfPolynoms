@@ -687,7 +687,7 @@
                     new BiorthogonalSourceFiltersCalculator(new GcdBasedBuilder(new RecursiveGcdFinder())),
                     field,
                     16,
-                    15,
+                    16,
                     8,
                     4,
                     6/*,
