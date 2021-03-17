@@ -687,10 +687,10 @@
                     new BiorthogonalSourceFiltersCalculator(new GcdBasedBuilder(new RecursiveGcdFinder())),
                     field,
                     16,
-                    16,
+                    11,
                     8,
                     4,
-                    6/*,
+                    3/*,
                     new FiltersBankVectors(
                         (null, null),
                         (field.CreateElementsVector(1, 2, 1, 2, 0, 1, 0, 0, 1, 2, 1, 2, 0, 1, 0, 0), null)
