@@ -22,10 +22,9 @@ jobs:
         with:
           dotnet-version: '5.0.x'
       - name: run the Cake script
-        working-directory: ./build
         uses: cake-build/cake-action@v1
         with:
-          script-path: build.cake
+          script-path: ./build/build.cake
           verbosity: Verbose
           arguments: |
             nuget_useinprocessclient: true
