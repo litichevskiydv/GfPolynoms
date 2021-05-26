@@ -25,9 +25,9 @@ jobs:
         uses: cake-build/cake-action@v1
         with:
           script-path: ./build/build.cake
+          target: Test
           verbosity: Verbose
           arguments: |
-            target: Test
             configuration: Release
             nuget_useinprocessclient: true
             
@@ -48,11 +48,38 @@ jobs:
         uses: cake-build/cake-action@v1
         with:
           script-path: ./build/build.cake
+          target: CalculateCoverage
           verbosity: Verbose
           arguments: |
-            target: CalculateCoverage
             configuration: Debug
             nuget_useinprocessclient: true
             settings_skipverification: true
+            
+  deploy:
+    name: deploy
+    needs: coverage
+    if: github.ref == 'refs/heads/master'
+
+    runs-on: windows-latest
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Install dotnet
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '5.0.x'
+      - name: Run the Cake script
+        uses: cake-build/cake-action@v1
+        with:
+          script-path: ./build/build.cake
+          target: Pack
+          verbosity: Verbose
+          arguments: |
+            configuration: Release
+            nuget_useinprocessclient: true
+      - name: Publish
+        working-directory: ./build/artifacts
+        run: dotnet nuget push "*.nupkg" --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_TOKEN }}
 
 
