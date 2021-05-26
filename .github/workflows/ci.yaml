@@ -24,13 +24,14 @@ jobs:
       - name: prepare environment
         run: |
           cd build
+          ls
       - name: run the Cake script
         uses: cake-build/cake-action@v1
         with:
           script-path: build.cake
+          verbosity: Verbose
           arguments: |
             nuget_useinprocessclient: true
             target: Test
             configuration: Release
-            verbosity: Verbose
 
