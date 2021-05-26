@@ -27,7 +27,32 @@ jobs:
           script-path: ./build/build.cake
           verbosity: Verbose
           arguments: |
-            nuget_useinprocessclient: true
             target: Test
             configuration: Release
+            nuget_useinprocessclient: true
+            
+  coverage:
+    name: coverage
+    needs: test
+    
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Install dotnet
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '5.0.x'
+      - name: Run the Cake script
+        uses: cake-build/cake-action@v1
+        with:
+          script-path: ./build/build.cake
+          verbosity: Verbose
+          arguments: |
+            target: CalculateCoverage
+            configuration: Debug
+            nuget_useinprocessclient: true
+            settings_skipverification: true
+
 
