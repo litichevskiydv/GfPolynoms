@@ -15,13 +15,13 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-      - name: checkout
+      - name: Checkout
         uses: actions/checkout@v2
-      - name: install dotnet
+      - name: Install dotnet
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: '5.0.x'
-      - name: run the Cake script
+      - name: Run the Cake script
         uses: cake-build/cake-action@v1
         with:
           script-path: ./build/build.cake
