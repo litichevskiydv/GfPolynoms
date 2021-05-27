@@ -157,6 +157,8 @@ Task("Pack")
                     VersionSuffix = versionSuffix,
                     MSBuildSettings = new DotNetCoreMSBuildSettings()
                 };
+				
+		settings.MSBuildSettings.Properties["SymbolPackageFormat"] = new[] {"snupkg"};
         if(string.IsNullOrWhiteSpace(commitId) == false)
             settings.MSBuildSettings.Properties["RepositoryCommit"] = new[] {commitId};
         if(string.IsNullOrWhiteSpace(branch) == false && branch != "master")
