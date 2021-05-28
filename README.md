@@ -5,8 +5,8 @@
 
 GfPolynoms is a library for researches and experiments with finite fields.
 
-Packages
----
+# Packages
+
 Package  | Description | NuGet |
 --------| -------- | :------------ | 
 AppliedAlgebra.GfPolynoms | Implementation of finite fields and polynomials above them | [![NuGet version](https://badge.fury.io/nu/AppliedAlgebra.GfPolynoms.svg)](https://www.nuget.org/packages/AppliedAlgebra.GfPolynoms)
