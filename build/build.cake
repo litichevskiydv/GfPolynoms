@@ -117,6 +117,8 @@ Task("CalculateCoverage")
         var coverletsettings = new CoverletSettings 
         {
             CollectCoverage = true,
+            CoverletOutputDirectory = artifactsDirectory,
+            CoverletOutputName = temporaryCoverageFile.GetFilenameWithoutExtension().ToString(),
             MergeWithFile = temporaryCoverageFile,
             Include = new List<string> {"[*]*"},
             Exclude = new List<string> 
