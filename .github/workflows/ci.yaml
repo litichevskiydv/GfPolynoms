@@ -30,7 +30,9 @@ jobs:
           arguments: |
             configuration: Release
             nuget_useinprocessclient: true
-            
+            settings_skipverification: true
+            settings_skippackageversioncheck: true
+
   coverage:
     name: coverage
     needs: test
@@ -54,6 +56,7 @@ jobs:
             configuration: Debug
             nuget_useinprocessclient: true
             settings_skipverification: true
+            settings_skippackageversioncheck: true
             
   deploy:
     name: deploy
@@ -78,6 +81,8 @@ jobs:
           arguments: |
             configuration: Release
             nuget_useinprocessclient: true
+            settings_skipverification: true
+            settings_skippackageversioncheck: true
       - name: Publish
         working-directory: ./build/artifacts
         run: dotnet nuget push "*.nupkg" -s https://api.nuget.org/v3/index.json -k ${{ secrets.NUGET_TOKEN }}
