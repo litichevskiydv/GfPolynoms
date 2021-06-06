@@ -1,6 +1,8 @@
-#tool "nuget:?package=OpenCover"
+#tool "dotnet:?package=coverlet.console"
 #tool "nuget:?package=Codecov&version=1.12.3"
+#addin "nuget:?package=Cake.Coverlet"
 #addin "nuget:?package=Cake.Codecov"
+
 using System.Linq;
 using System.Text.RegularExpressions;
 
@@ -108,35 +110,36 @@ Task("CalculateCoverage")
     .IsDependentOn("Build")
     .Does(() =>
     {
-        var buildProps = GetFiles("../src/Directory.Build.props").Single();
-        TransformTextFile(buildProps.FullPath, ">", "<").WithToken("portable", ">full<").Save(buildProps.FullPath);
+        var projects = GetFiles("../test/**/*.csproj").ToArray();
+        var temporaryCoverageFile = artifactsDirectory.CombineWithFilePath("coverage.json");
+        var finalCoverageFile = artifactsDirectory.CombineWithFilePath("coverage.opencover.xml");
 
-        var projects = GetFiles("../test/**/*.csproj");
-        var resultsFile = artifactsDirectory.CombineWithFilePath("coverage.xml");
-        var settings = new OpenCoverSettings
-                {
-                    ArgumentCustomization = args => args
-                        .Append("-threshold:100")
-                        .Append("-returntargetcode"),
-                    Register = "appveyor",
-                    OldStyle = true,
-                    MergeOutput = true
-                }
-                .WithFilter("+[*]*")
-                .WithFilter("-[xunit*]*")
-                .WithFilter("-[*.Tests]*");
+        var coverletsettings = new CoverletSettings 
+        {
+            CollectCoverage = true,
+            MergeWithFile = temporaryCoverageFile,
+            Include = new List<string> {"[*]*"},
+            Exclude = new List<string> 
+            {
+                "[xunit*]*",
+                "[*.Tests]*"
+            }
+        };
 
-        foreach(var project in projects)
-            OpenCover(
-                x => x.DotNetCoreTest(
-                     project.FullPath,
-                     new DotNetCoreTestSettings { Configuration = "Debug" }
-                ),
-                resultsFile,
-                settings
-            );
+        for(var i = 0; i < projects.Length; i++)
+        {
+            var project = projects[i];
+            var projectName = project.GetFilenameWithoutExtension();
+            var projectAbsolutePath = project.GetDirectory();
+            var projectDll = GetFiles($"{projectAbsolutePath}/bin/Debug/*/*{projectName}.dll").First();
 
-        Codecov(resultsFile.FullPath);
+            if(i == projects.Length - 1)
+                coverletsettings.CoverletOutputFormat = CoverletOutputFormat.opencover;
+
+            Coverlet(projectDll, project, coverletsettings);
+        }
+
+        Codecov(finalCoverageFile.FullPath);
     });
 
 // Run dotnet pack to produce NuGet packages from our projects. Versions the package
