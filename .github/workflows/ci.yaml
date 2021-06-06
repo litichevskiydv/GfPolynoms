@@ -35,7 +35,7 @@ jobs:
     name: coverage
     needs: test
     
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
@@ -60,7 +60,7 @@ jobs:
     needs: coverage
     if: github.ref == 'refs/heads/master'
 
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     
     steps:
       - name: Checkout
