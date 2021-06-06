@@ -57,6 +57,11 @@ jobs:
             nuget_useinprocessclient: true
             settings_skipverification: true
             settings_skippackageversioncheck: true
+      - name: Upload coverage
+        uses: codecov/codecov-action@v1
+        with:
+          files: ./build/artifacts/coverage.opencover.xml
+          fail_ci_if_error: true
             
   deploy:
     name: deploy

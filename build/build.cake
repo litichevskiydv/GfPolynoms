@@ -1,7 +1,5 @@
 #tool "dotnet:?package=coverlet.console"
-#tool "nuget:?package=Codecov"
 #addin "nuget:?package=Cake.Coverlet"
-#addin "nuget:?package=Cake.Codecov"
 
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -112,7 +110,6 @@ Task("CalculateCoverage")
     {
         var projects = GetFiles("../test/**/*.csproj").ToArray();
         var temporaryCoverageFile = artifactsDirectory.CombineWithFilePath("coverage.json");
-        var finalCoverageFile = artifactsDirectory.CombineWithFilePath("coverage.opencover.xml");
 
         var coverletsettings = new CoverletSettings 
         {
@@ -140,8 +137,6 @@ Task("CalculateCoverage")
 
             Coverlet(projectDll, project, coverletsettings);
         }
-
-        Codecov(finalCoverageFile.FullPath);
     });
 
 // Run dotnet pack to produce NuGet packages from our projects. Versions the package
