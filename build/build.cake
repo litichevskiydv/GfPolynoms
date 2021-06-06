@@ -1,5 +1,5 @@
 #tool "dotnet:?package=coverlet.console"
-#tool "nuget:?package=Codecov&version=1.12.3"
+#tool "nuget:?package=Codecov"
 #addin "nuget:?package=Cake.Coverlet"
 #addin "nuget:?package=Cake.Codecov"
 
