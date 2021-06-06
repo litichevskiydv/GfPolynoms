@@ -1,21 +1,29 @@
 {
-    "version": "0.1.0",
+    "version": "2.0.0",
     "command": "dotnet",
-    "isShellCommand": true,
     "args": [],
     "options":  {
         "cwd": "${workspaceRoot}/src/Utils/SpectrumAnalyzer/"
     },
     "tasks": [
         {
-            "taskName": "restore",
-            "showOutput": "always",
+            "label": "restore",
+            "type": "shell",
+            "command": "dotnet",
+            "args": [
+                "restore"
+            ],
             "problemMatcher": "$msCompile"
         },
         {
-            "taskName": "build",
-            "isBuildCommand": true,
-            "problemMatcher": "$msCompile"
+            "label": "build",
+            "type": "shell",
+            "command": "dotnet",
+            "args": [
+                "build"
+            ],
+            "problemMatcher": "$msCompile",
+            "group": "build"
         }
     ]
 }
