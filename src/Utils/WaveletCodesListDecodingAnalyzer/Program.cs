@@ -421,7 +421,7 @@
             (levelMatricesProvider, encodingLevelsCount) =>
                 new LinearMultilevelEncoder(
                     new CanonicalProvider(levelMatricesProvider),
-                    new DetailsAbsenceBasedProvider(encodingLevelsCount),
+                    new RepetitionBasedProvider(),
                     new BasicCodewordMutator(),
                     encodingLevelsCount
                 )
@@ -688,9 +688,9 @@
                     field,
                     16,
                     16,
-                    8,
+                    7,
                     4,
-                    5/*,
+                    8/*,
                     new FiltersBankVectors(
                         (null, null),
                         (field.CreateElementsVector(1, 2, 1, 2, 0, 1, 0, 0, 1, 2, 1, 2, 0, 1, 0, 0), null)
