@@ -68,5 +68,26 @@
             var expected = Gf3.CreateElementsVector(1, 2, 0);
             Assert.Equal(expected, actual);
         }
+
+        [Theory]
+        [MemberData(nameof(CircularShiftParametersValidationTestCases))]
+        public void LeftCircularShiftMustValidateParameters(CircularShiftParametersValidationTestCase testCase)
+        {
+            Assert.ThrowsAny<ArgumentException>(() => testCase.Vector.LeftCircularShift(testCase.PositionsCount));
+        }
+
+        [Fact]
+        public void ShouldPerformLeftCircularShift()
+        {
+            // Given
+            var sourceVector = Gf3.CreateElementsVector(0, 1, 2);
+
+            // When
+            var actual = sourceVector.LeftCircularShift(2);
+
+            // Then
+            var expected = Gf3.CreateElementsVector(2, 0, 1);
+            Assert.Equal(expected, actual);
+        }
     }
 }

@@ -156,20 +156,34 @@
                 .ToArray();
         }
 
-        public static FieldElement[] RightCircularShift(this FieldElement[] vector, int positionsCount)
+        public static FieldElement[] CircularShift(this FieldElement[] vector, int positionsCount)
         {
             if (vector == null)
                 throw new ArgumentNullException(nameof(vector));
-            if (positionsCount < 0)
-                throw new ArgumentException($"{nameof(positionsCount)} must be positive");
-            if (positionsCount >= vector.Length)
+            if (Math.Abs(positionsCount) >= vector.Length)
                 throw new ArgumentNullException($"{nameof(positionsCount)} must not be grater than {nameof(vector)} length");
 
             var shiftedVector = new FieldElement[vector.Length];
             for (var i = 0; i < vector.Length; i++)
-                shiftedVector[i] = vector[(i - positionsCount + vector.Length) % vector.Length];
+                shiftedVector[i] = vector[(i + positionsCount + vector.Length) % vector.Length];
 
             return shiftedVector;
+        }
+
+        public static FieldElement[] LeftCircularShift(this FieldElement[] vector, int positionsCount)
+        {
+            if (positionsCount < 0)
+                throw new ArgumentException($"{nameof(positionsCount)} must be positive");
+
+            return vector.CircularShift(positionsCount);
+        }
+
+        public static FieldElement[] RightCircularShift(this FieldElement[] vector, int positionsCount)
+        {
+            if (positionsCount < 0)
+                throw new ArgumentException($"{nameof(positionsCount)} must be positive");
+
+            return vector.CircularShift(-positionsCount);
         }
     }
 }
