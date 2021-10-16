@@ -155,5 +155,21 @@
                 .Select(value => multiplier * value)
                 .ToArray();
         }
+
+        public static FieldElement[] RightCircularShift(this FieldElement[] vector, int positionsCount)
+        {
+            if (vector == null)
+                throw new ArgumentNullException(nameof(vector));
+            if (positionsCount < 0)
+                throw new ArgumentException($"{nameof(positionsCount)} must be positive");
+            if (positionsCount >= vector.Length)
+                throw new ArgumentNullException($"{nameof(positionsCount)} must not be grater than {nameof(vector)} length");
+
+            var shiftedVector = new FieldElement[vector.Length];
+            for (var i = 0; i < vector.Length; i++)
+                shiftedVector[i] = vector[(i - positionsCount + vector.Length) % vector.Length];
+
+            return shiftedVector;
+        }
     }
 }
