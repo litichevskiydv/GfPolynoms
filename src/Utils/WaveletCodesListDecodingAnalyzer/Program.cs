@@ -688,7 +688,7 @@
                     field,
                     16,
                     16,
-                    7,
+                    8,
                     4,
                     8/*,
                     new FiltersBankVectors(
