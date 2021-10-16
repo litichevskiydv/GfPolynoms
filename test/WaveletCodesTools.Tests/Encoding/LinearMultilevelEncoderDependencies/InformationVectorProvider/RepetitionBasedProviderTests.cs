@@ -57,7 +57,7 @@
             var actual = _informationVectorProvider.GetInformationVector(informationWord, requiredLength);
 
             // Then
-            var expected = FieldElementsMatrix.ColumnVector(gf3.CreateElementsVector(0, 1, 2, 0, 1, 2, 0));
+            var expected = FieldElementsMatrix.ColumnVector(gf3.CreateElementsVector(0, 1, 2, 2, 0, 1, 1));
             Assert.Equal(expected, actual);
         }
     }

@@ -2,6 +2,7 @@
 {
     using System;
     using System.Linq;
+    using GfAlgorithms.Extensions;
     using GfAlgorithms.Matrices;
     using GfPolynoms;
 
@@ -19,7 +20,7 @@
 
             return FieldElementsMatrix.ColumnVector(
                 Enumerable.Repeat(informationWord, (requiredLength + informationWord.Length - 1) / informationWord.Length)
-                    .SelectMany(word => word.Select(x => x))
+                    .SelectMany((word, i) => word.RightCircularShift(i).Select(x => x))
                     .Take(requiredLength)
                     .ToArray()
             );
