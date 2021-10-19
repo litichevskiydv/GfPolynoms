@@ -5,6 +5,7 @@
     using CodesAbstractions;
     using GfAlgorithms.Matrices;
     using GfAlgorithms.WaveletTransform.IterationFiltersCalculator;
+    using GfPolynoms;
     using GfPolynoms.Extensions;
     using GfPolynoms.GaloisFields;
     using JetBrains.Annotations;
@@ -28,6 +29,8 @@
             public int LevelsCount { get; set; }
         }
 
+        private static readonly GaloisField Gf3;
+
         private readonly LinearMultilevelEncoder _naiveSchemaEncoder;
         private readonly LinearMultilevelEncoder _canonicalSchemaEncoder;
 
@@ -38,15 +41,15 @@
 
         static LinearMultilevelEncoderTests()
         {
-            var gf3 = GaloisField.Create(3);
+            Gf3 = GaloisField.Create(3);
             const int waveletTransformLevelsCount = 2;
             var generatingMatrixProvider = new CanonicalProvider(
                 new RecursionBasedProvider(
                     new ConvolutionBasedCalculator(),
                     waveletTransformLevelsCount,
                     (
-                        gf3.CreateElementsVector(1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0),
-                        gf3.CreateElementsVector(0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+                        Gf3.CreateElementsVector(1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0),
+                        Gf3.CreateElementsVector(0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
                     )
                 )
             );
@@ -84,19 +87,18 @@
                       new EncodeParametersValidationTestCase
                       {
                           CodewordLength = 12,
-                          InformationWord = Enumerable.Repeat(gf3.Zero(), 13).ToArray()
+                          InformationWord = Enumerable.Repeat(Gf3.Zero(), 13).ToArray()
                       },
                       new EncodeParametersValidationTestCase
                       {
                           CodewordLength = 12,
-                          InformationWord = Enumerable.Repeat(gf3.Zero(), 4).ToArray()
+                          InformationWord = Enumerable.Repeat(Gf3.Zero(), 4).ToArray()
                       }
                   };
         }
 
         public LinearMultilevelEncoderTests()
         {
-            var gf3 = GaloisField.Create(3);
             const int waveletTransformLevelsCount = 2;
             const int encodingLevelsCount = 2;
 
@@ -106,12 +108,12 @@
                         new ConvolutionBasedCalculator(),
                         waveletTransformLevelsCount,
                         (
-                            gf3.CreateElementsVector(1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0),
-                            gf3.CreateElementsVector(0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+                            Gf3.CreateElementsVector(1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0),
+                            Gf3.CreateElementsVector(0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
                         )
                     ),
-                    FieldElementsMatrix.CirculantMatrix(gf3, 0, 0, 0, 0, 0, 1),
-                    FieldElementsMatrix.CirculantMatrix(gf3, 0, 0, 1)
+                    FieldElementsMatrix.CirculantMatrix(Gf3, 0, 0, 0, 0, 0, 1),
+                    FieldElementsMatrix.CirculantMatrix(Gf3, 0, 0, 1)
                 ),
                 new LeadingZerosBasedProvider(),
                 new BasicCodewordMutator(),
@@ -123,8 +125,8 @@
                         new ConvolutionBasedCalculator(),
                         waveletTransformLevelsCount,
                         (
-                            gf3.CreateElementsVector(1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0),
-                            gf3.CreateElementsVector(0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+                            Gf3.CreateElementsVector(1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0),
+                            Gf3.CreateElementsVector(0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
                         )
                     )
                 ),
@@ -183,6 +185,47 @@
             // Then
             var expectedCodeword = gf3.CreateElementsVector(1, 1, 1, 1, 1, 2, 1, 2, 1, 2, 1, 2);
             Assert.Equal(expectedCodeword, actualCodeword);
+        }
+
+        [Fact]
+        public void CanonicalSchemaMustProduceSameResultsAsClassical()
+        {
+            // Given
+            const int sourceFiltersLength = 12;
+            const int waveletTransformLevelsCount = 1;
+            var h = Gf3.CreateElementsVector(1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0);
+            var g = Gf3.CreateElementsVector(0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+
+            const int encodingLevelsCount = 1;
+            const int codewordLength = 12;
+            
+            var informationWord = Gf3.CreateElementsVector(0, 1, 2, 0, 1, 2);
+            var informationPolynomial = new Polynomial(informationWord);
+
+            var multilevelEncoder = new LinearMultilevelEncoder(
+                new CanonicalProvider(
+                    new RecursionBasedProvider(
+                        new ConvolutionBasedCalculator(),
+                        waveletTransformLevelsCount,
+                        (h, g)
+                    )
+                ),
+                new RepetitionBasedProvider(),
+                new BasicCodewordMutator(),
+                encodingLevelsCount
+            );
+
+            var one = new Polynomial(Gf3, 1);
+            var modularPolynomial = (one >> sourceFiltersLength) - one;
+            var generatingPolynomial = (new Polynomial(h) + (new Polynomial(g) >> 2)) % modularPolynomial;
+            var classicEncoder = new Encoder();
+
+            // When
+            var actual = multilevelEncoder.Encode(codewordLength, informationWord);
+
+            // Then
+            var expected = classicEncoder.Encode(codewordLength, generatingPolynomial, informationPolynomial).Select(x => x.yValue).ToArray();
+            Assert.Equal(expected, actual);
         }
     }
 }
