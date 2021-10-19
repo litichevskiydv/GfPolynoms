@@ -22,6 +22,11 @@
         private readonly ILinearSystemSolver _linearSystemSolver;
 
         /// <summary>
+        /// Implementation of contract of generating polynomials factory
+        /// </summary>
+        private readonly IGeneratingPolynomialsFactory _generatingPolynomialsFactory;
+
+        /// <summary>
         /// Method for finding lifting polynomial for filters pair (<paramref name="h"/>, <paramref name="g"/>)
         /// </summary>
         /// <param name="h">First filter from the original pair</param>
@@ -71,13 +76,8 @@
         /// <param name="liftingPolynomial">Lifting polynomial</param>
         /// <param name="n">Maximum possible original filter length</param>
         /// <returns>Reconstructed generating polynomial</returns>
-        private static Polynomial ReconstructGeneratingPolynomial(Polynomial h, Polynomial g, Polynomial liftingPolynomial, int n)
-        {
-            var m = new Polynomial(h.Field, 1).RightShift(n);
-            m[0] = h.Field.InverseForAddition(1);
-
-            return (h + (g + h * liftingPolynomial.RaiseVariableDegree(2)).RightShift(2)) % m;
-        }
+        private Polynomial ReconstructGeneratingPolynomial(Polynomial h, Polynomial g, Polynomial liftingPolynomial, int n)
+            => _generatingPolynomialsFactory.Create(h, g + h * liftingPolynomial.RaiseVariableDegree(2), n - 1);
 
         /// <summary>
         /// Method for verification of the generating polynomial 
@@ -135,15 +135,23 @@
         /// </summary>
         /// <param name="complementaryFiltersBuilder">Implementation of contract of complementary filters builder</param>
         /// <param name="linearSystemSolver">Implementation of contract of linear equations system solver</param>
-        public LiftingSchemeBasedBuilder(IComplementaryFiltersBuilder complementaryFiltersBuilder, ILinearSystemSolver linearSystemSolver)
+        /// <param name="generatingPolynomialsFactory">Implementation of contract of generating polynomials factory</param>
+        public LiftingSchemeBasedBuilder(
+            IComplementaryFiltersBuilder complementaryFiltersBuilder,
+            ILinearSystemSolver linearSystemSolver,
+            IGeneratingPolynomialsFactory generatingPolynomialsFactory
+        )
         {
-            if(complementaryFiltersBuilder == null)
+            if (complementaryFiltersBuilder == null)
                 throw new ArgumentNullException(nameof(complementaryFiltersBuilder));
-            if(linearSystemSolver == null)
+            if (linearSystemSolver == null)
                 throw new ArgumentNullException(nameof(linearSystemSolver));
+            if (generatingPolynomialsFactory == null)
+                throw new ArgumentNullException(nameof(generatingPolynomialsFactory));
 
             _complementaryFiltersBuilder = complementaryFiltersBuilder;
             _linearSystemSolver = linearSystemSolver;
+            _generatingPolynomialsFactory = generatingPolynomialsFactory;
         }
     }
 }

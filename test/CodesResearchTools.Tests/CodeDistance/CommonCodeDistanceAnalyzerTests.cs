@@ -34,7 +34,11 @@
             var gaussSolver = new GaussSolver();
             var codesFactory
                 = new StandardCodesFactory(
-                    new LiftingSchemeBasedBuilder(new GcdBasedBuilder(new RecursiveGcdFinder()), gaussSolver),
+                    new LiftingSchemeBasedBuilder(
+                        new GcdBasedBuilder(new RecursiveGcdFinder()),
+                        gaussSolver,
+                        new GeneratingPolynomialsFactory()
+                    ),
                     new RsBasedDecoder(new BerlekampWelchDecoder(gaussSolver), gaussSolver),
                     new GsBasedDecoder(
                         new GsDecoder(new KotterAlgorithmBasedBuilder(new PascalsTriangleBasedCalculator()), new RrFactorizator()),

@@ -14,6 +14,7 @@
     using WaveletCodesTools.Encoding.LinearMultilevelEncoderDependencies.GeneratingMatrixProvider;
     using WaveletCodesTools.Encoding.LinearMultilevelEncoderDependencies.InformationVectorProvider;
     using WaveletCodesTools.Encoding.MultilevelEncoderDependencies.LevelMatricesProvider;
+    using WaveletCodesTools.GeneratingPolynomialsBuilder;
     using Xunit;
 
     public class LinearMultilevelEncoderTests
@@ -215,9 +216,7 @@
                 encodingLevelsCount
             );
 
-            var one = new Polynomial(Gf3, 1);
-            var modularPolynomial = (one >> sourceFiltersLength) - one;
-            var generatingPolynomial = (new Polynomial(h) + (new Polynomial(g) >> 2)) % modularPolynomial;
+            var generatingPolynomial = new GeneratingPolynomialsFactory().Create(new Polynomial(h), new Polynomial(g), sourceFiltersLength - 1);
             var classicEncoder = new Encoder();
 
             // When

@@ -105,7 +105,7 @@
 
         public LiftingSchemeBasedBuilderTests()
         {
-            _builder = new LiftingSchemeBasedBuilder(new GcdBasedBuilder(new RecursiveGcdFinder()), new GaussSolver());
+            _builder = new LiftingSchemeBasedBuilder(new GcdBasedBuilder(new RecursiveGcdFinder()), new GaussSolver(), new GeneratingPolynomialsFactory());
         }
 
         [Theory]
