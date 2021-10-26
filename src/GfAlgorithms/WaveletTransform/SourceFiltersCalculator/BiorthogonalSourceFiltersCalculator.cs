@@ -1,6 +1,7 @@
 ﻿namespace AppliedAlgebra.GfAlgorithms.WaveletTransform.SourceFiltersCalculator
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
     using ComplementaryFilterBuilder;
     using Extensions;
@@ -24,7 +25,7 @@
         }
 
         /// <inheritdoc />
-        public FiltersBankVectors GetSourceFilters(FieldElement[] h)
+        public IEnumerable<FiltersBankVectors> GetSourceFilters(FieldElement[] h)
         {
             if (h == null)
                 throw new ArgumentNullException(nameof(h));
@@ -32,10 +33,46 @@
                 throw new ArgumentException("Filters length must be even");
 
             var expectedDegree = h.Length - 1;
-            var (_, analysisPair, synthesisPair) = GetSourceFilters(new Polynomial(h), expectedDegree);
-            return new FiltersBankVectors(
-                (analysisPair.hWithTilde.GetCoefficients(expectedDegree), analysisPair.gWithTilde.GetCoefficients(expectedDegree)),
-                (synthesisPair.h.GetCoefficients(expectedDegree), synthesisPair.g.GetCoefficients(expectedDegree))
+            foreach (var (_, analysisPair, synthesisPair) in GetSourceFilters(new Polynomial(h), expectedDegree))
+                yield return new FiltersBankVectors(
+                    (analysisPair.hWithTilde.GetCoefficients(expectedDegree), analysisPair.gWithTilde.GetCoefficients(expectedDegree)),
+                    (synthesisPair.h.GetCoefficients(expectedDegree), synthesisPair.g.GetCoefficients(expectedDegree))
+                );
+        }
+
+        private Polynomial ComputeComplementaryFilter(int filtersLength, Polynomial h)
+        {
+            Polynomial g = null;
+            try
+            {
+                g = _complementaryFiltersBuilder.Build(h, filtersLength);
+            }
+            catch (Exception)
+            {
+            }
+
+            return g;
+        }
+
+        private static IEnumerable<FiltersBankPolynomials> GetSourceFiltersOfEvenLength(
+            int filtersLength,
+            Polynomial h,
+            Polynomial g
+        )
+        {
+            var field = h.Field;
+            var one = new Polynomial(field, 1);
+            var modularPolynomial = (one >> filtersLength) - one;
+
+            var multiplier = one >> 1;
+            var substitution = -(one >> (filtersLength - 1));
+            yield return new FiltersBankPolynomials(
+                filtersLength,
+                (
+                    -multiplier * g.PerformVariableSubstitution(substitution) % modularPolynomial,
+                    multiplier * h.PerformVariableSubstitution(substitution) % modularPolynomial
+                ),
+                (new Polynomial(h), g)
             );
         }
 
@@ -50,35 +87,12 @@
             );
         }
 
-        /// <inheritdoc />
-        public FiltersBankPolynomials GetSourceFilters(Polynomial h, int? expectedDegree = null)
+        private static IEnumerable<FiltersBankPolynomials> GetSourceFiltersOfOddLength(
+            int filtersLength,
+            Polynomial h,
+            Polynomial g
+        )
         {
-            if (h == null)
-                throw new ArgumentNullException(nameof(h));
-            if (expectedDegree.HasValue && expectedDegree.Value < 0)
-                throw new ArgumentException($"{expectedDegree} must not be negative");
-
-            var field = h.Field;
-            var filtersLength = (expectedDegree ?? h.Degree) + 1;
-            var g = _complementaryFiltersBuilder.Build(h, filtersLength);
-
-            var one = new Polynomial(field, 1);
-            var modularPolynomial = (one >> filtersLength) - one;
-
-            if (filtersLength % 2 == 0)
-            {
-                var multiplier = new Polynomial(field, 0, 1);
-                var substitution = -(one >> (filtersLength - 1));
-                return new FiltersBankPolynomials(
-                    filtersLength,
-                    (
-                        -multiplier * g.PerformVariableSubstitution(substitution) % modularPolynomial,
-                        multiplier * h.PerformVariableSubstitution(substitution) % modularPolynomial
-                    ),
-                    (new Polynomial(h), g)
-                );
-            }
-            
             var (ge, go) = g.GetPolyphaseComponents();
             var hWithTilde = PolynomialExtensions.CreateFormPolyphaseComponents(
                 ComputeDualComponentForOddFiltersLength(filtersLength, go),
@@ -91,7 +105,27 @@
                 ComputeDualComponentForOddFiltersLength(filtersLength, he)
             );
 
-            return new FiltersBankPolynomials(filtersLength, (hWithTilde, gWithTilde), (new Polynomial(h), g));
+            yield return new FiltersBankPolynomials(filtersLength, (hWithTilde, gWithTilde), (new Polynomial(h), g));
+        }
+
+
+        /// <inheritdoc />
+        public IEnumerable<FiltersBankPolynomials> GetSourceFilters(Polynomial h, int? expectedDegree = null)
+        {
+            if (h == null)
+                throw new ArgumentNullException(nameof(h));
+            if (expectedDegree < 0)
+                throw new ArgumentException($"{expectedDegree} must not be negative");
+
+            var filtersLength = (expectedDegree ?? h.Degree) + 1;
+
+            var g = ComputeComplementaryFilter(filtersLength, h);
+            if (g == null)
+                return Enumerable.Empty<FiltersBankPolynomials>();
+
+            return filtersLength % 2 == 0
+                ? GetSourceFiltersOfEvenLength(filtersLength, h, g)
+                : GetSourceFiltersOfOddLength(filtersLength, h, g);
         }
     }
 }

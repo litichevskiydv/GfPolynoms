@@ -33,21 +33,10 @@
             FiltersBankVectors initialFiltersBank = null
         )
         {
-            foreach (var filterH in _variantsIterator.IterateVectors(field, filtersLength, initialFiltersBank?.SynthesisPair.h).Skip(1))
-            {
-                FiltersBankVectors filtersBank;
-                try
-                {
-                    filtersBank = _filtersCalculator.GetSourceFilters(filterH);
-                }
-                catch (Exception)
-                {
-                    continue;
-                }
-
-                if (filtersBank.CanPerformPerfectReconstruction())
-                    yield return filtersBank;
-            }
+            return _variantsIterator.IterateVectors(field, filtersLength, initialFiltersBank?.SynthesisPair.h)
+                .Skip(1)
+                .SelectMany(filterH => _filtersCalculator.GetSourceFilters(filterH))
+                .Where(filtersBank => filtersBank.CanPerformPerfectReconstruction());
         }
 
         /// <inheritdoc/>
@@ -57,21 +46,10 @@
             FiltersBankPolynomials initialFiltersBank = null
         )
         {
-            foreach (var filterH in _variantsIterator.IteratePolynomials(field, expectedDegree, initialFiltersBank?.SynthesisPair.h).Skip(1))
-            {
-                FiltersBankPolynomials filtersBank;
-                try
-                {
-                    filtersBank = _filtersCalculator.GetSourceFilters(filterH, expectedDegree);
-                }
-                catch (Exception)
-                {
-                    continue;
-                }
-
-                if (filtersBank.CanPerformPerfectReconstruction())
-                    yield return filtersBank;
-            }
+            return _variantsIterator.IteratePolynomials(field, expectedDegree, initialFiltersBank?.SynthesisPair.h)
+                .Skip(1)
+                .SelectMany(filterH => _filtersCalculator.GetSourceFilters(filterH, expectedDegree))
+                .Where(filtersBank => filtersBank.CanPerformPerfectReconstruction());
         }
     }
 }

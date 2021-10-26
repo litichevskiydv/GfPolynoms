@@ -1,6 +1,7 @@
 ﻿namespace AppliedAlgebra.GfAlgorithms.Tests.WaveletTransform.SourceFiltersCalculator
 {
     using System;
+    using System.Linq;
     using GfAlgorithms.WaveletTransform;
     using GfAlgorithms.WaveletTransform.SourceFiltersCalculator;
     using GfPolynoms;
@@ -41,31 +42,40 @@
         [MemberData(nameof(GetSourceFiltersVectorsParametersValidationTestCases))]
         public void GetSourceFiltersVectorsMustValidateParameters(FieldElement[] h)
         {
-            Assert.ThrowsAny<ArgumentException>(() => SourceFiltersCalculator.GetSourceFilters(h));
+            Assert.ThrowsAny<ArgumentException>(() => SourceFiltersCalculator.GetSourceFilters(h).ToArray());
         }
 
         [Fact]
         public void GetSourceFiltersPolynomialsMustValidateParameters()
         {
-            Assert.Throws<ArgumentNullException>(() => SourceFiltersCalculator.GetSourceFilters((Polynomial)null));
+            Assert.Throws<ArgumentNullException>(() => SourceFiltersCalculator.GetSourceFilters((Polynomial)null).ToArray());
         }
 
         protected void TestSourceFiltersVectorsCalculation(FieldElement[] sourceFilterH)
         {
-            var filtersBank = SourceFiltersCalculator.GetSourceFilters(sourceFilterH);
-
-            Assert.True(filtersBank.IsSatisfyBiorthogonalCondition());
-            Assert.True(filtersBank.CanPerformPerfectReconstruction());
+            Assert.All(
+                SourceFiltersCalculator.GetSourceFilters(sourceFilterH),
+                filtersBank =>
+                {
+                    Assert.True(filtersBank.IsSatisfyBiorthogonalCondition());
+                    Assert.True(filtersBank.CanPerformPerfectReconstruction());
+                }
+            );
         }
 
         protected void TestSourceFiltersPolynomialsCalculation(FieldElement[] sourceFilterH)
         {
-            var filtersBankPolynomials = SourceFiltersCalculator.GetSourceFilters(new Polynomial(sourceFilterH), sourceFilterH.Length - 1);
-            Assert.True(filtersBankPolynomials.CanPerformPerfectReconstruction());
+            Assert.All(
+                SourceFiltersCalculator.GetSourceFilters(new Polynomial(sourceFilterH), sourceFilterH.Length - 1),
+                filtersBankPolynomials =>
+                {
+                    Assert.True(filtersBankPolynomials.CanPerformPerfectReconstruction());
 
-            var filtersBankVectors = filtersBankPolynomials.ToFiltersBankVectors();
-            Assert.True(filtersBankVectors.IsSatisfyBiorthogonalCondition());
-            Assert.True(filtersBankVectors.CanPerformPerfectReconstruction());
+                    var filtersBankVectors = filtersBankPolynomials.ToFiltersBankVectors();
+                    Assert.True(filtersBankVectors.IsSatisfyBiorthogonalCondition());
+                    Assert.True(filtersBankVectors.CanPerformPerfectReconstruction());
+                }
+            );
         }
     }
 }

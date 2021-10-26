@@ -70,10 +70,10 @@
         public void MustCalculateBiorthogonalSourceFiltersPolynomialsOfOddLength(FieldElement[] sourceFilterH)
         {
             // When
-            var filtersBank = SourceFiltersCalculator.GetSourceFilters(new Polynomial(sourceFilterH), sourceFilterH.Length - 1);
+            var filtersBanks = SourceFiltersCalculator.GetSourceFilters(new Polynomial(sourceFilterH), sourceFilterH.Length - 1);
 
             // Then
-            Assert.True(filtersBank.CanPerformPerfectReconstruction());
+            Assert.All(filtersBanks, filterBank => Assert.True(filterBank.CanPerformPerfectReconstruction()));
         }
     }
 }

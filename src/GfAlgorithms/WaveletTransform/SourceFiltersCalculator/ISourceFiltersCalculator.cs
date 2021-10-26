@@ -1,5 +1,6 @@
 ﻿namespace AppliedAlgebra.GfAlgorithms.WaveletTransform.SourceFiltersCalculator
 {
+    using System.Collections.Generic;
     using GfPolynoms;
 
     /// <summary>
@@ -8,16 +9,16 @@
     public interface ISourceFiltersCalculator
     {
         /// <summary>
-        /// Calculates filter bank full definition in the vector style by synthesis filter h <paramref name="h"/>
+        /// Calculates filter banks full definition in the vector style by synthesis filter h <paramref name="h"/>
         /// <param name="h">Synthesis filter h</param>
         /// </summary>
-        FiltersBankVectors GetSourceFilters(FieldElement[] h);
+        IEnumerable<FiltersBankVectors> GetSourceFilters(FieldElement[] h);
 
         /// <summary>
-        /// Calculates filter bank full definition in the polynomial style by synthesis filter h <paramref name="h"/>
+        /// Calculates filter banks full definition in the polynomial style by synthesis filter h <paramref name="h"/>
         /// <param name="h">Synthesis filter h</param>
         /// <param name="expectedDegree">Filters polynomial expected degree</param>
         /// </summary>
-        FiltersBankPolynomials GetSourceFilters(Polynomial h, int? expectedDegree = null);
+        IEnumerable<FiltersBankPolynomials> GetSourceFilters(Polynomial h, int? expectedDegree = null);
     }
 }
