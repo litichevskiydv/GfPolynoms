@@ -16,9 +16,13 @@
 
         public PerfectReconstructionFiltersBanksIteratorTests()
         {
+            var variantsIterator = new RecursiveIterator();
             _filtersBanksIterator = new PerfectReconstructionFiltersBanksIterator(
-                new RecursiveIterator(),
-                new BiorthogonalSourceFiltersCalculator(new GcdBasedBuilder(new RecursiveGcdFinder()))
+                variantsIterator,
+                new BiorthogonalSourceFiltersCalculator(
+                    new GcdBasedBuilder(new RecursiveGcdFinder()),
+                    variantsIterator
+                )
             );
         }
 

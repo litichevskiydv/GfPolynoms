@@ -8,6 +8,7 @@
     using GfPolynoms.GaloisFields;
     using JetBrains.Annotations;
     using PolynomialsGcdFinder;
+    using VariantsIterator;
     using Xunit;
 
     public class BiorthogonalSourceFiltersCalculatorTests : SourceFiltersCalculatorTestsBase
@@ -24,22 +25,17 @@
             var gf7 = GaloisField.Create(7);
             var gf8 = GaloisField.Create(8, new[] { 1, 1, 0, 1 });
             var gf9 = GaloisField.Create(9, new[] { 1, 0, 1 });
-            var gf11 = GaloisField.Create(11);
-            var gf17 = GaloisField.Create(17);
 
             BiorthogonalSourceFiltersOfEvenLengthCalculationTestCase
                 = new TheoryData<FieldElement[]>
                   {
-                      new Polynomial(gf2, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1).GetCoefficients(23),
                       new Polynomial(gf2, 1, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1).GetCoefficients(15),
                       new Polynomial(gf3, 2, 1, 2, 1, 1, 0, 2, 1).GetCoefficients(11),
                       new Polynomial(gf3, 1, 0, 0, 0, 0, 0, 0, 1).GetCoefficients(11),
                       new Polynomial(gf2, 1, 1, 0, 0, 0, 0, 1).GetCoefficients(7),
                       new Polynomial(gf7, 3, 2, 5, 0, 4).GetCoefficients(5),
                       new Polynomial(gf7, 4, 2, 6, 4, 3, 4).GetCoefficients(5),
-                      new Polynomial(gf9, 2, 7, 5, 1, 8, 3, 2, 5).GetCoefficients(7),
-                      new Polynomial(gf11, 0, 0, 0, 0, 0, 10, 5, 4, 3, 4).GetCoefficients(9),
-                      new Polynomial(gf17, 10, 16, 5, 0, 0, 0, 0, 16).GetCoefficients(15)
+                      new Polynomial(gf9, 2, 7, 5, 1, 8, 3, 2, 5).GetCoefficients(7)
                   };
             BiorthogonalSourceFiltersOfOddLengthCalculationTestCase
                 = new TheoryData<FieldElement[]>
@@ -50,7 +46,7 @@
         }
 
         public BiorthogonalSourceFiltersCalculatorTests() : base(
-            new BiorthogonalSourceFiltersCalculator(new GcdBasedBuilder(new RecursiveGcdFinder()))
+            new BiorthogonalSourceFiltersCalculator(new GcdBasedBuilder(new RecursiveGcdFinder()), new RecursiveIterator())
         )
         {
         }

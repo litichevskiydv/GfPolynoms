@@ -684,7 +684,7 @@
                 var field = GaloisField.Create(3);
                 FindWaveletTransformsForRecursiveLinearMultilevelEncoding(
                     Process.GetCurrentProcess().ConstrainProcessorUsage(2, 0.7),
-                    new BiorthogonalSourceFiltersCalculator(new GcdBasedBuilder(new RecursiveGcdFinder())),
+                    new BiorthogonalSourceFiltersCalculator(new GcdBasedBuilder(new RecursiveGcdFinder()), VariantsIterator),
                     field,
                     16,
                     16,

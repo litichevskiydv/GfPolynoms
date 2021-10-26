@@ -7,6 +7,7 @@
     using Extensions;
     using GfPolynoms;
     using GfPolynoms.Extensions;
+    using VariantsIterator;
     using PolynomialExtensions = Extensions.PolynomialExtensions;
 
     /// <summary>
@@ -15,13 +16,20 @@
     public class BiorthogonalSourceFiltersCalculator : ISourceFiltersCalculator
     {
         private readonly IComplementaryFiltersBuilder _complementaryFiltersBuilder;
+        private readonly IVariantsIterator _variantsIterator;
 
-        public BiorthogonalSourceFiltersCalculator(IComplementaryFiltersBuilder complementaryFiltersBuilder)
+        public BiorthogonalSourceFiltersCalculator(
+            IComplementaryFiltersBuilder complementaryFiltersBuilder,
+            IVariantsIterator variantsIterator
+        )
         {
             if (complementaryFiltersBuilder == null)
                 throw new ArgumentNullException(nameof(complementaryFiltersBuilder));
+            if (variantsIterator == null)
+                throw new ArgumentNullException(nameof(variantsIterator));
 
             _complementaryFiltersBuilder = complementaryFiltersBuilder;
+            _variantsIterator = variantsIterator;
         }
 
         /// <inheritdoc />
@@ -54,7 +62,7 @@
             return g;
         }
 
-        private static IEnumerable<FiltersBankPolynomials> GetSourceFiltersOfEvenLength(
+        private IEnumerable<FiltersBankPolynomials> GetSourceFiltersOfEvenLength(
             int filtersLength,
             Polynomial h,
             Polynomial g
@@ -62,18 +70,22 @@
         {
             var field = h.Field;
             var one = new Polynomial(field, 1);
-            var modularPolynomial = (one >> filtersLength) - one;
-
+            
             var multiplier = one >> 1;
             var substitution = -(one >> (filtersLength - 1));
-            yield return new FiltersBankPolynomials(
-                filtersLength,
-                (
-                    -multiplier * g.PerformVariableSubstitution(substitution) % modularPolynomial,
-                    multiplier * h.PerformVariableSubstitution(substitution) % modularPolynomial
-                ),
-                (new Polynomial(h), g)
-            );
+            var modularPolynomial = (one >> filtersLength) - one;
+            foreach (var liftingPolynomial in _variantsIterator.IteratePolynomials(field, filtersLength / 2 - 1).Skip(1))
+            {
+                var gs = (g + h * liftingPolynomial.RaiseVariableDegree(2)) % modularPolynomial;
+                yield return new FiltersBankPolynomials(
+                    filtersLength,
+                    (
+                        -multiplier * gs.PerformVariableSubstitution(substitution) % modularPolynomial,
+                        multiplier * h.PerformVariableSubstitution(substitution) % modularPolynomial
+                    ),
+                    (new Polynomial(h), gs)
+                );
+            }
         }
 
         private static Polynomial ComputeDualComponentForOddFiltersLength(int filtersLength, Polynomial component)
