@@ -59,6 +59,9 @@ if(string.IsNullOrWhiteSpace(branch) == false && branch != "master")
 
 // A directory path to an Artifacts directory.
 var artifactsDirectory = MakeAbsolute(Directory("./artifacts"));
+
+// Directories with tests template
+var testsPathTemplate = "../test/**/*.Tests.csproj";
  
 // Deletes the contents of the Artifacts folder if it should contain anything from a previous build.
 Task("Clean")
@@ -90,7 +93,7 @@ Task("Test")
     .IsDependentOn("Build")
     .Does(() =>
     {
-        var projects = GetFiles("../test/**/*.csproj");
+        var projects = GetFiles(testsPathTemplate);
         var settings = new DotNetCoreTestSettings
         {
             Configuration = configuration,
@@ -108,7 +111,7 @@ Task("CalculateCoverage")
     .IsDependentOn("Build")
     .Does(() =>
     {
-        var projects = GetFiles("../test/**/*.csproj").ToArray();
+        var projects = GetFiles(testsPathTemplate).ToArray();
         var temporaryCoverageFile = artifactsDirectory.CombineWithFilePath("coverage.json");
 
         var coverletsettings = new CoverletSettings 
