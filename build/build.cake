@@ -81,6 +81,7 @@ Task("Clean")
                     VersionSuffix = versionSuffix,
                     ArgumentCustomization = args => args.Append("--configfile ./NuGet.config")
                 };
+
         if(buildNumber != 0)
             settings.MSBuildSettings = new DotNetMSBuildSettings {Properties = { {"Build", new[] {buildNumber.ToString()}}}};
 
@@ -149,8 +150,7 @@ Task("Pack")
     .IsDependentOn("Build")
     .Does(() =>
     {
-        var projects = GetFiles("../src/*/*.csproj");
-        var settings = new DotNetCorePackSettings
+        var settings = new DotNetPackSettings
                 {
                     Configuration = configuration,
                     NoRestore = true,
@@ -158,10 +158,9 @@ Task("Pack")
                     OutputDirectory = artifactsDirectory,
                     IncludeSymbols = true,
                     VersionSuffix = versionSuffix,
-                    MSBuildSettings = new DotNetCoreMSBuildSettings()
+                    MSBuildSettings = new DotNetMSBuildSettings {Properties = { {"SymbolPackageFormat", new[] {"snupkg"} } }}
                 };
 				
-		settings.MSBuildSettings.Properties["SymbolPackageFormat"] = new[] {"snupkg"};
         if(string.IsNullOrWhiteSpace(commitId) == false)
             settings.MSBuildSettings.Properties["RepositoryCommit"] = new[] {commitId};
         if(string.IsNullOrWhiteSpace(branch) == false && branch != "master")
@@ -170,8 +169,7 @@ Task("Pack")
             settings.MSBuildSettings.Properties["RepositoryCommitMessage"] = new[] {commitMessage};
         }
 
-        foreach (var project in projects)
-            DotNetCorePack(project.GetDirectory().FullPath, settings);
+        DotNetPack("..", settings);
     });
  
 // The default task to run if none is explicitly specified. In this case, we want
