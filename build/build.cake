@@ -15,6 +15,14 @@ var configuration =
         ? Argument<string>("Configuration") 
         : EnvironmentVariable("Configuration") ?? "Release";
 
+Information("Environment variables:");
+Information($"\tGITHUB_RUN_ID: {EnvironmentVariable("GITHUB_RUN_ID")}");
+Information($"\tGITHUB_RUN_NUMBER: {EnvironmentVariable("GITHUB_RUN_NUMBER")}");
+Information($"\tGITHUB_REF: {EnvironmentVariable("GITHUB_REF")}");
+Information($"\tGITHUB_REF_NAME: {EnvironmentVariable("GITHUB_REF_NAME")}");
+Information($"\tGITHUB_SHA: {EnvironmentVariable("GITHUB_SHA")}");
+Information($"\tGITHUB_COMMIT_MESSAGE: {EnvironmentVariable("GITHUB_COMMIT_MESSAGE")}");
+
 // The build number to use in the version number of the built NuGet packages.
 // There are multiple ways this value can be passed, this is a common pattern.
 // 1. If command line parameter parameter passed, use that.
