@@ -15,39 +15,34 @@ var configuration =
         ? Argument<string>("Configuration") 
         : EnvironmentVariable("Configuration") ?? "Release";
 
-Information("Environment variables:");
-Information($"\tGITHUB_RUN_ID: {EnvironmentVariable("GITHUB_RUN_ID")}");
-Information($"\tGITHUB_RUN_NUMBER: {EnvironmentVariable("GITHUB_RUN_NUMBER")}");
-Information($"\tGITHUB_REF: {EnvironmentVariable("GITHUB_REF")}");
-Information($"\tGITHUB_REF_NAME: {EnvironmentVariable("GITHUB_REF_NAME")}");
-Information($"\tGITHUB_SHA: {EnvironmentVariable("GITHUB_SHA")}");
-Information($"\tGITHUB_COMMIT_MESSAGE: {EnvironmentVariable("GITHUB_COMMIT_MESSAGE")}");
-
 // The build number to use in the version number of the built NuGet packages.
 // There are multiple ways this value can be passed, this is a common pattern.
-// 1. If command line parameter parameter passed, use that.
-// 2. Otherwise if running on AppVeyor, get it's build number.
-// 3. Otherwise if running on Travis CI, get it's build number.
-// 4. Otherwise if an Environment variable exists, use that.
-// 5. Otherwise default the build number to 0.
 var buildNumber =
     HasArgument("BuildNumber") ? Argument<int>("BuildNumber") :
+    EnvironmentVariable("BuildNumber") != null ? int.Parse(EnvironmentVariable("BuildNumber")) : 
     AppVeyor.IsRunningOnAppVeyor ? AppVeyor.Environment.Build.Number :
     TravisCI.IsRunningOnTravisCI ? TravisCI.Environment.Build.BuildNumber :
-    EnvironmentVariable("BuildNumber") != null ? int.Parse(EnvironmentVariable("BuildNumber")) : 0;
+    GitHubActions.IsRunningOnGitHubActions ? int.Parse(EnvironmentVariable("GITHUB_RUN_NUMBER")) :
+    0;
 
 // The branch name use in version suffix and packages info
 var branch = 
     AppVeyor.IsRunningOnAppVeyor ? AppVeyor.Environment.Repository.Branch :
-    TravisCI.IsRunningOnTravisCI ? TravisCI.Environment.Build.Branch : (string)null;
+    TravisCI.IsRunningOnTravisCI ? TravisCI.Environment.Build.Branch : 
+    GitHubActions.IsRunningOnGitHubActions ? EnvironmentVariable("GITHUB_REF_NAME") :
+    (string)null;
 // Commit Id for packages info
 var commitId =
     AppVeyor.IsRunningOnAppVeyor ? AppVeyor.Environment.Repository.Commit.Id :
-    TravisCI.IsRunningOnTravisCI ? TravisCI.Environment.Repository.Commit : (string)null;
+    TravisCI.IsRunningOnTravisCI ? TravisCI.Environment.Repository.Commit : 
+    GitHubActions.IsRunningOnGitHubActions ? EnvironmentVariable("GITHUB_SHA") :
+    (string)null;
 // Commit message for packages info
 var commitMessage =
     AppVeyor.IsRunningOnAppVeyor ? AppVeyor.Environment.Repository.Commit.Message :
-    TravisCI.IsRunningOnTravisCI ? EnvironmentVariable("TRAVIS_COMMIT_MESSAGE") : (string)null;
+    TravisCI.IsRunningOnTravisCI ? EnvironmentVariable("TRAVIS_COMMIT_MESSAGE") : 
+    GitHubActions.IsRunningOnGitHubActions ? EnvironmentVariable("GITHUB_COMMIT_MESSAGE") :
+    (string)null;
 
 // Text suffix of the package version
 string versionSuffix = null;
