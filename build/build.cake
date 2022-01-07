@@ -69,19 +69,16 @@ Task("Clean")
     .IsDependentOn("Clean")
     .Does(() =>
     {
-        var projects = GetFiles("../src/**/*.csproj").Concat(GetFiles("../test/**/*.csproj"));
-        var settings =  new DotNetCoreBuildSettings
+        var settings =  new DotNetBuildSettings
                 {
                     Configuration = configuration,
                     VersionSuffix = versionSuffix,
-                    MSBuildSettings = new DotNetCoreMSBuildSettings(),
                     ArgumentCustomization = args => args.Append("--configfile ./NuGet.config")
                 };
         if(buildNumber != 0)
-            settings.MSBuildSettings.Properties["Build"] = new[] {buildNumber.ToString()};
+            settings.MSBuildSettings = new DotNetMSBuildSettings {Properties = { {"Build", new[] {buildNumber.ToString()}}}};
 
-        foreach(var project in projects)
-           DotNetCoreBuild(project.GetDirectory().FullPath, settings);
+        DotNetBuild("..", settings);
     });
 
 // Look under a 'Tests' folder and run dotnet test against all of those projects.
