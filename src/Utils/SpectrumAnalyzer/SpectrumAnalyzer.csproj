@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <Description>SpectrumAnalyzer Console Application</Description>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <IsPackable>false</IsPackable>
     <AssemblyName>AppliedAlgebra.SpectrumAnalyzer</AssemblyName>
     <RootNamespace>AppliedAlgebra.SpectrumAnalyzer</RootNamespace>
