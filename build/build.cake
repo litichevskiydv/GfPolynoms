@@ -25,9 +25,9 @@ var buildNumber =
     GitHubActions.IsRunningOnGitHubActions ? int.Parse(EnvironmentVariable("GITHUB_RUN_NUMBER")) :
     0;
 
-// The branch name use in version suffix and packages info
-var branch = 
-    AppVeyor.IsRunningOnAppVeyor ? AppVeyor.Environment.Repository.Branch :
+// Branch or tag name used in version suffix and packages info
+var refName = 
+    AppVeyor.IsRunningOnAppVeyor ? (AppVeyor.Environment.Repository.Tag.IsTag ? AppVeyor.Environment.Repository.Tag.Name : AppVeyor.Environment.Repository.Branch) :
     TravisCI.IsRunningOnTravisCI ? TravisCI.Environment.Build.Branch : 
     GitHubActions.IsRunningOnGitHubActions ? EnvironmentVariable("GITHUB_REF_NAME") :
     (string)null;
@@ -46,11 +46,11 @@ var commitMessage =
 
 // Text suffix of the package version
 string versionSuffix = null;
-if(string.IsNullOrWhiteSpace(branch) == false && branch != "master")
+if(string.IsNullOrWhiteSpace(refName) == false && refName != "master")
 {
     versionSuffix = $"dev-build{buildNumber:00000}";
 
-    var match = Regex.Match(branch, "release\\/\\d+\\.\\d+\\.\\d+\\-?(.*)", RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
+    var match = Regex.Match(refName, "release\\/\\d+\\.\\d+\\.\\d+\\-?(.*)", RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
     if(match.Success)
         versionSuffix = string.IsNullOrWhiteSpace(match.Groups[1].Value) == false
             ? $"{match.Groups[1].Value}-build{buildNumber:00000}"
@@ -161,11 +161,10 @@ Task("Pack")
                     MSBuildSettings = new DotNetMSBuildSettings {Properties = { {"SymbolPackageFormat", new[] {"snupkg"} } }}
                 };
 				
-        if(string.IsNullOrWhiteSpace(commitId) == false)
-            settings.MSBuildSettings.Properties["RepositoryCommit"] = new[] {commitId};
-        if(string.IsNullOrWhiteSpace(branch) == false && branch != "master")
+        if(string.IsNullOrWhiteSpace(versionSuffix) == false)
         {
-            settings.MSBuildSettings.Properties["RepositoryBranch"] = new[] {branch};
+            settings.MSBuildSettings.Properties["RepositoryRefName"] = new[] {refName};
+            settings.MSBuildSettings.Properties["RepositoryCommit"] = new[] {commitId};
             settings.MSBuildSettings.Properties["RepositoryCommitMessage"] = new[] {commitMessage};
         }
 

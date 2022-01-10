@@ -4,7 +4,7 @@
     <Description>Implementation of common algorithms above finite fields</Description>
     <PackageDescription Condition="'$(VersionSuffix)'!=''">
       $(Description)
-      Branch: $(RepositoryBranch)
+      Reference name: $(RepositoryRefName)
       Working tree: $(RepositoryUrl)/tree/$(RepositoryCommit)
       Commit message: $(RepositoryCommitMessage)
     </PackageDescription>
