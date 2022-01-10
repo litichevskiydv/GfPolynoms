@@ -31,6 +31,12 @@ var refName =
     TravisCI.IsRunningOnTravisCI ? TravisCI.Environment.Build.Branch : 
     GitHubActions.IsRunningOnGitHubActions ? EnvironmentVariable("GITHUB_REF_NAME") :
     (string)null;
+// The type of ref that triggered build. Valid values are branch or tag
+var refType = 
+    AppVeyor.IsRunningOnAppVeyor ? (AppVeyor.Environment.Repository.Tag.IsTag ? "tag" : "branch") :
+    TravisCI.IsRunningOnTravisCI ? (string.IsNullOrWhiteSpace(TravisCI.Environment.Build.Tag) == false ? "tag" : "branch") : 
+    GitHubActions.IsRunningOnGitHubActions ? EnvironmentVariable("GITHUB_REF_TYPE") :
+    (string)null;
 // Commit Id for packages info
 var commitId =
     AppVeyor.IsRunningOnAppVeyor ? AppVeyor.Environment.Repository.Commit.Id :
