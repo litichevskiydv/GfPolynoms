@@ -2,7 +2,7 @@
   
   <PropertyGroup>
     <Description>Implementation of common algorithms above finite fields</Description>
-    <PackageDescription Condition="'$(RepositoryBranch)'!=''">
+    <PackageDescription Condition="'$(VersionSuffix)'!=''">
       $(Description)
       Branch: $(RepositoryBranch)
       Working tree: $(RepositoryUrl)/tree/$(RepositoryCommit)
