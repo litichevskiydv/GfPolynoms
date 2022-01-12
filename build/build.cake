@@ -173,6 +173,10 @@ Task("Pack")
 				
         if(string.IsNullOrWhiteSpace(versionSuffix) == false)
         {
+            Information($"RepositoryRefName: {refName}");
+            Information($"RepositoryCommit: {commitId}");
+            Information($"RepositoryCommitMessage: {commitMessage}");
+
             settings.MSBuildSettings.Properties["RepositoryRefName"] = new[] {refName};
             settings.MSBuildSettings.Properties["RepositoryCommit"] = new[] {commitId};
             settings.MSBuildSettings.Properties["RepositoryCommitMessage"] = new[] {commitMessage};
