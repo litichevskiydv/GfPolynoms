@@ -6,7 +6,6 @@
       $(Description)
       Reference name: $(RepositoryRefName)
       Working tree: $(RepositoryUrl)/tree/$(RepositoryCommit)
-      Commit message: $(RepositoryCommitMessage)
     </PackageDescription>
     <TargetFrameworks>netstandard2.0;net6.0</TargetFrameworks>
     <AssemblyName>AppliedAlgebra.GfPolynoms</AssemblyName>

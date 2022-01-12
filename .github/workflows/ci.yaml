@@ -14,9 +14,6 @@ jobs:
     
     runs-on: ${{ matrix.os }}
     
-    env:
-      GITHUB_COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
-    
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -41,9 +38,6 @@ jobs:
     needs: test
     
     runs-on: ubuntu-latest
-    
-    env:
-      GITHUB_COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
 
     steps:
       - name: Checkout

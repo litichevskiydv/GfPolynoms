@@ -44,12 +44,6 @@ var commitId =
     TravisCI.IsRunningOnTravisCI ? TravisCI.Environment.Repository.Commit : 
     GitHubActions.IsRunningOnGitHubActions ? EnvironmentVariable("GITHUB_SHA") :
     (string)null;
-// Commit message for packages info
-var commitMessage =
-    AppVeyor.IsRunningOnAppVeyor ? AppVeyor.Environment.Repository.Commit.Message :
-    TravisCI.IsRunningOnTravisCI ? EnvironmentVariable("TRAVIS_COMMIT_MESSAGE") : 
-    GitHubActions.IsRunningOnGitHubActions ? EnvironmentVariable("GITHUB_COMMIT_MESSAGE") :
-    (string)null;
 
 // Text suffix of the package version
 string versionSuffix = null;
@@ -173,13 +167,8 @@ Task("Pack")
 				
         if(string.IsNullOrWhiteSpace(versionSuffix) == false)
         {
-            Information($"RepositoryRefName: {refName}");
-            Information($"RepositoryCommit: {commitId}");
-            Information($"RepositoryCommitMessage: {commitMessage}");
-
             settings.MSBuildSettings.Properties["RepositoryRefName"] = new[] {refName};
             settings.MSBuildSettings.Properties["RepositoryCommit"] = new[] {commitId};
-            settings.MSBuildSettings.Properties["RepositoryCommitMessage"] = new[] {commitMessage};
         }
 
         DotNetPack("..", settings);
