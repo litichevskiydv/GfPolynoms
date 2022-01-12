@@ -2,6 +2,7 @@
 #addin "nuget:?package=Cake.Coverlet"
 
 using System.Linq;
+using System.Globalization;
 using System.Text.RegularExpressions;
 
 // Target - The task you want to start. Runs the Default task if not specified.
@@ -52,15 +53,18 @@ var commitMessage =
 
 // Text suffix of the package version
 string versionSuffix = null;
-if(string.IsNullOrWhiteSpace(refName) == false && refName != "master")
+switch (refType)
 {
-    versionSuffix = $"dev-build{buildNumber:00000}";
-
-    var match = Regex.Match(refName, "release\\/\\d+\\.\\d+\\.\\d+\\-?(.*)", RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
-    if(match.Success)
-        versionSuffix = string.IsNullOrWhiteSpace(match.Groups[1].Value) == false
-            ? $"{match.Groups[1].Value}-build{buildNumber:00000}"
-            : $"build{buildNumber:00000}";
+    case "tag":
+        var match = Regex.Match(refName, "\\d+\\.\\d+\\.\\d+\\-?(.*)", RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
+        if(match.Success == false)
+            versionSuffix = refName;
+        else if(string.IsNullOrWhiteSpace(match.Groups[1].Value) == false)
+            versionSuffix = match.Groups[1].Value;
+        break;
+    case "branch":
+        versionSuffix = $"{refName.Replace("/", "-", true, System.Globalization.CultureInfo.InvariantCulture)}-build{buildNumber:00000}";
+        break;
 }
 
 // A directory path to an Artifacts directory.
