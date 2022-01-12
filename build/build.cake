@@ -157,7 +157,7 @@ Task("CalculateCoverage")
 // using the build number argument on the script which is used as the revision number 
 // (Last number in 1.0.0.0). The packages are dropped in the Artifacts directory.
 Task("Pack")
-    .IsDependentOn("Build")
+    .IsDependentOn("Test")
     .Does(() =>
     {
         var settings = new DotNetPackSettings

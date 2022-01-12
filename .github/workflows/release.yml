@@ -1,0 +1,36 @@
+name: release workflow
+
+on:
+  release:
+    types: [published]
+    
+jobs:
+  deploy:
+    name: deploy
+
+    runs-on: ubuntu-latest
+    
+    env:
+      GITHUB_COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Install dotnet
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '6.0.x'
+      - name: Run the Cake script
+        uses: cake-build/cake-action@v1
+        with:
+          script-path: ./build/build.cake
+          target: Pack
+          verbosity: Verbose
+          arguments: |
+            configuration: Release
+            nuget_useinprocessclient: true
+            settings_skipverification: true
+            settings_skippackageversioncheck: true
+      - name: Publish
+        working-directory: ./build/artifacts
+        run: dotnet nuget push "*.nupkg" -s https://api.nuget.org/v3/index.json -k ${{ secrets.NUGET_TOKEN }}
