@@ -56,7 +56,7 @@ string versionSuffix = null;
 switch (refType)
 {
     case "tag":
-        var match = Regex.Match(refName, "\\d+\\.\\d+\\.\\d+\\-?(.*)", RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
+        var match = Regex.Match(refName, "v\\d+\\.\\d+\\.\\d+\\-?(.*)", RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
         if(match.Success == false)
             versionSuffix = refName;
         else if(string.IsNullOrWhiteSpace(match.Groups[1].Value) == false)
