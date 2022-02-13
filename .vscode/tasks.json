@@ -7,15 +7,6 @@
     },
     "tasks": [
         {
-            "label": "restore",
-            "type": "shell",
-            "command": "dotnet",
-            "args": [
-                "restore"
-            ],
-            "problemMatcher": "$msCompile"
-        },
-        {
             "label": "build",
             "type": "shell",
             "command": "dotnet",
